@@ -37,7 +37,8 @@
       "@controllers/*": ["src/controllers/*"],
       "@components/*": ["src/components/*"],
       "@styles/*": ["src/styles/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@stores/*": ["src/stores/*"]
     }
   },
   "include": ["src", "vite.config.ts"]
