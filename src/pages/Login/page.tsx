@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { theme } from '../../styles/theme';
 import { pop } from '../../styles/keyframes';
+import ReactSVG from '../../assets/react.svg?react';
 
 const Tmp = styled.div({
   color: theme.colors.cornflowerblue,
@@ -12,6 +13,7 @@ const LoginPage = () => {
     <div>
       loginPage
       <Tmp>asd</Tmp>
+      <ReactSVG />
     </div>
   );
 };
