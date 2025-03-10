@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { theme } from '../../styles/theme';
-import { pop } from '../../styles/keyframes';
-import ReactSVG from '../../assets/react.svg?react';
+import { theme } from '@styles/theme';
+import { pop } from '@styles/keyframes';
+import ReactSVG from '@assets/react.svg?react';
 
 const Tmp = styled.div({
   color: theme.colors.cornflowerblue,
