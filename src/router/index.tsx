@@ -1,20 +1,28 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Outlet, ScrollRestoration, createBrowserRouter } from 'react-router-dom';
 import HomePage from '../pages/Home/page';
 import LoginPage from '../pages/Login/page';
+import Mainlayout from '@layout/MainLayout/MainLayout';
 
 export const webPath = {
-  home: () => '/',
   login: () => '/login',
 };
 
+const Root = () => {
+  return (
+    <Mainlayout>
+      <Outlet />
+      <ScrollRestoration />
+    </Mainlayout>
+  );
+};
 const routes = [
   { path: '*', element: <div>404 Not Found</div> },
   {
     path: '/',
-    // element: <HomePage />,
+    element: <Root />,
     children: [
       {
-        path: '',
+        path: '/',
         element: <HomePage />,
       },
       {
@@ -22,10 +30,6 @@ const routes = [
         children: [{ path: '', element: <LoginPage /> }],
       },
     ],
-  },
-  {
-    // path: webPath.usage(),
-    // element: <Usage />,
   },
 ];
 
