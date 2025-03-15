@@ -1,5 +1,7 @@
-const Header = () => {
-  return <>Header</>;
+import { StyledHeader } from './Header.Style';
+
+const Footer = () => {
+  return <StyledHeader>Footer</StyledHeader>;
 };
 
-export default Header;
+export default Footer;
