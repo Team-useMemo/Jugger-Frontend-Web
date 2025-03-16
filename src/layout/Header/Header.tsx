@@ -2,8 +2,10 @@ import { StyledHeader, HeaderContainer, HeaderLogo, IconContainer } from './Head
 import SearchSVG from '@assets/Header/search.svg?react';
 import DetailSVG from '@assets/Header/detail.svg?react';
 import LogoSVG from '@assets/Header/logo.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
   const onSearchClick = () => {
     alert('검색');
   };
@@ -13,7 +15,7 @@ const Header = () => {
   return (
     <StyledHeader>
       <HeaderContainer>
-        <HeaderLogo>
+        <HeaderLogo onClick={() => navigate('/')}>
           <LogoSVG />
           Jugger
         </HeaderLogo>

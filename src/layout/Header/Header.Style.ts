@@ -23,7 +23,7 @@ const HeaderContainer = styled.div({
 });
 
 const HeaderLogo = styled.div({
-  width: '300px',
+  width: '349px',
   display: 'flex',
   alignItems: 'left',
   boxSizing: 'border-box',
