@@ -17,11 +17,11 @@ const routes = [
         path: '/',
         element: <HomePage />,
       },
-      {
-        path: webPath.login(),
-        children: [{ path: '', element: <LoginPage /> }],
-      },
     ],
+  },
+  {
+    path: webPath.login(),
+    children: [{ path: '', element: <LoginPage /> }],
   },
 ];
 

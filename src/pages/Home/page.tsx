@@ -4,7 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const isLogin = true;
 
+  if (!isLogin) {
+    // 로그인이 안 되어 있으면 로그인 페이지로 이동
+    navigate('/login');
+  }
   const dispatch = useAppDispatch();
 
   const count = useAppSelector((state) => state.counterSlice.value);

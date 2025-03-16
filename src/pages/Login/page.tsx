@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 import { pop } from '@styles/keyframes';
-import ReactSVG from '@assets/react.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 const Tmp = styled.div({
   color: theme.colors.cornflowerblue,
@@ -9,12 +9,20 @@ const Tmp = styled.div({
 });
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   return (
-    <div>
+    <>
       loginPage
+      <div
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        go Home
+      </div>
       <Tmp>asd</Tmp>
-      <ReactSVG />
-    </div>
+    </>
   );
 };
 
