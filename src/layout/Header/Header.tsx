@@ -1,7 +1,7 @@
 import { StyledHeader } from './Header.Style';
 
 const Footer = () => {
-  return <StyledHeader>Footer</StyledHeader>;
+  return <StyledHeader>Header</StyledHeader>;
 };
 
 export default Footer;
