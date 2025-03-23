@@ -215,10 +215,43 @@ const MemoPhotoContainer = styled.div({
   },
 });
 
+const AboutPhotoContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'end',
+  background: 'white',
+  borderRadius: '16px',
+  padding: '12px',
+  gap: '8px',
+  ['img']: {
+    maxWidth: '640px',
+    maxHeight: '480px',
+    borderRadius: '12px',
+  },
+});
+
+const AboutPhotoComponent = ({
+  closeModal,
+  actions,
+}: {
+  closeModal: () => void;
+  actions: ((...args: any[]) => void)[];
+}) => {
+  return (
+    <AboutPhotoContainer>
+      <CloseSVG onClick={closeModal} />
+      <img src={actions[0]} />
+    </AboutPhotoContainer>
+  );
+};
+
 const MemoPhoto = ({ content }: { content: string }) => {
+  const [AboutPhotoModal, openAboutPhotoModal] = useModal(AboutPhotoComponent, [content]);
+
   return (
     <MemoPhotoContainer>
-      <img src={content} />
+      <AboutPhotoModal />
+      <img src={content} onClick={openAboutPhotoModal} />
     </MemoPhotoContainer>
   );
 };
@@ -226,7 +259,6 @@ const MemoPhoto = ({ content }: { content: string }) => {
 const fetchUrlPreview = async (url: string) => {
   const res = await fetch(`https://og-meta-data-api.vercel.app/api/preview?url=${url}`);
   const data = await res.json();
-  console.log(data);
   return data;
 };
 
@@ -640,7 +672,6 @@ const useModal = (
   };
 
   const closeModal = () => {
-    console.log(activeModal);
     setActiveModal(false);
   };
 
