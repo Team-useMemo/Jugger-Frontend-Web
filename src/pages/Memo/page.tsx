@@ -215,10 +215,37 @@ const MemoPhotoContainer = styled.div({
   },
 });
 
+const AboutPhotoContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'end',
+  background: 'white',
+  borderRadius: '16px',
+  padding: '12px',
+  gap: '8px',
+  ['img']: {
+    maxWidth: '640px',
+    maxHeight: '480px',
+    borderRadius: '12px',
+  },
+});
+
+const AboutPhotoComponent = ({ closeModal, props }: { closeModal: () => void; props: { image: string } }) => {
+  return (
+    <AboutPhotoContainer>
+      <CloseSVG onClick={closeModal} />
+      <img src={props.image} />
+    </AboutPhotoContainer>
+  );
+};
+
 const MemoPhoto = ({ content }: { content: string }) => {
+  const [AboutPhotoModal, openAboutPhotoModal] = useModal(AboutPhotoComponent, [], { image: content });
+
   return (
     <MemoPhotoContainer>
-      <img src={content} />
+      <AboutPhotoModal />
+      <img src={content} onClick={openAboutPhotoModal} />
     </MemoPhotoContainer>
   );
 };
@@ -226,7 +253,6 @@ const MemoPhoto = ({ content }: { content: string }) => {
 const fetchUrlPreview = async (url: string) => {
   const res = await fetch(`https://og-meta-data-api.vercel.app/api/preview?url=${url}`);
   const data = await res.json();
-  console.log(data);
   return data;
 };
 
@@ -629,8 +655,17 @@ const AddPhotoComponent = ({
 };
 
 const useModal = (
-  Component: ({ closeModal, actions }: { closeModal: () => void; actions: ((...args: any[]) => void)[] }) => ReactNode,
+  Component: ({
+    closeModal,
+    actions,
+    props,
+  }: {
+    closeModal: () => void;
+    actions: ((...args: any[]) => void)[];
+    props: any;
+  }) => ReactNode,
   actions: ((...args: any[]) => void)[],
+  props?: any,
 ): [() => ReactNode, any, any] => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [activeModal, setActiveModal] = useState(false);
@@ -640,7 +675,6 @@ const useModal = (
   };
 
   const closeModal = () => {
-    console.log(activeModal);
     setActiveModal(false);
   };
 
@@ -658,7 +692,7 @@ const useModal = (
   const modal = () => (
     <ModalBackground active={activeModal}>
       <div ref={modalRef}>
-        <Component closeModal={closeModal} actions={actions} />
+        <Component closeModal={closeModal} actions={actions} props={props} />
       </div>
     </ModalBackground>
   );
