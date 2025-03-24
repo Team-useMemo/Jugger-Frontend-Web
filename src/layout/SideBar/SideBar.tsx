@@ -7,7 +7,9 @@ import SettingSVG from '@assets/Sidebar/Setting.svg?react';
 import SideMenu from '@components/SideBar/SideMenu/SideMenu';
 
 const SideBar = () => {
-  const onWholeMemoClick = () => {};
+  const onWholeMemoClick = () => {
+    alert('전체 메모');
+  };
   const onCalendarClick = () => {};
   const onImageClick = () => {};
   const onLinkClick = () => {};
