@@ -2,9 +2,10 @@ import styled from '@emotion/styled';
 
 export const MenuItem = styled.div`
   display: flex;
+  padding: 12px 24px;
   align-items: center;
-  padding: 10px;
-  cursor: pointer;
+  gap: 16px;
+  align-self: stretch;
 `;
 
 export const IconWrapper = styled.div`
@@ -13,9 +14,14 @@ export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 10px;
 `;
 
 export const MenuTitle = styled.span`
-  font-size: 16px;
+  color: var(--label-normal, #171719);
+  font-feature-settings: 'ss10' on;
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
 `;
