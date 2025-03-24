@@ -22,8 +22,15 @@ interface userMemoProp {
   type: userMemoType;
   content: string | scheduleProp;
   date: Date;
-  category: string;
+  category: string | null;
 }
+
+const categoryColor = {
+  '4월 여행 계획': '#F553DA',
+  Jugger: '#00BDDE',
+  Daily: '#00AEFF',
+  독서록: '#4F29E5',
+};
 
 const userMemoMock: userMemoProp[] = [
   {
@@ -149,7 +156,7 @@ const MemoCategoryContainer = styled.div(({ color }) => ({
 
 const MemoCategory = ({ category }: { category: string }) => {
   return (
-    <MemoCategoryContainer color="blue">
+    <MemoCategoryContainer color={categoryColor[category as keyof typeof categoryColor]}>
       <span />
       {category}
     </MemoCategoryContainer>
@@ -369,7 +376,7 @@ const MemoLink = ({ content }: { content: string }) => {
 const MemoComponent = ({ memo }: { memo: userMemoProp }) => {
   return (
     <MemoContainer>
-      <MemoCategory category={memo.category} />
+      {memo.category && <MemoCategory category={memo.category} />}
       <MemoContent>
         {memo.type == 'text' ? (
           <MemoText content={memo.content as string} />
@@ -392,21 +399,17 @@ const isUrl = (text: string): boolean => {
   return pattern.test(text);
 };
 
-const ModalBackground = styled.div(
-  ({ active }: { active: boolean }) => ({
-    display: active ? 'flex' : 'none',
-  }),
-  {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    left: '0',
-    top: '0',
-    background: '#989BA288',
-    width: '100%',
-    height: '100%',
-  },
-);
+const ModalBackground = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'absolute',
+  left: '0',
+  top: '0',
+  background: '#989BA288',
+  width: '100%',
+  height: '100%',
+});
 
 const AddScheduleContainer = styled.div({
   display: 'flex',
@@ -415,6 +418,10 @@ const AddScheduleContainer = styled.div({
   background: 'white',
   borderRadius: '16px',
   padding: '32px 32px 40px',
+
+  [':focus']: {
+    outline: 'none',
+  },
 });
 
 const AddScheduleContent = styled.div({
@@ -477,6 +484,7 @@ const AddScheduleItem = styled.div({
       fontSize: '16px',
       lineHeight: '1.5',
       width: '100%',
+      color: '#171719',
     },
   },
 });
@@ -604,8 +612,24 @@ const AddPhotoComponent = ({
     }
   };
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
+
   return (
-    <AddScheduleContainer onPaste={handlePasteClipboard}>
+    <AddScheduleContainer
+      ref={containerRef}
+      tabIndex={0}
+      onPaste={handlePasteClipboard}
+      onKeyDown={(e) => {
+        if (e.key == 'Enter' && image) {
+          actions[0](image);
+          closeModal();
+        }
+      }}
+    >
       <CloseSVG onClick={closeModal} />
       <AddScheduleContent>
         <AddScheduleTitle>사진 추가</AddScheduleTitle>
@@ -689,13 +713,16 @@ const useModal = (
     return () => window.removeEventListener('mousedown', handleClick);
   });
 
-  const modal = () => (
-    <ModalBackground active={activeModal}>
-      <div ref={modalRef}>
-        <Component closeModal={closeModal} actions={actions} props={props} />
-      </div>
-    </ModalBackground>
-  );
+  const modal = () =>
+    activeModal ? (
+      <ModalBackground>
+        <div ref={modalRef}>
+          <Component closeModal={closeModal} actions={actions} props={props} />
+        </div>
+      </ModalBackground>
+    ) : (
+      ''
+    );
 
   return [modal, openModal, closeModal];
 };
@@ -720,7 +747,7 @@ const MemoPage = () => {
           endDate,
         },
         date: new Date(),
-        category: '123',
+        category: null,
       },
     ]);
   };
@@ -733,7 +760,7 @@ const MemoPage = () => {
         type: 'photo',
         content: image,
         date: new Date(),
-        category: '123',
+        category: null,
       },
     ]);
   };
@@ -775,7 +802,7 @@ const MemoPage = () => {
         type: isUrl(newMemo) ? 'link' : 'text',
         content: newMemo,
         date: new Date(),
-        category: '123',
+        category: null,
       },
     ]);
     setNewMemo('');
@@ -858,6 +885,7 @@ const MemoPage = () => {
               outline: 'none',
               background: 'none',
               resize: 'none',
+              color: '#171719',
             }}
           />
           <SendSVG onClick={handleClickSend} />
