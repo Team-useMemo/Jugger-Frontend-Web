@@ -1,5 +1,5 @@
 import { StyledSideBar } from './SideBar.style';
-import CategorySVG from '@assets/SideBar/Category.svg?react';
+import CategorySVG from '@assets/Sidebar/Category.svg?react';
 import CalendarSVG from '@assets/Sidebar/Calendar.svg?react';
 import ImageSVG from '@assets/Sidebar/Image.svg?react';
 import LinkSVG from '@assets/Sidebar/Link.svg?react';
