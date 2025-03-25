@@ -1,51 +1,44 @@
 import styled from '@emotion/styled';
 
-export const StyledHeader = styled.header({
-  width: '100%',
-  height: '64px',
-
+export const StyledHeader = styled.div({
+  height: '78px',
   display: 'flex',
+  padding: '28px 24px 20px',
+  borderBottom: '1px solid #E0E0E2',
   justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '0 24px',
   boxSizing: 'border-box',
-
-  borderBottom: '1px solid #ddd' /* 구분선 추가 */,
 });
 
-const HeaderContainer = styled.div({
-  width: '100%',
-  maxWidth: '1280px',
-  margin: '0 0',
+export const HeaderTitle = styled.div({
   display: 'flex',
-  justifyContent: 'space-between',
   alignItems: 'center',
+  gap: '8px',
+  textAlign: 'left',
+  color: '#000000',
+  fontSize: '22px',
+  fontWeight: '600',
+  lineHeight: '1.32',
 });
 
-const HeaderLogo = styled.div({
-  width: '349px',
-  display: 'flex',
-  alignItems: 'left',
-  boxSizing: 'border-box',
-
-  ['> svg']: {
-    cursor: 'pointer',
-    width: 'auto',
-    height: '30px',
-    margin: '0 5px',
+export const HeaderTitleCircle = styled.span(
+  ({ color }: { color: string }) => ({
+    background: color,
+  }),
+  {
+    width: '8px',
+    height: '8px',
+    borderRadius: '4px',
   },
-});
+);
 
-const IconContainer = styled.div({
+export const HeaderButtonContainer = styled.div({
   display: 'flex',
+  gap: '12px',
   alignItems: 'center',
-  gap: '16px',
 
-  ['> svg']: {
+  ['svg']: {
     cursor: 'pointer',
     width: '24px',
     height: '24px',
   },
 });
-
-export { HeaderContainer, HeaderLogo, IconContainer };

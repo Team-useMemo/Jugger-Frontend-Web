@@ -1,30 +1,29 @@
-import { StyledHeader, HeaderContainer, HeaderLogo, IconContainer } from './Header.Style';
 import SearchSVG from '@assets/Header/search.svg?react';
 import DetailSVG from '@assets/Header/detail.svg?react';
-import LogoSVG from '@assets/Header/logo.svg?react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } from './Header.Style';
 
 const Header = () => {
-  const navigate = useNavigate();
-  const onSearchClick = () => {
-    alert('검색');
-  };
-  const onDetailClick = () => {
-    alert('상세');
-  };
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get('category');
+  console.log(category);
+
+  const onSearchClick = () => alert('검색');
+  const onDetailClick = () => alert('상세');
   return (
     <StyledHeader>
-      <HeaderContainer>
-        <HeaderLogo onClick={() => navigate('/')}>
-          <LogoSVG />
-          Jugger
-        </HeaderLogo>
-        <div style={{ flex: 1, textAlign: 'left' }}>title</div>
-        <IconContainer>
-          <SearchSVG onClick={onSearchClick} />
-          <DetailSVG onClick={onDetailClick} />
-        </IconContainer>
-      </HeaderContainer>
+      <HeaderTitle>
+        {category && (
+          <>
+            <HeaderTitleCircle color={'#F553DA'} />
+            {category}
+          </>
+        )}
+      </HeaderTitle>
+      <HeaderButtonContainer>
+        <SearchSVG onClick={onSearchClick} />
+        <DetailSVG onClick={onDetailClick} />
+      </HeaderButtonContainer>
     </StyledHeader>
   );
 };
