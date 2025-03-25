@@ -132,9 +132,12 @@ const formatDateToString = (date: Date) => {
 const MemoContainer = styled.div({
   display: 'flex',
   justifyContent: 'end',
-  margin: '0 24px',
+  padding: '0 24px',
   gap: '6px',
   alignItems: 'end',
+  width: '100%',
+  maxWidth: '1080px',
+  boxSizing: 'border-box',
 });
 
 const MemoCategoryContainer = styled.div(({ color }) => ({
@@ -734,6 +737,7 @@ const MemoListContainer = styled.div({
   flexDirection: 'column-reverse',
   padding: '24px 0',
   overflowY: 'scroll',
+  width: '100%',
 
   ['::-webkit-scrollbar']: {
     display: 'none',
@@ -827,27 +831,69 @@ const MemoPage = () => {
   if (!memos) return <div>Loading</div>;
 
   return (
-    <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', height: '100%', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
       <AddScheduleModal />
       <AddPhotoModal />
       <MemoListContainer>
         {[...memos].reverse().map((e, i, arr) => {
           return (
-            <div key={e.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div key={e.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
               {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    margin: '0 8px',
+                    padding: '0 8px',
+                    boxSizing: 'border-box',
+                    width: '100%',
                   }}
                 >
-                  <span style={{ borderBottom: '1px solid #E0E0E2', width: '20px', margin: '0', height: '0' }} />
-                  <p style={{ margin: '0', color: '#C2C4C8', fontSize: '14px', fontWeight: '500' }}>
-                    {formatDateToString(e.date)}
-                  </p>
-                  <span style={{ borderBottom: '1px solid #E0E0E2', flexGrow: '1', margin: '0', height: '0' }} />
+                  <span
+                    style={{
+                      borderBottom: '1px solid #E0E0E2',
+                      margin: '0',
+                      height: '0',
+                      minWidth: '20px',
+                      flexGrow: '1',
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: '100%',
+                      maxWidth: '1080px',
+                      boxSizing: 'content-box',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <p
+                      style={{
+                        margin: '0 12px',
+                        color: '#C2C4C8',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {formatDateToString(e.date)}
+                    </p>
+                    <span
+                      style={{
+                        borderBottom: '1px solid #E0E0E2',
+                        flexGrow: '1',
+                        margin: '0',
+                        height: '0',
+                      }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      borderBottom: '1px solid #E0E0E2',
+                      margin: '0',
+                      height: '0',
+                      minWidth: '20px',
+                      flexGrow: '1',
+                    }}
+                  />
                 </div>
               )}
               <MemoComponent memo={e} />
@@ -855,7 +901,17 @@ const MemoPage = () => {
           );
         })}
       </MemoListContainer>
-      <div style={{ display: 'flex', alignItems: 'center', padding: '0 24px 24px', gap: '12px' }}>
+      <div
+        style={{
+          maxWidth: '1080px',
+          width: '100%',
+          boxSizing: 'border-box',
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 24px 24px',
+          gap: '12px',
+        }}
+      >
         <div style={{ display: 'flex', gap: '12px' }}>
           <PaperClipSVG onClick={openAddPhotoModal} />
           <CalendarSVG onClick={openAddScheduleModal} />
