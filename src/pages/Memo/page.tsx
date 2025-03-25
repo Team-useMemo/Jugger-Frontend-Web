@@ -727,6 +727,19 @@ const useModal = (
   return [modal, openModal, closeModal];
 };
 
+const MemoListContainer = styled.div({
+  gap: '16px',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column-reverse',
+  padding: '24px 0',
+  overflowY: 'scroll',
+
+  ['::-webkit-scrollbar']: {
+    display: 'none',
+  },
+});
+
 const MemoPage = () => {
   // const { username } = useParams();
 
@@ -814,19 +827,10 @@ const MemoPage = () => {
   if (!memos) return <div>Loading</div>;
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
       <AddScheduleModal />
       <AddPhotoModal />
-      <div
-        style={{
-          gap: '16px',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column-reverse',
-          padding: '24px 0',
-          overflowY: 'scroll',
-        }}
-      >
+      <MemoListContainer>
         {[...memos].reverse().map((e, i, arr) => {
           return (
             <div key={e.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -850,7 +854,7 @@ const MemoPage = () => {
             </div>
           );
         })}
-      </div>
+      </MemoListContainer>
       <div style={{ display: 'flex', alignItems: 'center', padding: '0 24px 24px', gap: '12px' }}>
         <div style={{ display: 'flex', gap: '12px' }}>
           <PaperClipSVG onClick={openAddPhotoModal} />

@@ -13,7 +13,7 @@ export const StyledMain = styled.div`
   height: 100%;
 `;
 
-export const StyledContent = styled.div`
-  flex-grow: 1;
-  overflow-y: auto;
-`;
+export const StyledContent = styled.div({
+  overflow: 'auto',
+  height: 'calc(100% - 78px)',
+});
