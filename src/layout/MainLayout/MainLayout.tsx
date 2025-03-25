@@ -6,9 +6,9 @@ import { StyledContent, StyledMain, StyledMainlayout } from './MainLayout.Style'
 const Mainlayout = ({ children }: LayoutProps) => {
   return (
     <StyledMainlayout>
-      <Header />
+      <SideBar />
       <StyledMain>
-        <SideBar />
+        <Header />
         <StyledContent>{children}</StyledContent>
       </StyledMain>
     </StyledMainlayout>
