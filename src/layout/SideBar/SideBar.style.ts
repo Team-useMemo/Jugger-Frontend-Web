@@ -1,10 +1,31 @@
 import styled from '@emotion/styled';
+import { media } from '@styles/theme';
 
-export const StyledSideBar = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '349px',
+export const StyledSideBar = styled.div(
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '349px',
+    height: '100%',
+    background: '#989BA288',
+
+    [media[0]]: {
+      width: '100%',
+      position: 'absolute',
+    },
+  },
+  ({ active }: { active: boolean }) => ({
+    [media[0]]: {
+      left: active ? '0' : '',
+      right: active ? '' : '100%',
+    },
+  }),
+);
+
+export const SideBarContainer = styled.div({
   height: '100%',
+  background: 'white',
+  [media[0]]: { width: '315px' },
 });
 
 export const SideBarHeader = styled.div({

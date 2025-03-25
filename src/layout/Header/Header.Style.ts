@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { media } from '@styles/theme';
 
 export const StyledHeader = styled.div({
   height: '78px',
@@ -7,6 +8,11 @@ export const StyledHeader = styled.div({
   borderBottom: '1px solid #E0E0E2',
   justifyContent: 'space-between',
   boxSizing: 'border-box',
+
+  ['>svg']: {
+    display: 'none',
+  },
+  [media[0]]: { ['>svg']: { display: 'block' } },
 });
 
 export const HeaderTitle = styled.div({

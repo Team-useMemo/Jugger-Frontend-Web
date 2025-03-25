@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 
-export const StyledMainlayout = styled.div`
-  display: flex;
-  height: 100vh;
-  width: 100%;
-`;
+export const StyledMainlayout = styled.div({
+  display: 'flex',
+  height: '100vh',
+  width: '100%',
+});
 
 export const StyledMain = styled.div`
   width: 100%;
