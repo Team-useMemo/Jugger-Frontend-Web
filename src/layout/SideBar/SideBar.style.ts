@@ -40,6 +40,7 @@ export const SideBarContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
   overflowY: 'auto',
+  flex: 1,
   borderRight: '1px solid #E0E0E2',
   height: 'calc(100% - 78px)',
 
@@ -60,4 +61,36 @@ export const SideBarContents = styled.div({
       backgroundColor: '#AAAAAA',
     },
   },
+});
+
+export const AddCategoryButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '40px',
+  width: 'calc(100% - 32px)', // 양쪽 패딩 포함 여백 확보
+  margin: '12px 16px',
+  padding: '12px 16px',
+  gap: '4px',
+  borderRadius: '6px',
+  fontSize: '14px',
+  fontWeight: '500',
+  background: 'var(--primary-Normal, #0054D1)',
+  color: '#FFFFFF',
+  border: 'none',
+  cursor: 'pointer',
+
+  '&:hover': {
+    background: '#0046B5',
+  },
+});
+
+export const MessageSection = styled.div({
+  marginTop: '12px',
+  padding: '0 10px',
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  alignSelf: 'stretch',
+  maxWidth: '100%',
 });
