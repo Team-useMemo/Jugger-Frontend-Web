@@ -1,3 +1,5 @@
+import categoryMock from './mock/category';
+
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const Headers = { 'content-type': 'application/json' };
@@ -16,11 +18,19 @@ const fetchData = async (path: string) => {
   }
 };
 
-const fetchAllMemo = async (username: string) => {
-  if (true || enableMock) return fetchScoreMock;
-  return fetchData(`/${id}/score/${country}`);
+const fetchAllMemo = (username: string) => {
+  // if (true || enableMock) return fetchScoreMock;
+  // return fetchData(`/${id}/score/${country}`);
 };
 
-const fetchCategories = async (username: string) => {};
+const fetchCategory = (username: string) => {
+  if (!username) return [];
+  return categoryMock.sort((a, b) => {
+    if (a.pinned == b.pinned) {
+      return a.lastDate < b.lastDate ? 1 : -1;
+    } else if (a.pinned && !b.pinned) return -1;
+    return 0;
+  });
+};
 
-export { fetchAllMemo, fetchCategories };
+export { fetchAllMemo, fetchCategory };
