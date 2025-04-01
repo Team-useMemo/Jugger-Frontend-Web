@@ -25,6 +25,8 @@ const fetchAllMemo = (username: string) => {
 
 const fetchCategory = (username: string) => {
   if (!username) return [];
+  console.log(categoryMock);
+  // return categoryMock;
   return categoryMock.sort((a, b) => {
     if (a.pinned == b.pinned) {
       return a.lastDate < b.lastDate ? 1 : -1;

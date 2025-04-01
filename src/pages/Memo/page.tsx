@@ -10,6 +10,7 @@ import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
 import formatDate from '@utils/Date';
+import { useAppSelector } from '@hooks/useRedux';
 
 type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
 
@@ -24,7 +25,7 @@ interface userMemoProp {
   type: userMemoType;
   content: string | scheduleProp;
   date: Date;
-  category: string | null;
+  category: number | null;
 }
 
 const userMemoMock: userMemoProp[] = [
@@ -33,14 +34,14 @@ const userMemoMock: userMemoProp[] = [
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-24T04:32:00'),
-    category: '4월 여행 계획',
+    category: 3,
   },
   {
     id: 2,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-24T04:33:00'),
-    category: '4월 여행 계획',
+    category: 3,
   },
   {
     id: 3,
@@ -51,21 +52,21 @@ const userMemoMock: userMemoProp[] = [
       endDate: null,
     },
     date: new Date('2025-03-25T04:33:00'),
-    category: '4월 여행 계획',
+    category: 3,
   },
   {
     id: 4,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-25T04:33:00'),
-    category: 'Jugger',
+    category: 2,
   },
   {
     id: 5,
     type: 'link',
     content: 'https://www.youtube.com/watch?v=9kfx7itbcbc',
     date: new Date('2025-03-25T04:33:00'),
-    category: 'Daily',
+    category: 4,
   },
   {
     id: 6,
@@ -73,7 +74,7 @@ const userMemoMock: userMemoProp[] = [
     content:
       'https://png.pngtree.com/background/20250103/original/pngtree-pink-pastel-background-with-pink-aesthetic-sky-picture-image_15151458.jpg',
     date: new Date('2025-03-25T04:33:00'),
-    category: '독서록',
+    category: 1,
   },
   {
     id: 7,
@@ -84,14 +85,14 @@ const userMemoMock: userMemoProp[] = [
       endDate: null,
     },
     date: new Date('2025-03-26T04:33:00'),
-    category: '4월 여행 계획',
+    category: 2,
   },
   {
     id: 8,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-26T04:33:00'),
-    category: '4월 여행 계획',
+    category: 2,
   },
 ];
 
@@ -427,8 +428,9 @@ const MemoItemContainer = styled.div({
 
 const MemoPage = () => {
   // const { username } = useParams();
+  const categories = useAppSelector((state) => state.categorySlice.value);
 
-  const [memos, setMemos] = useState(userMemoMock);
+  const [memos, setMemos] = useState<any[]>(userMemoMock);
   const [newMemo, setNewMemo] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -530,7 +532,7 @@ const MemoPage = () => {
                   <MemoDateDivideLineTip />
                 </MemoDateDivideContainer>
               )}
-              <MemoComponent memo={e} />
+              <MemoComponent memo={e} category={categories.find(({ id }) => id == e.category)} />
             </MemoItemContainer>
           );
         })}

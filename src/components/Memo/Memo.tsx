@@ -37,18 +37,11 @@ const MemoContent = styled.div({
   overflow: 'hidden',
 });
 
-const categoryColor = {
-  '4월 여행 계획': '#F553DA',
-  Jugger: '#00BDDE',
-  Daily: '#00AEFF',
-  독서록: '#4F29E5',
-};
-
-const MemoCategory = ({ category }: { category: string }) => {
+const MemoCategory = ({ category }: { category: { title: string; color: string } }) => {
   return (
-    <MemoCategoryContainer color={categoryColor[category as keyof typeof categoryColor]}>
+    <MemoCategoryContainer color={category.color}>
       <span />
-      {category}
+      {category.title}
     </MemoCategoryContainer>
   );
 };
@@ -69,10 +62,10 @@ interface userMemoProp {
   category: string | null;
 }
 
-const MemoComponent = ({ memo }: { memo: userMemoProp }) => {
+const MemoComponent = ({ memo, category }: { memo: userMemoProp; category: any }) => {
   return (
     <MemoContainer>
-      {memo.category && <MemoCategory category={memo.category} />}
+      {category && <MemoCategory category={category} />}
       <MemoContent>
         {memo.type == 'text' ? (
           <MemoText content={memo.content as string} />

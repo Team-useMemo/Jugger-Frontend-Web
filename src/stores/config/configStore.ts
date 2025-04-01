@@ -2,6 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import modalToggle from '../modules/todoSlice';
 import counterSlice from '../modules/counterSlice';
+import categorySlice from '@stores/modules/category';
 
 //1. configureStore 함수를 사용하여 store를 생성
 //2. configureStore 함수의 인자로는 reducer 속성이 포함된 객체(module)가 전달
@@ -9,6 +10,7 @@ const store = configureStore({
   reducer: {
     modalToggle,
     counterSlice,
+    categorySlice,
   },
 });
 

@@ -14,15 +14,17 @@ import {
   StyledSideBar,
 } from './SideBar.style';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
-import { fetchCategory } from '@controllers/api';
+import { useAppSelector } from '@hooks/useRedux';
+
+// store.dispatch(categoryAction);
 
 const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
   const [, setSearchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const [Categories] = useState(fetchCategory('asd'));
+  const categories = useAppSelector((state) => state.categorySlice.value);
 
   const onWholeMemoClick = () => {
     alert('전체 메모');
@@ -64,7 +66,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
           <AddCategoryButton onClick={onAddCategoryClick}>+ 새 카테고리 추가</AddCategoryButton>
 
           <MessageSection>
-            {Categories.map((msg, index) => (
+            {categories.map((msg, index) => (
               <SideMessage
                 key={index}
                 id={msg.id}

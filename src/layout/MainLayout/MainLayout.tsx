@@ -2,13 +2,21 @@ import SideBar from '@layout/SideBar/SideBar';
 import Header from '../Header/Header';
 import { LayoutProps } from './Mainlayout.Props';
 import { StyledContent, StyledMain, StyledMainlayout } from './MainLayout.Style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAppDispatch } from '@hooks/useRedux';
+import { loadCategories } from '@stores/modules/category';
 
 const Mainlayout = ({ children }: LayoutProps) => {
   const [toggleMenu, setToggleMenu] = useState(false);
 
   const openMenu = () => setToggleMenu(true);
   const closeMenu = () => setToggleMenu(false);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadCategories());
+  }, []);
 
   return (
     <StyledMainlayout>
