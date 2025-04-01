@@ -3,6 +3,7 @@ import { MessageItem, MessageBody, MessageHeader, Title, Time, Content, Dot, Hea
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
 import { useNavigate } from 'react-router-dom';
 interface SideMessageItemProps {
+  focus: boolean;
   id: number;
   color: string; // 말풍선 앞 점 색상
   title: string;
@@ -11,7 +12,7 @@ interface SideMessageItemProps {
   isPinned?: boolean;
 }
 
-const SideMessage = ({ id, color, title, content, time, isPinned }: SideMessageItemProps) => {
+const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
 
   const handleClickCategory = () => {
@@ -19,7 +20,7 @@ const SideMessage = ({ id, color, title, content, time, isPinned }: SideMessageI
   };
 
   return (
-    <MessageItem onClick={handleClickCategory}>
+    <MessageItem onClick={handleClickCategory} focus={focus}>
       <Dot style={{ backgroundColor: color }} />
       <MessageBody>
         <MessageHeader>

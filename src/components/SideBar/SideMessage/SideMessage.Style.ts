@@ -1,17 +1,22 @@
 import styled from '@emotion/styled';
 
-export const MessageItem = styled.div({
-  display: 'flex',
-  padding: '12px 16px',
-  borderRadius: '8px',
-  cursor: 'pointer',
-  width: '100%',
-  boxSizing: 'border-box',
+export const MessageItem = styled.div(
+  ({ focus }: { focus: boolean }) => ({
+    background: focus ? '#F7FBFF' : 'transparent',
+  }),
+  {
+    display: 'flex',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    width: '100%',
+    boxSizing: 'border-box',
 
-  '&:hover': {
-    backgroundColor: '#f8f8f8',
+    '&:hover': {
+      backgroundColor: '#f8f8f8',
+    },
   },
-});
+);
 
 export const Dot = styled.div({
   width: '10px',

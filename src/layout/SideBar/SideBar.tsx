@@ -21,8 +21,10 @@ import { useAppSelector } from '@hooks/useRedux';
 // store.dispatch(categoryAction);
 
 const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const categoryId = searchParams.get('category');
 
   const categories = useAppSelector((state) => state.categorySlice.value);
 
@@ -69,6 +71,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
             {categories.map((msg, index) => (
               <SideMessage
                 key={index}
+                focus={categoryId == msg.id}
                 id={msg.id}
                 color={msg.color}
                 title={msg.title}
