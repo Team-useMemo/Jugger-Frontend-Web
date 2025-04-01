@@ -10,91 +10,8 @@ import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
 import formatDate from '@utils/Date';
-import { useAppSelector } from '@hooks/useRedux';
-
-type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
-
-interface scheduleProp {
-  title: string;
-  startDate: Date;
-  endDate: Date | null;
-}
-
-interface userMemoProp {
-  id: number;
-  type: userMemoType;
-  content: string | scheduleProp;
-  date: Date;
-  category: number | null;
-}
-
-const userMemoMock: userMemoProp[] = [
-  {
-    id: 1,
-    type: 'text',
-    content: 'How are you?',
-    date: new Date('2025-03-24T04:32:00'),
-    category: 3,
-  },
-  {
-    id: 2,
-    type: 'text',
-    content: 'How are you?',
-    date: new Date('2025-03-24T04:33:00'),
-    category: 3,
-  },
-  {
-    id: 3,
-    type: 'schedule',
-    content: {
-      title: '호핑 투어 예약',
-      startDate: new Date('2025-04-19T14:00:00'),
-      endDate: null,
-    },
-    date: new Date('2025-03-25T04:33:00'),
-    category: 3,
-  },
-  {
-    id: 4,
-    type: 'text',
-    content: 'How are you?',
-    date: new Date('2025-03-25T04:33:00'),
-    category: 2,
-  },
-  {
-    id: 5,
-    type: 'link',
-    content: 'https://www.youtube.com/watch?v=9kfx7itbcbc',
-    date: new Date('2025-03-25T04:33:00'),
-    category: 4,
-  },
-  {
-    id: 6,
-    type: 'photo',
-    content:
-      'https://png.pngtree.com/background/20250103/original/pngtree-pink-pastel-background-with-pink-aesthetic-sky-picture-image_15151458.jpg',
-    date: new Date('2025-03-25T04:33:00'),
-    category: 1,
-  },
-  {
-    id: 7,
-    type: 'schedule',
-    content: {
-      title: '호핑 투어 예약',
-      startDate: new Date('2025-04-19T14:00:00'),
-      endDate: null,
-    },
-    date: new Date('2025-03-26T04:33:00'),
-    category: 2,
-  },
-  {
-    id: 8,
-    type: 'text',
-    content: 'How are you?',
-    date: new Date('2025-03-26T04:33:00'),
-    category: 2,
-  },
-];
+import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
+import { addMemos, loadMemos } from '@stores/modules/memo';
 
 const isUrl = (text: string): boolean => {
   const pattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
@@ -429,16 +346,14 @@ const MemoItemContainer = styled.div({
 const MemoPage = () => {
   // const { username } = useParams();
   const categories = useAppSelector((state) => state.categorySlice.value);
-
-  const [memos, setMemos] = useState<any[]>(userMemoMock);
+  const memos = useAppSelector((state) => state.memoSlice.value);
   const [newMemo, setNewMemo] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const addSchedule = (title: string, startDate: Date, endDate: Date | null) => {
-    setMemos((prev) => [
-      ...prev,
-      {
+    dispatch(
+      addMemos({
         id: memos.length + 1,
         type: 'schedule',
         content: {
@@ -448,21 +363,20 @@ const MemoPage = () => {
         },
         date: new Date(),
         category: null,
-      },
-    ]);
+      }),
+    );
   };
 
   const addPhoto = (image: string) => {
-    setMemos((prev) => [
-      ...prev,
-      {
+    dispatch(
+      addMemos({
         id: memos.length + 1,
         type: 'photo',
         content: image,
         date: new Date(),
         category: null,
-      },
-    ]);
+      }),
+    );
   };
 
   const [AddScheduleModal, openAddScheduleModal] = useModal(AddScheduleComponent, [addSchedule]);
@@ -495,21 +409,27 @@ const MemoPage = () => {
   const handleClickSend = () => {
     if (!newMemo.trim()) return;
 
-    setMemos((prev) => [
-      ...prev,
-      {
+    dispatch(
+      addMemos({
         id: memos.length + 1,
         type: isUrl(newMemo) ? 'link' : 'text',
         content: newMemo,
         date: new Date(),
         category: null,
-      },
-    ]);
+      }),
+    );
+
     setNewMemo('');
     setTimeout(() => {
       changeTextAreaSize();
     }, 1);
   };
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadMemos());
+  }, []);
 
   if (!memos) return <div>Loading</div>;
 

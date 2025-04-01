@@ -1,32 +1,31 @@
 import categoryMock from './mock/category';
+import memoMock from './mock/memo';
 
-const baseURL = import.meta.env.VITE_BASE_URL;
+// const baseURL = import.meta.env.VITE_BASE_URL;
 
-const Headers = { 'content-type': 'application/json' };
+// const Headers = { 'content-type': 'application/json' };
 
-const fetchData = async (path: string) => {
-  try {
-    const url = `${baseURL}${path}`;
-    const res = await fetch(url, { method: 'GET', headers: Headers });
-    if (!res.ok) {
-      throw new Error(`${res.status} Error!!`);
-    }
-    // await wait(0);
-    return await res.json();
-  } catch (error) {
-    throw error;
-  }
-};
+// const fetchData = async (path: string) => {
+//   try {
+//     const url = `${baseURL}${path}`;
+//     const res = await fetch(url, { method: 'GET', headers: Headers });
+//     if (!res.ok) {
+//       throw new Error(`${res.status} Error!!`);
+//     }
+//     // await wait(0);
+//     return await res.json();
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 
 const fetchAllMemo = (username: string) => {
-  // if (true || enableMock) return fetchScoreMock;
-  // return fetchData(`/${id}/score/${country}`);
+  if (!username) return [];
+  return memoMock;
 };
 
 const fetchCategory = (username: string) => {
   if (!username) return [];
-  console.log(categoryMock);
-  // return categoryMock;
   return categoryMock.sort((a, b) => {
     if (a.pinned == b.pinned) {
       return a.lastDate < b.lastDate ? 1 : -1;
