@@ -2,13 +2,13 @@
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
-import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
 import useModal from '@hooks/useModal';
+import MemoComponent from '@components/Memo/Memo';
 
 type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
 
@@ -25,13 +25,6 @@ interface userMemoProp {
   date: Date;
   category: string | null;
 }
-
-const categoryColor = {
-  '4월 여행 계획': '#F553DA',
-  Jugger: '#00BDDE',
-  Daily: '#00AEFF',
-  독서록: '#4F29E5',
-};
 
 const userMemoMock: userMemoProp[] = [
   {
@@ -112,15 +105,6 @@ const formatDateToScheduleEdit = (date: Date) => {
   return `${_year}.${_month}.${_date} ${_meridiem ? '오후' : '오전'} ${_hour % 12}:${_minute}`;
 };
 
-const formatDateToSchedule = (date: Date) => {
-  const _month = date.getMonth() + 1;
-  const _date = date.getDate();
-  const _hour = date.getHours().toString().padStart(2, '0');
-  const _minute = date.getMinutes().toString().padStart(2, '0');
-
-  return `${_month}월 ${_date}일 ${_hour}:${_minute}`;
-};
-
 const formatDateToString = (date: Date) => {
   const _year = date.getFullYear();
   const _month = date.getMonth() + 1;
@@ -128,274 +112,6 @@ const formatDateToString = (date: Date) => {
   const _day = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
 
   return `${_year}년 ${_month}월 ${_date}일 ${_day}요일`;
-};
-
-const MemoContainer = styled.div({
-  display: 'flex',
-  justifyContent: 'end',
-  padding: '0 24px',
-  gap: '6px',
-  alignItems: 'end',
-  width: '100%',
-  maxWidth: '1080px',
-  boxSizing: 'border-box',
-});
-
-const MemoCategoryContainer = styled.div(({ color }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-  fontSize: '11px',
-  fontWeight: '500',
-  lineHeight: '1.27',
-  color: '#878A93',
-
-  ['span']: {
-    padding: '4px',
-    background: color,
-    margin: '0',
-    borderRadius: '32px',
-  },
-}));
-
-const MemoCategory = ({ category }: { category: string }) => {
-  return (
-    <MemoCategoryContainer color={categoryColor[category as keyof typeof categoryColor]}>
-      <span />
-      {category}
-    </MemoCategoryContainer>
-  );
-};
-
-const MemoContent = styled.div({
-  borderRadius: '12px',
-  overflow: 'hidden',
-});
-
-const MemoMainText = styled.p({
-  margin: '0',
-  whiteSpace: 'pre-wrap',
-  color: 'white',
-  fontSize: '15px',
-  fontWeight: '500',
-  padding: '8px 16px',
-  background: '#0054D1',
-  textAlign: 'start',
-});
-
-const MemoText = ({ content }: { content: string }) => {
-  return <MemoMainText>{content}</MemoMainText>;
-};
-
-const MemoFlexContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  background: '#EAF2FE',
-  cursor: 'pointer',
-});
-
-const MemoScheduleContainer = styled.div({
-  padding: '12px 16px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  margin: '0',
-  color: '#171719',
-  fontSize: '15px',
-  fontWeight: '500',
-});
-
-const MemoSchedule = ({ content }: { content: scheduleProp }) => {
-  return (
-    <MemoFlexContainer>
-      <MemoMainText>{content.title}</MemoMainText>
-      <MemoScheduleContainer>
-        <TimeCircleSVG />
-        {formatDateToSchedule(content.startDate)}
-      </MemoScheduleContainer>
-    </MemoFlexContainer>
-  );
-};
-
-const MemoPhotoContainer = styled.div({
-  display: 'flex',
-  cursor: 'pointer',
-  ['img']: {
-    maxWidth: '320px',
-    maxHeight: '240px',
-  },
-});
-
-const AboutPhotoContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'end',
-  background: 'white',
-  borderRadius: '16px',
-  padding: '12px',
-  gap: '8px',
-  ['img']: {
-    maxWidth: '640px',
-    maxHeight: '480px',
-    borderRadius: '12px',
-  },
-});
-
-const AboutPhotoComponent = ({ closeModal, props }: { closeModal: () => void; props: { image: string } }) => {
-  return (
-    <AboutPhotoContainer>
-      <CloseSVG onClick={closeModal} />
-      <img src={props.image} />
-    </AboutPhotoContainer>
-  );
-};
-
-const MemoPhoto = ({ content }: { content: string }) => {
-  const [AboutPhotoModal, openAboutPhotoModal] = useModal(AboutPhotoComponent, [], { image: content });
-
-  return (
-    <MemoPhotoContainer>
-      <AboutPhotoModal />
-      <img src={content} onClick={openAboutPhotoModal} />
-    </MemoPhotoContainer>
-  );
-};
-
-const fetchUrlPreview = async (url: string) => {
-  const res = await fetch(`https://og-meta-data-api.vercel.app/api/preview?url=${url}`);
-  const data = await res.json();
-  return data;
-};
-
-interface OgData {
-  ogImage: string;
-  ogTitle: string;
-  ogDescription: string;
-  ogUrl: string;
-}
-
-const MemoLinkTextContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '12px 16px',
-  gap: '4px',
-  textAlign: 'left',
-  width: '288px',
-
-  ['p']: {
-    wordWrap: 'break-word',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'normal',
-    display: '-webkit-box',
-    overflow: 'hidden',
-    WebkitBoxOrient: 'vertical',
-
-    ['&.title']: {
-      color: '#171719',
-      WebkitLineClamp: '1',
-    },
-    ['&.desc']: {
-      color: '#46474C',
-      WebkitLineClamp: '2',
-    },
-    ['&.url']: {
-      color: '#C2C4C8',
-      WebkitLineClamp: '1',
-    },
-  },
-});
-
-const MemoLink = ({ content }: { content: string }) => {
-  const [ogData, setOgData] = useState<OgData | null>(null);
-
-  useEffect(() => {
-    const fetchAndUpdate = async () => {
-      setOgData(await fetchUrlPreview(content));
-    };
-
-    fetchAndUpdate();
-  }, [content]);
-
-  if (!ogData) return <MemoMainText>{content}</MemoMainText>;
-
-  return (
-    <MemoFlexContainer
-      onClick={() => {
-        window.open(content);
-      }}
-    >
-      {ogData.ogImage && (
-        <img
-          src={ogData.ogImage}
-          style={{
-            width: '320px',
-            height: '180px',
-            objectFit: 'cover',
-          }}
-        />
-      )}
-      <MemoLinkTextContainer>
-        {ogData.ogTitle && (
-          <p
-            className="title"
-            style={{
-              fontWeight: '600',
-              fontSize: '15px',
-              lineHeight: '1.47',
-              margin: '0',
-            }}
-          >
-            {ogData.ogTitle}
-          </p>
-        )}
-        {ogData.ogDescription && (
-          <p
-            className="desc"
-            style={{
-              fontWeight: '500',
-              fontSize: '12px',
-              lineHeight: '1.33',
-              margin: '0',
-            }}
-          >
-            {ogData.ogDescription}
-          </p>
-        )}
-        <p
-          className="url"
-          style={{
-            fontWeight: '500',
-            fontSize: '11px',
-            lineHeight: '1.27',
-            margin: '0',
-          }}
-        >
-          {ogData.ogUrl || content}
-        </p>
-      </MemoLinkTextContainer>
-    </MemoFlexContainer>
-  );
-};
-
-const MemoComponent = ({ memo }: { memo: userMemoProp }) => {
-  return (
-    <MemoContainer>
-      {memo.category && <MemoCategory category={memo.category} />}
-      <MemoContent>
-        {memo.type == 'text' ? (
-          <MemoText content={memo.content as string} />
-        ) : memo.type == 'schedule' ? (
-          <MemoSchedule content={memo.content as scheduleProp} />
-        ) : memo.type == 'photo' ? (
-          <MemoPhoto content={memo.content as string} />
-        ) : memo.type == 'link' ? (
-          <MemoLink content={memo.content as string} />
-        ) : (
-          ''
-        )}
-      </MemoContent>
-    </MemoContainer>
-  );
 };
 
 const isUrl = (text: string): boolean => {
@@ -684,6 +400,50 @@ const MemoListContainer = styled.div({
   },
 });
 
+const MemoDateDivideContainer = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '0 8px',
+  boxSizing: 'border-box',
+  width: '100%',
+});
+
+const MemoDateDivideContents = styled.div({
+  width: '100%',
+  maxWidth: '1080px',
+  boxSizing: 'content-box',
+  display: 'flex',
+  alignItems: 'center',
+
+  ['p']: {
+    margin: '0 12px',
+    color: '#C2C4C8',
+    fontSize: '14px',
+    fontWeight: '500',
+  },
+});
+
+const MemoDateDivideLine = styled.span({
+  borderBottom: '1px solid #E0E0E2',
+  margin: '0',
+  height: '0',
+  flexGrow: '1',
+});
+const MemoDateDivideLineTip = styled.span({
+  borderBottom: '1px solid #E0E0E2',
+  margin: '0',
+  height: '0',
+  minWidth: '20px',
+  flexGrow: '1',
+});
+
+const MemoItemContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  alignItems: 'center',
+});
+
 const MemoPage = () => {
   // const { username } = useParams();
 
@@ -777,67 +537,19 @@ const MemoPage = () => {
       <MemoListContainer>
         {[...memos].reverse().map((e, i, arr) => {
           return (
-            <div key={e.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+            <MemoItemContainer key={e.id}>
               {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '0 8px',
-                    boxSizing: 'border-box',
-                    width: '100%',
-                  }}
-                >
-                  <span
-                    style={{
-                      borderBottom: '1px solid #E0E0E2',
-                      margin: '0',
-                      height: '0',
-                      minWidth: '20px',
-                      flexGrow: '1',
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: '100%',
-                      maxWidth: '1080px',
-                      boxSizing: 'content-box',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <p
-                      style={{
-                        margin: '0 12px',
-                        color: '#C2C4C8',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {formatDateToString(e.date)}
-                    </p>
-                    <span
-                      style={{
-                        borderBottom: '1px solid #E0E0E2',
-                        flexGrow: '1',
-                        margin: '0',
-                        height: '0',
-                      }}
-                    />
-                  </div>
-                  <span
-                    style={{
-                      borderBottom: '1px solid #E0E0E2',
-                      margin: '0',
-                      height: '0',
-                      minWidth: '20px',
-                      flexGrow: '1',
-                    }}
-                  />
-                </div>
+                <MemoDateDivideContainer>
+                  <MemoDateDivideLineTip />
+                  <MemoDateDivideContents>
+                    <p>{formatDateToString(e.date)}</p>
+                    <MemoDateDivideLine />
+                  </MemoDateDivideContents>
+                  <MemoDateDivideLineTip />
+                </MemoDateDivideContainer>
               )}
               <MemoComponent memo={e} />
-            </div>
+            </MemoItemContainer>
           );
         })}
       </MemoListContainer>
