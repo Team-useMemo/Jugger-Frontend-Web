@@ -16,90 +16,17 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
+import { useAppSelector } from '@hooks/useRedux';
 
-const sideMessages = [
-  {
-    color: '#9C27B0',
-    title: '4월 여행 계획',
-    content: '스미스 머신 스쿼트 3세트 * 20kg',
-    time: '3.02',
-    isPinned: true,
-  },
-  {
-    color: '#2196F3',
-    title: '푸꾸옥 여행',
-    content: '푸꾸옥(호핑투어 → 후꾸옥코스트 → 피크타임) 오션펄 아일랜드 → 아시장...',
-    time: '3.02',
-    isPinned: true,
-  },
-  {
-    color: '#F44336',
-    title: '독서록',
-    content: '도리안 그레이의 초상',
-    time: '3.02',
-    isPinned: false,
-  },
-  {
-    color: '#00BCD4',
-    title: 'Daily',
-    content: '운동 가기',
-    time: '3.02',
-    isPinned: false,
-  },
-  {
-    color: '#FFC107',
-    title: 'Jugger',
-    content: 'UI Component 제작',
-    time: '13:03',
-    isPinned: false,
-  },
-  {
-    color: '#00BCD4',
-    title: 'Daily',
-    content: '운동 가기',
-    time: '3.02',
-    isPinned: false,
-  },
-  {
-    color: '#FFC107',
-    title: 'Jugger',
-    content: 'UI Component 제작',
-    time: '13:03',
-    isPinned: false,
-  },
-  {
-    color: '#00BCD4',
-    title: 'Daily',
-    content: '운동 가기',
-    time: '3.02',
-    isPinned: false,
-  },
-  {
-    color: '#FFC107',
-    title: 'Jugger',
-    content: 'UI Component 제작',
-    time: '13:03',
-    isPinned: false,
-  },
-  {
-    color: '#00BCD4',
-    title: 'Daily',
-    content: '운동 가기',
-    time: '3.02',
-    isPinned: false,
-  },
-  {
-    color: '#FFC107',
-    title: 'Jugger',
-    content: 'UI Component 제작',
-    time: '13:03',
-    isPinned: false,
-  },
-];
+// store.dispatch(categoryAction);
 
 const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const categoryId = searchParams.get('category');
+
+  const categories = useAppSelector((state) => state.categorySlice.value);
 
   const onWholeMemoClick = () => {
     alert('전체 메모');
@@ -141,14 +68,16 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
           <AddCategoryButton onClick={onAddCategoryClick}>+ 새 카테고리 추가</AddCategoryButton>
 
           <MessageSection>
-            {sideMessages.map((msg, index) => (
+            {categories.map((msg, index) => (
               <SideMessage
                 key={index}
+                focus={categoryId == msg.id}
+                id={msg.id}
                 color={msg.color}
                 title={msg.title}
                 content={msg.content}
-                time={msg.time}
-                isPinned={msg.isPinned}
+                time={msg.lastDate}
+                isPinned={msg.pinned}
               />
             ))}
           </MessageSection>
