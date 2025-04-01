@@ -3,25 +3,7 @@ import { useState } from 'react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import formatDate from '@utils/Date';
-import { MemoModalCloseContainer, MemoModalContainer } from './Modal.Style';
-
-const ScheduleModalButton = styled.button({
-  background: '#0054D1',
-  width: '100%',
-  fontSize: '18px',
-  color: 'white',
-  fontWeight: '500',
-  lineHeight: '1.45',
-  borderRadius: '6px',
-  padding: '12px',
-  boxSizing: 'border-box',
-  margin: '0',
-  textAlign: 'center',
-
-  [':focus']: {
-    outline: 'none',
-  },
-});
+import { MemoModalButton, MemoModalCloseContainer, MemoModalContainer, MemoModalTitle } from './Modal.Style';
 
 const ScheduleModalContents = styled.div({
   display: 'flex',
@@ -31,13 +13,6 @@ const ScheduleModalContents = styled.div({
   width: '450px',
   boxSizing: 'border-box',
   textAlign: 'left',
-});
-
-const ScheduleModalTitle = styled.p({
-  fontSize: '24px',
-  fontWeight: '700',
-  lineHeight: '1.36',
-  margin: '0',
 });
 
 const ScheduleModalItemList = styled.div({
@@ -114,7 +89,7 @@ const ScheduleModal = ({
       <ScheduleModalContents>
         {mode ? (
           <>
-            <ScheduleModalTitle>일정 추가</ScheduleModalTitle>
+            <MemoModalTitle>일정 추가</MemoModalTitle>
             <ScheduleModalItemList>
               <ScheduleModalItem>
                 <ScheduleModalItemTitle>일정 제목</ScheduleModalItemTitle>
@@ -151,7 +126,7 @@ const ScheduleModal = ({
               </ScheduleModalItem>
             </ScheduleModalItemList>
             {!!title.trim() && (
-              <ScheduleModalButton
+              <MemoModalButton
                 onClick={() => {
                   if (!title.trim()) return;
 
@@ -160,12 +135,12 @@ const ScheduleModal = ({
                 }}
               >
                 추가
-              </ScheduleModalButton>
+              </MemoModalButton>
             )}
           </>
         ) : (
           <>
-            <ScheduleModalTitle>4월</ScheduleModalTitle>
+            <MemoModalTitle>4월</MemoModalTitle>
             <ScheduleModalItemList>
               <ScheduleModalItem>
                 <ScheduleModalItemTitle>일정 제목</ScheduleModalItemTitle>
@@ -189,7 +164,7 @@ const ScheduleModal = ({
                 </ScheduleModalItem>
               )}
             </ScheduleModalItemList>
-            <ScheduleModalButton
+            <MemoModalButton
               onClick={() => {
                 setMode(true);
                 setTitle(props.schedule.title);
@@ -204,7 +179,7 @@ const ScheduleModal = ({
               }}
             >
               수정
-            </ScheduleModalButton>
+            </MemoModalButton>
           </>
         )}
       </ScheduleModalContents>

@@ -35,6 +35,7 @@ const MemoCategoryContainer = styled.div(({ color }) => ({
 const MemoContent = styled.div({
   borderRadius: '12px',
   overflow: 'hidden',
+  maxWidth: '680px',
 });
 
 const MemoCategory = ({ category }: { category: { title: string; color: string } }) => {
