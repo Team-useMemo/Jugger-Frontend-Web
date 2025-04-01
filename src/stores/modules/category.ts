@@ -23,11 +23,28 @@ export const categorySlice = createSlice({
     loadCategories: (state, action: PayloadAction<string | undefined>) => {
       state.value = [...fetchCategory(action.payload)];
     },
+    addCategory: (state, action: PayloadAction<any>) => {
+      const id =
+        state.value.reduce((acc, e) => {
+          return Math.max(acc, e.id);
+        }, 0) + 1;
+
+      state.value = [
+        ...state.value,
+        {
+          id: id,
+          pinned: false,
+          content: 'empty',
+          lastDate: new Date(),
+          ...action.payload,
+        },
+      ];
+    },
   },
 });
 
 //actions
-export const { loadCategories } = categorySlice.actions;
+export const { loadCategories, addCategory } = categorySlice.actions;
 
 // slice의 상태값
 export const categoryState = (state: RootState) => state.modalToggle.value;

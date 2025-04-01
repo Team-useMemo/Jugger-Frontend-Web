@@ -17,12 +17,15 @@ import { useSearchParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import { useAppSelector } from '@hooks/useRedux';
+import useModal from '@hooks/useModal';
+import AddCategory from '@components/Modal/AddCategory';
 
 // store.dispatch(categoryAction);
 
 const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
+  const [AddCategoryModal, openAddCategoryModal] = useModal(AddCategory, [], {});
 
   const categoryId = searchParams.get('category');
 
@@ -35,7 +38,9 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const onImageClick = () => {};
   const onLinkClick = () => {};
   const onSettingClick = () => {};
-  const onAddCategoryClick = () => {}; // 카테고리 추가 버튼 클릭 핸들러
+  const onAddCategoryClick = () => {
+    openAddCategoryModal();
+  }; // 카테고리 추가 버튼 클릭 핸들러
 
   const handleLogoClick = () => {
     setSearchParams({});
@@ -44,7 +49,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        console.log(123);
         closeMenu();
       }
     };
@@ -55,6 +59,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
 
   return (
     <StyledSideBar active={toggleMenu}>
+      <AddCategoryModal />
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>
           <img src={LogoPNG} onClick={handleLogoClick} />

@@ -24,7 +24,14 @@ export const memoSlice = createSlice({
       state.value = [...fetchAllMemo(action.payload)];
     },
     addMemos: (state, action: PayloadAction<any>) => {
-      state.value = [...state.value, action.payload];
+      state.value = [
+        ...state.value,
+        {
+          id: state.value.length + 1,
+          date: new Date(),
+          ...action.payload,
+        },
+      ];
     },
   },
 });
