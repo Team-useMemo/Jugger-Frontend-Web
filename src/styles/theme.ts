@@ -89,6 +89,10 @@ const fontSize = {
   /** 56px */ Caption2: '11px',
 };
 
+const font = ({ a }: { a: boolean }) => {
+  return 123;
+};
+
 const theme = {
   colors: colors,
   fontSize: fontSize,

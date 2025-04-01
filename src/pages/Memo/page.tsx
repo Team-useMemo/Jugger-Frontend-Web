@@ -901,58 +901,71 @@ const MemoPage = () => {
           );
         })}
       </MemoListContainer>
-      <div
-        style={{
-          maxWidth: '1080px',
-          width: '100%',
-          boxSizing: 'border-box',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 24px 24px',
-          gap: '12px',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '12px' }}>
+      <MemoBottomContainer>
+        <MemoBottomButtonContainer>
           <PaperClipSVG onClick={openAddPhotoModal} />
           <CalendarSVG onClick={openAddScheduleModal} />
-        </div>
-        <div
-          style={{
-            background: '#F7F7F8',
-            width: '100%',
-            display: 'flex',
-            borderRadius: '12px',
-            padding: '10px 20px',
-            alignItems: 'center',
-          }}
-        >
+        </MemoBottomButtonContainer>
+        <MemoBottomInputContainer>
           <textarea
             ref={textareaRef}
             placeholder="메시지를 입력하세요"
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             value={newMemo}
-            style={{
-              fontSize: '15px',
-              fontFamily: 'Pretendard',
-              height: '22px',
-              padding: '0',
-              lineHeight: '1.47',
-              margin: '0',
-              width: '100%',
-              textAlign: 'left',
-              border: 'none',
-              outline: 'none',
-              background: 'none',
-              resize: 'none',
-              color: '#171719',
-            }}
           />
           <SendSVG onClick={handleClickSend} />
-        </div>
-      </div>
+        </MemoBottomInputContainer>
+      </MemoBottomContainer>
     </div>
   );
 };
+
+const MemoBottomContainer = styled.div({
+  maxWidth: '1080px',
+  width: '100%',
+  boxSizing: 'border-box',
+  display: 'flex',
+  alignItems: 'center',
+  padding: '0 24px 24px',
+  gap: '12px',
+});
+
+const MemoBottomButtonContainer = styled.div({
+  display: 'flex',
+  gap: '12px',
+
+  ['svg']: {
+    cursor: 'pointer',
+  },
+});
+
+const MemoBottomInputContainer = styled.div({
+  background: '#F7F7F8',
+  width: '100%',
+  display: 'flex',
+  borderRadius: '12px',
+  padding: '10px 20px',
+  alignItems: 'center',
+
+  ['textarea']: {
+    fontSize: '15px',
+    height: '22px',
+    padding: '0',
+    lineHeight: '1.47',
+    margin: '0',
+    flexGrow: '1',
+    textAlign: 'left',
+    border: 'none',
+    outline: 'none',
+    background: 'none',
+    resize: 'none',
+    color: '#171719',
+  },
+
+  ['svg']: {
+    cursor: 'pointer',
+  },
+});
 
 export default MemoPage;
