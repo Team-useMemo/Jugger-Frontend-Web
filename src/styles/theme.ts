@@ -72,6 +72,32 @@ const colors = {
   /** #64FFEA */ cyan: '#64FFEA',
   /** #6495ED */ cornflowerblue: '#6495ED',
   /** #DD000000 */ transparent: '#DD000000',
+  primary: {
+    normal: '',
+    sub: '',
+  },
+  label: {
+    normal: '',
+    strong: '',
+    neutral: '',
+    alternative: '',
+    assisttive: '',
+    disable: '',
+  },
+  background: {
+    normal: '',
+    neutral: '',
+    alternative: '',
+  },
+  interaction: {
+    inactive: '',
+    disable: '',
+  },
+  line: {
+    normal: '',
+    neutral: '',
+    alternative: '',
+  },
 };
 
 const fontSize = {
@@ -89,13 +115,28 @@ const fontSize = {
   /** 56px */ Caption2: '11px',
 };
 
-const font = ({ a }: { a: boolean }) => {
-  return 123;
+const Display1 = {
+  font: {
+    fontSize: '56px',
+  },
+  weight: {
+    Bold: '700',
+    Medium: '500',
+    Regular: '400',
+  },
+};
+
+const typography = {
+  Display1: (weight: keyof typeof Display1.weight) => ({
+    ...Display1.font,
+    fontWeight: Display1.weight[weight],
+  }),
 };
 
 const theme = {
   colors: colors,
   fontSize: fontSize,
+  typography: typography,
 };
 
 const breakpoints = [720, 480];
