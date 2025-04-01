@@ -14,6 +14,7 @@ const store = configureStore({
     categorySlice,
     memoSlice,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 //스토어의 전체 상태 타입을 RootState 타입으로 정의

@@ -5,8 +5,10 @@ import { StyledContent, StyledMain, StyledMainlayout } from './MainLayout.Style'
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@hooks/useRedux';
 import { loadCategories } from '@stores/modules/category';
+import { useParams } from 'react-router-dom';
 
 const Mainlayout = ({ children }: LayoutProps) => {
+  const { username } = useParams();
   const [toggleMenu, setToggleMenu] = useState(false);
 
   const openMenu = () => setToggleMenu(true);
@@ -15,7 +17,7 @@ const Mainlayout = ({ children }: LayoutProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadCategories());
+    dispatch(loadCategories(username));
   }, []);
 
   return (

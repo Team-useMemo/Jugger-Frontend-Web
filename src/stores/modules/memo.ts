@@ -20,8 +20,8 @@ export const memoSlice = createSlice({
     // modalToggleAction: (state, action: PayloadAction<boolean>) => {
     //   state.value = action.payload;
     // },
-    loadMemos: (state) => {
-      state.value = [...fetchAllMemo('username')];
+    loadMemos: (state, action: PayloadAction<string | undefined>) => {
+      state.value = [...fetchAllMemo(action.payload)];
     },
     addMemos: (state, action: PayloadAction<any>) => {
       state.value = [...state.value, action.payload];

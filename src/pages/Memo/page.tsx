@@ -12,6 +12,7 @@ import MemoComponent from '@components/Memo/Memo';
 import formatDate from '@utils/Date';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addMemos, loadMemos } from '@stores/modules/memo';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 const isUrl = (text: string): boolean => {
   const pattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
@@ -344,12 +345,20 @@ const MemoItemContainer = styled.div({
 });
 
 const MemoPage = () => {
-  // const { username } = useParams();
+  const { username } = useParams();
+  const [searchParams] = useSearchParams();
   const categories = useAppSelector((state) => state.categorySlice.value);
-  const memos = useAppSelector((state) => state.memoSlice.value);
+  const memos = useAppSelector((state) => state.memoSlice.value).filter((e) => {
+    const category = searchParams.get('category');
+    if (!category) return true;
+    if (category == e.category) return true;
+    return false;
+  });
   const [newMemo, setNewMemo] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const dispatch = useAppDispatch();
 
   const addSchedule = (title: string, startDate: Date, endDate: Date | null) => {
     dispatch(
@@ -425,10 +434,8 @@ const MemoPage = () => {
     }, 1);
   };
 
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
-    dispatch(loadMemos());
+    dispatch(loadMemos(username));
   }, []);
 
   if (!memos) return <div>Loading</div>;

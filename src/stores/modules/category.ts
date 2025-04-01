@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../config/configStore';
 import { fetchCategory } from '@controllers/api';
 
@@ -20,8 +20,8 @@ export const categorySlice = createSlice({
     // modalToggleAction: (state, action: PayloadAction<boolean>) => {
     //   state.value = action.payload;
     // },
-    loadCategories: (state) => {
-      state.value = [...fetchCategory('username')];
+    loadCategories: (state, action: PayloadAction<string | undefined>) => {
+      state.value = [...fetchCategory(action.payload)];
     },
   },
 });

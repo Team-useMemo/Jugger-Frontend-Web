@@ -32,6 +32,7 @@ export const MessageBody = styled.div({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
+  overflow: 'hidden',
 });
 
 export const MessageHeader = styled.div({
@@ -61,11 +62,15 @@ export const Content = styled.div({
   fontSize: '13px',
   color: '#444',
   marginTop: '4px',
-  width: '150px',
-  whiteSpace: 'nowrap',
+  width: '100%',
+  whiteSpace: 'normal',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   textAlign: 'left',
+
+  WebkitLineClamp: '2',
+  display: '-webkit-box',
+  WebkitBoxOrient: 'vertical',
 });
 
 export const HeaderLeft = styled.div({
