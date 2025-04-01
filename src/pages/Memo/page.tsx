@@ -9,6 +9,7 @@ import styled from '@emotion/styled';
 import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
+import formatDate from '@utils/Date';
 
 type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
 
@@ -93,26 +94,6 @@ const userMemoMock: userMemoProp[] = [
     category: '4월 여행 계획',
   },
 ];
-
-const formatDateToScheduleEdit = (date: Date) => {
-  const _year = date.getFullYear();
-  const _month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const _date = date.getDate().toString().padStart(2, '0');
-  const _hour = date.getHours();
-  const _meridiem = ~~(_hour / 12);
-  const _minute = date.getMinutes().toString().padStart(2, '0');
-
-  return `${_year}.${_month}.${_date} ${_meridiem ? '오후' : '오전'} ${_hour % 12}:${_minute}`;
-};
-
-const formatDateToString = (date: Date) => {
-  const _year = date.getFullYear();
-  const _month = date.getMonth() + 1;
-  const _date = date.getDate();
-  const _day = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
-
-  return `${_year}년 ${_month}월 ${_date}일 ${_day}요일`;
-};
 
 const isUrl = (text: string): boolean => {
   const pattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
@@ -240,13 +221,13 @@ const AddScheduleComponent = ({
           <AddScheduleItem>
             <p style={{ margin: '0', fontSize: '16px', fontWeight: '600', lineHeight: '1.5' }}>시작</p>
             <div>
-              <p>{formatDateToScheduleEdit(startDate)}</p>
+              <p>{formatDate(startDate, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
             </div>
           </AddScheduleItem>
           <AddScheduleItem>
             <p style={{ margin: '0', fontSize: '16px', fontWeight: '600', lineHeight: '1.5' }}>종료</p>
             <div>
-              <p>{formatDateToScheduleEdit(endDate)}</p>
+              <p>{formatDate(endDate, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
             </div>
           </AddScheduleItem>
         </AddScheduleItemList>
@@ -542,7 +523,8 @@ const MemoPage = () => {
                 <MemoDateDivideContainer>
                   <MemoDateDivideLineTip />
                   <MemoDateDivideContents>
-                    <p>{formatDateToString(e.date)}</p>
+                    <p>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</p>
+                    {/* <p>{formatDateToString(e.date)}</p> */}
                     <MemoDateDivideLine />
                   </MemoDateDivideContents>
                   <MemoDateDivideLineTip />

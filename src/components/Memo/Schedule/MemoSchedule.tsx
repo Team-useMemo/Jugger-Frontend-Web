@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
+import formatDate from '@utils/Date';
 
 const MemoFlexContainer = styled.div({
   display: 'flex',
@@ -36,22 +37,13 @@ const MemoMainText = styled.p({
   textAlign: 'start',
 });
 
-const formatDateToSchedule = (date: Date) => {
-  const _month = date.getMonth() + 1;
-  const _date = date.getDate();
-  const _hour = date.getHours().toString().padStart(2, '0');
-  const _minute = date.getMinutes().toString().padStart(2, '0');
-
-  return `${_month}월 ${_date}일 ${_hour}:${_minute}`;
-};
-
 const MemoSchedule = ({ content }: { content: scheduleProp }) => {
   return (
     <MemoFlexContainer>
       <MemoMainText>{content.title}</MemoMainText>
       <MemoScheduleContainer>
         <TimeCircleSVG />
-        {formatDateToSchedule(content.startDate)}
+        {formatDate(content.startDate, '{M}월 {D}일 {hh}:{mm}')}
       </MemoScheduleContainer>
     </MemoFlexContainer>
   );
