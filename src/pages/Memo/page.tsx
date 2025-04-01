@@ -5,9 +5,10 @@ import SendSVG from '@assets/icons/send.svg?react';
 import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
-import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
+import useModal from '@hooks/useModal';
 
 type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
 
@@ -402,18 +403,6 @@ const isUrl = (text: string): boolean => {
   return pattern.test(text);
 };
 
-const ModalBackground = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  position: 'absolute',
-  left: '0',
-  top: '0',
-  background: '#989BA288',
-  width: '100%',
-  height: '100%',
-});
-
 const AddScheduleContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
@@ -679,55 +668,6 @@ const AddPhotoComponent = ({
       </AddScheduleContent>
     </AddScheduleContainer>
   );
-};
-
-const useModal = (
-  Component: ({
-    closeModal,
-    actions,
-    props,
-  }: {
-    closeModal: () => void;
-    actions: ((...args: any[]) => void)[];
-    props: any;
-  }) => ReactNode,
-  actions: ((...args: any[]) => void)[],
-  props?: any,
-): [() => ReactNode, any, any] => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const [activeModal, setActiveModal] = useState(false);
-
-  const openModal = () => {
-    setActiveModal(true);
-  };
-
-  const closeModal = () => {
-    setActiveModal(false);
-  };
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        closeModal();
-      }
-    };
-
-    window.addEventListener('mousedown', handleClick);
-    return () => window.removeEventListener('mousedown', handleClick);
-  });
-
-  const modal = () =>
-    activeModal ? (
-      <ModalBackground>
-        <div ref={modalRef}>
-          <Component closeModal={closeModal} actions={actions} props={props} />
-        </div>
-      </ModalBackground>
-    ) : (
-      ''
-    );
-
-  return [modal, openModal, closeModal];
 };
 
 const MemoListContainer = styled.div({
