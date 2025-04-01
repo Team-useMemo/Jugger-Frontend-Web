@@ -79,10 +79,12 @@ const MemoImage = ({ content }: { content: string }) => {
   const [AboutPhotoModal, openAboutPhotoModal] = useModal(AboutPhotoComponent, [], { image: content });
 
   return (
-    <MemoImageContainer>
+    <>
       <AboutPhotoModal />
-      <img src={content} onClick={openAboutPhotoModal} />
-    </MemoImageContainer>
+      <MemoImageContainer>
+        <img src={content} onClick={openAboutPhotoModal} />
+      </MemoImageContainer>
+    </>
   );
 };
 
