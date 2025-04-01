@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
 import formatDate from '@utils/Date';
+import useModal from '@hooks/useModal';
+import ScheduleModal from '@components/Modal/ScheduleModal';
 
 const MemoFlexContainer = styled.div({
   display: 'flex',
@@ -38,14 +40,19 @@ const MemoMainText = styled.p({
 });
 
 const MemoSchedule = ({ content }: { content: scheduleProp }) => {
+  const [AboutScheduleModal, openAboutScheduleModal] = useModal(ScheduleModal, [], { schedule: content });
+
   return (
-    <MemoFlexContainer>
-      <MemoMainText>{content.title}</MemoMainText>
-      <MemoScheduleContainer>
-        <TimeCircleSVG />
-        {formatDate(content.startDate, '{M}월 {D}일 {hh}:{mm}')}
-      </MemoScheduleContainer>
-    </MemoFlexContainer>
+    <>
+      <AboutScheduleModal />
+      <MemoFlexContainer onClick={openAboutScheduleModal}>
+        <MemoMainText>{content.title}</MemoMainText>
+        <MemoScheduleContainer>
+          <TimeCircleSVG />
+          {formatDate(content.startDate, '{M}월 {D}일 {hh}:{mm}')}
+        </MemoScheduleContainer>
+      </MemoFlexContainer>
+    </>
   );
 };
 

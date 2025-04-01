@@ -2,288 +2,20 @@
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
-import CloseSVG from '@assets/icons/close.svg?react';
-import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
 import formatDate from '@utils/Date';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addMemos, loadMemos } from '@stores/modules/memo';
 import { useParams, useSearchParams } from 'react-router-dom';
+import ScheduleModal from '@components/Modal/ScheduleModal';
+import AddImageModal from '@components/Modal/AddImageModal';
 
 const isUrl = (text: string): boolean => {
   const pattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
   return pattern.test(text);
-};
-
-const AddScheduleContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'end',
-  background: 'white',
-  borderRadius: '16px',
-  padding: '32px 32px 40px',
-
-  [':focus']: {
-    outline: 'none',
-  },
-});
-
-const AddScheduleContent = styled.div({
-  gap: '36px',
-  width: '384px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'start',
-});
-
-const AddScheduleTitle = styled.p({
-  fontSize: '24px',
-  fontWeight: '700',
-  lineHeight: '1.36',
-  margin: '0',
-});
-
-const AddScheduleButton = styled.p({
-  width: '100%',
-  background: '#0054D1',
-  fontSize: '18px',
-  color: 'white',
-  fontWeight: '500',
-  lineHeight: '1.45',
-  borderRadius: '6px',
-  padding: '12px',
-  boxSizing: 'border-box',
-  margin: '0',
-});
-
-const AddScheduleItemList = styled.div({
-  gap: '20px',
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-});
-
-const AddScheduleItem = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-  width: '100%',
-  textAlign: 'left',
-
-  ['>div']: {
-    boxSizing: 'border-box',
-    background: '#F7F7F8',
-    padding: '11px 14px',
-    width: '100%',
-    borderRadius: '4px',
-    display: 'flex',
-    alignItems: 'center',
-
-    ['>p,>input']: {
-      background: 'none',
-      outline: 'none',
-      border: 'none',
-      margin: '0',
-      fontWeight: '500',
-      fontSize: '16px',
-      lineHeight: '1.5',
-      width: '100%',
-      color: '#171719',
-    },
-  },
-});
-
-const AddScheduleComponent = ({
-  closeModal,
-  actions,
-}: {
-  closeModal: () => void;
-  actions: ((...args: any[]) => void)[];
-}) => {
-  const [title, setTitle] = useState('');
-
-  const startDate = new Date();
-  startDate.setMinutes(0);
-  const endDate = new Date(startDate);
-  endDate.setHours(endDate.getHours() + 1);
-
-  return (
-    <AddScheduleContainer>
-      <CloseSVG onClick={closeModal} />
-      <AddScheduleContent>
-        <AddScheduleTitle>일정 추가</AddScheduleTitle>
-        <AddScheduleItemList>
-          <AddScheduleItem>
-            <p style={{ margin: '0', fontSize: '16px', fontWeight: '600', lineHeight: '1.5' }}>일정 제목</p>
-            <div>
-              <input
-                type="text"
-                placeholder="입력"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-              {title && (
-                <EndContainerSVG
-                  onClick={() => {
-                    setTitle('');
-                  }}
-                />
-              )}
-            </div>
-          </AddScheduleItem>
-          <AddScheduleItem>
-            <p style={{ margin: '0', fontSize: '16px', fontWeight: '600', lineHeight: '1.5' }}>시작</p>
-            <div>
-              <p>{formatDate(startDate, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
-            </div>
-          </AddScheduleItem>
-          <AddScheduleItem>
-            <p style={{ margin: '0', fontSize: '16px', fontWeight: '600', lineHeight: '1.5' }}>종료</p>
-            <div>
-              <p>{formatDate(endDate, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
-            </div>
-          </AddScheduleItem>
-        </AddScheduleItemList>
-        <AddScheduleButton
-          onClick={() => {
-            if (!title.trim()) return;
-
-            actions[0](title, startDate, endDate);
-            closeModal();
-          }}
-        >
-          추가하기
-        </AddScheduleButton>
-      </AddScheduleContent>
-    </AddScheduleContainer>
-  );
-};
-
-const AddPhotoComponent = ({
-  closeModal,
-  actions,
-}: {
-  closeModal: () => void;
-  actions: ((...args: any[]) => void)[];
-}) => {
-  const [image, setImage] = useState<string | ArrayBuffer | null>(null);
-
-  const handlePasteClipboard = (e: React.ClipboardEvent<HTMLDivElement>) => {
-    const items = e.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const blob = items[i].getAsFile();
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          setImage(reader.result);
-        };
-
-        if (blob) {
-          reader.readAsDataURL(blob);
-        }
-        break;
-      }
-    }
-  };
-
-  const handleUploadLocalFile = async () => {
-    try {
-      const [fileHandle] = await (window as any).showOpenFilePicker({
-        types: [
-          {
-            description: 'Image Files',
-            accept: {
-              'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
-            },
-          },
-        ],
-        multiple: false,
-      });
-
-      const file = await fileHandle.getFile();
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-    } catch (err) {
-      console.error('파일 선택 취소 또는 실패:', err);
-    }
-  };
-
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    containerRef.current?.focus();
-  }, []);
-
-  return (
-    <AddScheduleContainer
-      ref={containerRef}
-      tabIndex={0}
-      onPaste={handlePasteClipboard}
-      onKeyDown={(e) => {
-        if (e.key == 'Enter' && image) {
-          actions[0](image);
-          closeModal();
-        }
-      }}
-    >
-      <CloseSVG onClick={closeModal} />
-      <AddScheduleContent>
-        <AddScheduleTitle>사진 추가</AddScheduleTitle>
-        <div
-          style={{
-            width: '100%',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {image ? (
-            <img src={image as string} style={{ width: '100%' }} />
-          ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'gray',
-                color: 'white',
-                height: '320px',
-                gap: '12px',
-              }}
-              onClick={handleUploadLocalFile}
-            >
-              <img src={AddPhotoPNG} />
-              이미지 업로드 또는 클립보드 붙여넣기
-            </div>
-          )}
-        </div>
-        {image && (
-          <AddScheduleButton
-            onClick={() => {
-              actions[0](image);
-              closeModal();
-            }}
-          >
-            추가하기
-          </AddScheduleButton>
-        )}
-      </AddScheduleContent>
-    </AddScheduleContainer>
-  );
 };
 
 const MemoListContainer = styled.div({
@@ -388,8 +120,8 @@ const MemoPage = () => {
     );
   };
 
-  const [AddScheduleModal, openAddScheduleModal] = useModal(AddScheduleComponent, [addSchedule]);
-  const [AddPhotoModal, openAddPhotoModal] = useModal(AddPhotoComponent, [addPhoto]);
+  const [AddScheduleModal, openAddScheduleModal] = useModal(ScheduleModal, [addSchedule], { add: true });
+  const [AddPhotoModal, openAddPhotoModal] = useModal(AddImageModal, [addPhoto]);
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -524,6 +256,11 @@ const MemoBottomInputContainer = styled.div({
     background: 'none',
     resize: 'none',
     color: '#171719',
+    maxHeight: '160px',
+
+    ['::-webkit-scrollbar']: {
+      display: 'none',
+    },
   },
 
   ['svg']: {
