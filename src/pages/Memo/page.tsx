@@ -79,9 +79,9 @@ const MemoItemContainer = styled.div({
 const MemoPage = () => {
   const { username } = useParams();
   const [searchParams] = useSearchParams();
+  const category = searchParams.get('category');
   const categories = useAppSelector((state) => state.categorySlice.value);
   const memos = useAppSelector((state) => state.memoSlice.value).filter((e) => {
-    const category = searchParams.get('category');
     if (!category) return true;
     if (category == e.category) return true;
     return false;
@@ -95,15 +95,13 @@ const MemoPage = () => {
   const addSchedule = (title: string, startDate: Date, endDate: Date | null) => {
     dispatch(
       addMemos({
-        id: memos.length + 1,
         type: 'schedule',
         content: {
           title,
           startDate,
           endDate,
         },
-        date: new Date(),
-        category: null,
+        category: category,
       }),
     );
   };
@@ -111,11 +109,9 @@ const MemoPage = () => {
   const addPhoto = (image: string) => {
     dispatch(
       addMemos({
-        id: memos.length + 1,
         type: 'photo',
         content: image,
-        date: new Date(),
-        category: null,
+        category: category,
       }),
     );
   };
@@ -152,11 +148,9 @@ const MemoPage = () => {
 
     dispatch(
       addMemos({
-        id: memos.length + 1,
         type: isUrl(newMemo) ? 'link' : 'text',
         content: newMemo,
-        date: new Date(),
-        category: null,
+        category: category,
       }),
     );
 
