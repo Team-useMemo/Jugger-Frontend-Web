@@ -106,7 +106,7 @@ const MemoText = ({ content }: { content: string }) => {
             <MemoTextAboutMoreDivideLine />
             <MemoTextAboutMoreButton onClick={openAboutTextModal}>
               전체 보기
-              <RightArrowSVG />
+              <RightArrowSVG fill="white" />
             </MemoTextAboutMoreButton>
           </>
         )}
