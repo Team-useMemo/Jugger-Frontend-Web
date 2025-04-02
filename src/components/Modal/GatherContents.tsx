@@ -2,12 +2,13 @@ import CloseSVG from '@assets/icons/close.svg?react';
 import LeftArrowSVG from '@assets/icons/left_arrow.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import { MemoModalCloseContainer } from './Modal.Style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector } from '@hooks/useRedux';
 import formatDate from '@utils/Date';
 import useModal from '@hooks/useModal';
 import AboutImage from './AboutImage';
 import { theme } from '@styles/theme';
+import styled from '@emotion/styled';
 
 const Month = [
   'January',
@@ -119,7 +120,6 @@ const GatherImages = () => {
   );
 };
 
-console.log(123);
 const getDateCalendar = (date: Date) => {
   const dateList = [];
   const firstDate = new Date(date);
@@ -177,6 +177,7 @@ const GatherSchedules = () => {
             stroke="black"
             height={'24px'}
             width={'24px'}
+            style={{ cursor: 'pointer' }}
             onClick={() =>
               setDate((prev) => {
                 const date = new Date(prev);
@@ -198,6 +199,7 @@ const GatherSchedules = () => {
             fill="black"
             height={'24px'}
             width={'24px'}
+            style={{ cursor: 'pointer' }}
             onClick={() =>
               setDate((prev) => {
                 const date = new Date(prev);
@@ -232,6 +234,7 @@ const GatherSchedules = () => {
                     height: '38px',
                     placeContent: 'center',
                     position: 'relative',
+                    cursor: 'pointer',
                   }}
                   onClick={() => setSelectedDate(e)}
                 >
@@ -372,6 +375,171 @@ const GatherSchedules = () => {
   );
 };
 
+const linkList = [
+  { content: 'https://www.youtube.com/watch?v=v8zk7DECvqs', category: 1 },
+  { content: 'https://www.youtube.com/watch?v=gDlfKQpQZkQ', category: 2 },
+  { content: 'https://www.youtube.com/watch?v=EMLxA1P119U', category: 5 },
+  { content: 'https://www.youtube.com/watch?v=f_-I4yaMfK4&pp=0gcJCb8Ag7Wk3p_U' },
+  { content: 'https://www.youtube.com/watch?v=UIN8CtE6Wis', category: 4 },
+];
+
+const fetchUrlPreview = async (url: string) => {
+  const res = await fetch(`https://og-meta-data-api.vercel.app/api/preview?url=${url}`);
+  const data = await res.json();
+  return data;
+};
+
+interface OgData {
+  ogImage: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogUrl: string;
+}
+
+const GatherLinksItem = ({ content, category }: { content: any; category?: number }) => {
+  const [ogData, setOgData] = useState<OgData | null>(null);
+
+  const _category = useAppSelector((state) => state.categorySlice.value).find((e) => e.id == category);
+
+  useEffect(() => {
+    const fetchAndUpdate = async () => {
+      setOgData(await fetchUrlPreview(content));
+    };
+
+    fetchAndUpdate();
+  }, [content]);
+
+  return (
+    <div
+      style={{
+        width: 'auto',
+        overflow: 'hidden',
+        borderRadius: theme.radius[12],
+        padding: '12px',
+        boxShadow: theme.shadow.emphasize,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+        textAlign: 'left',
+        cursor: 'pointer',
+      }}
+      onClick={() => {
+        window.open(content);
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          height: '200px',
+          borderRadius: theme.radius[6],
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        {_category && (
+          <div
+            style={{
+              position: 'absolute',
+              background: 'white',
+              left: '8px',
+              top: '8px',
+              borderRadius: theme.radius[48],
+              padding: '6px 10px',
+              display: 'flex',
+              gap: '4px',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ width: '6px', height: '6px', background: _category.color, borderRadius: theme.radius[6] }} />
+            <p
+              style={{
+                ...theme.font.caption1.medium,
+                color: theme.color.label.normal,
+                margin: '0',
+              }}
+            >
+              {_category.title}
+            </p>
+          </div>
+        )}
+        <img
+          style={{
+            objectFit: 'cover',
+            width: '100%',
+            height: '100%',
+          }}
+          src={ogData?.ogImage}
+        />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <p
+            style={{
+              ...theme.font.caption1.semibold,
+              color: theme.color.label.neutral,
+              margin: '0',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {ogData?.ogTitle}
+          </p>
+          <p
+            style={{
+              ...theme.font.caption2.medium,
+              color: theme.color.label.assistive,
+              margin: '0',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {ogData?.ogDescription}
+          </p>
+        </div>
+        <p
+          style={{
+            ...theme.font.caption2.medium,
+            color: theme.color.label.alternative,
+            margin: '0',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {ogData?.ogUrl}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const GatherLinks = () => {
+  const [links] = useState(linkList);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          columnGap: '12px',
+          rowGap: '24px',
+          width: '580px',
+          boxSizing: 'border-box',
+          borderRadius: theme.radius[12],
+          borderTopLeftRadius: '0',
+        }}
+      >
+        {links.map((e) => {
+          return <GatherLinksItem content={e.content} category={e.category} />;
+        })}
+      </div>
+    </div>
+  );
+};
+
 const GatherContents = ({ closeModal, props }: { closeModal: () => void; props: any }) => {
   const [contentsType, setContentsType] = useState(props.contentsType);
   const [categoryId, setCategoryId] = useState(props.categoryId);
@@ -476,7 +644,7 @@ const GatherContents = ({ closeModal, props }: { closeModal: () => void; props: 
             </div>
           ))}
         </div>
-        <div style={{ padding: '32px 24px', flexGrow: '1', overflow: 'auto' }}>
+        <GatherContetnsMainContainer>
           {categoryId && (
             <div
               style={{
@@ -493,11 +661,26 @@ const GatherContents = ({ closeModal, props }: { closeModal: () => void; props: 
               <RightArrowSVG fill="#878A93" width={'20px'} height={'20px'} />
             </div>
           )}
-          {contentsType == 'Image' ? <GatherImages /> : contentsType == 'Calendar' ? <GatherSchedules /> : ''}
-        </div>
+          {contentsType == 'Image' ? (
+            <GatherImages />
+          ) : contentsType == 'Calendar' ? (
+            <GatherSchedules />
+          ) : (
+            <GatherLinks />
+          )}
+        </GatherContetnsMainContainer>
       </div>
     </div>
   );
 };
+
+const GatherContetnsMainContainer = styled.div({
+  padding: '32px 24px',
+  flexGrow: '1',
+  overflow: 'auto',
+  ['::-webkit-scrollbar']: {
+    display: 'none',
+  },
+});
 
 export default GatherContents;
