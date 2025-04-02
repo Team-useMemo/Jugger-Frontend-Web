@@ -14,18 +14,25 @@ import {
   StyledSideBar,
 } from './SideBar.style';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
 import AddCategory from '@components/Modal/AddCategory';
+import GatherContents from '@components/Modal/GatherContents';
 
 // store.dispatch(categoryAction);
 
 const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
   const [AddCategoryModal, openAddCategoryModal] = useModal(AddCategory, [], {});
+  const [contentsType, setContentsType] = useState('');
+  const [GatherContentsModal, openGatherContentsModal] = useModal(GatherContents, [], {
+    categoryId: category,
+    contentsType,
+  });
 
   const categoryId = searchParams.get('category');
 
@@ -34,9 +41,18 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const onWholeMemoClick = () => {
     alert('전체 메모');
   };
-  const onCalendarClick = () => {};
-  const onImageClick = () => {};
-  const onLinkClick = () => {};
+  const onCalendarClick = () => {
+    setContentsType('Calendar');
+    openGatherContentsModal();
+  };
+  const onImageClick = () => {
+    setContentsType('Image');
+    openGatherContentsModal();
+  };
+  const onLinkClick = () => {
+    setContentsType('Link');
+    openGatherContentsModal();
+  };
   const onSettingClick = () => {};
   const onAddCategoryClick = () => {
     openAddCategoryModal();
@@ -60,6 +76,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   return (
     <StyledSideBar active={toggleMenu}>
       <AddCategoryModal />
+      <GatherContentsModal />
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>
           <img src={LogoPNG} onClick={handleLogoClick} />
