@@ -7,13 +7,44 @@ import { useAppSelector } from '@hooks/useRedux';
 import formatDate from '@utils/Date';
 import useModal from '@hooks/useModal';
 import AboutImage from './AboutImage';
+import { theme } from '@styles/theme';
+
+const Month = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 const contentsTypeList = [{ Image: '사진' }, { Calendar: '캘린더' }, { Link: '링크' }];
 
 const imageList = Array.from({ length: 30 }, () => ({
   image: '',
   date: new Date(`2024-04-0${Math.ceil(Math.random() * 9)}`),
-})).sort((a, b) => b.date - a.date);
+})).sort((a: any, b: any) => b.date - a.date);
+
+const _dateList = Array.from({ length: 50 }, (_, i) => {
+  const startDate = new Date();
+  startDate.setDate(Math.ceil(Math.random() * 30));
+  startDate.setHours(Math.floor(Math.random() * 24));
+  const endDate = new Date(startDate);
+  endDate.setHours(endDate.getHours() + Math.ceil(Math.random() * 12));
+
+  return {
+    title: i,
+    startDate: startDate,
+    endDate: Math.random() > 0.3 ? endDate : null,
+    category: Math.ceil(Math.random() * 6),
+  };
+}).sort((a: any, b: any) => a.startDate - b.startDate);
 
 const GatherImages = () => {
   const [selectedImage, setSelectedImage] = useState('');
@@ -39,13 +70,13 @@ const GatherImages = () => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
           <div
             style={{
-              padding: '12px 16px',
+              ...theme.font.label1normal.semibold,
               margin: '0',
-              color: '#46474C',
-              fontSize: '14px',
-              fontWeight: '600',
-              lineHeight: '1.429',
-              boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.03)',
+              padding: '12px 16px',
+              color: theme.color.label.neutral,
+              boxShadow: theme.shadow.normal,
+              borderTopLeftRadius: theme.radius[12],
+              borderTopRightRadius: theme.radius[12],
             }}
           >
             {formatDate(new Date(key), '{YYYY}년 {MM}월 {DD}일 {W}요일')}
@@ -58,7 +89,9 @@ const GatherImages = () => {
               padding: '18px',
               width: '100%',
               boxSizing: 'border-box',
-              boxShadow: '0px 5px 12px rgba(0, 0, 0, 0.05)',
+              boxShadow: theme.shadow.emphasize,
+              borderRadius: theme.radius[12],
+              borderTopLeftRadius: '0',
             }}
           >
             {value.map(() => {
@@ -86,6 +119,7 @@ const GatherImages = () => {
   );
 };
 
+console.log(123);
 const getDateCalendar = (date: Date) => {
   const dateList = [];
   const firstDate = new Date(date);
@@ -105,19 +139,20 @@ const getDateCalendar = (date: Date) => {
 };
 
 const GatherSchedules = () => {
-  // const date = new Date();
-  // const month = date.getMonth();
-  // date.setDate(date.getDate() - date.getDay());
+  const categories = useAppSelector((state) => state.categorySlice.value);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(() => {
     const date = new Date();
     date.setDate(1);
     return date;
   });
 
+  const [dates] = useState(_dateList);
+
   const dateList = getDateCalendar(date);
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <div
         style={{
           display: 'flex',
@@ -125,6 +160,9 @@ const GatherSchedules = () => {
           padding: '32px 24px',
           width: '100%',
           boxSizing: 'border-box',
+          gap: '32px',
+          borderRadius: theme.radius[16],
+          boxShadow: theme.shadow.emphasize,
         }}
       >
         <div
@@ -147,23 +185,14 @@ const GatherSchedules = () => {
               })
             }
           />
-          <p>
-            {
-              [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December',
-              ][date.getMonth()]
-            }
+          <p
+            style={{
+              ...theme.font.heading1.semibold,
+              color: theme.color.label.strong,
+              margin: '0',
+            }}
+          >
+            {Month[date.getMonth()] + ' ' + date.getFullYear()}
           </p>
           <RightArrowSVG
             fill="black"
@@ -178,16 +207,166 @@ const GatherSchedules = () => {
             }
           />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((e) => (
-            <p style={{}}>{e}</p>
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((e) => (
+              <p
+                style={{
+                  ...theme.font.caption1.regular,
+                  color: theme.color.label.alternative,
+                  margin: '0',
+                }}
+              >
+                {e}
+              </p>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
+            {dateList.map((e) => {
+              return (
+                <div
+                  style={{
+                    ...theme.font.body1normal.medium,
+                    color: theme.color.label[e.getMonth() == date.getMonth() ? 'normal' : 'assistive'],
+                    margin: '0',
+                    height: '38px',
+                    placeContent: 'center',
+                    position: 'relative',
+                  }}
+                  onClick={() => setSelectedDate(e)}
+                >
+                  {e.getDate()}
+                  {e.toDateString() == new Date().toDateString() && (
+                    <div
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: theme.radius.full,
+                        background: theme.color.primary.normal,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+
+                        ...theme.font.body1normal.medium,
+                        color: theme.color.label.inverse,
+                        placeContent: 'center',
+                      }}
+                    >
+                      {e.getDate()}
+                    </div>
+                  )}
+                  {e.toDateString() == selectedDate.toDateString() && (
+                    <div
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: theme.radius.full,
+                        border: `2px dotted ${theme.color.primary.normal}`,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  )}
+                  <div
+                    style={{
+                      display: 'flex',
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      marginLeft: '2px',
+                    }}
+                  >
+                    {dates
+                      .filter((e2) => e2.startDate.toDateString() == e.toDateString())
+                      .map((e2) => {
+                        return (
+                          <div
+                            style={{
+                              width: '6px',
+                              height: '6px',
+                              background: categories.find(({ id }) => id == e2.category).color,
+                              borderRadius: theme.radius.full,
+                              marginLeft: '-2px',
+                            }}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
-          {dateList.map((e) => {
-            return <p style={{ color: e.getMonth() == date.getMonth() ? 'black' : 'gray' }}>{e.getDate()}</p>;
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {dates
+          .filter(({ startDate }) => startDate.toDateString() == selectedDate.toDateString())
+          .map((e) => {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '16px',
+                  padding: '12px 16px',
+                  background: theme.color.background.alternative,
+                  borderRadius: theme.radius[12],
+                  alignItems: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <p
+                    style={{
+                      ...theme.font.label1normal.regular,
+                      color: theme.color.label.alternative,
+                      margin: 0,
+                    }}
+                  >
+                    {Month[e.startDate.getMonth()].substring(0, 3)}
+                  </p>
+                  <p
+                    style={{
+                      ...theme.font.heading1.medium,
+                      color: theme.color.label.alternative,
+                      margin: 0,
+                    }}
+                  >
+                    {e.startDate.getDate()}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    borderLeft: `1px solid ${theme.color.line.normal}`,
+                  }}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '8px',
+                    alignItems: 'center',
+                    ...theme.font.body1normal.semibold,
+                    color: theme.color.label.normal,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      background: categories.find(({ id }) => id == e.category).color,
+                      borderRadius: theme.radius.full,
+                    }}
+                  />
+                  {e.title}
+                </div>
+                <div style={{ flexGrow: '1' }} />
+                <RightArrowSVG fill={theme.color.label.alternative} width={'24px'} height={'24px'} />
+              </div>
+            );
           })}
-        </div>
       </div>
     </div>
   );
@@ -301,15 +480,13 @@ const GatherContents = ({ closeModal, props }: { closeModal: () => void; props: 
           {categoryId && (
             <div
               style={{
+                ...theme.font.headline1.semibold,
+                color: theme.color.label.normal,
                 paddingBottom: '20px',
                 margin: '0',
                 display: 'flex',
                 gap: '6',
                 alignItems: 'center',
-                color: '#171719',
-                fontSize: '18px',
-                lineHeight: '1.445',
-                fontWeight: '600',
               }}
             >
               {categories.find(({ id }) => id == categoryId)?.title}

@@ -47,7 +47,7 @@ export const categorySlice = createSlice({
 export const { loadCategories, addCategory } = categorySlice.actions;
 
 // slice의 상태값
-export const categoryState = (state: RootState) => state.modalToggle.value;
+export const categoryState = (state: RootState) => state.categorySlice.value;
 
 //slice의 reducers
 export default categorySlice.reducer;
