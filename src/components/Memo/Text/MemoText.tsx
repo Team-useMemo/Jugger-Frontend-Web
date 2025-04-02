@@ -5,21 +5,20 @@ import CloseSVG from '@assets/icons/close.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import useModal from '@hooks/useModal';
 import { MemoModalCloseContainer, MemoModalContainer } from '@components/Modal/Modal.Style';
+import { theme } from '@styles/theme';
 
 const MemoTextContainer = styled.div({
+  background: theme.color.primary.normal,
   padding: '8px 16px',
-  background: '#0054D1',
   textAlign: 'start',
   display: 'flex',
   flexDirection: 'column',
   gap: '8px',
 });
 
-const MemoTextContents = styled.p({
+const MemoTextContents = styled.p(theme.font.body2normal.medium, {
+  color: theme.palette.common[100],
   margin: '0',
-  color: 'white',
-  fontSize: '15px',
-  fontWeight: '500',
   whiteSpace: 'pre-wrap',
   WebkitLineClamp: '20',
   display: '-webkit-box',
@@ -27,19 +26,18 @@ const MemoTextContents = styled.p({
   overflow: 'hidden',
 });
 
-const MemoTextAboutMoreButton = styled.div({
+const MemoTextAboutMoreButton = styled.div(theme.font.body2normal.medium, {
+  color: theme.palette.common[100],
   margin: '0',
-  color: 'white',
-  fontSize: '15px',
-  fontWeight: '500',
+
   display: 'flex',
   alignItems: 'center',
   cursor: 'pointer',
 });
 
 const MemoTextAboutMoreDivideLine = styled.span({
+  borderBottom: `1px solid ${theme.color.line.normal}`,
   width: '100%',
-  borderBottom: '1px solid #E0E0E2',
   opacity: '0.3',
 });
 
