@@ -2,6 +2,7 @@ import formatDate from '@utils/Date';
 import { MessageItem, MessageBody, MessageHeader, Title, Time, Content, Dot, HeaderLeft } from './SideMessage.Style';
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 interface SideMessageItemProps {
   focus: boolean;
   id: number;
@@ -19,6 +20,14 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     navigate(`?category=${id}`);
   };
 
+  const [isPinnedState, setIsPinnedState] = useState(isPinned);
+  const handlePinClick = () => {
+    if (window.confirm('고정을 취소하시겠습니까?')) {
+      setIsPinnedState(false);
+      // DB에 고정 상태 업데이트 로직 추가
+      // 예: updatePinnedStatusInDB(title, false);
+    }
+  };
   return (
     <MessageItem onClick={handleClickCategory} focus={focus}>
       <Dot style={{ backgroundColor: color }} />
@@ -26,7 +35,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
         <MessageHeader>
           <HeaderLeft>
             <Title>{title}</Title>
-            {isPinned && <PinSVG />}
+            {isPinnedState && <PinSVG onClick={handlePinClick} />}
           </HeaderLeft>
           <Time>
             {time.toDateString() != new Date().toDateString()
