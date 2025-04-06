@@ -34,29 +34,32 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     contentsType,
   });
 
-  const categoryId = searchParams.get('category');
-
   const categories = useAppSelector((state) => state.categorySlice.value);
 
   const onWholeMemoClick = () => {
-    alert('전체 메모');
+    setSearchParams({});
   };
+
   const onCalendarClick = () => {
     setContentsType('Calendar');
     openGatherContentsModal();
   };
+
   const onImageClick = () => {
     setContentsType('Image');
     openGatherContentsModal();
   };
+
   const onLinkClick = () => {
     setContentsType('Link');
     openGatherContentsModal();
   };
+
   const onSettingClick = () => {};
+
   const onAddCategoryClick = () => {
     openAddCategoryModal();
-  }; // 카테고리 추가 버튼 클릭 핸들러
+  };
 
   const handleLogoClick = () => {
     setSearchParams({});
@@ -93,7 +96,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
             {categories.map((msg, index) => (
               <SideMessage
                 key={index}
-                focus={categoryId == msg.id}
+                focus={category == msg.id}
                 id={msg.id}
                 color={msg.color}
                 title={msg.title}
