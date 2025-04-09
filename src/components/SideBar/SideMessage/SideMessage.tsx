@@ -103,7 +103,12 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const handlePointerMove = (e: React.PointerEvent) => {
     if (startX === null) return;
     const deltaX = e.clientX - startX;
-    setShowPinIcon(deltaX > 40);
+
+    if (deltaX > 40 && !showPinIcon) {
+      setShowPinIcon(true);
+    } else if (deltaX < -40 && showPinIcon) {
+      setShowPinIcon(false);
+    }
   };
 
   const handlePointerUp = () => {
@@ -136,9 +141,19 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         focus={focus}
+        style={{
+          transform: showPinIcon ? 'translateX(10px)' : 'translateX(0)',
+          transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
       >
         {showPinIcon && (
-          <PinTriggerWrapper>
+          <PinTriggerWrapper
+            style={{
+              transform: showPinIcon ? 'translateX(0)' : 'translateX(-10px)',
+              opacity: showPinIcon ? 1 : 0,
+              transition: 'transform 0.25s ease, opacity 0.25s ease',
+            }}
+          >
             <SettingPinSVG onClick={handlePinClick} />
           </PinTriggerWrapper>
         )}
