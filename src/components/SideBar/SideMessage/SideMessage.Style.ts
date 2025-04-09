@@ -11,6 +11,8 @@ export const MessageItem = styled.div(
     cursor: 'pointer',
     width: '100%',
     boxSizing: 'border-box',
+    userSelect: 'none',
+    WebkitUserSelect: 'none',
 
     '&:hover': {
       backgroundColor: '#f8f8f8',
