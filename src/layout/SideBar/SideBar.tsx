@@ -7,6 +7,7 @@ import SideMenu from '@components/SideBar/SideMenu/SideMenu';
 import LogoPNG from '@assets/Logo.png';
 import {
   AddCategoryButton,
+  LogoImage,
   MessageSection,
   SideBarContainer,
   SideBarContents,
@@ -82,7 +83,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
       <GatherContentsModal />
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>
-          <img src={LogoPNG} onClick={handleLogoClick} />
+          <LogoImage src={LogoPNG} onClick={handleLogoClick} />
         </SideBarHeader>
         <SideBarContents>
           <SideMenu title="전체 메모" icon={CategorySVG} onClick={onWholeMemoClick} />

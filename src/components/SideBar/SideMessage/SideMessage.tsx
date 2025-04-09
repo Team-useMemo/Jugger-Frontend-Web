@@ -8,14 +8,13 @@ import {
   Content,
   Dot,
   HeaderLeft,
-  ContextMenu,
-  ContextMenuHeader,
-  ContextMenuItem,
-  Divider,
+  PinTriggerWrapper,
 } from './SideMessage.Style';
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
+import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import ContextMenu from './ContextMenu/ContextMenu';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -32,45 +31,83 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const [isPinnedState, setIsPinnedState] = useState(isPinned);
   const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
+  const [startX, setStartX] = useState<number | null>(null);
+  const [showPinIcon, setShowPinIcon] = useState(false);
 
-  const handleClickCategory = () => {
+  const closeContextMenu = useCallback(() => setContextMenu(null), []);
+
+  const handleClickCategory = useCallback(() => {
     navigate(`?category=${id}`);
-  };
+  }, [navigate, id]);
 
-  const handlePinClick = () => {
+  const handlePinClick = useCallback(() => {
     setIsPinnedState((prev) => !prev);
-    setContextMenu(null);
-  };
+    closeContextMenu();
+    setShowPinIcon(false);
+  }, [closeContextMenu]);
 
-  const handleContextMenu = (e: React.MouseEvent) => {
+  const handleCategoryClick = useCallback(() => {
+    closeContextMenu();
+  }, [closeContextMenu]);
+
+  const handleDeleteClick = useCallback(() => {
+    closeContextMenu();
+  }, [closeContextMenu]);
+
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
+  }, []);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setStartX(e.clientX);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (startX !== null) {
+      const deltaX = e.clientX - startX;
+      if (deltaX > 40) {
+        setShowPinIcon(true);
+      } else if (deltaX < -40) {
+        setShowPinIcon(false);
+      }
+    }
+  };
+
+  const handlePointerUp = () => {
+    setStartX(null);
   };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
-        setContextMenu(null);
+        closeContextMenu();
+        setShowPinIcon(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
-
-  const handleCategoryClick = (): void => {
-    setContextMenu(null);
-  };
-
-  const handleDeleteClick = (): void => {
-    setContextMenu(null);
-  };
+  }, [closeContextMenu]);
 
   return (
     <>
-      <MessageItem onClick={handleClickCategory} onContextMenu={handleContextMenu} focus={focus}>
-        <Dot style={{ backgroundColor: color, width: '12px', height: '12px' }} />
+      <MessageItem
+        onClick={handleClickCategory}
+        onContextMenu={handleContextMenu}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        focus={focus}
+      >
+        {showPinIcon && (
+          <PinTriggerWrapper>
+            <SettingPinSVG onClick={handlePinClick} />
+          </PinTriggerWrapper>
+        )}
+
+        <Dot style={{ backgroundColor: color }} />
         <MessageBody>
           <MessageHeader>
             <HeaderLeft>
@@ -78,7 +115,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
               {isPinnedState && <PinSVG onClick={handlePinClick} />}
             </HeaderLeft>
             <Time>
-              {time.toDateString() != new Date().toDateString()
+              {time.toDateString() !== new Date().toDateString()
                 ? formatDate(time, '{M}.{DD}')
                 : formatDate(time, '{hh}:{mm}')}
             </Time>
@@ -87,16 +124,15 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
         </MessageBody>
       </MessageItem>
       {contextMenu && (
-        <ContextMenu ref={contextMenuRef} style={{ top: contextMenu.mouseY, left: contextMenu.mouseX }}>
-          <ContextMenuHeader>
-            <Dot style={{ backgroundColor: color, width: '12px', height: '12px' }} />
-            <Title>{title}</Title>
-          </ContextMenuHeader>
-          <Divider />
-          <ContextMenuItem onClick={handlePinClick}>즐겨찾기</ContextMenuItem>
-          <ContextMenuItem onClick={handleCategoryClick}>카테고리 설정</ContextMenuItem>
-          <ContextMenuItem onClick={handleDeleteClick}>삭제</ContextMenuItem>
-        </ContextMenu>
+        <ContextMenu
+          ref={contextMenuRef}
+          anchor={{ x: contextMenu.mouseX, y: contextMenu.mouseY }}
+          title={title}
+          color={color}
+          onPin={handlePinClick}
+          onCategory={handleCategoryClick}
+          onDelete={handleDeleteClick}
+        />
       )}
     </>
   );

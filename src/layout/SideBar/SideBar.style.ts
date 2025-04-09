@@ -94,3 +94,9 @@ export const MessageSection = styled.div({
   alignSelf: 'stretch',
   maxWidth: '100%',
 });
+
+export const LogoImage = styled.img({
+  width: '120px',
+  height: 'auto',
+  objectFit: 'contain',
+});
