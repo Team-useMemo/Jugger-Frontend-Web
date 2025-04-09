@@ -17,6 +17,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import ContextMenu from './ContextMenu/ContextMenu';
 import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
+import { useAppDispatch } from '@hooks/useRedux';
+import { deleteCategory } from '@stores/modules/category';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -30,20 +32,25 @@ interface SideMessageItemProps {
 
 const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [isPinnedState, setIsPinnedState] = useState(isPinned);
   const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
+
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     ({ closeModal, props }) => (
       <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />
     ),
     [],
-    { id, name: title, initialColor: color },
+    { id: id, name: title, initialColor: color },
   );
 
-  const closeContextMenu = useCallback(() => setContextMenu(null), []);
+  const closeContextMenu = useCallback(() => {
+    setContextMenu(null);
+  }, []);
 
   const handleCategoryClick = useCallback(() => {
     navigate(`?category=${id}`);
@@ -55,15 +62,19 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     setShowPinIcon(false);
   }, [closeContextMenu]);
 
-  const handleCategoryEditClick = () => {
-    console.log('Edit modal open clicked');
+  const handleCategoryEditClick = useCallback(() => {
     openEditCategoryModal();
     closeContextMenu();
-  };
+  }, [openEditCategoryModal, closeContextMenu]);
+
+  const deleteCurrentCategory = useCallback(() => {
+    dispatch(deleteCategory(id));
+  }, [dispatch, id]);
 
   const handleDeleteClick = useCallback(() => {
+    deleteCurrentCategory();
     closeContextMenu();
-  }, [closeContextMenu]);
+  }, [deleteCurrentCategory, closeContextMenu]);
 
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -75,14 +86,9 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (startX !== null) {
-      const deltaX = e.clientX - startX;
-      if (deltaX > 40) {
-        setShowPinIcon(true);
-      } else if (deltaX < -40) {
-        setShowPinIcon(false);
-      }
-    }
+    if (startX === null) return;
+    const deltaX = e.clientX - startX;
+    setShowPinIcon(deltaX > 40);
   };
 
   const handlePointerUp = () => {
@@ -118,7 +124,6 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
             <SettingPinSVG onClick={handlePinClick} />
           </PinTriggerWrapper>
         )}
-
         <Dot style={{ backgroundColor: color }} />
         <MessageBody>
           <MessageHeader>
