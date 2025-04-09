@@ -39,6 +39,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
+  const touchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     ({ closeModal, props }) => (
@@ -81,6 +82,20 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
   }, []);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchTimeout.current = setTimeout(() => {
+      setContextMenu({ mouseX: e.touches[0].clientX, mouseY: e.touches[0].clientY });
+    }, 600);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimeout.current) clearTimeout(touchTimeout.current);
+  };
+
+  const handleTouchMove = () => {
+    if (touchTimeout.current) clearTimeout(touchTimeout.current);
+  };
+
   const handlePointerDown = (e: React.PointerEvent) => {
     setStartX(e.clientX);
   };
@@ -117,6 +132,9 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
         focus={focus}
       >
         {showPinIcon && (
