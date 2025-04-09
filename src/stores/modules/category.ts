@@ -40,11 +40,15 @@ export const categorySlice = createSlice({
         },
       ];
     },
+    editCategory: (state, action: PayloadAction<any>) => {
+      const { id, title, color } = action.payload;
+      state.value = state.value.map((category) => (category.id === id ? { ...category, title, color } : category));
+    },
   },
 });
 
 //actions
-export const { loadCategories, addCategory } = categorySlice.actions;
+export const { loadCategories, addCategory, editCategory } = categorySlice.actions;
 
 // slice의 상태값
 export const categoryState = (state: RootState) => state.categorySlice.value;

@@ -15,6 +15,8 @@ import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ContextMenu from './ContextMenu/ContextMenu';
+import useModal from '@hooks/useModal';
+import EditCategory from '@components/Modal/EditCategory';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -33,10 +35,17 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
+  const [EditCategoryModal, openEditCategoryModal] = useModal(
+    ({ closeModal, props }) => (
+      <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />
+    ),
+    [],
+    { id, name: title, initialColor: color },
+  );
 
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
 
-  const handleClickCategory = useCallback(() => {
+  const handleCategoryClick = useCallback(() => {
     navigate(`?category=${id}`);
   }, [navigate, id]);
 
@@ -46,9 +55,11 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     setShowPinIcon(false);
   }, [closeContextMenu]);
 
-  const handleCategoryClick = useCallback(() => {
+  const handleCategoryEditClick = () => {
+    console.log('Edit modal open clicked');
+    openEditCategoryModal();
     closeContextMenu();
-  }, [closeContextMenu]);
+  };
 
   const handleDeleteClick = useCallback(() => {
     closeContextMenu();
@@ -93,8 +104,9 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
 
   return (
     <>
+      <EditCategoryModal />
       <MessageItem
-        onClick={handleClickCategory}
+        onClick={handleCategoryClick}
         onContextMenu={handleContextMenu}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -130,7 +142,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
           title={title}
           color={color}
           onPin={handlePinClick}
-          onCategory={handleCategoryClick}
+          onCategory={handleCategoryEditClick}
           onDelete={handleDeleteClick}
         />
       )}
