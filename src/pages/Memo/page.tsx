@@ -29,7 +29,7 @@ const MemoList = ({ category }: { category: string | null }) => {
 
   const memos = useAppSelector((state) => state.memoSlice.value).filter((e) => {
     if (!category) return true;
-    if (category == e.category) return true;
+    if (category == e.categoryId) return true;
     return false;
   });
 
@@ -48,7 +48,7 @@ const MemoList = ({ category }: { category: string | null }) => {
                 <MemoDateDivideLineTip />
               </MemoDateDivideContainer>
             )}
-            <MemoComponent memo={e} category={categories.find(({ id }) => id == e.category)} />
+            <MemoComponent memo={e} category={categories.find(({ id }) => id == e.categoryId)} />
           </MemoItemContainer>
         );
       })}
@@ -100,7 +100,7 @@ const MemoBottom = ({
       addMemos({
         type: isUrl(newMemo) ? 'link' : 'text',
         content: newMemo,
-        category: category,
+        categoryId: category,
       }),
     );
 
@@ -148,7 +148,7 @@ const MemoPage = () => {
           startDate,
           endDate,
         },
-        category: currentCategory,
+        categoryId: currentCategory,
       }),
     );
   };
@@ -158,7 +158,7 @@ const MemoPage = () => {
       addMemos({
         type: 'photo',
         content: image,
-        category: currentCategory,
+        categoryId: currentCategory,
       }),
     );
   };
@@ -167,6 +167,7 @@ const MemoPage = () => {
   const [AddPhotoModal, openAddPhotoModal] = useModal(AddImageModal, [addPhoto]);
 
   useEffect(() => {
+    if (!username) return;
     dispatch(loadMemos(username));
   }, []);
 

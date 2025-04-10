@@ -19,12 +19,12 @@ import memoMock from './mock/memo';
 //   }
 // };
 
-const fetchAllMemo = (username?: string) => {
+const fetchAllMemo = (username: string) => {
   if (!username) return [];
   return memoMock;
 };
 
-const fetchCategory = (username?: string) => {
+const fetchCategory = (username: string) => {
   if (!username) return [];
   return categoryMock.sort((a, b) => {
     if (a.pinned == b.pinned) {

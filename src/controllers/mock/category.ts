@@ -1,13 +1,8 @@
-const categoryMock: {
-  id: number;
-  title: string;
-  pinned: boolean;
-  color: string;
-  content: string;
-  lastDate: Date;
-}[] = [
+import { CategoryProp } from '@ts/Category.Prop';
+
+const categoryMock: CategoryProp[] = [
   {
-    id: 1,
+    id: '1',
     title: '독서록',
     pinned: false,
     color: '#4F29E5',
@@ -15,7 +10,7 @@ const categoryMock: {
     lastDate: new Date('2025-04-02 15:03'),
   },
   {
-    id: 2,
+    id: '2',
     title: 'Jugger',
     pinned: true,
     color: '#00BDDE',
@@ -23,7 +18,7 @@ const categoryMock: {
     lastDate: new Date('2025-04-02 13:03'),
   },
   {
-    id: 3,
+    id: '3',
     title: '4월 여행계획',
     pinned: true,
     color: '#FF5E00',
@@ -32,7 +27,7 @@ const categoryMock: {
     lastDate: new Date('2025-04-02 13:03'),
   },
   {
-    id: 4,
+    id: '4',
     title: 'Daily',
     pinned: false,
     color: '#00AEFF',
@@ -40,7 +35,7 @@ const categoryMock: {
     lastDate: new Date('2025-04-01 13:03'),
   },
   {
-    id: 5,
+    id: '5',
     title: '4월 여행계획',
     pinned: false,
     color: '#CB59FF',
@@ -48,7 +43,7 @@ const categoryMock: {
     lastDate: new Date('2025-03-02 13:03'),
   },
   {
-    id: 6,
+    id: '6',
     title: '푸꾸옥 여행',
     pinned: false,
     color: '#F553DA',

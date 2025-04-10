@@ -1,14 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../config/configStore';
 import { fetchAllMemo } from '@controllers/api';
-
-//초기 상태 타입
-interface ModalState {
-  value: any[];
-}
+import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
+import { userMemoType } from '@ts/type';
 
 //초기값 상태 값
-const initialState: ModalState = {
+const initialState: { value: MemoProp[] } = {
   value: [],
 };
 
@@ -17,13 +14,17 @@ export const memoSlice = createSlice({
   name: 'memo',
   initialState,
   reducers: {
-    // modalToggleAction: (state, action: PayloadAction<boolean>) => {
-    //   state.value = action.payload;
-    // },
-    loadMemos: (state, action: PayloadAction<string | undefined>) => {
+    loadMemos: (state, action: PayloadAction<string>) => {
       state.value = [...fetchAllMemo(action.payload)];
     },
-    addMemos: (state, action: PayloadAction<any>) => {
+    addMemos: (
+      state,
+      action: PayloadAction<{
+        type: userMemoType;
+        content: string | scheduleProp;
+        categoryId: string | null;
+      }>,
+    ) => {
       state.value = [
         ...state.value,
         {
