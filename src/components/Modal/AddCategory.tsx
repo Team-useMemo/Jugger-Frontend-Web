@@ -1,67 +1,20 @@
-import styled from '@emotion/styled';
-import { MemoModalButton, MemoModalCloseContainer, MemoModalContainer, MemoModalTitle } from './Modal.Style';
+import {
+  CategoryContainer,
+  CategoryItem,
+  CategoryItemContent,
+  CategoryItemTitle,
+  CategorylItemList,
+  MemoModalButton,
+  MemoModalCloseContainer,
+  MemoModalContainer,
+  MemoModalTitle,
+} from './Modal.Style';
 import CloseSVG from '@assets/icons/close.svg?react';
 import { useState } from 'react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addCategory } from '@stores/modules/category';
 import { useNavigate } from 'react-router-dom';
-import { media } from '@styles/theme';
-
-const AddCategoryContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '36px',
-  width: '450px',
-  textAlign: 'left',
-  padding: '0 32px',
-  boxSizing: 'border-box',
-
-  [media[0]]: {
-    width: '100%',
-    padding: '0 24px',
-  },
-});
-
-const AddCategorylItemList = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-});
-
-const AddCategoryItem = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-});
-
-const AddCategoryItemTitle = styled.p({
-  margin: '0',
-  fontSize: '16px',
-  fontWeight: '600',
-  lineHeight: '1.5',
-});
-
-const AddCategoryItemContent = styled.div({
-  boxSizing: 'border-box',
-  background: '#F7F7F8',
-  padding: '11px 14px',
-  borderRadius: '4px',
-  display: 'flex',
-  alignItems: 'center',
-
-  ['>input']: {
-    background: 'none',
-    outline: 'none',
-    border: 'none',
-    margin: '0',
-    fontWeight: '500',
-    fontSize: '16px',
-    lineHeight: '1.5',
-    width: '100%',
-    color: '#171719',
-  },
-});
 
 const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => {
   const [title, setTitle] = useState('');
@@ -77,12 +30,12 @@ const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => 
       <MemoModalCloseContainer>
         <CloseSVG onClick={closeModal} />
       </MemoModalCloseContainer>
-      <AddCategoryContainer>
+      <CategoryContainer>
         <MemoModalTitle>카테고리 추가</MemoModalTitle>
-        <AddCategorylItemList>
-          <AddCategoryItem>
-            <AddCategoryItemTitle>카테고리 이름</AddCategoryItemTitle>
-            <AddCategoryItemContent>
+        <CategorylItemList>
+          <CategoryItem>
+            <CategoryItemTitle>카테고리 이름</CategoryItemTitle>
+            <CategoryItemContent>
               <input
                 type="text"
                 placeholder="입력"
@@ -98,10 +51,10 @@ const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => 
                   }}
                 />
               )}
-            </AddCategoryItemContent>
-          </AddCategoryItem>
-          <AddCategoryItem>
-            <AddCategoryItemTitle>카테고리 색상</AddCategoryItemTitle>
+            </CategoryItemContent>
+          </CategoryItem>
+          <CategoryItem>
+            <CategoryItemTitle>카테고리 색상</CategoryItemTitle>
             <div
               style={{
                 display: 'flex',
@@ -127,8 +80,8 @@ const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => 
                 />
               ))}
             </div>
-          </AddCategoryItem>
-        </AddCategorylItemList>
+          </CategoryItem>
+        </CategorylItemList>
         <MemoModalButton
           onClick={() => {
             if (!title || selected == -1) return;
@@ -150,7 +103,7 @@ const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => 
         >
           추가
         </MemoModalButton>
-      </AddCategoryContainer>
+      </CategoryContainer>
     </MemoModalContainer>
   );
 };

@@ -1,66 +1,19 @@
-import styled from '@emotion/styled';
-import { MemoModalButton, MemoModalCloseContainer, MemoModalContainer, MemoModalTitle } from './Modal.Style';
+import {
+  CategoryContainer,
+  CategoryItem,
+  CategoryItemContent,
+  CategoryItemTitle,
+  CategorylItemList,
+  MemoModalButton,
+  MemoModalCloseContainer,
+  MemoModalContainer,
+  MemoModalTitle,
+} from './Modal.Style';
 import CloseSVG from '@assets/icons/close.svg?react';
 import { useState } from 'react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { useAppDispatch } from '@hooks/useRedux';
 import { editCategory } from '@stores/modules/category';
-import { media } from '@styles/theme';
-
-const EditCategoryContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '36px',
-  width: '450px',
-  textAlign: 'left',
-  padding: '0 32px',
-  boxSizing: 'border-box',
-
-  [media[0]]: {
-    width: '100%',
-    padding: '0 24px',
-  },
-});
-
-const EditCategorylItemList = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-});
-
-const EditCategoryItem = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-});
-
-const EditCategoryItemTitle = styled.p({
-  margin: '0',
-  fontSize: '16px',
-  fontWeight: '600',
-  lineHeight: '1.5',
-});
-
-const EditCategoryItemContent = styled.div({
-  boxSizing: 'border-box',
-  background: '#F7F7F8',
-  padding: '11px 14px',
-  borderRadius: '4px',
-  display: 'flex',
-  alignItems: 'center',
-
-  ['>input']: {
-    background: 'none',
-    outline: 'none',
-    border: 'none',
-    margin: '0',
-    fontWeight: '500',
-    fontSize: '16px',
-    lineHeight: '1.5',
-    width: '100%',
-    color: '#171719',
-  },
-});
 
 const EditCategory = ({
   id,
@@ -83,12 +36,12 @@ const EditCategory = ({
       <MemoModalCloseContainer>
         <CloseSVG onClick={closeModal} />
       </MemoModalCloseContainer>
-      <EditCategoryContainer>
+      <CategoryContainer>
         <MemoModalTitle>카테고리 변경</MemoModalTitle>
-        <EditCategorylItemList>
-          <EditCategoryItem>
-            <EditCategoryItemTitle>카테고리 이름</EditCategoryItemTitle>
-            <EditCategoryItemContent>
+        <CategorylItemList>
+          <CategoryItem>
+            <CategoryItemTitle>카테고리 이름</CategoryItemTitle>
+            <CategoryItemContent>
               <input
                 type="text"
                 placeholder="입력"
@@ -104,10 +57,10 @@ const EditCategory = ({
                   }}
                 />
               )}
-            </EditCategoryItemContent>
-          </EditCategoryItem>
-          <EditCategoryItem>
-            <EditCategoryItemTitle>카테고리 색상</EditCategoryItemTitle>
+            </CategoryItemContent>
+          </CategoryItem>
+          <CategoryItem>
+            <CategoryItemTitle>카테고리 색상</CategoryItemTitle>
             <div
               style={{
                 display: 'flex',
@@ -133,8 +86,8 @@ const EditCategory = ({
                 />
               ))}
             </div>
-          </EditCategoryItem>
-        </EditCategorylItemList>
+          </CategoryItem>
+        </CategorylItemList>
         <MemoModalButton
           onClick={() => {
             if (!title || selected == -1) return;
@@ -151,7 +104,7 @@ const EditCategory = ({
         >
           변경
         </MemoModalButton>
-      </EditCategoryContainer>
+      </CategoryContainer>
     </MemoModalContainer>
   );
 };

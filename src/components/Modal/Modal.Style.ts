@@ -62,3 +62,58 @@ export const MemoModalTitle = styled.p({
   lineHeight: '1.36',
   margin: '0',
 });
+
+export const CategoryContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '36px',
+  width: '450px',
+  textAlign: 'left',
+  padding: '0 32px',
+  boxSizing: 'border-box',
+
+  [media[0]]: {
+    width: '100%',
+    padding: '0 24px',
+  },
+});
+
+export const CategorylItemList = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+});
+
+export const CategoryItem = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+});
+
+export const CategoryItemTitle = styled.p({
+  margin: '0',
+  fontSize: '16px',
+  fontWeight: '600',
+  lineHeight: '1.5',
+});
+
+export const CategoryItemContent = styled.div({
+  boxSizing: 'border-box',
+  background: '#F7F7F8',
+  padding: '11px 14px',
+  borderRadius: '4px',
+  display: 'flex',
+  alignItems: 'center',
+
+  ['>input']: {
+    background: 'none',
+    outline: 'none',
+    border: 'none',
+    margin: '0',
+    fontWeight: '500',
+    fontSize: '16px',
+    lineHeight: '1.5',
+    width: '100%',
+    color: '#171719',
+  },
+});
