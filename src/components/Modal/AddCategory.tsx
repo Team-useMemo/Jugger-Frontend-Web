@@ -6,6 +6,7 @@ import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addCategory } from '@stores/modules/category';
 import { useNavigate } from 'react-router-dom';
+import { media } from '@styles/theme';
 
 const AddCategoryContainer = styled.div({
   display: 'flex',
@@ -15,6 +16,11 @@ const AddCategoryContainer = styled.div({
   textAlign: 'left',
   padding: '0 32px',
   boxSizing: 'border-box',
+
+  [media[0]]: {
+    width: '100%',
+    padding: '0 24px',
+  },
 });
 
 const AddCategorylItemList = styled.div({
@@ -96,7 +102,15 @@ const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => 
           </AddCategoryItem>
           <AddCategoryItem>
             <AddCategoryItemTitle>카테고리 색상</AddCategoryItemTitle>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '12px',
+                padding: '4px 0',
+                justifyContent: 'flex-start',
+              }}
+            >
               {colors.map((e, i) => (
                 <div
                   onClick={() => {

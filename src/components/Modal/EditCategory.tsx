@@ -5,6 +5,7 @@ import { useState } from 'react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { useAppDispatch } from '@hooks/useRedux';
 import { editCategory } from '@stores/modules/category';
+import { media } from '@styles/theme';
 
 const EditCategoryContainer = styled.div({
   display: 'flex',
@@ -14,6 +15,11 @@ const EditCategoryContainer = styled.div({
   textAlign: 'left',
   padding: '0 32px',
   boxSizing: 'border-box',
+
+  [media[0]]: {
+    width: '100%',
+    padding: '0 24px',
+  },
 });
 
 const EditCategorylItemList = styled.div({
@@ -102,7 +108,15 @@ const EditCategory = ({
           </EditCategoryItem>
           <EditCategoryItem>
             <EditCategoryItemTitle>카테고리 색상</EditCategoryItemTitle>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '12px',
+                padding: '4px 0',
+                justifyContent: 'flex-start',
+              }}
+            >
               {colors.map((e, i) => (
                 <div
                   onClick={() => {

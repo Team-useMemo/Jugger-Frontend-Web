@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { media } from '@styles/theme';
 
 export const MemoModalContainer = styled.div({
   display: 'flex',
@@ -8,6 +9,21 @@ export const MemoModalContainer = styled.div({
   borderRadius: '16px',
   padding: '32px 0',
   outline: 'none',
+
+  [media[0]]: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: '400px',
+    backgroundColor: 'white',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    zIndex: 1000,
+  },
 });
 
 export const MemoModalCloseContainer = styled.div({
