@@ -8,7 +8,7 @@ import formatDate from '@utils/Date';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addMemos, loadMemos } from '@stores/modules/memo';
 import { useParams, useSearchParams } from 'react-router-dom';
-import ScheduleModal from '@components/Modal/ScheduleModal';
+import ScheduleModal from '@components/Modal/MemoViewer/Schedule/MemoViewerSchedule';
 import AddImageModal from '@components/Modal/AddImageModal';
 import isUrl from '@utils/isUrl';
 import {

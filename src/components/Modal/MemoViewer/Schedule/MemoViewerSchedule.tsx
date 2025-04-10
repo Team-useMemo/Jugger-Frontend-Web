@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import formatDate from '@utils/Date';
-import { MemoModalButton, MemoModalCloseContainer, MemoModalContainer, MemoModalTitle } from './Modal.Style';
+import { MemoViewerButton, MemoViewerCloseContainer, MemoViewerContainer, MemoViewerTitle } from '../MemoViewer.Style';
 
 const ScheduleModalContents = styled.div({
   display: 'flex',
@@ -55,7 +55,7 @@ const ScheduleModalItemContent = styled.div({
   },
 });
 
-const ScheduleModal = ({
+const MemoViewerSchedule = ({
   closeModal,
   actions,
   props,
@@ -82,14 +82,14 @@ const ScheduleModal = ({
   // props.add = true;
 
   return (
-    <MemoModalContainer>
-      <MemoModalCloseContainer>
+    <MemoViewerContainer>
+      <MemoViewerCloseContainer>
         <CloseSVG onClick={closeModal} />
-      </MemoModalCloseContainer>
+      </MemoViewerCloseContainer>
       <ScheduleModalContents>
         {mode ? (
           <>
-            <MemoModalTitle>일정 추가</MemoModalTitle>
+            <MemoViewerTitle>일정 추가</MemoViewerTitle>
             <ScheduleModalItemList>
               <ScheduleModalItem>
                 <ScheduleModalItemTitle>일정 제목</ScheduleModalItemTitle>
@@ -126,7 +126,7 @@ const ScheduleModal = ({
               </ScheduleModalItem>
             </ScheduleModalItemList>
             {!!title.trim() && (
-              <MemoModalButton
+              <MemoViewerButton
                 onClick={() => {
                   if (!title.trim()) return;
 
@@ -135,12 +135,11 @@ const ScheduleModal = ({
                 }}
               >
                 추가
-              </MemoModalButton>
+              </MemoViewerButton>
             )}
           </>
         ) : (
           <>
-            <MemoModalTitle>4월</MemoModalTitle>
             <ScheduleModalItemList>
               <ScheduleModalItem>
                 <ScheduleModalItemTitle>일정 제목</ScheduleModalItemTitle>
@@ -164,7 +163,7 @@ const ScheduleModal = ({
                 </ScheduleModalItem>
               )}
             </ScheduleModalItemList>
-            <MemoModalButton
+            <MemoViewerButton
               onClick={() => {
                 setMode(true);
                 setTitle(props.schedule.title);
@@ -179,12 +178,12 @@ const ScheduleModal = ({
               }}
             >
               수정
-            </MemoModalButton>
+            </MemoViewerButton>
           </>
         )}
       </ScheduleModalContents>
-    </MemoModalContainer>
+    </MemoViewerContainer>
   );
 };
 
-export default ScheduleModal;
+export default MemoViewerSchedule;

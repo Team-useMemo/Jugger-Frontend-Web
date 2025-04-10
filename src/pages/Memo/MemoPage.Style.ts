@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@styles/theme';
 
 export const MemoPageContainer = styled.div({
   display: 'flex',
@@ -40,7 +41,7 @@ export const MemoDateDivideContainer = styled.div({
 });
 
 export const MemoDateDivideLineTip = styled.span({
-  borderBottom: '1px solid #E0E0E2',
+  borderBottom: `1px solid ${theme.color.line.normal}`,
   margin: '0',
   height: '0',
   minWidth: '20px',
@@ -56,14 +57,13 @@ export const MemoDateDivideContents = styled.div({
 
   ['p']: {
     margin: '0 12px',
-    color: '#C2C4C8',
-    fontSize: '14px',
-    fontWeight: '500',
+    color: theme.color.label.assistive,
+    ...theme.font.label1normal.medium,
   },
 });
 
 export const MemoDateDivideLine = styled.span({
-  borderBottom: '1px solid #E0E0E2',
+  borderBottom: `1px solid ${theme.color.line.normal}`,
   margin: '0',
   height: '0',
   flexGrow: '1',
@@ -91,18 +91,18 @@ export const MemoBottomButtonContainer = styled.div({
 });
 
 export const MemoBottomInputContainer = styled.div({
-  background: '#F7F7F8',
+  background: theme.color.background.alternative,
   width: '100%',
   display: 'flex',
-  borderRadius: '12px',
+  borderRadius: theme.radius[12],
   padding: '10px 20px',
   alignItems: 'center',
 
   ['textarea']: {
-    fontSize: '15px',
+    ...theme.font.body2normal.medium,
+    color: theme.color.label.normal,
     height: '22px',
     padding: '0',
-    lineHeight: '1.47',
     margin: '0',
     flexGrow: '1',
     textAlign: 'left',
@@ -110,8 +110,11 @@ export const MemoBottomInputContainer = styled.div({
     outline: 'none',
     background: 'none',
     resize: 'none',
-    color: '#171719',
     maxHeight: '160px',
+
+    ['::placeholder']: {
+      color: theme.color.label.assistive,
+    },
 
     ['::-webkit-scrollbar']: {
       display: 'none',

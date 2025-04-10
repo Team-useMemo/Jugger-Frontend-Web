@@ -2,7 +2,7 @@ import MemoLink from './Link/MemoLink';
 import MemoSchedule from './Schedule/MemoSchedule';
 import MemoText from './Text/MemoText';
 import MemoImage from './Image/MemoImage';
-import { MemoCategoryContainer, MemoContainer, MemoContent } from './Memo.Styls';
+import { MemoCategoryContainer, MemoContainer, MemoContent } from './Memo.Style';
 import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
 
 const MemoCategory = ({ category }: { category: { title: string; color: string } }) => {

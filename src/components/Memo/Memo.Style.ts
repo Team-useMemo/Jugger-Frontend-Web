@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@styles/theme';
 
 export const MemoContainer = styled.div({
   display: 'flex',
@@ -11,25 +12,23 @@ export const MemoContainer = styled.div({
   boxSizing: 'border-box',
 });
 
-export const MemoCategoryContainer = styled.div(({ color }) => ({
+export const MemoCategoryContainer = styled.div(({ color }: { color: string }) => ({
+  ...theme.font.caption2.medium,
   display: 'flex',
   alignItems: 'center',
   gap: '4px',
-  fontSize: '11px',
-  fontWeight: '500',
-  lineHeight: '1.27',
-  color: '#878A93',
+  color: theme.color.label.alternative,
 
   ['span']: {
     padding: '4px',
     background: color,
     margin: '0',
-    borderRadius: '32px',
+    borderRadius: theme.radius[32],
   },
 }));
 
 export const MemoContent = styled.div({
-  borderRadius: '12px',
+  borderRadius: theme.radius[12],
   overflow: 'hidden',
   maxWidth: '680px',
 });
