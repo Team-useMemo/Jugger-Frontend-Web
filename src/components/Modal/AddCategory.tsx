@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addCategory } from '@stores/modules/category';
 import { useNavigate } from 'react-router-dom';
 
-const AddCategory = ({ closeModal }: { closeModal: () => void; props: any }) => {
+const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
   const [title, setTitle] = useState('');
   const colors = ['#FF4242', '#00BF40', '#00AEFF', '#FF5E00', '#00BDDE', '#4F29E5', '#CB59FF', '#F553DA'];
   const [selected, setSelected] = useState(-1);

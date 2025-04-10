@@ -28,7 +28,10 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
-  const [AddCategoryModal, openAddCategoryModal] = useModal(AddCategory, [], {});
+  const [AddCategoryModal, openAddCategoryModal] = useModal(
+    ({ closeModal }) => <AddCategory closeModal={closeModal} />,
+    [],
+  );
   const [contentsType, setContentsType] = useState('');
   const [GatherContentsModal, openGatherContentsModal] = useModal(GatherContents, [], {
     categoryId: category,
@@ -68,19 +71,24 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      const target = e.target as HTMLElement;
+      const isInsideModal = target.closest('.modal-container');
+
+      if (modalRef.current && !modalRef.current.contains(e.target as Node) && !isInsideModal) {
         closeMenu();
       }
     };
 
     window.addEventListener('mousedown', handleClick);
     return () => window.removeEventListener('mousedown', handleClick);
-  });
+  }, [closeMenu]);
 
   return (
     <StyledSideBar active={toggleMenu}>
-      <AddCategoryModal />
-      <GatherContentsModal />
+      <div className="modal-container">
+        <AddCategoryModal />
+        <GatherContentsModal />
+      </div>
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>
           <LogoImage src={LogoPNG} onClick={handleLogoClick} />
