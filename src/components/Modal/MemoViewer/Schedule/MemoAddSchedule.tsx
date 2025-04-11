@@ -1,4 +1,4 @@
-import { MemoViewerButton, MemoViewerCloseContainer, MemoViewerContainer } from '../MemoViewer.Style';
+import { MemoViewerButton, MemoViewerCloseContainer, MemoViewerContainer, MemoViewerTitle } from '../MemoViewer.Style';
 import {
   MemoViewerScheduleContents,
   MemoViewerScheduleItemContainer,
@@ -54,6 +54,7 @@ const MemoAddSchedule = ({
         <CloseSVG onClick={closeModal} />
       </MemoViewerCloseContainer>
       <MemoViewerScheduleContents>
+        <MemoViewerTitle>일정 추가</MemoViewerTitle>
         <MemoViewerScheduleItemListContainer>
           <MemoViewerScheduleItemContainer>
             일정 제목
