@@ -4,11 +4,11 @@ import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import { MemoModalCloseContainer } from './Modal.Style';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '@hooks/useRedux';
-import formatDate from '@utils/Date';
 import useModal from '@hooks/useModal';
 import AboutImage from './AboutImage';
 import { theme } from '@styles/theme';
 import styled from '@emotion/styled';
+import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
 
 const Month = [
   'January',
@@ -120,24 +120,6 @@ const GatherImages = () => {
   );
 };
 
-const getDateCalendar = (date: Date) => {
-  const dateList = [];
-  const firstDate = new Date(date);
-  const firstDay = firstDate.getDay() == 0 ? 7 : firstDate.getDay();
-  const lastDate = new Date(firstDate);
-  lastDate.setMonth(lastDate.getMonth() + 1, 0);
-  const lastDay = lastDate.getDay();
-  console.log(lastDate, lastDay);
-
-  const length = firstDay + lastDate.getDate() + (lastDay == 6 ? 7 : 6 - lastDay);
-  firstDate.setDate(firstDate.getDate() - firstDay);
-  for (let i = 0; i < length; i++) {
-    dateList.push(new Date(firstDate));
-    firstDate.setDate(firstDate.getDate() + 1);
-  }
-  return dateList;
-};
-
 const GatherSchedules = () => {
   const categories = useAppSelector((state) => state.categorySlice.value);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -149,7 +131,7 @@ const GatherSchedules = () => {
 
   const [dates] = useState(_dateList);
 
-  const dateList = getDateCalendar(date);
+  const dateList = getCalendarDates(date);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -211,7 +193,7 @@ const GatherSchedules = () => {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((e) => (
+            {CalendarDays.map((e) => (
               <p
                 style={{
                   ...theme.font.caption1.regular,

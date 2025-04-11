@@ -1,4 +1,3 @@
-import formatDate from '@utils/Date';
 import {
   MessageItem,
   MessageBody,
@@ -19,6 +18,7 @@ import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
 import { useAppDispatch } from '@hooks/useRedux';
 import { deleteCategory } from '@stores/modules/category';
+import { formatDate } from '@utils/Date';
 
 interface SideMessageItemProps {
   focus: boolean;

@@ -3,10 +3,13 @@ import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import useModal from '@hooks/useModal';
 import MemoDetailText from '@components/Modal/MemoViewer/MemoDetail/MemoDetailText';
 import { MemoTextContainer, MemoTextContents, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
 const MemoText = ({ content }: { content: string }) => {
   const memoRef = useRef<HTMLParagraphElement>(null);
-  const [MemoDetailTextModal, openMemoDetailTextModal] = useModal(MemoDetailText, [], { text: content });
+  const [MemoDetailTextModal, openMemoDetailTextModal] = useModal(FullScreenGray, MemoDetailText, [], {
+    text: content,
+  });
   const [activeMore, setActiveMore] = useState(false);
 
   useEffect(() => {

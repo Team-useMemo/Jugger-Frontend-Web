@@ -1,13 +1,17 @@
 import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
-import formatDate from '@utils/Date';
 import useModal from '@hooks/useModal';
 import { scheduleProp } from '@ts/Memo.Prop';
 import { MemoMainText, MemoScheduleContainer, MemoScheduleContents } from './MemoSchedule.Style';
-import MemoDetailSchedule from '@components/Modal/MemoViewer/Schedule/MemoViewerSchedule';
+import MemoDetailSchedule from '@components/Modal/MemoViewer/Schedule/MemoDetailSchedule';
+import { formatDate } from '@utils/Date';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
 const MemoSchedule = ({ content }: { content: scheduleProp }) => {
-  const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(MemoDetailSchedule, [], {
-    schedule: content,
+  const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(FullScreenGray, MemoDetailSchedule, [], {
+    isEdit: false,
+    title: content.title,
+    startDate: content.startDate,
+    endDate: content.endDate,
   });
 
   return (

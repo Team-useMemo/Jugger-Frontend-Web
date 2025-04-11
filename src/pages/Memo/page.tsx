@@ -4,11 +4,9 @@ import SendSVG from '@assets/icons/send.svg?react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
-import formatDate from '@utils/Date';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addMemos, loadMemos } from '@stores/modules/memo';
 import { useParams, useSearchParams } from 'react-router-dom';
-import ScheduleModal from '@components/Modal/MemoViewer/Schedule/MemoViewerSchedule';
 import AddImageModal from '@components/Modal/AddImageModal';
 import isUrl from '@utils/isUrl';
 import {
@@ -23,6 +21,9 @@ import {
   MemoListContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
+import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedule';
+import { formatDate } from '@utils/Date';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
 const MemoList = ({ category }: { category: string | null }) => {
   const categories = useAppSelector((state) => state.categorySlice.value);
@@ -163,8 +164,10 @@ const MemoPage = () => {
     );
   };
 
-  const [AddScheduleModal, openAddScheduleModal] = useModal(ScheduleModal, [addSchedule], { add: true });
-  const [AddPhotoModal, openAddPhotoModal] = useModal(AddImageModal, [addPhoto]);
+  const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal(FullScreenGray, MemoAddSchedule, [addSchedule], {
+    add: true,
+  });
+  const [AddPhotoModal, openAddPhotoModal] = useModal(FullScreenGray, AddImageModal, [addPhoto]);
 
   useEffect(() => {
     if (!username) return;
@@ -175,13 +178,13 @@ const MemoPage = () => {
 
   return (
     <MemoPageContainer>
-      <AddScheduleModal />
+      <MemoAddScheduleModal />
       <AddPhotoModal />
       <MemoList category={currentCategory} />
       <MemoBottom
         category={currentCategory}
         openAddPhotoModal={openAddPhotoModal}
-        openAddScheduleModal={openAddScheduleModal}
+        openAddScheduleModal={openMemoAddScheduleModal}
       />
     </MemoPageContainer>
   );
