@@ -26,6 +26,8 @@ import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 
 const MemoList = ({ category }: { category: string | null }) => {
+  const memoListContainerRef = useRef<HTMLDivElement>(null);
+
   const categories = useAppSelector((state) => state.categorySlice.value);
 
   const memos = useAppSelector((state) => state.memoSlice.value).filter((e) => {
@@ -34,8 +36,12 @@ const MemoList = ({ category }: { category: string | null }) => {
     return false;
   });
 
+  useEffect(() => {
+    memoListContainerRef.current?.scrollTo({ top: 0 });
+  }, [memos]);
+
   return (
-    <MemoListContainer>
+    <MemoListContainer ref={memoListContainerRef}>
       {[...memos].reverse().map((e, i, arr) => {
         return (
           <MemoItemContainer key={e.id}>
