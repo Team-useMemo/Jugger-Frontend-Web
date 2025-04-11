@@ -1,33 +1,19 @@
-type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
+import { MemoProp } from '@ts/Memo.Prop';
 
-interface scheduleProp {
-  title: string;
-  startDate: Date;
-  endDate: Date | null;
-}
-
-interface userMemoProp {
-  id: number;
-  type: userMemoType;
-  content: string | scheduleProp;
-  date: Date;
-  category: number | null;
-}
-
-const memoMock: userMemoProp[] = [
+const memoMock: MemoProp[] = [
   {
     id: 1,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-24T04:32:00'),
-    category: 3,
+    categoryId: '3',
   },
   {
     id: 2,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-24T04:33:00'),
-    category: 3,
+    categoryId: '3',
   },
   {
     id: 3,
@@ -38,21 +24,21 @@ const memoMock: userMemoProp[] = [
       endDate: null,
     },
     date: new Date('2025-03-25T04:33:00'),
-    category: 3,
+    categoryId: '3',
   },
   {
     id: 4,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-25T04:33:00'),
-    category: 2,
+    categoryId: '2',
   },
   {
     id: 5,
     type: 'link',
     content: 'https://www.youtube.com/watch?v=9kfx7itbcbc',
     date: new Date('2025-03-25T04:33:00'),
-    category: 4,
+    categoryId: '4',
   },
   {
     id: 6,
@@ -60,7 +46,7 @@ const memoMock: userMemoProp[] = [
     content:
       'https://png.pngtree.com/background/20250103/original/pngtree-pink-pastel-background-with-pink-aesthetic-sky-picture-image_15151458.jpg',
     date: new Date('2025-03-25T04:33:00'),
-    category: 1,
+    categoryId: '1',
   },
   {
     id: 7,
@@ -71,14 +57,22 @@ const memoMock: userMemoProp[] = [
       endDate: null,
     },
     date: new Date('2025-03-26T04:33:00'),
-    category: 2,
+    categoryId: '2',
   },
   {
     id: 8,
     type: 'text',
     content: 'How are you?',
     date: new Date('2025-03-26T04:33:00'),
-    category: 2,
+    categoryId: '2',
+  },
+  {
+    id: 9,
+    type: 'text',
+    content:
+      '관현악이며 것이다 얼음과 귀는 낙원을 이상의 일월과 풀이 날카로우나 기관같이 피가 예수는 풀밭에 피고 만물은 무엇을 석가는 것이다 청춘은 모래뿐일 할지라도 천지는 점염이 꽃 이상 든 미인을 유소년에게서 품고 피다 찾아 지혜는 주는 위하여서 동력은 보배를 천하를 보이는 풍부하게 뭇 그러므로 그들에게 주며 그들은 약동하자 싶이 같이 이상이 얼마나 수 설산에서 있을 되는 없으면 뜨고 아름답고 듣기만 청춘이 타오르고 따뜻한 봄날의 청춘의 곧 꾸며 어디 천자만홍이 창공에 것은 그림자는 피어나기 생의 힘있다 구하지 그리하였는가 불어 찾아다녀도 이상은 평화스러운 착목하는 고동을 인생을 얼음에 누리는 장식하는 기쁘며 이것이다 그들의 있으랴 청춘 예가 인생에 철환하였는가 열락의 있으며 역사를 인도하겠다는 하여도 힘차게 교향악이다 방지하는 가는 만천하의 이성은 사랑의 앞이 가진 속잎 이는 우리의 우리 인간은 설레는 빛나는 끝까지 안고 인간이 열매를 목숨을 보라 아름다우냐 발휘하기 황금 불어넣는 새 때까지 없는 못할 있는가 간에 생생하며 바이며 죄악에 쓸쓸한 대고 뿐이다 꽃이 품었기 인류의 사막이다 가치를 미묘한 웅대한 가지에 속에서 투명하되 때에 커다란 있는 병들지 가슴이 내려온 방황하였으며 아니하였고 이것이야말로 바로 아니한 충분히 영락과 하였으며 원질이 봄바람이다 군영과 쉽고 목숨이 할지니 새가 너의 끓는 특권이다 우리는 곳이 트고 가슴에 피는 위하여 노래하며 거친 않는 그들을 몸이 있다 과실이 싸인 인간에 옷을 시대다 노년에게서 밥을 두기 인간의 이것을 이것은 공자는 운다 용감하고 시대의 같은 두 하는 품에 듣는다 눈에 맺어 품으며 있음으로써 쓸쓸하랴 같으며 실로 반짝이는 내는 현저하여 죽음이 용기가 못하다 그것을 실현에 놀이 피어나는 아니다 살았으며 희망의 온갖 아니더면 사는가 손을 부패를 적은지라 이상을 튼튼하며 동산에는 영원히 피부가 가장 뼈 곳으로 때문이다 길을 끓는다. 보이는 피에 얼음과 이것이야말로 인간의 전인 그들은 피가 철환하였는가 길을 있는가 오직 봄바람을 아니한 얼음에 있다 실로 못할 있으며 그러므로 꽃이 이는 되는 귀는 놀이 설레는 이상의 아니하였고 그것을 병들지 끓는다 손을 아름답고 맺어 소리다 듣기만 트고 새 몸이 것이다 날카로우나 목숨을 착목하는 만천하의 인류의 우리 천지는 수 이 가치를 하여도 되려니와 아니더면 열락의 것은 목숨이 끝에 천고에 광야에서 별과 작고 영락과 위하여 때에 무엇이 커다란 따뜻한 바 앞이 열매를 구할 살았으며 방지하는 황금 밥을 대중을 실현에 속에 무엇을 그들을 약동하자 인간에 돋고 청춘이 청춘의 그들의 만물은 눈이 노래하며 긴지라 이상 힘차게 뿐이다 과실이 끝까지 풍부하게 내는 원질이 귀중한 대한 인생의 시들어 너의 찬미를 때까지 못하다 할지라도 가슴에 인도하겠다는 이성은 보는 유소년에게서 불러 이것이다 뜨고 피는 우리의 이상은 희망의 얼마나 풀이 들어 가지에 없으면 피다 발휘하기 꽃 충분히 특권이다 사는가 때문이다 생의 감동하기 그들에게 듣는다 구하지 이상이 것이 자신과 행복스럽고 부패 끓는 용기가 봄바람이다 같은 것이다 청춘은 타오르고 웅대한 공자는 불어넣는 사랑의 소금이라 구하기 사막이다 기관같이 있는 거친 얼음 가진 노년에게서 같이 칼이다 모래뿐일 풀밭에 쓸쓸하랴 청춘을 빛나는 크고 이것은 낙원을 곧 그림자는 뜨거운지라 미인을 어디 무한한 누리는 같으며 든 말이다 사람은 봄날의 죄악에 보라 현저하여 바로 청춘 역사를 같지 두 관현악이며 더운지라 방황하였으며 싸인 남는 방황하여도 용감하고 시대다 인생에 피고 있을 있으랴 예수는 설산에서 온갖 심장의 적은지라 대고 간에 옷을 석가는 찾아다녀도 가장 가는 위하여서 소담스러운 있음으로써 창공에 장식하는 쉽고 쓸쓸한 힘있다 이상을 않는 피어나기 뭇 주는 예가 운다 할지니 갑 기쁘며 우는 아니다 점염이 품에 평화스러운 인생을 곳으로.',
+    date: new Date(),
+    categoryId: '3',
   },
 ];
 

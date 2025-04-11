@@ -95,7 +95,7 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
             closeModal();
             const id =
               categories.reduce((acc, e) => {
-                return Math.max(acc, e.id);
+                return Math.max(acc, Number(e.id));
               }, 0) + 1;
 
             navigate(`?category=${id}`);

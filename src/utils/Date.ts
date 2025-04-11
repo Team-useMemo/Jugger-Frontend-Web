@@ -1,6 +1,44 @@
 const weekday = ['일', '월', '화', '수', '목', '금', '토'];
+export const CalendarDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export const CalendarMonths = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
-const formatDate = (date: Date, format: string) => {
+export const getCalendarDates = (date: Date) => {
+  const dateList = [];
+  const firstDate = new Date(date);
+  const firstDay = firstDate.getDay() == 0 ? 7 : firstDate.getDay();
+  const lastDate = new Date(firstDate);
+  lastDate.setMonth(lastDate.getMonth() + 1, 0);
+  const lastDay = lastDate.getDay();
+
+  const length = firstDay + lastDate.getDate() + (lastDay == 6 ? 7 : 6 - lastDay);
+  firstDate.setDate(firstDate.getDate() - firstDay);
+  for (let i = 0; i < length; i++) {
+    dateList.push(new Date(firstDate));
+    firstDate.setDate(firstDate.getDate() + 1);
+  }
+  return dateList;
+};
+
+export const getDateAfterOneHour = (date: Date) => {
+  const _date = new Date(date);
+  _date.setHours(_date.getHours() + 1);
+  return _date;
+};
+
+export const formatDate = (date: Date, format: string) => {
   const _year = date.getFullYear().toString();
   const _month = (date.getMonth() + 1).toString();
   const _date = date.getDate().toString();
@@ -29,5 +67,3 @@ const formatDate = (date: Date, format: string) => {
     return acc.replace(`{${key}}`, value);
   }, format);
 };
-
-export default formatDate;

@@ -17,7 +17,7 @@ const Mainlayout = ({ children }: LayoutProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadCategories(username));
+    dispatch(loadCategories(username ?? ''));
   }, []);
 
   return (

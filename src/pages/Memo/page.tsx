@@ -1,123 +1,81 @@
-// import { useParams } from 'react-router-dom';
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import styled from '@emotion/styled';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
-import formatDate from '@utils/Date';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addMemos, loadMemos } from '@stores/modules/memo';
 import { useParams, useSearchParams } from 'react-router-dom';
-import ScheduleModal from '@components/Modal/ScheduleModal';
-import AddImageModal from '@components/Modal/AddImageModal';
+import isUrl from '@utils/isUrl';
+import {
+  MemoBottomButtonContainer,
+  MemoBottomContainer,
+  MemoBottomInputContainer,
+  MemoDateDivideContainer,
+  MemoDateDivideContents,
+  MemoDateDivideLine,
+  MemoDateDivideLineTip,
+  MemoItemContainer,
+  MemoListContainer,
+  MemoPageContainer,
+} from './MemoPage.Style';
+import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedule';
+import { formatDate } from '@utils/Date';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 
-const isUrl = (text: string): boolean => {
-  const pattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
-  return pattern.test(text);
-};
+const MemoList = ({ category }: { category: string | null }) => {
+  const memoListContainerRef = useRef<HTMLDivElement>(null);
 
-const MemoListContainer = styled.div({
-  gap: '16px',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column-reverse',
-  padding: '24px 0',
-  overflowY: 'scroll',
-  width: '100%',
-
-  ['::-webkit-scrollbar']: {
-    display: 'none',
-  },
-});
-
-const MemoDateDivideContainer = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  padding: '0 8px',
-  boxSizing: 'border-box',
-  width: '100%',
-});
-
-const MemoDateDivideContents = styled.div({
-  width: '100%',
-  maxWidth: '1080px',
-  boxSizing: 'content-box',
-  display: 'flex',
-  alignItems: 'center',
-
-  ['p']: {
-    margin: '0 12px',
-    color: '#C2C4C8',
-    fontSize: '14px',
-    fontWeight: '500',
-  },
-});
-
-const MemoDateDivideLine = styled.span({
-  borderBottom: '1px solid #E0E0E2',
-  margin: '0',
-  height: '0',
-  flexGrow: '1',
-});
-const MemoDateDivideLineTip = styled.span({
-  borderBottom: '1px solid #E0E0E2',
-  margin: '0',
-  height: '0',
-  minWidth: '20px',
-  flexGrow: '1',
-});
-
-const MemoItemContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-  alignItems: 'center',
-});
-
-const MemoPage = () => {
-  const { username } = useParams();
-  const [searchParams] = useSearchParams();
-  const category = searchParams.get('category');
   const categories = useAppSelector((state) => state.categorySlice.value);
+
   const memos = useAppSelector((state) => state.memoSlice.value).filter((e) => {
     if (!category) return true;
-    if (category == e.category) return true;
+    if (category == e.categoryId) return true;
     return false;
   });
-  const [newMemo, setNewMemo] = useState('');
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  useEffect(() => {
+    memoListContainerRef.current?.scrollTo({ top: 0 });
+  }, [memos]);
 
+  return (
+    <MemoListContainer ref={memoListContainerRef}>
+      {[...memos].reverse().map((e, i, arr) => {
+        return (
+          <MemoItemContainer key={e.id}>
+            {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
+              <MemoDateDivideContainer>
+                <MemoDateDivideLineTip />
+                <MemoDateDivideContents>
+                  <p>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</p>
+                  <MemoDateDivideLine />
+                </MemoDateDivideContents>
+                <MemoDateDivideLineTip />
+              </MemoDateDivideContainer>
+            )}
+            <MemoComponent memo={e} category={categories.find(({ id }) => id == e.categoryId)} />
+          </MemoItemContainer>
+        );
+      })}
+    </MemoListContainer>
+  );
+};
+
+const MemoBottom = ({
+  category,
+  openAddPhotoModal,
+  openAddScheduleModal,
+}: {
+  category: string | null;
+  openAddPhotoModal: any;
+  openAddScheduleModal: any;
+}) => {
   const dispatch = useAppDispatch();
 
-  const addSchedule = (title: string, startDate: Date, endDate: Date | null) => {
-    dispatch(
-      addMemos({
-        type: 'schedule',
-        content: {
-          title,
-          startDate,
-          endDate,
-        },
-        category: category,
-      }),
-    );
-  };
-
-  const addPhoto = (image: string) => {
-    dispatch(
-      addMemos({
-        type: 'photo',
-        content: image,
-        category: category,
-      }),
-    );
-  };
-
-  const [AddScheduleModal, openAddScheduleModal] = useModal(ScheduleModal, [addSchedule], { add: true });
-  const [AddPhotoModal, openAddPhotoModal] = useModal(AddImageModal, [addPhoto]);
+  const [newMemo, setNewMemo] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -130,7 +88,6 @@ const MemoPage = () => {
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setNewMemo(e.target.value);
     changeTextAreaSize();
-    console.log(e.target.value);
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
@@ -150,116 +107,93 @@ const MemoPage = () => {
       addMemos({
         type: isUrl(newMemo) ? 'link' : 'text',
         content: newMemo,
-        category: category,
+        categoryId: category,
       }),
     );
 
+    if (textareaRef.current) {
+      textareaRef.current.value = '';
+    }
     setNewMemo('');
-    setTimeout(() => {
-      changeTextAreaSize();
-    }, 1);
+
+    changeTextAreaSize();
   };
 
-  useEffect(() => {
-    dispatch(loadMemos(username));
-  }, []);
-
-  if (!memos) return <div>Loading</div>;
-
   return (
-    <div style={{ display: 'flex', height: '100%', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-      <AddScheduleModal />
-      <AddPhotoModal />
-      <MemoListContainer>
-        {[...memos].reverse().map((e, i, arr) => {
-          return (
-            <MemoItemContainer key={e.id}>
-              {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
-                <MemoDateDivideContainer>
-                  <MemoDateDivideLineTip />
-                  <MemoDateDivideContents>
-                    <p>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</p>
-                    {/* <p>{formatDateToString(e.date)}</p> */}
-                    <MemoDateDivideLine />
-                  </MemoDateDivideContents>
-                  <MemoDateDivideLineTip />
-                </MemoDateDivideContainer>
-              )}
-              <MemoComponent memo={e} category={categories.find(({ id }) => id == e.category)} />
-            </MemoItemContainer>
-          );
-        })}
-      </MemoListContainer>
-      <MemoBottomContainer>
-        <MemoBottomButtonContainer>
-          <PaperClipSVG onClick={openAddPhotoModal} />
-          <CalendarSVG onClick={openAddScheduleModal} />
-        </MemoBottomButtonContainer>
-        <MemoBottomInputContainer>
-          <textarea
-            ref={textareaRef}
-            placeholder="메시지를 입력하세요"
-            onChange={handleInputChange}
-            onKeyDown={handleInputKeyDown}
-            value={newMemo}
-          />
-          <SendSVG onClick={handleClickSend} />
-        </MemoBottomInputContainer>
-      </MemoBottomContainer>
-    </div>
+    <MemoBottomContainer>
+      <MemoBottomButtonContainer>
+        <PaperClipSVG onClick={openAddPhotoModal} />
+        <CalendarSVG onClick={openAddScheduleModal} />
+      </MemoBottomButtonContainer>
+      <MemoBottomInputContainer>
+        <textarea
+          ref={textareaRef}
+          placeholder="메시지를 입력하세요"
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          value={newMemo}
+        />
+        <SendSVG onClick={handleClickSend} />
+      </MemoBottomInputContainer>
+    </MemoBottomContainer>
   );
 };
 
-const MemoBottomContainer = styled.div({
-  maxWidth: '1080px',
-  width: '100%',
-  boxSizing: 'border-box',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '0 24px 24px',
-  gap: '12px',
-});
+const MemoPage = () => {
+  const dispatch = useAppDispatch();
+  const { username } = useParams();
+  const [searchParams] = useSearchParams();
 
-const MemoBottomButtonContainer = styled.div({
-  display: 'flex',
-  gap: '12px',
+  const currentCategory = searchParams.get('category');
 
-  ['svg']: {
-    cursor: 'pointer',
-  },
-});
+  const addSchedule = (title: string, startDate: Date, endDate: Date | null) => {
+    dispatch(
+      addMemos({
+        type: 'schedule',
+        content: {
+          title,
+          startDate,
+          endDate,
+        },
+        categoryId: currentCategory,
+      }),
+    );
+  };
 
-const MemoBottomInputContainer = styled.div({
-  background: '#F7F7F8',
-  width: '100%',
-  display: 'flex',
-  borderRadius: '12px',
-  padding: '10px 20px',
-  alignItems: 'center',
+  const addImage = (image: string) => {
+    dispatch(
+      addMemos({
+        type: 'photo',
+        content: image,
+        categoryId: currentCategory,
+      }),
+    );
+  };
 
-  ['textarea']: {
-    fontSize: '15px',
-    height: '22px',
-    padding: '0',
-    lineHeight: '1.47',
-    margin: '0',
-    flexGrow: '1',
-    textAlign: 'left',
-    border: 'none',
-    outline: 'none',
-    background: 'none',
-    resize: 'none',
-    color: '#171719',
-    maxHeight: '160px',
+  const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal(FullScreenGray, MemoAddSchedule, [addSchedule], {
+    add: true,
+  });
+  const [MemoAddImageModal, openMemoAddImageModal] = useModal(FullScreenGray, MemoAddImage, [addImage]);
 
-    ['::-webkit-scrollbar']: {
-      display: 'none',
-    },
-  },
+  useEffect(() => {
+    if (!username) return;
+    dispatch(loadMemos(username));
+  }, []);
 
-  ['svg']: {
-    cursor: 'pointer',
-  },
-});
+  // if (!memos) return <div>Loading</div>;
+
+  return (
+    <MemoPageContainer>
+      <MemoAddScheduleModal />
+      <MemoAddImageModal />
+      <MemoList category={currentCategory} />
+      <MemoBottom
+        category={currentCategory}
+        openAddPhotoModal={openMemoAddImageModal}
+        openAddScheduleModal={openMemoAddScheduleModal}
+      />
+    </MemoPageContainer>
+  );
+};
 
 export default MemoPage;
