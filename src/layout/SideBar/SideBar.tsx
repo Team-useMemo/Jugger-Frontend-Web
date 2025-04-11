@@ -21,6 +21,7 @@ import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
 import AddCategory from '@components/Modal/AddCategory';
 import GatherContents from '@components/Modal/GatherContents';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
 // store.dispatch(categoryAction);
 
@@ -29,11 +30,12 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
   const [AddCategoryModal, openAddCategoryModal] = useModal(
+    FullScreenGray,
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
   );
   const [contentsType, setContentsType] = useState('');
-  const [GatherContentsModal, openGatherContentsModal] = useModal(GatherContents, [], {
+  const [GatherContentsModal, openGatherContentsModal] = useModal(FullScreenGray, GatherContents, [], {
     categoryId: category,
     contentsType,
   });

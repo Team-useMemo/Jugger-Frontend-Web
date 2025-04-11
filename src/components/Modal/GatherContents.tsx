@@ -8,6 +8,8 @@ import useModal from '@hooks/useModal';
 import { theme } from '@styles/theme';
 import styled from '@emotion/styled';
 import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
+import MemoDetailImage from './MemoViewer/Image/MemoDetailImage';
+import FullScreenGray from './Background/FullScreenGray';
 
 const Month = [
   'January',
@@ -42,13 +44,15 @@ const _dateList = Array.from({ length: 50 }, (_, i) => {
     title: i,
     startDate: startDate,
     endDate: Math.random() > 0.3 ? endDate : null,
-    category: Math.ceil(Math.random() * 6),
+    category: Math.ceil(Math.random() * 6).toString(),
   };
 }).sort((a: any, b: any) => a.startDate - b.startDate);
 
 const GatherImages = () => {
   const [selectedImage, setSelectedImage] = useState('');
-  const [AboutPhotoModal, openAboutPhotoModal] = useModal(AboutImage, [], { image: selectedImage });
+  const [AboutPhotoModal, openAboutPhotoModal] = useModal(FullScreenGray, MemoDetailImage, [], {
+    image: selectedImage,
+  });
 
   const [images] = useState(
     Object.entries(
@@ -268,12 +272,13 @@ const GatherSchedules = () => {
                     {dates
                       .filter((e2) => e2.startDate.toDateString() == e.toDateString())
                       .map((e2) => {
+                        console.log(categories.find(({ id }) => id == e2.category));
                         return (
                           <div
                             style={{
                               width: '6px',
                               height: '6px',
-                              background: categories.find(({ id }) => id == e2.category).color,
+                              background: categories.find(({ id }) => id == e2.category)?.color,
                               borderRadius: theme.radius.full,
                               marginLeft: '-2px',
                             }}
@@ -340,7 +345,7 @@ const GatherSchedules = () => {
                     style={{
                       width: '8px',
                       height: '8px',
-                      background: categories.find(({ id }) => id == e.category).color,
+                      background: categories.find(({ id }) => id == e.category)?.color,
                       borderRadius: theme.radius.full,
                     }}
                   />
@@ -357,11 +362,11 @@ const GatherSchedules = () => {
 };
 
 const linkList = [
-  { content: 'https://www.youtube.com/watch?v=v8zk7DECvqs', category: 1 },
-  { content: 'https://www.youtube.com/watch?v=gDlfKQpQZkQ', category: 2 },
-  { content: 'https://www.youtube.com/watch?v=EMLxA1P119U', category: 5 },
+  { content: 'https://www.youtube.com/watch?v=v8zk7DECvqs', category: '1' },
+  { content: 'https://www.youtube.com/watch?v=gDlfKQpQZkQ', category: '2' },
+  { content: 'https://www.youtube.com/watch?v=EMLxA1P119U', category: '5' },
   { content: 'https://www.youtube.com/watch?v=f_-I4yaMfK4&pp=0gcJCb8Ag7Wk3p_U' },
-  { content: 'https://www.youtube.com/watch?v=UIN8CtE6Wis', category: 4 },
+  { content: 'https://www.youtube.com/watch?v=UIN8CtE6Wis', category: '4' },
 ];
 
 const fetchUrlPreview = async (url: string) => {
@@ -377,7 +382,7 @@ interface OgData {
   ogUrl: string;
 }
 
-const GatherLinksItem = ({ content, category }: { content: any; category?: number }) => {
+const GatherLinksItem = ({ content, category }: { content: any; category?: string }) => {
   const [ogData, setOgData] = useState<OgData | null>(null);
 
   const _category = useAppSelector((state) => state.categorySlice.value).find((e) => e.id == category);

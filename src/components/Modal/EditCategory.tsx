@@ -21,7 +21,7 @@ const EditCategory = ({
   initialColor,
   closeModal,
 }: {
-  id: number;
+  id: string;
   name: string;
   initialColor: string;
   closeModal: () => void;

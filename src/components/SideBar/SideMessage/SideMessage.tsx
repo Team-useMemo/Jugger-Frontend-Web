@@ -19,10 +19,11 @@ import EditCategory from '@components/Modal/EditCategory';
 import { useAppDispatch } from '@hooks/useRedux';
 import { deleteCategory } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
 interface SideMessageItemProps {
   focus: boolean;
-  id: number;
+  id: string;
   color: string;
   title: string;
   content: string;
@@ -42,6 +43,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const touchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
+    FullScreenGray,
     ({ closeModal, props }) => (
       <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />
     ),
