@@ -117,3 +117,45 @@ export const CategoryItemContent = styled.div({
     color: '#171719',
   },
 });
+
+export const SearchCategoryWrapper = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+  padding: '0 32px',
+  width: '100%',
+  boxSizing: 'border-box',
+
+  [media[0]]: {
+    padding: '0 24px',
+  },
+});
+
+export const SearchCategoryTitle = styled.h2({
+  fontSize: '18px',
+  fontWeight: '600',
+  margin: '0',
+});
+
+export const SearchCard = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+  padding: '16px',
+  borderRadius: '12px',
+  backgroundColor: '#F7F7F8',
+});
+
+export const TagList = styled.div({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '6px',
+});
+
+export const Tag = styled.span({
+  fontSize: '13px',
+  padding: '4px 8px',
+  backgroundColor: '#E5E5EA',
+  borderRadius: '20px',
+  color: '#333',
+});

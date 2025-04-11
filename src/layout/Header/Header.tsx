@@ -4,31 +4,58 @@ import { useSearchParams } from 'react-router-dom';
 import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } from './Header.Style';
 import MenuSVG from '@assets/icons/menu.svg?react';
 import { useAppSelector } from '@hooks/useRedux';
+import useModal from '@hooks/useModal';
+import SearchCategory from '@components/Modal/SearchCategory';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import { useEffect, useRef } from 'react';
 
-const Header = ({ activeMenu }: { activeMenu: () => void }) => {
+const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: () => void }) => {
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('category');
   const categories = useAppSelector((state) => state.categorySlice.value);
   const category = categories.find((e) => e.id == categoryId);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  const onSearchClick = () => alert('검색');
+  const [SearchCategoryModal, openSearchCategoryModal] = useModal(FullScreenGray, () => <SearchCategory />, [], {});
+  const onSearchClick = () => {
+    openSearchCategoryModal();
+  };
+
   const onDetailClick = () => alert('상세');
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isInsideModal = target.closest('.modal-container');
+
+      if (modalRef.current && !modalRef.current.contains(e.target as Node) && !isInsideModal) {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, [closeMenu]);
+
   return (
-    <StyledHeader>
-      <MenuSVG onClick={activeMenu} />
-      <HeaderTitle>
-        {category && (
-          <>
-            <HeaderTitleCircle color={category.color} />
-            {category.title}
-          </>
-        )}
-      </HeaderTitle>
-      <HeaderButtonContainer>
-        <SearchSVG onClick={onSearchClick} />
-        <DetailSVG onClick={onDetailClick} />
-      </HeaderButtonContainer>
-    </StyledHeader>
+    <>
+      <SearchCategoryModal />
+      <StyledHeader ref={modalRef}>
+        <MenuSVG onClick={activeMenu} />
+        <HeaderTitle>
+          {category && (
+            <>
+              <HeaderTitleCircle color={category.color} />
+              {category.title}
+            </>
+          )}
+        </HeaderTitle>
+        <HeaderButtonContainer>
+          <SearchSVG onClick={onSearchClick} />
+          <DetailSVG onClick={onDetailClick} />
+        </HeaderButtonContainer>
+      </StyledHeader>
+    </>
   );
 };
 

@@ -18,13 +18,13 @@ const Mainlayout = ({ children }: LayoutProps) => {
 
   useEffect(() => {
     dispatch(loadCategories(username ?? ''));
-  }, []);
+  }, [dispatch, username]);
 
   return (
     <StyledMainlayout>
       <SideBar toggleMenu={toggleMenu} closeMenu={closeMenu} />
       <StyledMain>
-        <Header activeMenu={openMenu} />
+        <Header activeMenu={openMenu} closeMenu={closeMenu} />
         <StyledContent>{children}</StyledContent>
       </StyledMain>
     </StyledMainlayout>
