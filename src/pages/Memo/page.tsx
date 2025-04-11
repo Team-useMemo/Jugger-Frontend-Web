@@ -7,7 +7,6 @@ import MemoComponent from '@components/Memo/Memo';
 import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
 import { addMemos, loadMemos } from '@stores/modules/memo';
 import { useParams, useSearchParams } from 'react-router-dom';
-import AddImageModal from '@components/Modal/AddImageModal';
 import isUrl from '@utils/isUrl';
 import {
   MemoBottomButtonContainer,
@@ -24,6 +23,7 @@ import {
 import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedule';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 
 const MemoList = ({ category }: { category: string | null }) => {
   const categories = useAppSelector((state) => state.categorySlice.value);
@@ -154,7 +154,7 @@ const MemoPage = () => {
     );
   };
 
-  const addPhoto = (image: string) => {
+  const addImage = (image: string) => {
     dispatch(
       addMemos({
         type: 'photo',
@@ -167,7 +167,7 @@ const MemoPage = () => {
   const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal(FullScreenGray, MemoAddSchedule, [addSchedule], {
     add: true,
   });
-  const [AddPhotoModal, openAddPhotoModal] = useModal(FullScreenGray, AddImageModal, [addPhoto]);
+  const [MemoAddImageModal, openMemoAddImageModal] = useModal(FullScreenGray, MemoAddImage, [addImage]);
 
   useEffect(() => {
     if (!username) return;
@@ -179,11 +179,11 @@ const MemoPage = () => {
   return (
     <MemoPageContainer>
       <MemoAddScheduleModal />
-      <AddPhotoModal />
+      <MemoAddImageModal />
       <MemoList category={currentCategory} />
       <MemoBottom
         category={currentCategory}
-        openAddPhotoModal={openAddPhotoModal}
+        openAddPhotoModal={openMemoAddImageModal}
         openAddScheduleModal={openMemoAddScheduleModal}
       />
     </MemoPageContainer>

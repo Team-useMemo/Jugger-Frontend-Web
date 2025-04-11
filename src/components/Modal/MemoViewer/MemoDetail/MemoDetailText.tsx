@@ -9,7 +9,7 @@ const MemoDetailText = ({ closeModal, props }: { closeModal: () => void; props: 
         <CloseSVG onClick={closeModal} />
       </MemoViewerCloseContainer>
       <MemoDetailTextContainer>
-        <MemoDetailTextTitle>4월</MemoDetailTextTitle>
+        <MemoDetailTextTitle>4월 여행계획</MemoDetailTextTitle>
         <MemoDetailTextContents>{props.text}</MemoDetailTextContents>
       </MemoDetailTextContainer>
     </MemoViewerContainer>

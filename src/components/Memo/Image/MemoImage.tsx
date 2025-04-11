@@ -1,24 +1,18 @@
-import AboutImage from '@components/Modal/AboutImage';
-import styled from '@emotion/styled';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage';
 import useModal from '@hooks/useModal';
-
-const MemoImageContainer = styled.div({
-  display: 'flex',
-  cursor: 'pointer',
-  ['img']: {
-    maxWidth: '320px',
-    maxHeight: '240px',
-  },
-});
+import MemoImageContainer from './MemoImage.Style';
 
 const MemoImage = ({ content }: { content: string }) => {
-  const [AboutPhotoModal, openAboutPhotoModal] = useModal(AboutImage, [], { image: content });
+  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal(FullScreenGray, MemoDetailImage, [], {
+    image: content,
+  });
 
   return (
     <>
-      <AboutPhotoModal />
+      <MemoDetailImageModal />
       <MemoImageContainer>
-        <img src={content} onClick={openAboutPhotoModal} />
+        <img src={content} onClick={openMemoDetailImageModal} />
       </MemoImageContainer>
     </>
   );

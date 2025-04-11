@@ -5,7 +5,6 @@ import { MemoModalCloseContainer } from './Modal.Style';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
-import AboutImage from './AboutImage';
 import { theme } from '@styles/theme';
 import styled from '@emotion/styled';
 import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';

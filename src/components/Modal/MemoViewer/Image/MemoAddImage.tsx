@@ -1,21 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
-import { MemoModalButton, MemoModalCloseContainer, MemoModalContainer, MemoModalTitle } from './Modal.Style';
-import styled from '@emotion/styled';
+import { MemoModalButton, MemoModalCloseContainer, MemoModalContainer, MemoModalTitle } from '../../Modal.Style';
+import { MemoAddImageContainer, MemoAddImageContents, MemoAddImageEmptyContents } from './MemoViewerImage.Style';
 
-const AddImageModalContents = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '36px',
-  padding: '0 32px',
-  width: '450px',
-  boxSizing: 'border-box',
-  textAlign: 'left',
-});
+const MemoAddImage = ({ closeModal, actions }: { closeModal: () => void; actions: ((...args: any[]) => void)[] }) => {
+  const [addImage] = actions;
 
-const AddImageModal = ({ closeModal, actions }: { closeModal: () => void; actions: ((...args: any[]) => void)[] }) => {
   const [image, setImage] = useState<string | ArrayBuffer | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handlePasteClipboard = (e: React.ClipboardEvent<HTMLDivElement>) => {
     const items = e.clipboardData.items;
@@ -63,8 +56,6 @@ const AddImageModal = ({ closeModal, actions }: { closeModal: () => void; action
     }
   };
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     containerRef.current?.focus();
   }, []);
@@ -85,51 +76,31 @@ const AddImageModal = ({ closeModal, actions }: { closeModal: () => void; action
         <CloseSVG onClick={closeModal} />
       </MemoModalCloseContainer>
 
-      <AddImageModalContents>
+      <MemoAddImageContainer>
         <MemoModalTitle>사진 추가</MemoModalTitle>
-        <div
-          style={{
-            width: '100%',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+        <MemoAddImageContents>
           {image ? (
             <img src={image as string} style={{ width: '100%' }} />
           ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'gray',
-                color: 'white',
-                height: '320px',
-                gap: '12px',
-              }}
-              onClick={handleUploadLocalFile}
-            >
+            <MemoAddImageEmptyContents onClick={handleUploadLocalFile}>
               <img src={AddPhotoPNG} />
               이미지 업로드 또는 클립보드 붙여넣기
-            </div>
+            </MemoAddImageEmptyContents>
           )}
-        </div>
+        </MemoAddImageContents>
         {image && (
           <MemoModalButton
             onClick={() => {
-              actions[0](image);
+              addImage(image);
               closeModal();
             }}
           >
-            추가하기
+            추가
           </MemoModalButton>
         )}
-      </AddImageModalContents>
+      </MemoAddImageContainer>
     </MemoModalContainer>
   );
 };
 
-export default AddImageModal;
+export default MemoAddImage;
