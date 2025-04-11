@@ -6,19 +6,21 @@ export const MessageItem = styled.div(
   }),
   {
     display: 'flex',
-    padding: '12px 16px',
     borderRadius: '8px',
     cursor: 'pointer',
     width: '100%',
     boxSizing: 'border-box',
     userSelect: 'none',
     WebkitUserSelect: 'none',
-
-    '&:hover': {
-      backgroundColor: '#f8f8f8',
-    },
   },
 );
+
+export const MessageInnerWrapper = styled.div({
+  padding: '12px 16px',
+  width: '100%',
+  display: 'flex',
+  boxSizing: 'border-box',
+});
 
 export const Dot = styled.div({
   width: '10px',
@@ -31,15 +33,14 @@ export const Dot = styled.div({
 });
 
 export const PinTriggerWrapper = styled.div({
-  width: '24px',
-  height: '100%',
+  width: '60px',
+  height: '100%', // 변경
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexShrink: 0,
-  padding: '0px 10px',
-  alignSelf: 'stretch',
-  // backgroundColor: '#F7F7F8',
+  backgroundColor: '#F7F7F8',
+  margin: '0 12px 0 0',
 });
 
 export const MessageBody = styled.div({

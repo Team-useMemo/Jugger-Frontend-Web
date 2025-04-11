@@ -8,6 +8,7 @@ import {
   Dot,
   HeaderLeft,
   PinTriggerWrapper,
+  MessageInnerWrapper,
 } from './SideMessage.Style';
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
 import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
@@ -159,21 +160,23 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
             <SettingPinSVG onClick={handlePinClick} />
           </PinTriggerWrapper>
         )}
-        <Dot style={{ backgroundColor: color }} />
-        <MessageBody>
-          <MessageHeader>
-            <HeaderLeft>
-              <Title>{title}</Title>
-              {isPinnedState && <PinSVG onClick={handlePinClick} />}
-            </HeaderLeft>
-            <Time>
-              {time.toDateString() !== new Date().toDateString()
-                ? formatDate(time, '{M}.{DD}')
-                : formatDate(time, '{hh}:{mm}')}
-            </Time>
-          </MessageHeader>
-          <Content>{content}</Content>
-        </MessageBody>
+        <MessageInnerWrapper>
+          <Dot style={{ backgroundColor: color }} />
+          <MessageBody>
+            <MessageHeader>
+              <HeaderLeft>
+                <Title>{title}</Title>
+                {isPinnedState && <PinSVG onClick={handlePinClick} />}
+              </HeaderLeft>
+              <Time>
+                {time.toDateString() !== new Date().toDateString()
+                  ? formatDate(time, '{M}.{DD}')
+                  : formatDate(time, '{hh}:{mm}')}
+              </Time>
+            </MessageHeader>
+            <Content>{content}</Content>
+          </MessageBody>
+        </MessageInnerWrapper>
       </MessageItem>
       {contextMenu && (
         <ContextMenu

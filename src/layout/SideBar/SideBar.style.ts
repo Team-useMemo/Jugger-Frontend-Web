@@ -5,7 +5,7 @@ export const StyledSideBar = styled.div(
   {
     display: 'flex',
     flexDirection: 'column',
-    width: '350px',
+    width: '360px',
     height: '100%',
     background: '#989BA288',
 
