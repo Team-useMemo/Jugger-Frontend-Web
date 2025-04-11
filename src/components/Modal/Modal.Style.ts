@@ -9,12 +9,13 @@ export const MemoModalContainer = styled.div({
   borderRadius: '16px',
   padding: '32px 0',
   outline: 'none',
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  zIndex: 1000,
 
   [media[0]]: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
     width: '90%',
     maxWidth: '400px',
     backgroundColor: 'white',
@@ -22,7 +23,6 @@ export const MemoModalContainer = styled.div({
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
     maxHeight: '90vh',
     overflowY: 'auto',
-    zIndex: 1000,
   },
 });
 
