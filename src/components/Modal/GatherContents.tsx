@@ -557,6 +557,11 @@ const GatherContents = ({ closeModal, props }: { closeModal: () => void; props: 
         height: '840px',
         background: 'white',
         borderRadius: '16px',
+        zIndex: 1000,
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
       }}
     >
       <div
