@@ -25,6 +25,29 @@ const highlightText = (text: string, keyword: string) => {
   );
 };
 
+const SearchResultItem = ({ memo, categories, searchQuery }: { memo: any; categories: any[]; searchQuery: string }) => {
+  const category = categories.find((cat) => cat.id === memo.categoryId);
+  return (
+    <ResultItem key={memo.id}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <ResultIconWrapper>
+          {memo.type === 'text' && <TextSVG />}
+          {memo.type === 'schedule' && <ScheduleSVG />}
+          {memo.type === 'photo' && <PhotoSVG />}
+          {memo.type === 'link' && <LinkSVG />}
+        </ResultIconWrapper>
+        <ResultText>{highlightText(getSearchableText(memo), searchQuery)}</ResultText>
+      </div>
+      {category && (
+        <Legend>
+          <LegendDot color={category.color} />
+          {category.title}
+        </Legend>
+      )}
+    </ResultItem>
+  );
+};
+
 const SearchCategory = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -37,9 +60,6 @@ const SearchCategory = () => {
     return matchesQuery && matchesCategory;
   });
 
-  const filteredCategories = categories.filter((category) =>
-    filteredMemos.some((memo) => memo.categoryId === category.id),
-  );
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategoryId((prev) => (prev === categoryId ? null : categoryId));
   };
@@ -79,25 +99,9 @@ const SearchCategory = () => {
           <ResultLayout>
             <ResultList>
               {filteredMemos.map((memo) => (
-                <ResultItem key={memo.id}>
-                  <ResultIconWrapper>
-                    {memo.type === 'text' && <TextSVG />}
-                    {memo.type === 'schedule' && <ScheduleSVG />}
-                    {memo.type === 'photo' && <PhotoSVG />}
-                    {memo.type === 'link' && <LinkSVG />}
-                  </ResultIconWrapper>
-                  <ResultText>{highlightText(getSearchableText(memo), searchQuery)}</ResultText>
-                </ResultItem>
+                <SearchResultItem key={memo.id} memo={memo} categories={categories} searchQuery={searchQuery} />
               ))}
             </ResultList>
-            <LegendList>
-              {filteredCategories.map((cat) => (
-                <Legend key={cat.id}>
-                  <LegendDot color={cat.color} />
-                  {cat.title}
-                </Legend>
-              ))}
-            </LegendList>
           </ResultLayout>
         )}
       </Wrapper>
@@ -240,6 +244,7 @@ const ResultList = styled.ul({
 
 const ResultItem = styled.li({
   display: 'flex',
+  justifyContent: 'space-between',
   alignItems: 'center',
   fontSize: '14px',
   color: '#222',
@@ -271,14 +276,6 @@ const ResultText = styled.span({
 const Highlight = styled.span({
   color: '#0054D1',
   fontWeight: 500,
-});
-
-const LegendList = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-  fontSize: '13px',
-  minWidth: '110px',
 });
 
 const Legend = styled.div({
