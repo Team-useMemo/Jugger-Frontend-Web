@@ -5,7 +5,7 @@ import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } f
 import MenuSVG from '@assets/icons/menu.svg?react';
 import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
-import SearchCategory from '@components/Modal/SearchCategory';
+import Search from '@components/Modal/Search/Search';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import { useEffect, useRef } from 'react';
 
@@ -16,7 +16,7 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
   const category = categories.find((e) => e.id == categoryId);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const [SearchCategoryModal, openSearchCategoryModal] = useModal(FullScreenGray, () => <SearchCategory />, [], {});
+  const [SearchCategoryModal, openSearchCategoryModal] = useModal(FullScreenGray, () => <Search />, [], {});
   const onSearchClick = () => {
     openSearchCategoryModal();
   };
