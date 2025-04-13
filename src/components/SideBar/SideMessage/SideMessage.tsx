@@ -18,7 +18,7 @@ import ContextMenu from './ContextMenu/ContextMenu';
 import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
 import { useAppDispatch } from '@hooks/useRedux';
-import { deleteCategory } from '@stores/modules/category';
+import { deleteCategory, togglePin } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
@@ -36,7 +36,6 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [isPinnedState, setIsPinnedState] = useState(isPinned);
   const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
@@ -61,10 +60,10 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   }, [navigate, id]);
 
   const handlePinClick = useCallback(() => {
-    setIsPinnedState((prev) => !prev);
+    dispatch(togglePin(id));
     closeContextMenu();
     setShowPinIcon(false);
-  }, [closeContextMenu]);
+  }, [dispatch, id, closeContextMenu]);
 
   const handleCategoryEditClick = useCallback(() => {
     openEditCategoryModal();
@@ -166,7 +165,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
             <MessageHeader>
               <HeaderLeft>
                 <Title>{title}</Title>
-                {isPinnedState && <PinSVG onClick={handlePinClick} />}
+                {isPinned && <PinSVG onClick={handlePinClick} />}
               </HeaderLeft>
               <Time>
                 {time.toDateString() !== new Date().toDateString()

@@ -49,11 +49,16 @@ export const categorySlice = createSlice({
     deleteCategory: (state, action: PayloadAction<string>) => {
       state.value = state.value.filter((category) => category.id !== action.payload);
     },
+    togglePin: (state, action: PayloadAction<string>) => {
+      state.value = state.value.map((category) =>
+        category.id === action.payload ? { ...category, pinned: !category.pinned } : category,
+      );
+    },
   },
 });
 
 //actions
-export const { loadCategories, addCategory, editCategory, deleteCategory } = categorySlice.actions;
+export const { loadCategories, addCategory, editCategory, deleteCategory, togglePin } = categorySlice.actions;
 
 // slice의 상태값
 export const categoryState = (state: RootState) => state.categorySlice.value;
