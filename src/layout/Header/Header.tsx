@@ -16,7 +16,12 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
   const category = categories.find((e) => e.id == categoryId);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const [SearchCategoryModal, openSearchCategoryModal] = useModal(FullScreenGray, () => <Search />, [], {});
+  const [SearchCategoryModal, openSearchCategoryModal] = useModal(
+    FullScreenGray,
+    ({ closeModal }) => <Search closeModal={closeModal} />,
+    [],
+    {},
+  );
   const onSearchClick = () => {
     openSearchCategoryModal();
   };

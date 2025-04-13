@@ -6,7 +6,6 @@ import TextSVG from '@assets/Search/Text.svg?react';
 import ScheduleSVG from '@assets/Search/Schedule.svg?react';
 import PhotoSVG from '@assets/Search/Photo.svg?react';
 import LinkSVG from '@assets/Search/Link.svg?react';
-import { Legend } from 'recharts';
 import {
   ResultItem,
   ResultIconWrapper,
@@ -24,7 +23,9 @@ import {
   ResultLayout,
   ResultList,
   Highlight,
+  Legend,
 } from './Search.Style';
+import { useNavigate } from 'react-router-dom';
 
 const getSearchableText = (memo: any): string => {
   if (memo.type === 'text') return memo.content;
@@ -42,10 +43,25 @@ const highlightText = (text: string, keyword: string) => {
   );
 };
 
-const SearchResultItem = ({ memo, categories, searchQuery }: { memo: any; categories: any[]; searchQuery: string }) => {
+const SearchResultItem = ({
+  memo,
+  categories,
+  searchQuery,
+  closeModal,
+}: {
+  memo: any;
+  categories: any[];
+  searchQuery: string;
+  closeModal: () => void;
+}) => {
   const category = categories.find((cat) => cat.id === memo.categoryId);
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`?category=${memo.categoryId}`);
+    closeModal();
+  };
   return (
-    <ResultItem key={memo.id}>
+    <ResultItem key={memo.id} onClick={handleClick}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <ResultIconWrapper>
           {memo.type === 'text' && <TextSVG />}
@@ -65,7 +81,7 @@ const SearchResultItem = ({ memo, categories, searchQuery }: { memo: any; catego
   );
 };
 
-const Search = () => {
+const Search = ({ closeModal }: { closeModal: () => void }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const categories = useAppSelector((state) => state.categorySlice.value);
@@ -116,7 +132,13 @@ const Search = () => {
           <ResultLayout>
             <ResultList>
               {filteredMemos.map((memo) => (
-                <SearchResultItem key={memo.id} memo={memo} categories={categories} searchQuery={searchQuery} />
+                <SearchResultItem
+                  key={memo.id}
+                  memo={memo}
+                  categories={categories}
+                  searchQuery={searchQuery}
+                  closeModal={closeModal}
+                />
               ))}
             </ResultList>
           </ResultLayout>
