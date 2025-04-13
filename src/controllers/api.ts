@@ -1,27 +1,75 @@
+import { MemoProp } from '@ts/Memo.Prop';
 import categoryMock from './mock/category';
 import memoMock from './mock/memo';
 
 // const baseURL = import.meta.env.VITE_BASE_URL;
 
-// const Headers = { 'content-type': 'application/json' };
+const Headers = { 'content-type': 'application/json' };
 
-// const fetchData = async (path: string) => {
-//   try {
-//     const url = `${baseURL}${path}`;
-//     const res = await fetch(url, { method: 'GET', headers: Headers });
-//     if (!res.ok) {
-//       throw new Error(`${res.status} Error!!`);
-//     }
-//     // await wait(0);
-//     return await res.json();
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+const fetchData = async (path: string) => {
+  // const url = `${baseURL}${path}`;
+  const url = `${path}`;
 
-const fetchAllMemo = (username: string) => {
+  const res = await fetch(url, { method: 'GET', headers: Headers });
+  if (!res.ok) {
+    throw new Error(`${res.status} Error!!`);
+  }
+  return await res.json();
+};
+
+let idCounter = 1000;
+
+type ChatItem = {
+  data: string;
+  timestamp: string;
+  calendar?: boolean;
+  photo?: string;
+  link?: string;
+};
+
+type CategoryResponse = {
+  categoryId: string;
+  chatItems: ChatItem[];
+};
+
+const fetchAllMemo = async (username: string) => {
   if (!username) return [];
-  return memoMock;
+  const now = new Date().toISOString();
+  const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${now}&size=20`);
+
+  const convertedResult: MemoProp[] = result.flatMap((category) =>
+    category.chatItems.map((item) => {
+      let type: MemoProp['type'] = 'text';
+      let content: MemoProp['content'] = item.data;
+
+      if (item.calendar) {
+        type = 'schedule';
+        content = {
+          title: item.data,
+          startDate: new Date(item.timestamp),
+          endDate: null,
+        };
+      } else if (item.photo) {
+        type = 'photo';
+        content = item.photo;
+      } else if (item.link) {
+        type = 'link';
+        content = item.link;
+      }
+
+      return {
+        id: idCounter++,
+        type,
+        content,
+        date: new Date(item.timestamp ?? Date.now()),
+        categoryId: category.categoryId,
+      };
+    }),
+  );
+
+  console.log(convertedResult);
+  console.log(memoMock);
+  return convertedResult;
 };
 
 const fetchCategory = (username: string) => {

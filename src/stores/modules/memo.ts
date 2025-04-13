@@ -1,22 +1,25 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../config/configStore';
 import { fetchAllMemo } from '@controllers/api';
 import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
 import { userMemoType } from '@ts/type';
 
-//초기값 상태 값
+// 초기값 상태 값
 const initialState: { value: MemoProp[] } = {
   value: [],
 };
 
-//slice 설정
+// Async thunk
+export const loadMemos = createAsyncThunk('memo/loadMemos', async (username: string) => {
+  const memos = await fetchAllMemo(username);
+  return memos;
+});
+
+// Slice 설정
 export const memoSlice = createSlice({
   name: 'memo',
   initialState,
   reducers: {
-    loadMemos: (state, action: PayloadAction<string>) => {
-      state.value = [...fetchAllMemo(action.payload)];
-    },
     addMemos: (
       state,
       action: PayloadAction<{
@@ -35,13 +38,18 @@ export const memoSlice = createSlice({
       ];
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(loadMemos.fulfilled, (state, action) => {
+      state.value = action.payload;
+    });
+  },
 });
 
-//actions
-export const { loadMemos, addMemos } = memoSlice.actions;
+// actions
+export const { addMemos } = memoSlice.actions;
 
 // slice의 상태값
 export const categoryState = (state: RootState) => state.memoSlice.value;
 
-//slice의 reducers
+// slice의 reducers
 export default memoSlice.reducer;
