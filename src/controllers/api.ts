@@ -1,6 +1,7 @@
 import { MemoProp } from '@ts/Memo.Prop';
 import categoryMock from './mock/category';
 import memoMock from './mock/memo';
+// import memoMock from './mock/memo';
 
 // const baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -11,6 +12,20 @@ const fetchData = async (path: string) => {
   const url = `${path}`;
 
   const res = await fetch(url, { method: 'GET', headers: Headers });
+  if (!res.ok) {
+    throw new Error(`${res.status} Error!!`);
+  }
+  return await res.json();
+};
+
+const postData = async (path: string, body: any) => {
+  // const url = `${baseURL}${path}`;
+  const url = `${path}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: Headers,
+    body: JSON.stringify(body),
+  });
   if (!res.ok) {
     throw new Error(`${res.status} Error!!`);
   }
@@ -67,9 +82,9 @@ const fetchAllMemo = async (username: string) => {
     }),
   );
 
-  console.log(convertedResult);
-  console.log(memoMock);
-  return convertedResult;
+  // console.log(convertedResult);
+  if (convertedResult.length > 0) return convertedResult;
+  return memoMock;
 };
 
 const fetchCategory = (username: string) => {
@@ -82,4 +97,13 @@ const fetchCategory = (username: string) => {
   });
 };
 
-export { fetchAllMemo, fetchCategory };
+const postCategory = async (username: string, categoryName: string, color: string) => {
+  if (!username) return;
+  const result = await postData(`/api/v1/categories`, {
+    name: categoryName,
+    color,
+  });
+  console.log(result);
+};
+
+export { fetchAllMemo, fetchCategory, postCategory };

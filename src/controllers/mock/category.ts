@@ -10,7 +10,7 @@ const categoryMock: CategoryProp[] = [
     lastDate: new Date('2025-04-02 15:03'),
   },
   {
-    id: '2',
+    id: 'e596d7e3-634e-468a-b763-b818ddf67bdb',
     title: 'Jugger',
     pinned: true,
     color: '#00BDDE',
@@ -27,7 +27,7 @@ const categoryMock: CategoryProp[] = [
     lastDate: new Date('2025-04-02 13:03'),
   },
   {
-    id: '4',
+    id: '2f7809af-2208-4b2b-8b65-763326475800',
     title: 'Daily',
     pinned: false,
     color: '#00AEFF',
