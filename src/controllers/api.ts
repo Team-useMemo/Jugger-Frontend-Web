@@ -82,7 +82,7 @@ const fetchAllMemo = async (username: string) => {
     }),
   );
 
-  // console.log(convertedResult);
+  console.log(convertedResult);
   if (convertedResult.length > 0) return convertedResult;
   return memoMock;
 };

@@ -104,7 +104,12 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
           <AddCategoryButton onClick={onAddCategoryClick}>+ 새 카테고리 추가</AddCategoryButton>
 
           <MessageSection>
-            {categories.map((msg, index) => (
+            {[
+              ...categories.filter((msg) => msg.pinned),
+              ...categories
+                .filter((msg) => !msg.pinned)
+                .sort((a, b) => new Date(b.lastDate).getTime() - new Date(a.lastDate).getTime()),
+            ].map((msg, index) => (
               <SideMessage
                 key={index}
                 focus={category == msg.id}
