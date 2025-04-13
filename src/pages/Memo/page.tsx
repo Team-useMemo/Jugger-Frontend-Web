@@ -35,7 +35,7 @@ const MemoList = ({ category }: { category: string | null }) => {
     if (category == e.categoryId) return true;
     return false;
   });
-
+  console.log(memos);
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);

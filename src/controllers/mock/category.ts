@@ -2,7 +2,7 @@ import { CategoryProp } from '@ts/Category.Prop';
 
 const categoryMock: CategoryProp[] = [
   {
-    id: '1',
+    id: '2940b5ba-2352-4e8d-8344-5d6b24c70003',
     title: '독서록',
     pinned: false,
     color: '#4F29E5',

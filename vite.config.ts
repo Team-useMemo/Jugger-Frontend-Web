@@ -24,4 +24,13 @@ export default defineConfig({
       { find: '@stores', replacement: '/src/stores' },
     ],
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://usememoteam.site',
+        changeOrigin: true,
+        rewrite: (path) => path, // ✅ /api 경로를 그대로 유지하도록 수정
+      },
+    },
+  },
 });
