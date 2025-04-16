@@ -31,7 +31,7 @@ const MemoText = ({ memoId, content }: { memoId: number; content: string }) => {
         {activeMore && (
           <>
             <MemoTextMoreDivideLine />
-            <MemoTextMoreButton onClick={openMemoDetailTextModal}>
+            <MemoTextMoreButton onClick={() => openMemoDetailTextModal()}>
               전체 보기
               <RightArrowSVG fill="white" />
             </MemoTextMoreButton>

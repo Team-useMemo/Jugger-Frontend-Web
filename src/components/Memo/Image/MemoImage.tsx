@@ -18,7 +18,7 @@ const MemoImage = ({ memoId, content }: { memoId: number; content: string }) => 
     <>
       <MemoDetailImageModal />
       <MemoImageContainer>
-        <img src={content} onClick={openMemoDetailImageModal} />
+        <img src={content} onClick={() => openMemoDetailImageModal()} />
       </MemoImageContainer>
     </>
   );

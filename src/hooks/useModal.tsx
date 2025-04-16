@@ -60,7 +60,7 @@ const useModal = (
     );
   }, [activeModal, initialProps]);
 
-  return [Modal, openModal, closeModal] as const;
+  return [Modal, openModal, closeModal];
 };
 
 export default useModal;

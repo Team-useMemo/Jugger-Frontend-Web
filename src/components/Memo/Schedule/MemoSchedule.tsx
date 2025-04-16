@@ -26,7 +26,7 @@ const MemoSchedule = ({ memoId, content }: { memoId: number; content: schedulePr
   return (
     <>
       <MemoDetailScheduleModal />
-      <MemoScheduleContainer onClick={openMemoDetailScheduleModal}>
+      <MemoScheduleContainer onClick={() => openMemoDetailScheduleModal()}>
         <MemoMainText>{content.title}</MemoMainText>
         <MemoScheduleContents>
           <TimeCircleSVG />

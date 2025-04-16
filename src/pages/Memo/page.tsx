@@ -34,8 +34,8 @@ const MemoList = ({ category }: { category: string | null }) => {
   const memos = useAppSelector(
     (state) =>
       state.memoSlice.value.filter((e) => {
-        // if (!category) return true;
-        // if (category == e.categoryId) return true;
+        if (!category) return true;
+        if (category == e.categoryId) return true;
         // return false;
         return true;
       }),
@@ -128,8 +128,8 @@ const MemoBottom = ({
   return (
     <MemoBottomContainer>
       <MemoBottomButtonContainer>
-        <PaperClipSVG onClick={openAddPhotoModal} />
-        <CalendarSVG onClick={openAddScheduleModal} />
+        <PaperClipSVG onClick={() => openAddPhotoModal()} />
+        <CalendarSVG onClick={() => openAddScheduleModal()} />
       </MemoBottomButtonContainer>
       <MemoBottomInputContainer>
         <textarea

@@ -20,8 +20,8 @@ import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
 import AddCategory from '@components/Modal/AddCategory';
-import GatherContents from '@components/Modal/GatherContents';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
 
 // store.dispatch(categoryAction);
 
@@ -35,16 +35,13 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
   );
-  const [contentsType, setContentsType] = useState('');
-  const [GatherContentsModal, openGatherContentsModal] = useModal(
+  const [modalProps, setModalProps] = useState({ categoryId: category });
+  const [MemoCollectionModal, openMemoCollectionModal] = useModal(
     'memoCollection',
     FullScreenGray,
-    GatherContents,
+    MemoCollection,
     [],
-    {
-      categoryId: category,
-      contentsType,
-    },
+    modalProps,
   );
 
   const categories = useAppSelector((state) => state.categorySlice.value);
@@ -54,18 +51,18 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   };
 
   const onCalendarClick = () => {
-    setContentsType('Calendar');
-    openGatherContentsModal();
+    setModalProps((prev) => ({ ...prev, contentsType: 'Calendar' }));
+    openMemoCollectionModal();
   };
 
   const onImageClick = () => {
-    setContentsType('Image');
-    openGatherContentsModal();
+    setModalProps((prev) => ({ ...prev, contentsType: 'Image' }));
+    openMemoCollectionModal();
   };
 
   const onLinkClick = () => {
-    setContentsType('Link');
-    openGatherContentsModal();
+    setModalProps((prev) => ({ ...prev, contentsType: 'Link' }));
+    openMemoCollectionModal();
   };
 
   const onSettingClick = () => {};
@@ -96,7 +93,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     <StyledSideBar active={toggleMenu}>
       <div className="modal-container">
         <AddCategoryModal />
-        <GatherContentsModal />
+        <MemoCollectionModal />
       </div>
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>
