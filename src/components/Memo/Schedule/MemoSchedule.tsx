@@ -5,14 +5,23 @@ import { MemoMainText, MemoScheduleContainer, MemoScheduleContents } from './Mem
 import MemoDetailSchedule from '@components/Modal/MemoViewer/Schedule/MemoDetailSchedule';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import { useState } from 'react';
 
-const MemoSchedule = ({ content }: { content: scheduleProp }) => {
-  const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(FullScreenGray, MemoDetailSchedule, [], {
+const MemoSchedule = ({ memoId, content }: { memoId: number; content: scheduleProp }) => {
+  const [modalProp] = useState({
     isEdit: false,
     title: content.title,
     startDate: content.startDate,
     endDate: content.endDate,
   });
+
+  const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(
+    `memoSchedule_${memoId}`,
+    FullScreenGray,
+    MemoDetailSchedule,
+    [],
+    modalProp,
+  );
 
   return (
     <>

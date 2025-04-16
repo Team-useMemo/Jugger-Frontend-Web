@@ -30,15 +30,22 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
   const [AddCategoryModal, openAddCategoryModal] = useModal(
+    'addCategory',
     FullScreenGray,
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
   );
   const [contentsType, setContentsType] = useState('');
-  const [GatherContentsModal, openGatherContentsModal] = useModal(FullScreenGray, GatherContents, [], {
-    categoryId: category,
-    contentsType,
-  });
+  const [GatherContentsModal, openGatherContentsModal] = useModal(
+    'memoCollection',
+    FullScreenGray,
+    GatherContents,
+    [],
+    {
+      categoryId: category,
+      contentsType,
+    },
+  );
 
   const categories = useAppSelector((state) => state.categorySlice.value);
 
