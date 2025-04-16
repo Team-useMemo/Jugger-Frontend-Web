@@ -43,6 +43,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const touchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
+    `editCategory_${id}`,
     FullScreenGray,
     ({ closeModal, props }) => (
       <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />

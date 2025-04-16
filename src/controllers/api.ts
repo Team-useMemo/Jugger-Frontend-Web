@@ -49,6 +49,7 @@ type CategoryResponse = {
 
 const fetchAllMemo = async (username: string) => {
   if (!username) return [];
+  return memoMock;
   const now = new Date().toISOString();
   const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${now}&size=20`);
 
@@ -83,7 +84,7 @@ const fetchAllMemo = async (username: string) => {
   );
 
   console.log(convertedResult);
-  if (convertedResult.length > 0) return convertedResult;
+  // if (convertedResult.length > 0) return convertedResult;
   return memoMock;
 };
 

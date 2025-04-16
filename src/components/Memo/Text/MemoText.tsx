@@ -5,11 +5,17 @@ import MemoDetailText from '@components/Modal/MemoViewer/MemoDetail/MemoDetailTe
 import { MemoTextContainer, MemoTextContents, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
-const MemoText = ({ content }: { content: string }) => {
+const MemoText = ({ memoId, content }: { memoId: number; content: string }) => {
   const memoRef = useRef<HTMLParagraphElement>(null);
-  const [MemoDetailTextModal, openMemoDetailTextModal] = useModal(FullScreenGray, MemoDetailText, [], {
-    text: content,
-  });
+  const [MemoDetailTextModal, openMemoDetailTextModal] = useModal(
+    `memoText_${memoId}`,
+    FullScreenGray,
+    MemoDetailText,
+    [],
+    {
+      text: content,
+    },
+  );
   const [activeMore, setActiveMore] = useState(false);
 
   useEffect(() => {
@@ -25,7 +31,7 @@ const MemoText = ({ content }: { content: string }) => {
         {activeMore && (
           <>
             <MemoTextMoreDivideLine />
-            <MemoTextMoreButton onClick={openMemoDetailTextModal}>
+            <MemoTextMoreButton onClick={() => openMemoDetailTextModal()}>
               전체 보기
               <RightArrowSVG fill="white" />
             </MemoTextMoreButton>

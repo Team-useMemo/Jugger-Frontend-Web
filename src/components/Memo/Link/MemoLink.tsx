@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MemoLinkContainer, MemoLinkDefaultText, MemoLinkImage, MemoLinkTextContainer } from './MemoLink.Style';
-
-interface OgData {
-  ogImage: string;
-  ogTitle: string;
-  ogDescription: string;
-  ogUrl: string;
-}
-
-const fetchUrlPreview = async (url: string) => {
-  const res = await fetch(`https://og-meta-data-api.vercel.app/api/preview?url=${url}`);
-  const data = await res.json();
-  return data;
-};
+import { fetchUrlPreview, OgData } from '@utils/ogData';
 
 const MemoLink = ({ content }: { content: string }) => {
   const [ogData, setOgData] = useState<OgData | null>(null);

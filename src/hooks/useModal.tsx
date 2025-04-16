@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const useModal = (
+  modalName: string,
   Background: ({ children }: { children: React.ReactNode }) => React.ReactNode,
   Component: ({
     closeModal,
@@ -12,17 +14,24 @@ const useModal = (
     props: any;
   }) => React.ReactNode,
   actions: ((...args: any[]) => void)[],
-  props?: any,
+  initialProps?: any,
 ): [() => React.ReactNode, any, any] => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [activeModal, setActiveModal] = useState(false);
+  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const activeModal = window.location.search.indexOf(`${modalName}=true`) != -1;
 
   const openModal = () => {
-    setActiveModal(true);
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev.toString());
+      newParams.set(modalName, 'true');
+      return newParams;
+    });
   };
 
   const closeModal = () => {
-    setActiveModal(false);
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -33,21 +42,25 @@ const useModal = (
     };
 
     window.addEventListener('mousedown', handleClick);
-    return () => window.removeEventListener('mousedown', handleClick);
-  });
 
-  const modal = () =>
-    activeModal ? (
+    return () => {
+      window.removeEventListener('mousedown', handleClick);
+    };
+  }, []);
+
+  const Modal = useCallback(() => {
+    if (!activeModal) return null;
+
+    return (
       <Background>
         <div ref={modalRef}>
-          <Component closeModal={closeModal} actions={actions} props={props} />
+          <Component closeModal={closeModal} actions={actions} props={initialProps} />
         </div>
       </Background>
-    ) : (
-      ''
     );
+  }, [activeModal, initialProps]);
 
-  return [modal, openModal, closeModal];
+  return [Modal, openModal, closeModal];
 };
 
 export default useModal;
