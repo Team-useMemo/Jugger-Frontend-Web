@@ -4,7 +4,6 @@ import { media, theme } from '@styles/theme';
 export const MemoViewerContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'start',
   background: theme.color.background.normal,
   borderRadius: theme.radius[16],
   padding: '32px 0',

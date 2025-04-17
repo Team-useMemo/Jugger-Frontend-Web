@@ -17,11 +17,13 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
   const modalRef = useRef<HTMLDivElement>(null);
 
   const [SearchCategoryModal, openSearchCategoryModal] = useModal(
+    'search',
     FullScreenGray,
     ({ closeModal }) => <Search closeModal={closeModal} />,
     [],
     {},
   );
+
   const onSearchClick = () => {
     openSearchCategoryModal();
   };

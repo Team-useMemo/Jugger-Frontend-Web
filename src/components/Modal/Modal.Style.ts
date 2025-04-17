@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { media } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 export const MemoModalContainer = styled.div({
   display: 'flex',
@@ -39,13 +39,11 @@ export const MemoModalCloseContainer = styled.div({
 });
 
 export const MemoModalButton = styled.button({
-  background: '#0054D1',
+  ...theme.font.headline1.medium,
+  color: theme.color.label.inverse,
+  background: theme.color.primary.normal,
+  borderRadius: theme.radius[6],
   width: '100%',
-  fontSize: '18px',
-  color: 'white',
-  fontWeight: '500',
-  lineHeight: '1.45',
-  borderRadius: '6px',
   padding: '12px',
   boxSizing: 'border-box',
   margin: '0',

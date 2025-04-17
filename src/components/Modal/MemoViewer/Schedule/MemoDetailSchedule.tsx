@@ -28,9 +28,9 @@ const MemoDetailSchedule = ({
   const [title, setTitle] = useState(props.title);
   const [startDate, setStartDate] = useState(props.startDate);
   const [endDate, setEndDate] = useState(props.endDate);
-  console.log(endDate);
 
   const [SelectCalendarStartDateModal, openSelectCalendarStartDateModal] = useModal(
+    'selectStartDate',
     BottomTransparent,
     SelectCalendar,
     [setStartDate],
@@ -41,6 +41,7 @@ const MemoDetailSchedule = ({
   );
 
   const [SelectCalendarEndDateModal, openSelectCalendarEndDateModal] = useModal(
+    'selectEndDate',
     BottomTransparent,
     SelectCalendar,
     [setEndDate],

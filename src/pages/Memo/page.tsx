@@ -26,16 +26,23 @@ import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 import { postCalendar, postMemo } from '@controllers/api';
 
+import { shallowEqual } from 'react-redux';
+
 const MemoList = ({ category }: { category: string | null }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
 
   const categories = useAppSelector((state) => state.categorySlice.value);
 
-  const memos = useAppSelector((state) => state.memoSlice.value).filter((e) => {
-    if (!category) return true;
-    if (category == e.categoryId) return true;
-    return false;
-  });
+  const memos = useAppSelector(
+    (state) =>
+      state.memoSlice.value.filter((e) => {
+        if (!category) return true;
+        if (category == e.categoryId) return true;
+        // return false;
+        return true;
+      }),
+    shallowEqual,
+  );
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
@@ -123,8 +130,8 @@ const MemoBottom = ({
   return (
     <MemoBottomContainer>
       <MemoBottomButtonContainer>
-        <PaperClipSVG onClick={openAddPhotoModal} />
-        <CalendarSVG onClick={openAddScheduleModal} />
+        <PaperClipSVG onClick={() => openAddPhotoModal()} />
+        <CalendarSVG onClick={() => openAddScheduleModal()} />
       </MemoBottomButtonContainer>
       <MemoBottomInputContainer>
         <textarea
@@ -172,10 +179,10 @@ const MemoPage = () => {
     );
   };
 
-  const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal(FullScreenGray, MemoAddSchedule, [addSchedule], {
-    add: true,
-  });
-  const [MemoAddImageModal, openMemoAddImageModal] = useModal(FullScreenGray, MemoAddImage, [addImage]);
+  const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal('addSchedule', FullScreenGray, MemoAddSchedule, [
+    addSchedule,
+  ]);
+  const [MemoAddImageModal, openMemoAddImageModal] = useModal('addImage', FullScreenGray, MemoAddImage, [addImage]);
 
   useEffect(() => {
     if (!username) return;

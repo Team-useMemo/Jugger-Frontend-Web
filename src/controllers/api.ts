@@ -48,6 +48,7 @@ type CategoryResponse = {
 
 const fetchAllMemo = async (username: string) => {
   if (!username) return [];
+
   // const now = new Date().toISOString();
   const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${'2025-04-14T06:25:00Z'}&size=20`);
 
