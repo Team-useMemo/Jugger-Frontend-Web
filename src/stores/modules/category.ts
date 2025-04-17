@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../config/configStore';
 import { fetchCategory } from '@controllers/api';
 import { CategoryProp } from '@ts/Category.Prop';
@@ -8,15 +8,16 @@ const initialState: {
 } = {
   value: [],
 };
-
+// Async thunk
+export const loadCategories = createAsyncThunk('category/loadCategory', async (username: string) => {
+  const categories = await fetchCategory(username);
+  return categories;
+});
 //slice 설정
 export const categorySlice = createSlice({
   name: 'category',
   initialState,
   reducers: {
-    loadCategories: (state, action: PayloadAction<string>) => {
-      state.value = [...fetchCategory(action.payload)];
-    },
     addCategory: (state, action: PayloadAction<any>) => {
       // post로 카테고리 보낸 후 id 받아와야 함
       const id =
@@ -55,10 +56,15 @@ export const categorySlice = createSlice({
       );
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(loadCategories.fulfilled, (state, action) => {
+      state.value = action.payload;
+    });
+  },
 });
 
 //actions
-export const { loadCategories, addCategory, editCategory, deleteCategory, togglePin } = categorySlice.actions;
+export const { addCategory, editCategory, deleteCategory, togglePin } = categorySlice.actions;
 
 // slice의 상태값
 export const categoryState = (state: RootState) => state.categorySlice.value;

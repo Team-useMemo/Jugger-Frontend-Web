@@ -41,7 +41,6 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
   const touchTimeout = useRef<NodeJS.Timeout | null>(null);
-
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     `editCategory_${id}`,
     FullScreenGray,

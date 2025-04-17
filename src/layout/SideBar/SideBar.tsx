@@ -45,7 +45,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   );
 
   const categories = useAppSelector((state) => state.categorySlice.value);
-
+  console.log(categories);
   const onWholeMemoClick = () => {
     setSearchParams({});
   };

@@ -24,6 +24,8 @@ import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedu
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
+import { postCalendar, postMemo } from '@controllers/api';
+
 import { shallowEqual } from 'react-redux';
 
 const MemoList = ({ category }: { category: string | null }) => {
@@ -121,7 +123,7 @@ const MemoBottom = ({
       textareaRef.current.value = '';
     }
     setNewMemo('');
-
+    postMemo('username', newMemo, category || '');
     changeTextAreaSize();
   };
 
@@ -152,7 +154,7 @@ const MemoPage = () => {
 
   const currentCategory = searchParams.get('category');
 
-  const addSchedule = (title: string, startDate: Date, endDate: Date | null) => {
+  const addSchedule = (title: string, startDate: Date, endDate: Date) => {
     dispatch(
       addMemos({
         type: 'schedule',
@@ -163,6 +165,7 @@ const MemoPage = () => {
         },
         categoryId: currentCategory,
       }),
+      postCalendar('username', title, currentCategory || '', startDate.toISOString(), endDate.toISOString() || ''),
     );
   };
 
