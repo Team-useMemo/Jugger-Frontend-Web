@@ -1,5 +1,5 @@
 import { MemoProp } from '@ts/Memo.Prop';
-// import categoryMock from './mock/category';
+import categoryMock from './mock/category';
 import memoMock from './mock/memo';
 
 const baseURL = import.meta.env.VITE_BASE_URL;
@@ -106,6 +106,8 @@ const fetchCategory = async (username: string) => {
 
   console.log(convertedResult);
   return convertedResult;
+
+  return categoryMock;
 };
 
 const postCategory = async (username: string, categoryName: string, color: string) => {
