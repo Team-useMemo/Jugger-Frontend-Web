@@ -100,14 +100,13 @@ const fetchCategory = async (username: string) => {
       title: category.categoryName,
       pinned: false,
       color: category.categoryColor.replace(/^color/, '') || '#000000',
-      content: category.chatItems?.[0]?.data ?? '',
+      content: category.chatItems?.[0]?.data ?? 'empty',
       lastDate: new Date(category.chatItems?.[0]?.timestamp ?? Date.now()),
     }))
     .sort((a, b) => b.lastDate.getTime() - a.lastDate.getTime());
 
   console.log(convertedResult);
-  return convertedResult;
-
+  if (convertedResult.length > 0) return convertedResult;
   return categoryMock;
 };
 
