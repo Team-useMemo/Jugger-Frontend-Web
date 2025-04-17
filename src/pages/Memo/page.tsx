@@ -24,8 +24,9 @@ import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedu
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
-import { shallowEqual } from 'react-redux';
 import { postCalendar, postMemo } from '@controllers/api';
+
+import { shallowEqual } from 'react-redux';
 
 const MemoList = ({ category }: { category: string | null }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);

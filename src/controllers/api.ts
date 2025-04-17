@@ -48,6 +48,7 @@ type CategoryResponse = {
 
 const fetchAllMemo = async (username: string) => {
   if (!username) return [];
+
   // const now = new Date().toISOString();
   const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${'2025-04-14T06:25:00Z'}&size=20`);
 
@@ -83,8 +84,8 @@ const fetchAllMemo = async (username: string) => {
     )
     .sort((a, b) => (a.date > b.date ? 1 : -1));
 
-  console.log(convertedResult);
-  // if (convertedResult.length > 0) return convertedResult;
+  // console.log(convertedResult);
+  if (convertedResult.length > 0) return convertedResult;
   return memoMock;
 };
 
