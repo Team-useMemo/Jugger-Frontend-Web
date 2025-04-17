@@ -20,8 +20,8 @@ import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
 import AddCategory from '@components/Modal/AddCategory';
-import GatherContents from '@components/Modal/GatherContents';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
 
 // store.dispatch(categoryAction);
 
@@ -30,15 +30,19 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
   const [AddCategoryModal, openAddCategoryModal] = useModal(
+    'addCategory',
     FullScreenGray,
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
   );
-  const [contentsType, setContentsType] = useState('');
-  const [GatherContentsModal, openGatherContentsModal] = useModal(FullScreenGray, GatherContents, [], {
-    categoryId: category,
-    contentsType,
-  });
+  const [modalProps, setModalProps] = useState({ categoryId: category });
+  const [MemoCollectionModal, openMemoCollectionModal] = useModal(
+    'memoCollection',
+    FullScreenGray,
+    MemoCollection,
+    [],
+    modalProps,
+  );
 
   const categories = useAppSelector((state) => state.categorySlice.value);
   console.log(categories);
@@ -47,18 +51,18 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   };
 
   const onCalendarClick = () => {
-    setContentsType('Calendar');
-    openGatherContentsModal();
+    setModalProps((prev) => ({ ...prev, contentsType: 'Calendar' }));
+    openMemoCollectionModal();
   };
 
   const onImageClick = () => {
-    setContentsType('Image');
-    openGatherContentsModal();
+    setModalProps((prev) => ({ ...prev, contentsType: 'Image' }));
+    openMemoCollectionModal();
   };
 
   const onLinkClick = () => {
-    setContentsType('Link');
-    openGatherContentsModal();
+    setModalProps((prev) => ({ ...prev, contentsType: 'Link' }));
+    openMemoCollectionModal();
   };
 
   const onSettingClick = () => {};
@@ -89,7 +93,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     <StyledSideBar active={toggleMenu}>
       <div className="modal-container">
         <AddCategoryModal />
-        <GatherContentsModal />
+        <MemoCollectionModal />
       </div>
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>

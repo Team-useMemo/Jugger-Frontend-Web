@@ -1,5 +1,5 @@
 import { MemoProp } from '@ts/Memo.Prop';
-import categoryMock from './mock/category';
+// import categoryMock from './mock/category';
 import memoMock from './mock/memo';
 
 const baseURL = import.meta.env.VITE_BASE_URL;
@@ -83,8 +83,8 @@ const fetchAllMemo = async (username: string) => {
     )
     .sort((a, b) => (a.date > b.date ? 1 : -1));
 
-  // console.log(convertedResult);
-  if (convertedResult.length > 0) return convertedResult;
+  console.log(convertedResult);
+  // if (convertedResult.length > 0) return convertedResult;
   return memoMock;
 };
 
@@ -104,6 +104,7 @@ const fetchCategory = async (username: string) => {
     }))
     .sort((a, b) => b.lastDate.getTime() - a.lastDate.getTime());
 
+  console.log(convertedResult);
   return convertedResult;
 };
 

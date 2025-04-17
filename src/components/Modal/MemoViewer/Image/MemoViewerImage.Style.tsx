@@ -6,6 +6,9 @@ import { theme } from '@styles/theme';
 export const MemoDetailImageContainer = styled.div({
   display: 'flex',
   margin: '24px 0',
+  width: '100%',
+  background: '',
+  justifyContent: 'center',
   ['img']: {
     maxWidth: '480px',
     maxHeight: '480px',

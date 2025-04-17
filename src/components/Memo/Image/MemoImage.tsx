@@ -3,16 +3,22 @@ import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage'
 import useModal from '@hooks/useModal';
 import MemoImageContainer from './MemoImage.Style';
 
-const MemoImage = ({ content }: { content: string }) => {
-  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal(FullScreenGray, MemoDetailImage, [], {
-    image: content,
-  });
+const MemoImage = ({ memoId, content }: { memoId: number; content: string }) => {
+  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal(
+    `memoImage_${memoId}`,
+    FullScreenGray,
+    MemoDetailImage,
+    [],
+    {
+      image: content,
+    },
+  );
 
   return (
     <>
       <MemoDetailImageModal />
       <MemoImageContainer>
-        <img src={content} onClick={openMemoDetailImageModal} />
+        <img src={content} onClick={() => openMemoDetailImageModal()} />
       </MemoImageContainer>
     </>
   );

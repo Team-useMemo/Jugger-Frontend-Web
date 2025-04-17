@@ -67,6 +67,7 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
             >
               {colors.map((e, i) => (
                 <div
+                  key={`color_${e}`}
                   onClick={() => {
                     setSelected((prev) => (prev == i ? -1 : i));
                   }}

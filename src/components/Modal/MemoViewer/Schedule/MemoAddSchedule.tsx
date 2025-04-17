@@ -29,6 +29,7 @@ const MemoAddSchedule = ({
   const [endDate, setEndDate] = useState(null);
 
   const [SelectCalendarStartDateModal, openSelectCalendarStartDateModal] = useModal(
+    'selectStartDate',
     BottomTransparent,
     SelectCalendar,
     [setStartDate],
@@ -39,6 +40,7 @@ const MemoAddSchedule = ({
   );
 
   const [SelectCalendarEndDateModal, openSelectCalendarEndDateModal] = useModal(
+    'selectEndDate',
     BottomTransparent,
     SelectCalendar,
     [setEndDate],
