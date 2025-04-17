@@ -37,13 +37,10 @@ const MemoList = ({ category }: { category: string | null }) => {
     (state) =>
       state.memoSlice.value.filter((e) => {
         if (!category) return true;
-        if (category == e.categoryId) return true;
-        // return false;
-        return true;
+        return category === e.categoryId;
       }),
     shallowEqual,
   );
-
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
@@ -187,7 +184,7 @@ const MemoPage = () => {
   useEffect(() => {
     if (!username) return;
     dispatch(loadMemos(username));
-  }, []);
+  }, [dispatch, username]);
 
   // if (!memos) return <div>Loading</div>;
 
