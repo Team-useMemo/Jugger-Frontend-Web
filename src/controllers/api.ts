@@ -144,4 +144,23 @@ const postCalendar = async (
   });
   console.log(result);
 };
-export { fetchAllMemo, fetchCategory, postCategory, postMemo, postCalendar };
+const postPhoto = async (username: string, file: File, categoryUuid: string) => {
+  if (!username) return;
+
+  const formData = new FormData();
+  formData.append('category_uuid', categoryUuid);
+  formData.append('file', file);
+  const url = `${baseURL}/api/v1/upload/files`;
+
+  const result = await fetch(url, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!result.ok) {
+    throw new Error(`${result.status} Error!!`);
+  }
+
+  console.log(result.url);
+};
+export { fetchAllMemo, fetchCategory, postCategory, postMemo, postCalendar, postPhoto };
