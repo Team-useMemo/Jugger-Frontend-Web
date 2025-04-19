@@ -24,7 +24,7 @@ import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedu
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
-import { postCalendar, postMemo } from '@controllers/api';
+import { postCalendar, postMemo, postPhoto } from '@controllers/api';
 
 import { shallowEqual } from 'react-redux';
 
@@ -162,11 +162,25 @@ const MemoPage = () => {
         },
         categoryId: currentCategory,
       }),
-      postCalendar('username', title, currentCategory || '', startDate.toISOString(), endDate.toISOString() || ''),
     );
+    postCalendar('username', title, currentCategory || '', startDate.toISOString(), endDate.toISOString());
   };
 
   const addImage = (image: string) => {
+    const dataURLtoFile = (dataUrl: string, filename: string): File => {
+      const arr = dataUrl.split(',');
+      const mime = arr[0].match(/:(.*?);/)?.[1] || '';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+
+      return new File([u8arr], filename, { type: mime });
+    };
+    const file = dataURLtoFile(image, 'image.png'); // base64 string → Fil
     dispatch(
       addMemos({
         type: 'photo',
@@ -174,6 +188,7 @@ const MemoPage = () => {
         categoryId: currentCategory,
       }),
     );
+    postPhoto('username', file, currentCategory || '');
   };
 
   const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal('addSchedule', FullScreenGray, MemoAddSchedule, [
