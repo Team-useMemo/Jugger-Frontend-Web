@@ -118,17 +118,23 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   };
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    if (!contextMenu) return;
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
         closeContextMenu();
         setShowPinIcon(false);
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [closeContextMenu]);
+  }, [contextMenu, closeContextMenu]);
 
   return (
     <>
