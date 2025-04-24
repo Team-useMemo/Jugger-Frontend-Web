@@ -1,13 +1,12 @@
 // src/hooks/useContextMenu.ts
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Dot } from '@components/SideBar/SideMessage/SideMessage.Style';
-import {
-  ContextMenuWrapper,
-  ContextMenuHeader,
-  ContextMenuTitle,
-  Divider,
-  ContextMenuItem,
-} from '@components/ContextMenu/ContextMenu.Style';
+import { ContextMenuWrapper, ContextMenuHeader, ContextMenuTitle, Divider, ContextMenuItem } from '@components/ContextMenu/ContextMenu.Style';
+
+type ContextMenuHandlers = {
+  onContextMenu: (e: React.MouseEvent | React.TouchEvent) => void;
+  onTouchStart: (e: React.TouchEvent) => void;
+};
 
 interface ContextMenuItemProps {
   label: string;
@@ -19,9 +18,10 @@ interface UseContextMenuProps {
   items: ContextMenuItemProps[];
 }
 
-export const useContextMenu = ({ header, items }: UseContextMenuProps) => {
+export const useContextMenu = ({ header, items }: UseContextMenuProps): [() => React.ReactNode, ContextMenuHandlers] => {
   const [anchor, setAnchor] = useState<{ x: number; y: number } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const openMenu = useCallback((x: number, y: number) => {
     setAnchor({ x, y });
@@ -38,31 +38,38 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps) => {
       }
       const { clientX, clientY } = 'touches' in e ? e.touches[0] : e;
 
-      // 메뉴 크기 가정 (실제 스타일에 맞게 조정)
-      const MENU_WIDTH = 150;
-      const MENU_HEIGHT = 200;
+      const adjustedY = Math.min(clientY, window.innerHeight - 210);
 
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-
-      // 위치 보정
-      const adjustedX = clientX + MENU_WIDTH > viewportWidth ? viewportWidth - MENU_WIDTH - 10 : clientX;
-      const adjustedY = clientY + MENU_HEIGHT > viewportHeight ? viewportHeight - MENU_HEIGHT - 10 : clientY;
-
-      openMenu(adjustedX, adjustedY);
+      openMenu(clientX, adjustedY);
     },
     [openMenu],
   );
 
+  const clearTouchTimeout = () => {
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current);
+      touchTimeoutRef.current = null;
+    }
+  };
+
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
-      const timeout = setTimeout(() => handleContextMenu(e), 600);
-      const clear = () => clearTimeout(timeout);
+      clearTouchTimeout();
+      touchTimeoutRef.current = setTimeout(() => handleContextMenu(e), 600);
+
+      const clear = () => clearTouchTimeout();
+
       document.addEventListener('touchend', clear, { once: true });
       document.addEventListener('touchmove', clear, { once: true });
     },
     [handleContextMenu],
   );
+
+  useEffect(() => {
+    return () => {
+      clearTouchTimeout();
+    };
+  }, []);
 
   useEffect(() => {
     if (!anchor) return;
@@ -88,31 +95,35 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps) => {
     };
   }, [anchor, closeMenu]);
 
-  const contextMenu = anchor && (
-    <ContextMenuWrapper ref={contextMenuRef} style={{ top: anchor.y, left: anchor.x }}>
-      <ContextMenuHeader>
-        <Dot style={{ backgroundColor: header.color }} />
-        <ContextMenuTitle>{header.title}</ContextMenuTitle>
-      </ContextMenuHeader>
-      <Divider />
-      {items.map((item, idx) => (
-        <ContextMenuItem
-          key={idx}
-          onClick={() => {
-            item.onClick();
-            closeMenu();
-          }}
-        >
-          {item.label}
-        </ContextMenuItem>
-      ))}
-    </ContextMenuWrapper>
-  );
+  const ContextMenu = () => {
+    if (!anchor) return null;
 
-  const bindContextMenuHandlers = {
+    return (
+      <ContextMenuWrapper ref={contextMenuRef} style={{ top: anchor.y, left: anchor.x }}>
+        <ContextMenuHeader>
+          <Dot style={{ backgroundColor: header.color }} />
+          <ContextMenuTitle>{header.title}</ContextMenuTitle>
+        </ContextMenuHeader>
+        <Divider />
+        {items.map((item, idx) => (
+          <ContextMenuItem
+            key={idx}
+            onClick={() => {
+              item.onClick();
+              closeMenu();
+            }}
+          >
+            {item.label}
+          </ContextMenuItem>
+        ))}
+      </ContextMenuWrapper>
+    );
+  };
+
+  const BindContextMenuHandlers = {
     onContextMenu: handleContextMenu,
     onTouchStart: handleTouchStart,
   };
 
-  return { contextMenu, bindContextMenuHandlers };
+  return [ContextMenu, BindContextMenuHandlers];
 };
