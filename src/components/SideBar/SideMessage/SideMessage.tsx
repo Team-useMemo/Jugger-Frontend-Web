@@ -37,6 +37,7 @@ interface SideMessageItemProps {
 const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
@@ -60,16 +61,6 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     dispatch(deleteCategory(id));
   }, [dispatch, id]);
 
-  const { contextMenu, bindContextMenuHandlers } = useContextMenu({
-    header: { color, title },
-    items: [
-      { label: '즐겨찾기', onClick: handlePinClick },
-      { label: '카테고리 변경', onClick: openEditCategoryModal },
-      { label: '삭제', onClick: handleDeleteClick },
-    ],
-  });
-  const [startX, setStartX] = useState<number | null>(null);
-
   const handlePointerDown = (e: React.PointerEvent) => {
     setStartX(e.clientX);
   };
@@ -86,13 +77,22 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     setStartX(null);
   };
 
+  const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
+    header: { color, title },
+    items: [
+      { label: '즐겨찾기', onClick: handlePinClick },
+      { label: '카테고리 변경', onClick: openEditCategoryModal },
+      { label: '삭제', onClick: handleDeleteClick },
+    ],
+  });
+
   return (
     <>
       <EditCategoryModal />
-      {contextMenu}
+      <ContextMenu />
       <MessageItem
         onClick={handleCategoryClick}
-        {...bindContextMenuHandlers}
+        {...BindContextMenuHandlers}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
