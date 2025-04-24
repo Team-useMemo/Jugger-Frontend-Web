@@ -13,16 +13,15 @@ import {
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
 import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
 import { useAppDispatch } from '@hooks/useRedux';
 import { deleteCategory, togglePin } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { useSelector } from 'react-redux';
-import { openContextMenu, closeContextMenu } from '@stores/modules/contextMenuSlice';
-import { RootState } from '@stores/config/configStore';
+import { closeContextMenu } from '@stores/modules/contextMenuSlice';
+import { useSideMessageHandlers } from '@hooks/useSideMessageHandlers';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -38,11 +37,7 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const contextMenuRef = useRef<HTMLDivElement>(null);
-  const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
-  const touchTimeout = useRef<NodeJS.Timeout | null>(null);
-  const isOpen = useSelector((state: RootState) => state.contextMenu.isOpen);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     `editCategory_${id}`,
@@ -69,93 +64,27 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     dispatch(closeContextMenu());
   }, [openEditCategoryModal, dispatch]);
 
-  const deleteCurrentCategory = useCallback(() => {
+  const handleDeleteClick = useCallback(() => {
     dispatch(deleteCategory(id));
+    dispatch(closeContextMenu());
   }, [dispatch, id]);
 
-  const handleDeleteClick = useCallback(() => {
-    deleteCurrentCategory();
-    dispatch(closeContextMenu());
-  }, [deleteCurrentCategory, dispatch]);
-
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(
-      openContextMenu({
-        anchor: { x: e.clientX, y: e.clientY },
-        props: {
-          title,
-          color,
-          onPin: handlePinClick,
-          onCategory: handleCategoryEditClick,
-          onDelete: handleDeleteClick,
-        },
-      }),
-    );
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchTimeout.current = setTimeout(() => {
-      dispatch(
-        openContextMenu({
-          anchor: { x: e.touches[0].clientX, y: e.touches[0].clientY },
-          props: {
-            title,
-            color,
-            onPin: handlePinClick,
-            onCategory: handleCategoryEditClick,
-            onDelete: handleDeleteClick,
-          },
-        }),
-      );
-    }, 600);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchTimeout.current) clearTimeout(touchTimeout.current);
-  };
-
-  const handleTouchMove = () => {
-    if (touchTimeout.current) clearTimeout(touchTimeout.current);
-  };
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    setStartX(e.clientX);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (startX === null) return;
-    const deltaX = e.clientX - startX;
-
-    if (deltaX > 40 && !showPinIcon) {
-      setShowPinIcon(true);
-    } else if (deltaX < -40 && showPinIcon) {
-      setShowPinIcon(false);
-    }
-  };
-
-  const handlePointerUp = () => {
-    setStartX(null);
-  };
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
-        dispatch(closeContextMenu());
-        setShowPinIcon(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, [isOpen, dispatch]);
+  const {
+    handleContextMenu,
+    handleTouchStart,
+    handleTouchEnd,
+    handleTouchMove,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+  } = useSideMessageHandlers({
+    title,
+    color,
+    handlePinClick,
+    handleCategoryEditClick,
+    handleDeleteClick,
+    setShowPinIcon,
+  });
 
   return (
     <>
