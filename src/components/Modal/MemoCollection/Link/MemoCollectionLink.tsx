@@ -21,7 +21,7 @@ const linkList = [
 const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
   const [ogData, setOgData] = useState<OgData | null>(null);
 
-  const _category = useAppSelector((state) => state.categorySlice.value).find((e) => e.id == category);
+  const _category = useAppSelector((state) => state.category.value).find((e) => e.id == category);
 
   useEffect(() => {
     const fetchAndUpdate = async () => {

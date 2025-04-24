@@ -41,7 +41,7 @@ const _dateList = Array.from({ length: 50 }, (_, i) => {
 }).sort((a: any, b: any) => a.startDate - b.startDate);
 
 const MemoCollectionSchedule = () => {
-  const categories = useAppSelector((state) => state.categorySlice.value);
+  const categories = useAppSelector((state) => state.category.value);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(() => {
     const date = new Date();

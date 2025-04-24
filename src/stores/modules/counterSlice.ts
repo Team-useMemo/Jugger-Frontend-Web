@@ -28,6 +28,6 @@ export const counterSlice = createSlice({
 export const { increment, decrement } = counterSlice.actions;
 
 // slice의 상태값
-export const counterState = (state: RootState) => state.modalToggle.value;
+export const counterState = (state: RootState) => state.modal.value;
 
 export default counterSlice.reducer;

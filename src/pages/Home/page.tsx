@@ -12,7 +12,7 @@ const HomePage = () => {
   }
   const dispatch = useAppDispatch();
 
-  const count = useAppSelector((state) => state.counterSlice.value);
+  const count = useAppSelector((state) => state.counter.value);
 
   return (
     <div>

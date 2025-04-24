@@ -49,7 +49,7 @@ export const memoSlice = createSlice({
 export const { addMemos } = memoSlice.actions;
 
 // slice의 상태값
-export const categoryState = (state: RootState) => state.memoSlice.value;
+export const categoryState = (state: RootState) => state.memo.value;
 
 // slice의 reducers
 export default memoSlice.reducer;

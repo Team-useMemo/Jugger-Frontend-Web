@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react';
 const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: () => void }) => {
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('category');
-  const categories = useAppSelector((state) => state.categorySlice.value);
+  const categories = useAppSelector((state) => state.category.value);
   const category = categories.find((e) => e.id == categoryId);
   const modalRef = useRef<HTMLDivElement>(null);
 

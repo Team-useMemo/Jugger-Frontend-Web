@@ -31,11 +31,11 @@ import { shallowEqual } from 'react-redux';
 const MemoList = ({ category }: { category: string | null }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
 
-  const categories = useAppSelector((state) => state.categorySlice.value);
+  const categories = useAppSelector((state) => state.category.value);
 
   const memos = useAppSelector(
     (state) =>
-      state.memoSlice.value.filter((e) => {
+      state.memo.value.filter((e) => {
         if (!category) return true;
         return category === e.categoryId;
       }),

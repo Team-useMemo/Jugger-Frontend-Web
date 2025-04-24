@@ -24,7 +24,7 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  const categories = useAppSelector((state) => state.categorySlice.value);
+  const categories = useAppSelector((state) => state.category.value);
 
   return (
     <MemoModalContainer>
