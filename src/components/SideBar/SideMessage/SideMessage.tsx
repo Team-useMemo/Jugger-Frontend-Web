@@ -20,8 +20,7 @@ import { useAppDispatch } from '@hooks/useRedux';
 import { deleteCategory, togglePin } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { closeContextMenu } from '@stores/modules/contextMenuSlice';
-import { useSideMessageHandlers } from '@hooks/useSideMessageHandlers';
+import { useContextMenu } from '@hooks/useContextMenu';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -33,10 +32,11 @@ interface SideMessageItemProps {
   isPinned?: boolean;
 }
 
+// 상단 import는 그대로 유지
+
 const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
   const [showPinIcon, setShowPinIcon] = useState(false);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
@@ -46,58 +46,40 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
       <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />
     ),
     [],
-    { id: id, name: title, initialColor: color },
+    { id, name: title, initialColor: color },
   );
 
-  const handleCategoryClick = useCallback(() => {
-    navigate(`?category=${id}`);
-  }, [navigate, id]);
+  const handleCategoryClick = useCallback(() => navigate(`?category=${id}`), [navigate, id]);
 
   const handlePinClick = useCallback(() => {
     dispatch(togglePin(id));
-    dispatch(closeContextMenu());
     setShowPinIcon(false);
   }, [dispatch, id]);
 
   const handleCategoryEditClick = useCallback(() => {
     openEditCategoryModal();
-    dispatch(closeContextMenu());
-  }, [openEditCategoryModal, dispatch]);
+  }, [openEditCategoryModal]);
 
   const handleDeleteClick = useCallback(() => {
     dispatch(deleteCategory(id));
-    dispatch(closeContextMenu());
   }, [dispatch, id]);
 
-  const {
-    handleContextMenu,
-    handleTouchStart,
-    handleTouchEnd,
-    handleTouchMove,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-  } = useSideMessageHandlers({
-    title,
-    color,
-    handlePinClick,
-    handleCategoryEditClick,
-    handleDeleteClick,
-    setShowPinIcon,
+  const { contextMenu, bindContextMenuHandlers } = useContextMenu({
+    header: { color, title },
+    items: [
+      { label: '즐겨찾기', onClick: handlePinClick },
+      { label: '카테고리 설정', onClick: handleCategoryEditClick },
+      { label: '삭제', onClick: handleDeleteClick },
+    ],
   });
 
   return (
     <>
       <EditCategoryModal />
+      {contextMenu}
       <MessageItem
         onClick={handleCategoryClick}
-        onContextMenu={handleContextMenu}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={handleTouchMove}
+        {...bindContextMenuHandlers}
         focus={focus}
         style={{
           transform: showPinIcon ? 'translateX(10px)' : 'translateX(0)',

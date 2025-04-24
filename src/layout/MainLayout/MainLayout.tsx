@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@hooks/useRedux';
 import { loadCategories } from '@stores/modules/category';
 import { useParams } from 'react-router-dom';
-import ContextMenu from '@components/SideBar/SideMessage/ContextMenu/ContextMenu';
 
 const Mainlayout = ({ children }: LayoutProps) => {
   const { username } = useParams();
@@ -23,7 +22,6 @@ const Mainlayout = ({ children }: LayoutProps) => {
 
   return (
     <StyledMainlayout>
-      <ContextMenu />
       <SideBar toggleMenu={toggleMenu} closeMenu={closeMenu} />
       <StyledMain>
         <Header activeMenu={openMenu} closeMenu={closeMenu} />
