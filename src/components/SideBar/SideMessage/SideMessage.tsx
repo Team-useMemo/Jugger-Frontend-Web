@@ -56,10 +56,6 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     setShowPinIcon(false);
   }, [dispatch, id]);
 
-  const handleCategoryEditClick = useCallback(() => {
-    openEditCategoryModal();
-  }, [openEditCategoryModal]);
-
   const handleDeleteClick = useCallback(() => {
     dispatch(deleteCategory(id));
   }, [dispatch, id]);
@@ -68,10 +64,27 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     header: { color, title },
     items: [
       { label: '즐겨찾기', onClick: handlePinClick },
-      { label: '카테고리 설정', onClick: handleCategoryEditClick },
+      { label: '카테고리 변경', onClick: openEditCategoryModal },
       { label: '삭제', onClick: handleDeleteClick },
     ],
   });
+  const [startX, setStartX] = useState<number | null>(null);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setStartX(e.clientX);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (startX === null) return;
+    const deltaX = e.clientX - startX;
+
+    if (deltaX > 40) setShowPinIcon(true);
+    else if (deltaX < -40) setShowPinIcon(false);
+  };
+
+  const handlePointerUp = () => {
+    setStartX(null);
+  };
 
   return (
     <>
@@ -80,6 +93,9 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
       <MessageItem
         onClick={handleCategoryClick}
         {...bindContextMenuHandlers}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
         focus={focus}
         style={{
           transform: showPinIcon ? 'translateX(10px)' : 'translateX(0)',
