@@ -13,16 +13,14 @@ import {
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
 import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
 import { useAppDispatch } from '@hooks/useRedux';
 import { deleteCategory, togglePin } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { useSelector } from 'react-redux';
-import { openContextMenu, closeContextMenu } from '@stores/modules/contextMenuSlice';
-import { RootState } from '@stores/config/configStore';
+import { useContextMenu } from '@hooks/useContextMenu';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -34,15 +32,12 @@ interface SideMessageItemProps {
   isPinned?: boolean;
 }
 
+// 상단 import는 그대로 유지
+
 const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const contextMenuRef = useRef<HTMLDivElement>(null);
-  const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
-  const touchTimeout = useRef<NodeJS.Timeout | null>(null);
-  const isOpen = useSelector((state: RootState) => state.contextMenu.isOpen);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     `editCategory_${id}`,
@@ -51,124 +46,40 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
       <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />
     ),
     [],
-    { id: id, name: title, initialColor: color },
+    { id, name: title, initialColor: color },
   );
 
-  const handleCategoryClick = useCallback(() => {
-    navigate(`?category=${id}`);
-  }, [navigate, id]);
+  const handleCategoryClick = useCallback(() => navigate(`?category=${id}`), [navigate, id]);
 
   const handlePinClick = useCallback(() => {
     dispatch(togglePin(id));
-    dispatch(closeContextMenu());
     setShowPinIcon(false);
   }, [dispatch, id]);
 
   const handleCategoryEditClick = useCallback(() => {
     openEditCategoryModal();
-    dispatch(closeContextMenu());
-  }, [openEditCategoryModal, dispatch]);
+  }, [openEditCategoryModal]);
 
-  const deleteCurrentCategory = useCallback(() => {
+  const handleDeleteClick = useCallback(() => {
     dispatch(deleteCategory(id));
   }, [dispatch, id]);
 
-  const handleDeleteClick = useCallback(() => {
-    deleteCurrentCategory();
-    dispatch(closeContextMenu());
-  }, [deleteCurrentCategory, dispatch]);
-
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(
-      openContextMenu({
-        anchor: { x: e.clientX, y: e.clientY },
-        props: {
-          title,
-          color,
-          onPin: handlePinClick,
-          onCategory: handleCategoryEditClick,
-          onDelete: handleDeleteClick,
-        },
-      }),
-    );
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchTimeout.current = setTimeout(() => {
-      dispatch(
-        openContextMenu({
-          anchor: { x: e.touches[0].clientX, y: e.touches[0].clientY },
-          props: {
-            title,
-            color,
-            onPin: handlePinClick,
-            onCategory: handleCategoryEditClick,
-            onDelete: handleDeleteClick,
-          },
-        }),
-      );
-    }, 600);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchTimeout.current) clearTimeout(touchTimeout.current);
-  };
-
-  const handleTouchMove = () => {
-    if (touchTimeout.current) clearTimeout(touchTimeout.current);
-  };
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    setStartX(e.clientX);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (startX === null) return;
-    const deltaX = e.clientX - startX;
-
-    if (deltaX > 40 && !showPinIcon) {
-      setShowPinIcon(true);
-    } else if (deltaX < -40 && showPinIcon) {
-      setShowPinIcon(false);
-    }
-  };
-
-  const handlePointerUp = () => {
-    setStartX(null);
-  };
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
-        dispatch(closeContextMenu());
-        setShowPinIcon(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, [isOpen, dispatch]);
+  const { contextMenu, bindContextMenuHandlers } = useContextMenu({
+    header: { color, title },
+    items: [
+      { label: '즐겨찾기', onClick: handlePinClick },
+      { label: '카테고리 설정', onClick: handleCategoryEditClick },
+      { label: '삭제', onClick: handleDeleteClick },
+    ],
+  });
 
   return (
     <>
       <EditCategoryModal />
+      {contextMenu}
       <MessageItem
         onClick={handleCategoryClick}
-        onContextMenu={handleContextMenu}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={handleTouchMove}
+        {...bindContextMenuHandlers}
         focus={focus}
         style={{
           transform: showPinIcon ? 'translateX(10px)' : 'translateX(0)',
