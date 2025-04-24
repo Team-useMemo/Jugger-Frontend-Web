@@ -27,7 +27,7 @@ export const toggleSlice = createSlice({
 export const { modalToggleAction } = toggleSlice.actions;
 
 // slice의 상태값
-export const modalState = (state: RootState) => state.modalToggle.value;
+export const modalState = (state: RootState) => state.modal.value;
 
 //slice의 reducers
 export default toggleSlice.reducer;

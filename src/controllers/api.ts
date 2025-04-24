@@ -99,9 +99,9 @@ const fetchCategory = async (username: string) => {
       id: category.categoryId,
       title: category.categoryName,
       pinned: false,
-      color: category.categoryColor.replace(/^color/, '') || '#000000',
-      content: category.chatItems?.[0]?.data ?? 'empty',
-      lastDate: new Date(category.chatItems?.[0]?.timestamp ?? Date.now()),
+      color: category.categoryColor.replace(/^color/, ''),
+      content: category.chatItems[0].data,
+      lastDate: new Date(category.chatItems[0].timestamp),
     }))
     .sort((a, b) => b.lastDate.getTime() - a.lastDate.getTime());
 

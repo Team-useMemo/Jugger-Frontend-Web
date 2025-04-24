@@ -27,7 +27,7 @@ const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: 
 
   const categories = [
     { id: null, color: '#171719', title: '전체' },
-    ...useAppSelector((state) => state.categorySlice.value),
+    ...useAppSelector((state) => state.category.value),
   ];
 
   return (

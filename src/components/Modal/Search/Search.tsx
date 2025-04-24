@@ -84,8 +84,8 @@ const SearchResultItem = ({
 const Search = ({ closeModal }: { closeModal: () => void }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const categories = useAppSelector((state) => state.categorySlice.value);
-  const memos = useAppSelector((state) => state.memoSlice.value);
+  const categories = useAppSelector((state) => state.category.value);
+  const memos = useAppSelector((state) => state.memo.value);
 
   const filteredMemos = memos.filter((memo) => {
     if (getSearchableText(memo) === null) return false; // 추후 null 처리 삭제

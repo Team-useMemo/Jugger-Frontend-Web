@@ -67,7 +67,7 @@ export const categorySlice = createSlice({
 export const { addCategory, editCategory, deleteCategory, togglePin } = categorySlice.actions;
 
 // slice의 상태값
-export const categoryState = (state: RootState) => state.categorySlice.value;
+export const categoryState = (state: RootState) => state.category.value;
 
 //slice의 reducers
 export default categorySlice.reducer;
