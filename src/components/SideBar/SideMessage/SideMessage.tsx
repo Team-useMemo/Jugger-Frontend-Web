@@ -13,15 +13,16 @@ import {
 import PinSVG from '@assets/Sidebar/Pin.svg?react';
 import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
 import { useAppDispatch } from '@hooks/useRedux';
 import { deleteCategory, togglePin } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { closeContextMenu } from '@stores/modules/contextMenuSlice';
-import { useContextMenuHandler } from '@hooks/useContextMenu';
+import { useSelector } from 'react-redux';
+import { openContextMenu, closeContextMenu } from '@stores/modules/contextMenuSlice';
+import { RootState } from '@stores/config/configStore';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -30,15 +31,18 @@ interface SideMessageItemProps {
   title: string;
   content: string;
   time: Date;
-  isPinned: boolean;
+  isPinned?: boolean;
 }
 
 const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const contextMenuRef = useRef<HTMLDivElement>(null);
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
+  const touchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const isOpen = useSelector((state: RootState) => state.contextMenu.isOpen);
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     `editCategory_${id}`,
@@ -74,15 +78,46 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     dispatch(closeContextMenu());
   }, [deleteCurrentCategory, dispatch]);
 
-  const menuProps = {
-    title,
-    color,
-    onPin: handlePinClick,
-    onCategory: handleCategoryEditClick,
-    onDelete: handleDeleteClick,
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(
+      openContextMenu({
+        anchor: { x: e.clientX, y: e.clientY },
+        props: {
+          title,
+          color,
+          onPin: handlePinClick,
+          onCategory: handleCategoryEditClick,
+          onDelete: handleDeleteClick,
+        },
+      }),
+    );
   };
 
-  const { handleContextMenu, handleTouchStart, clearTouchTimeout } = useContextMenuHandler(menuProps);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchTimeout.current = setTimeout(() => {
+      dispatch(
+        openContextMenu({
+          anchor: { x: e.touches[0].clientX, y: e.touches[0].clientY },
+          props: {
+            title,
+            color,
+            onPin: handlePinClick,
+            onCategory: handleCategoryEditClick,
+            onDelete: handleDeleteClick,
+          },
+        }),
+      );
+    }, 600);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimeout.current) clearTimeout(touchTimeout.current);
+  };
+
+  const handleTouchMove = () => {
+    if (touchTimeout.current) clearTimeout(touchTimeout.current);
+  };
 
   const handlePointerDown = (e: React.PointerEvent) => {
     setStartX(e.clientX);
@@ -103,6 +138,25 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
     setStartX(null);
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+        dispatch(closeContextMenu());
+        setShowPinIcon(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isOpen, dispatch]);
+
   return (
     <>
       <EditCategoryModal />
@@ -113,8 +167,8 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onTouchStart={handleTouchStart}
-        onTouchEnd={clearTouchTimeout}
-        onTouchMove={clearTouchTimeout}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
         focus={focus}
         style={{
           transform: showPinIcon ? 'translateX(10px)' : 'translateX(0)',
