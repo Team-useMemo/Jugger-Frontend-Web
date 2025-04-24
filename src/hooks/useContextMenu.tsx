@@ -33,11 +33,23 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps) => {
 
   const handleContextMenu = useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
-      if (e.cancelable) {
+      if (e.type === 'contextmenu' || ('touches' in e && e.cancelable)) {
         e.preventDefault();
       }
       const { clientX, clientY } = 'touches' in e ? e.touches[0] : e;
-      openMenu(clientX, clientY);
+
+      // 메뉴 크기 가정 (실제 스타일에 맞게 조정)
+      const MENU_WIDTH = 150;
+      const MENU_HEIGHT = 200;
+
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // 위치 보정
+      const adjustedX = clientX + MENU_WIDTH > viewportWidth ? viewportWidth - MENU_WIDTH - 10 : clientX;
+      const adjustedY = clientY + MENU_HEIGHT > viewportHeight ? viewportHeight - MENU_HEIGHT - 10 : clientY;
+
+      openMenu(adjustedX, adjustedY);
     },
     [openMenu],
   );
