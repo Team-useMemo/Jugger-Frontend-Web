@@ -1,6 +1,6 @@
 import SearchSVG from '@assets/Header/search.svg?react';
 import DetailSVG from '@assets/Header/detail.svg?react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } from './Header.Style';
 import MenuSVG from '@assets/icons/menu.svg?react';
 import { useAppSelector } from '@hooks/useRedux';
@@ -15,6 +15,7 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
   const categories = useAppSelector((state) => state.category.value);
   const category = categories.find((e) => e.id == categoryId);
   const modalRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const [SearchCategoryModal, openSearchCategoryModal] = useModal(
     'search',
@@ -60,6 +61,15 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
         <HeaderButtonContainer>
           <SearchSVG onClick={onSearchClick} />
           <DetailSVG onClick={onDetailClick} />
+          <button
+            onClick={() => {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('username');
+              navigate('/login');
+            }}
+          >
+            TEST 로그아웃
+          </button>
         </HeaderButtonContainer>
       </StyledHeader>
     </>

@@ -163,4 +163,22 @@ const postPhoto = async (username: string, file: File, categoryUuid: string) => 
 
   console.log(result.url);
 };
-export { fetchAllMemo, fetchCategory, postCategory, postMemo, postCalendar, postPhoto };
+
+const postKakaoAuthCode = async (code: string) => {
+  const url = `${baseURL}/api/auth/kakao`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: code }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`${res.status} Error!!`);
+  }
+
+  const data = await res.json();
+  return data;
+};
+
+export { fetchAllMemo, fetchCategory, postCategory, postMemo, postCalendar, postPhoto, postKakaoAuthCode };

@@ -5,15 +5,45 @@ import Apple from '@assets/Login/apple.svg?react';
 import LoginLogo from '@assets/Login/loginLogo.svg?react';
 import { Button, Container, Description, Divider } from './LoginPage.style';
 
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
 const LoginPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(import.meta.env.VITE_KAKAO_JS_SDK_KEY);
+    }
+  }, []);
+
+  const handleKakaoLogin = () => {
+    window.Kakao.Auth.authorize({
+      redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
+    });
+  };
+
   return (
     <Container>
+      <button
+        onClick={() => {
+          localStorage.setItem('accessToken', 'testAccessToken');
+          localStorage.setItem('username', 'testUser');
+          navigate('/');
+        }}
+      >
+        TEST 로그인
+      </button>
       <Description>빠르게 '딱' 받기고 편하게 정리하는,</Description>
       <LoginLogo />
       <Divider>
         <span>간편 로그인</span>
       </Divider>
-      <Button bgColor="#FEE500">
+      <Button bgColor="#FEE500" onClick={handleKakaoLogin}>
         <Kakao />
         카카오톡으로 계속하기
       </Button>
