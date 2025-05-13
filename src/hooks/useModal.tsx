@@ -18,7 +18,7 @@ const useModal = (
   const modalRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const propsRef = useRef(initialProps);
-
+  console.log(modalName);
   const openModal = (newProps?: any) => {
     if (newProps) {
       propsRef.current = newProps;
