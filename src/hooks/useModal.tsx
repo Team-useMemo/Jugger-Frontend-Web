@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const useModal = (
   modalName: string,
@@ -17,25 +16,28 @@ const useModal = (
   initialProps?: any,
 ): [() => React.ReactNode, any, any] => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
+  const propsRef = useRef(initialProps);
 
-  const activeModal = window.location.search.indexOf(`${modalName}=true`) != -1;
-
-  const openModal = () => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev.toString());
-      newParams.set(modalName, 'true');
-      return newParams;
-    });
+  const openModal = (newProps?: any) => {
+    if (newProps) {
+      propsRef.current = newProps;
+    }
+    setIsVisible(true);
   };
 
-  const closeModal = () => {
-    navigate(-1);
+  const closeModal = (afterClose?: () => void) => {
+    setIsVisible(false);
+    if (afterClose) {
+      setTimeout(afterClose, 0);
+    }
   };
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
+      if (initialProps) {
+        return;
+      }
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
         closeModal();
       }
@@ -46,19 +48,19 @@ const useModal = (
     return () => {
       window.removeEventListener('mousedown', handleClick);
     };
-  }, []);
+  }, [initialProps]);
 
   const Modal = useCallback(() => {
-    if (!activeModal) return null;
+    if (!isVisible) return null;
 
     return (
       <Background>
         <div ref={modalRef}>
-          <Component closeModal={closeModal} actions={actions} props={initialProps} />
+          <Component closeModal={closeModal} actions={actions} props={propsRef.current} />
         </div>
       </Background>
     );
-  }, [activeModal, initialProps]);
+  }, [Background, Component, actions, isVisible]);
 
   return [Modal, openModal, closeModal];
 };

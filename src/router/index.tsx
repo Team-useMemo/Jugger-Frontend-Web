@@ -1,8 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-import HomePage from '@pages/Home/page';
+// import HomePage from '@pages/Home/page';
 import LoginPage from '@pages/Login/page';
 import Root from './Root';
 import MemoPage from '@pages/Memo/page';
+import KakaoCallback from '@pages/Oauth/KakaoCallback';
 
 const webPath = {
   login: () => '/login',
@@ -14,19 +15,14 @@ const routes = [
     path: '/',
     element: <Root />,
     children: [
-      {
-        path: '/home',
-        element: <HomePage />,
-      },
-      {
-        path: ':username',
-        element: <MemoPage />,
-      },
+      // { path: 'home', element: <HomePage /> },
+      { path: ':username', element: <MemoPage /> },
+      { path: '/oauth/callback/kakao', element: <KakaoCallback /> },
     ],
   },
   {
     path: webPath.login(),
-    children: [{ path: '', element: <LoginPage /> }],
+    element: <LoginPage />,
   },
 ];
 
