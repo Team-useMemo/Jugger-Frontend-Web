@@ -17,18 +17,18 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
-import { useAppSelector } from '@hooks/useRedux';
 import useModal from '@hooks/useModal';
 import AddCategory from '@components/Modal/AddCategory';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
-
-// store.dispatch(categoryAction);
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
+  const { data: categories = [] } = useGetCategoriesQuery();
+
   const [AddCategoryModal, openAddCategoryModal] = useModal(
     'addCategory',
     FullScreenGray,
@@ -44,7 +44,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     modalProps,
   );
 
-  const categories = useAppSelector((state) => state.category.value);
   const onWholeMemoClick = () => {
     setSearchParams({});
   };
@@ -108,20 +107,20 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
 
           <MessageSection>
             {[
-              ...categories.filter((msg) => msg.pinned),
+              ...categories.filter((msg) => msg.isPinned),
               ...categories
-                .filter((msg) => !msg.pinned)
-                .sort((a, b) => new Date(b.lastDate).getTime() - new Date(a.lastDate).getTime()),
+                .filter((msg) => !msg.isPinned)
+                .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
             ].map((msg, index) => (
               <SideMessage
                 key={index}
-                focus={category == msg.id}
-                id={msg.id}
+                focus={category == msg.uuid}
+                id={msg.uuid}
                 color={msg.color}
-                title={msg.title}
-                content={msg.content}
-                time={msg.lastDate}
-                isPinned={msg.pinned}
+                title={msg.name}
+                isPinned={msg.isPinned}
+                updatedAt={msg.updatedAt}
+                recentMessage={msg.recentMessage}
               />
             ))}
           </MessageSection>

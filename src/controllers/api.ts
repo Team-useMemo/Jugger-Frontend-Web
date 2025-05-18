@@ -3,12 +3,18 @@ import categoryMock from './mock/category';
 import memoMock from './mock/memo';
 
 const baseURL = import.meta.env.VITE_BASE_URL;
-const Headers = { 'content-type': 'application/json' };
+const getHeaders = () => {
+  const token = localStorage.getItem('accessToken');
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
 
 const fetchData = async (path: string) => {
   const url = `${baseURL}${path}`;
 
-  const res = await fetch(url, { method: 'GET', headers: Headers });
+  const res = await fetch(url, { method: 'GET', headers: getHeaders() });
   if (!res.ok) {
     throw new Error(`${res.status} Error!!`);
   }
@@ -20,7 +26,7 @@ const postData = async (path: string, body: any) => {
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: Headers,
+    headers: getHeaders(),
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -49,8 +55,8 @@ type CategoryResponse = {
 const fetchAllMemo = async (username: string) => {
   if (!username) return [];
 
-  // const now = new Date().toISOString();
-  const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${'2025-04-14T06:25:00Z'}&size=20`);
+  const now = new Date().toISOString();
+  const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${now}&size=20`);
 
   const convertedResult: MemoProp[] = result
     .flatMap((category) =>
@@ -165,11 +171,11 @@ const postPhoto = async (username: string, file: File, categoryUuid: string) => 
 };
 
 const postKakaoAuthCode = async (code: string) => {
-  const url = `${baseURL}/api/auth/kakao`;
+  const url = `${baseURL}/auth/kakao`;
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getHeaders(),
     body: JSON.stringify({ code: code }),
   });
 
@@ -181,4 +187,40 @@ const postKakaoAuthCode = async (code: string) => {
   return data;
 };
 
-export { fetchAllMemo, fetchCategory, postCategory, postMemo, postCalendar, postPhoto, postKakaoAuthCode };
+type KakaoSignupPayload = {
+  name: string;
+  email: string;
+  domain: 'kakao';
+  terms: {
+    termsOfService: boolean;
+    privacyPolicy: boolean;
+    marketing: boolean;
+  };
+};
+
+const postKakaoSignup = async (payload: KakaoSignupPayload) => {
+  const url = `${baseURL}/auth/kakao/signup`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(`${response.status} Error`);
+  }
+
+  return await response.json();
+};
+export {
+  fetchAllMemo,
+  fetchCategory,
+  postCategory,
+  postMemo,
+  postCalendar,
+  postPhoto,
+  postKakaoAuthCode,
+  postKakaoSignup,
+};

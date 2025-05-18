@@ -1,73 +1,75 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../config/configStore';
-import { fetchCategory } from '@controllers/api';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CategoryProp } from '@ts/Category.Prop';
 
-const initialState: {
-  value: CategoryProp[];
-} = {
-  value: [],
-};
-// Async thunk
-export const loadCategories = createAsyncThunk('category/loadCategory', async (username: string) => {
-  const categories = await fetchCategory(username);
-  return categories;
+const baseURL = import.meta.env.VITE_BASE_URL;
+
+export const categoryApi = createApi({
+  reducerPath: 'categoryApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: baseURL,
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ['Category'],
+  endpoints: (builder) => ({
+    getCategories: builder.query<CategoryProp[], void>({
+      query: () => `/api/v1/categories/recent`,
+      transformResponse: (response: CategoryProp[]) =>
+        response.map((category) => ({
+          uuid: category.uuid,
+          name: category.name,
+          isPinned: category.isPinned,
+          color: category.color.replace(/^color/, ''),
+          recentMessage: category.recentMessage,
+          updatedAt: new Date(category.updatedAt),
+        })),
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ uuid }) => ({ type: 'Category' as const, uuid })), { type: 'Category', id: 'LIST' }]
+          : [],
+    }),
+    addCategory: builder.mutation<void, { name: string; color: string }>({
+      query: (body) => ({
+        url: '/api/v1/categories',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Category', id: 'LIST' }],
+    }),
+    editCategory: builder.mutation<void, { id: string; title: string; color: string }>({
+      query: ({ id, title, color }) => ({
+        url: `/api/v1/categories/${id}`,
+        method: 'PATCH',
+        body: { name: title, color },
+      }),
+      invalidatesTags: (_result, _error, { id }) => [{ type: 'Category', id }],
+    }),
+    deleteCategory: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/api/v1/categories/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, id) => [{ type: 'Category', id }],
+    }),
+    togglePin: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/api/v1/categories/pin/${id}`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, id) => [{ type: 'Category', id }],
+    }),
+  }),
 });
-//slice 설정
-export const categorySlice = createSlice({
-  name: 'category',
-  initialState,
-  reducers: {
-    addCategory: (state, action: PayloadAction<any>) => {
-      // post로 카테고리 보낸 후 id 받아와야 함
-      const id =
-        state.value.reduce((acc, e) => {
-          return Math.max(acc, Number(e.id));
-        }, 0) + 1;
 
-      state.value = [
-        ...state.value,
-        {
-          id: id.toString(),
-          pinned: false,
-          content: 'empty',
-          lastDate: new Date(),
-          ...action.payload,
-        },
-      ];
-    },
-    editCategory: (
-      state,
-      action: PayloadAction<{
-        id: string;
-        title: string;
-        color: string;
-      }>,
-    ) => {
-      const { id, title, color } = action.payload;
-      state.value = state.value.map((category) => (category.id === id ? { ...category, title, color } : category));
-    },
-    deleteCategory: (state, action: PayloadAction<string>) => {
-      state.value = state.value.filter((category) => category.id !== action.payload);
-    },
-    togglePin: (state, action: PayloadAction<string>) => {
-      state.value = state.value.map((category) =>
-        category.id === action.payload ? { ...category, pinned: !category.pinned } : category,
-      );
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(loadCategories.fulfilled, (state, action) => {
-      state.value = action.payload;
-    });
-  },
-});
-
-//actions
-export const { addCategory, editCategory, deleteCategory, togglePin } = categorySlice.actions;
-
-// slice의 상태값
-export const categoryState = (state: RootState) => state.category.value;
-
-//slice의 reducers
-export default categorySlice.reducer;
+export const {
+  useGetCategoriesQuery,
+  useAddCategoryMutation,
+  useEditCategoryMutation,
+  useDeleteCategoryMutation,
+  useTogglePinMutation,
+} = categoryApi;

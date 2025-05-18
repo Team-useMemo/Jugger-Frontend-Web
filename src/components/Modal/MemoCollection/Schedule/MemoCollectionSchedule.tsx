@@ -1,4 +1,3 @@
-import { useAppSelector } from '@hooks/useRedux';
 import { CalendarDays, CalendarMonths, getCalendarDates } from '@utils/Date';
 import { useState } from 'react';
 import LeftArrowSVG from '@assets/icons/left_arrow.svg?react';
@@ -24,6 +23,7 @@ import {
   MemoCollectionScheduleItemDateTitle,
   MemoCollectionScheduleItemListContainer,
 } from './MemoCollectionSchedule.Style';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const _dateList = Array.from({ length: 50 }, (_, i) => {
   const startDate = new Date();
@@ -41,7 +41,7 @@ const _dateList = Array.from({ length: 50 }, (_, i) => {
 }).sort((a: any, b: any) => a.startDate - b.startDate);
 
 const MemoCollectionSchedule = () => {
-  const categories = useAppSelector((state) => state.category.value);
+  const { data: categories = [] } = useGetCategoriesQuery();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(() => {
     const date = new Date();
@@ -110,7 +110,7 @@ const MemoCollectionSchedule = () => {
                     .map((e2, i) => (
                       <MemoCollectionScheduleCalendarDateItemContentsDot
                         key={e.toDateString() + i}
-                        color={categories.find(({ id }) => id == e2.category)?.color}
+                        color={categories.find(({ uuid }) => uuid == e2.category)?.color}
                       />
                     ))}
                 </MemoCollectionScheduleCalendarDateItemContents>
@@ -138,7 +138,9 @@ const MemoCollectionSchedule = () => {
                   <p className="date">{e.startDate.getDate()}</p>
                 </MemoCollectionScheduleItemDateTitle>
                 <span className="divider" />
-                <MemoCollectionScheduleItemDateContents color={categories.find(({ id }) => id == e.category)?.color}>
+                <MemoCollectionScheduleItemDateContents
+                  color={categories.find(({ uuid }) => uuid == e.category)?.color}
+                >
                   <span />
                   {e.title}
                 </MemoCollectionScheduleItemDateContents>

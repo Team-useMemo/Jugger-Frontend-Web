@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { postKakaoSignup } from '@controllers/api';
 import { useNavigate } from 'react-router-dom';
 import CloseSVG from '@assets/Login/close.svg?react';
 
@@ -32,14 +33,32 @@ const Info = ({
     closeModal();
     navigate('/login');
   };
-  console.log(checkedTerms);
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
     console.log({ name, gender, birth, source });
     if (isRequiredChecked) {
-      // 여기서 서버에 정보 전송하는 로직을 추가하세요.
-      console.log(checkedTerms);
-      localStorage.setItem('username', name);
-      navigate(`/${name}`);
+      try {
+        const response = await postKakaoSignup({
+          name,
+          email: 'hong3@example.com', // 실제 이메일로 교체 필요
+          domain: 'kakao',
+          terms: {
+            termsOfService: checkedTerms.terms,
+            privacyPolicy: checkedTerms.privacy,
+            marketing: checkedTerms.marketing,
+          },
+        });
+
+        console.log('회원가입 성공:', response.accessToken, response.refreshToken);
+
+        localStorage.setItem('username', name);
+        localStorage.setItem('accessToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+
+        navigate(`/memo`);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

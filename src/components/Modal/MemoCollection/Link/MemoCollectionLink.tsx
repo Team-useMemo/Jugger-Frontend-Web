@@ -1,4 +1,3 @@
-import { useAppSelector } from '@hooks/useRedux';
 import { useEffect, useState } from 'react';
 import {
   MemoCollectionLinkContainer,
@@ -9,6 +8,7 @@ import {
   MemoCollectionLinkItemThumbnailContainer,
 } from './MemoCollectionLink.Style';
 import { fetchUrlPreview, OgData } from '@utils/ogData';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const linkList = [
   { content: 'https://www.youtube.com/watch?v=v8zk7DECvqs', category: '1' },
@@ -21,8 +21,8 @@ const linkList = [
 const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
   const [ogData, setOgData] = useState<OgData | null>(null);
 
-  const _category = useAppSelector((state) => state.category.value).find((e) => e.id == category);
-
+  const { data: categories = [] } = useGetCategoriesQuery();
+  const _category = categories.find((e: any) => e.id == category);
   useEffect(() => {
     const fetchAndUpdate = async () => {
       setOgData(await fetchUrlPreview(content));
@@ -41,7 +41,7 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
         {_category && (
           <MemoCollectionLinkItemCategory color={_category.color}>
             <span />
-            {_category.title}
+            {_category.name}
           </MemoCollectionLinkItemCategory>
         )}
         <img src={ogData?.ogImage} />

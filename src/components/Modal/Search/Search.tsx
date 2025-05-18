@@ -26,6 +26,7 @@ import {
   Legend,
 } from './Search.Style';
 import { useNavigate } from 'react-router-dom';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const getSearchableText = (memo: any): string => {
   if (memo.type === 'text') return memo.content;
@@ -84,7 +85,9 @@ const SearchResultItem = ({
 const Search = ({ closeModal }: { closeModal: () => void }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const categories = useAppSelector((state) => state.category.value);
+
+  const { data: categories = [] } = useGetCategoriesQuery();
+
   const memos = useAppSelector((state) => state.memo.value);
 
   const filteredMemos = memos.filter((memo) => {
@@ -104,8 +107,8 @@ const Search = ({ closeModal }: { closeModal: () => void }) => {
         <InputWrapper>
           <SearchInputWrapper>
             {selectedCategoryId && (
-              <SelectedCategoryTag color={categories.find((cat) => cat.id === selectedCategoryId)?.color || '#ccc'}>
-                {categories.find((cat) => cat.id === selectedCategoryId)?.title}
+              <SelectedCategoryTag color={categories.find((cat) => cat.uuid === selectedCategoryId)?.color || '#ccc'}>
+                {categories.find((cat) => cat.uuid === selectedCategoryId)?.name}
               </SelectedCategoryTag>
             )}
             <SearchInput
@@ -123,8 +126,8 @@ const Search = ({ closeModal }: { closeModal: () => void }) => {
 
         <TagGrid>
           {categories.map((cat) => (
-            <CategoryTag key={cat.id} color={cat.color} onClick={() => handleCategoryClick(cat.id)}>
-              {cat.title}
+            <CategoryTag key={cat.uuid} color={cat.color} onClick={() => handleCategoryClick(cat.uuid)}>
+              {cat.name}
             </CategoryTag>
           ))}
         </TagGrid>
