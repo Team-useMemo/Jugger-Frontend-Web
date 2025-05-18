@@ -16,8 +16,8 @@ const routes = [
     element: <Root />,
     children: [
       // { path: 'home', element: <HomePage /> },
-      { path: ':username', element: <MemoPage /> },
-      { path: '/oauth/callback/kakao', element: <KakaoCallback /> },
+      { path: '/memo', element: <MemoPage /> },
+      { path: '/login/oauth/callback/kakao', element: <KakaoCallback /> },
     ],
   },
   {

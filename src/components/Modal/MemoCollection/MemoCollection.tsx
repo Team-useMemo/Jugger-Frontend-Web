@@ -2,7 +2,6 @@ import { MemoViewerCloseContainer } from '../MemoViewer/MemoViewer.Style';
 import CloseSVG from '@assets/icons/close.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import { useState } from 'react';
-import { useAppSelector } from '@hooks/useRedux';
 import {
   MemoCollectionBodyContainer,
   MemoCollectionBodyContents,
@@ -18,18 +17,16 @@ import {
 import MemoCollectionImage from './Image/MemoCollectionImage';
 import MemoCollectionLink from './Link/MemoCollectionLink';
 import MemoCollectionSchedule from './Schedule/MemoCollectionSchedule';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const contentsTypeList = [{ Image: '사진' }, { Calendar: '캘린더' }, { Link: '링크' }];
 
 const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: any }) => {
   const [contentsType, setContentsType] = useState(props.contentsType);
   const [categoryId, setCategoryId] = useState(props.categoryId);
-
-  const categories = [
-    { id: null, color: '#171719', title: '전체' },
-    ...useAppSelector((state) => state.category.value),
-  ];
-
+  const { data: _categories = [] } = useGetCategoriesQuery();
+  const categories = [{ uuid: null, color: '#171719', name: '전체' }, ..._categories];
+  // 추후 수정 필요
   return (
     <MemoCollectionContainer>
       <MemoCollectionHeader>
@@ -55,22 +52,22 @@ const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: 
         <MemoCollectionCategories>
           {categories.map((e, i) => (
             <MemoCollectionCategoryItem
-              isFocus={categoryId == e.id}
+              isFocus={categoryId == e.uuid}
               color={e.color}
               key={`COLLECTION_${i}`}
               onClick={() => {
-                setCategoryId(e.id);
+                setCategoryId(e.uuid);
               }}
             >
               <span />
-              {e.title}
+              {e.name}
             </MemoCollectionCategoryItem>
           ))}
         </MemoCollectionCategories>
         <MemoCollectionBodyContainer>
           {categoryId && (
             <MemoCollectionBodyTitle>
-              {categories.find(({ id }) => id == categoryId)?.title}
+              {categories.find(({ uuid }) => uuid == categoryId)?.name}
               <RightArrowSVG />
             </MemoCollectionBodyTitle>
           )}

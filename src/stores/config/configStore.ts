@@ -1,17 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import modalToggle from '@stores/modules/todoSlice';
-import counter from '@stores/modules/counterSlice';
-import category from '@stores/modules/category';
 import memo from '@stores/modules/memo';
+import { categoryApi } from '@stores/modules/category'; // 추가 필요
 
 const store = configureStore({
   reducer: {
     modal: modalToggle,
-    counter,
-    category,
     memo,
+    [categoryApi.reducerPath]: categoryApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }).concat(categoryApi.middleware), // 👈 이 부분이 핵심!
 });
 
 export type RootState = ReturnType<typeof store.getState>;

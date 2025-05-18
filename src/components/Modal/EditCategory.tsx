@@ -12,8 +12,7 @@ import {
 import CloseSVG from '@assets/icons/close.svg?react';
 import { useState } from 'react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
-import { useAppDispatch } from '@hooks/useRedux';
-import { editCategory } from '@stores/modules/category';
+import { useEditCategoryMutation } from '@stores/modules/category';
 
 const EditCategory = ({
   id,
@@ -29,7 +28,7 @@ const EditCategory = ({
   const [title, setTitle] = useState(name);
   const colors = ['#FF4242', '#00BF40', '#00AEFF', '#FF5E00', '#00BDDE', '#4F29E5', '#CB59FF', '#F553DA'];
   const [selected, setSelected] = useState(colors.findIndex((color) => color === initialColor));
-  const dispatch = useAppDispatch();
+  const [editCategory] = useEditCategoryMutation();
 
   return (
     <MemoModalContainer>
@@ -90,16 +89,15 @@ const EditCategory = ({
         </CategorylItemList>
         <MemoModalButton
           onClick={() => {
-            if (!title || selected == -1) return;
-
-            dispatch(
-              editCategory({
-                id: id,
-                title: title,
-                color: colors[selected],
-              }),
-            );
-            closeModal();
+            if (!title || selected === -1) return;
+            // Call RTK Query mutation
+            editCategory({
+              id,
+              title,
+              color: colors[selected],
+            }).then(() => {
+              closeModal();
+            });
           }}
         >
           변경

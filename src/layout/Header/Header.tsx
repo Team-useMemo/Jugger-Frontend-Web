@@ -3,17 +3,18 @@ import DetailSVG from '@assets/Header/detail.svg?react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } from './Header.Style';
 import MenuSVG from '@assets/icons/menu.svg?react';
-import { useAppSelector } from '@hooks/useRedux';
+
 import useModal from '@hooks/useModal';
 import Search from '@components/Modal/Search/Search';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import { useEffect, useRef } from 'react';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: () => void }) => {
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('category');
-  const categories = useAppSelector((state) => state.category.value);
-  const category = categories.find((e) => e.id == categoryId);
+  const { data: categories = [] } = useGetCategoriesQuery();
+  const category = categories.find((e) => e.uuid == categoryId);
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
           {category && (
             <>
               <HeaderTitleCircle color={category.color} />
-              {category.title}
+              {category.name}
             </>
           )}
         </HeaderTitle>
@@ -64,6 +65,7 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
           <button
             onClick={() => {
               localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
               localStorage.removeItem('username');
               navigate('/login');
             }}

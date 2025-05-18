@@ -12,19 +12,15 @@ import {
 import CloseSVG from '@assets/icons/close.svg?react';
 import { useState } from 'react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
-import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
-import { addCategory } from '@stores/modules/category';
-import { useNavigate } from 'react-router-dom';
-import { postCategory } from '@controllers/api';
+// import { useNavigate } from 'react-router-dom';
+import { useAddCategoryMutation } from '@stores/modules/category';
 
 const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
   const [title, setTitle] = useState('');
   const colors = ['#FF4242', '#00BF40', '#00AEFF', '#FF5E00', '#00BDDE', '#4F29E5', '#CB59FF', '#F553DA'];
   const [selected, setSelected] = useState(-1);
-  const navigate = useNavigate();
-
-  const dispatch = useAppDispatch();
-  const categories = useAppSelector((state) => state.category.value);
+  // const navigate = useNavigate();
+  const [addCategory] = useAddCategoryMutation();
 
   return (
     <MemoModalContainer>
@@ -87,21 +83,18 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
         <MemoModalButton
           onClick={() => {
             if (!title || selected == -1) return;
-            postCategory('username', title, colors[selected]);
             // dispatch(
-            dispatch(
-              addCategory({
-                title: title,
-                color: colors[selected],
-              }),
-            );
+            addCategory({
+              name: title,
+              color: colors[selected],
+            });
             closeModal();
-            const id =
-              categories.reduce((acc, e) => {
-                return Math.max(acc, Number(e.id));
-              }, 0) + 1;
+            // const id =
+            //   categories.reduce((acc, e) => {
+            //     return Math.max(acc, Number(e.id));
+            //   }, 0) + 1;
 
-            navigate(`?category=${id}`);
+            // navigate(`?category=${id}`);
           }}
         >
           추가

@@ -1,8 +1,16 @@
 export interface CategoryProp {
-  id: string;
-  title: string;
-  pinned: boolean;
+  uuid: string;
+  name: string;
+  isPinned: boolean;
   color: string;
-  content: string;
-  lastDate: Date;
+  recentMessage: string;
+  updatedAt: Date;
+}
+export interface CategoryResponseProp {
+  uuid: string;
+  name: string;
+  isPinned: boolean;
+  color: string;
+  recentMessage: string;
+  updatedAt: Date;
 }

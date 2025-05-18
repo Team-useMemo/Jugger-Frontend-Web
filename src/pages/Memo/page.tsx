@@ -27,11 +27,11 @@ import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 import { postCalendar, postMemo, postPhoto } from '@controllers/api';
 
 import { shallowEqual } from 'react-redux';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const MemoList = ({ category }: { category: string | null }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
-
-  const categories = useAppSelector((state) => state.category.value);
+  const { data: categories = [] } = useGetCategoriesQuery();
 
   const memos = useAppSelector(
     (state) =>
@@ -60,7 +60,7 @@ const MemoList = ({ category }: { category: string | null }) => {
                 <MemoDateDivideLineTip />
               </MemoDateDivideContainer>
             )}
-            <MemoComponent memo={e} category={categories.find(({ id }) => id == e.categoryId)} />
+            <MemoComponent memo={e} category={categories.find(({ uuid }) => uuid == e.categoryId)} />
           </MemoItemContainer>
         );
       })}

@@ -16,8 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import useModal from '@hooks/useModal';
 import EditCategory from '@components/Modal/EditCategory';
-import { useAppDispatch } from '@hooks/useRedux';
-import { deleteCategory, togglePin } from '@stores/modules/category';
+
+import { useDeleteCategoryMutation, useTogglePinMutation } from '@stores/modules/category';
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import { useContextMenu } from '@hooks/useContextMenu';
@@ -25,20 +25,19 @@ import { useContextMenu } from '@hooks/useContextMenu';
 interface SideMessageItemProps {
   focus: boolean;
   id: string;
-  color: string;
   title: string;
-  content: string;
-  time: Date;
-  isPinned?: boolean;
+  color: string;
+  isPinned: boolean;
+  updatedAt: Date;
+  recentMessage: string;
 }
 
-// 상단 import는 그대로 유지
-
-const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideMessageItemProps) => {
+const SideMessage = ({ focus, id, color, title, recentMessage, updatedAt, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const [togglePin] = useTogglePinMutation();
 
   const [EditCategoryModal, openEditCategoryModal] = useModal(
     `editCategory_${id}`,
@@ -53,13 +52,13 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
   const handleCategoryClick = useCallback(() => navigate(`?category=${id}`), [navigate, id]);
 
   const handlePinClick = useCallback(() => {
-    dispatch(togglePin(id));
+    togglePin(id);
     setShowPinIcon(false);
-  }, [dispatch, id]);
+  }, [id, togglePin]);
 
   const handleDeleteClick = useCallback(() => {
-    dispatch(deleteCategory(id));
-  }, [dispatch, id]);
+    deleteCategory(id);
+  }, [deleteCategory, id]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     setStartX(e.clientX);
@@ -122,12 +121,12 @@ const SideMessage = ({ focus, id, color, title, content, time, isPinned }: SideM
                 {isPinned && <PinSVG onClick={handlePinClick} />}
               </HeaderLeft>
               <Time>
-                {time.toDateString() !== new Date().toDateString()
-                  ? formatDate(time, '{M}.{DD}')
-                  : formatDate(time, '{hh}:{mm}')}
+                {updatedAt.toDateString() !== new Date().toDateString()
+                  ? formatDate(updatedAt, '{M}.{DD}')
+                  : formatDate(updatedAt, '{hh}:{mm}')}
               </Time>
             </MessageHeader>
-            <Content>{content}</Content>
+            <Content>{recentMessage}</Content>
           </MessageBody>
         </MessageInnerWrapper>
       </MessageItem>
