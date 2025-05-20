@@ -3,6 +3,7 @@ import categoryMock from './mock/category';
 import memoMock from './mock/memo';
 
 const baseURL = import.meta.env.VITE_BASE_URL;
+
 const getHeaders = () => {
   const token = localStorage.getItem('accessToken');
   return {
@@ -175,7 +176,9 @@ const postKakaoAuthCode = async (code: string) => {
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: getHeaders(),
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ code: code }),
   });
 
