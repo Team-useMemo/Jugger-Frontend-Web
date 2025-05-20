@@ -179,11 +179,12 @@ const postKakaoAuthCode = async (code: string) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ code: code }),
+    body: JSON.stringify({ code }),
   });
 
   if (!res.ok) {
-    throw new Error(`${res.status} Error!!`);
+    const errorText = await res.text(); // capture response body for diagnostics
+    throw new Error(`${res.status} Error!! - ${errorText}`);
   }
 
   const data = await res.json();

@@ -15,19 +15,16 @@ declare global {
 }
 const LoginPage = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(import.meta.env.VITE_REST_API_KEY);
+      window.Kakao.init(import.meta.env.VITE_KAKAO_JS_SDK_KEY);
     }
   }, []);
 
   const handleKakaoLogin = () => {
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
     window.location.href = kakaoAuthUrl;
-
-    // window.Kakao.Auth.authorize({
-    //   redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
-    // });
   };
 
   return (
