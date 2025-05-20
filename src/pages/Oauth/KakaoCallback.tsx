@@ -45,32 +45,32 @@ const KakaoCallback = () => {
     const code = params.get('code');
     console.log('인가 코드:', code);
 
-    if (code) {
-      postKakaoAuthCode(code)
-        .then((data) => {
-          console.log('백엔드 응답:', data);
-          const accessToken = data.accessToken;
-          const refreshToken = data.refreshToken;
-          if (accessToken && refreshToken) {
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
+    // if (code) {
+    //   postKakaoAuthCode(code)
+    //     .then((data) => {
+    //       console.log('백엔드 응답:', data);
+    //       const accessToken = data.accessToken;
+    //       const refreshToken = data.refreshToken;
+    //       if (accessToken && refreshToken) {
+    //         localStorage.setItem('accessToken', data.accessToken);
+    //         localStorage.setItem('refreshToken', data.refreshToken);
 
-            navigate('/');
-          } else {
-            const email = data.userInfo.email;
-            const nickname = data.userInfo.nickname;
-            console.log('이메일:', email);
-            console.log('닉네임:', nickname);
-            openTermsModal();
-          }
-        })
-        .catch((err) => {
-          console.error('로그인 처리 실패:', err);
-          navigate('/login');
-        });
-    } else {
-      console.error('인가 코드가 없습니다.');
-    }
+    //         navigate('/');
+    //       } else {
+    //         const email = data.userInfo.email;
+    //         const nickname = data.userInfo.nickname;
+    //         console.log('이메일:', email);
+    //         console.log('닉네임:', nickname);
+    //         openTermsModal();
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.error('로그인 처리 실패:', err);
+    //       navigate('/login');
+    //     });
+    // } else {
+    //   console.error('인가 코드가 없습니다.');
+    // }
   }, []);
 
   return (
