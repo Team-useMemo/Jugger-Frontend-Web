@@ -28,11 +28,11 @@ interface SideMessageItemProps {
   title: string;
   color: string;
   isPinned: boolean;
-  updatedAt: Date;
+  updateAt: Date;
   recentMessage: string;
 }
 
-const SideMessage = ({ focus, id, color, title, recentMessage, updatedAt, isPinned }: SideMessageItemProps) => {
+const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinned }: SideMessageItemProps) => {
   const navigate = useNavigate();
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
@@ -121,9 +121,9 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updatedAt, isPinn
                 {isPinned && <PinSVG onClick={handlePinClick} />}
               </HeaderLeft>
               <Time>
-                {updatedAt.toDateString() !== new Date().toDateString()
-                  ? formatDate(updatedAt, '{M}.{DD}')
-                  : formatDate(updatedAt, '{hh}:{mm}')}
+                {updateAt.toDateString() !== new Date().toDateString()
+                  ? formatDate(updateAt, '{M}.{DD}')
+                  : formatDate(updateAt, '{hh}:{mm}')}
               </Time>
             </MessageHeader>
             <Content>{recentMessage}</Content>

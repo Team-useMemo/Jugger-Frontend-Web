@@ -21,7 +21,7 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
   const [selected, setSelected] = useState(-1);
   // const navigate = useNavigate();
   const [addCategory] = useAddCategoryMutation();
-  console.log(addCategory);
+
   return (
     <MemoModalContainer>
       <MemoModalCloseContainer>
