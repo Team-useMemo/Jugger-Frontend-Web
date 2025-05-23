@@ -4,10 +4,7 @@ import SendSVG from '@assets/icons/send.svg?react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import useModal from '@hooks/useModal';
 import MemoComponent from '@components/Memo/Memo';
-import { useAppDispatch, useAppSelector } from '@hooks/useRedux';
-import { addMemos, loadMemos } from '@stores/modules/memo';
-import { useParams, useSearchParams } from 'react-router-dom';
-import isUrl from '@utils/isUrl';
+import { useSearchParams } from 'react-router-dom';
 import {
   MemoBottomButtonContainer,
   MemoBottomContainer,
@@ -24,30 +21,33 @@ import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedu
 import { formatDate } from '@utils/Date';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
-import { postCalendar, postMemo, postPhoto } from '@controllers/api';
+import { usePostMemoMutation, useGetMemosQuery, usePostCalendarMutation, useUploadFileMutation } from '@stores/modules/memo';
 
-import { shallowEqual } from 'react-redux';
 import { useGetCategoriesQuery } from '@stores/modules/category';
+import { MemoProp } from '@ts/Memo.Prop';
 
-const MemoList = ({ category }: { category: string | null }) => {
+const MemoList = ({
+  category,
+  memos,
+}: {
+  category: string | null;
+  memos: MemoProp[];
+}) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
 
-  const memos = useAppSelector(
-    (state) =>
-      state.memo.value.filter((e) => {
-        if (!category) return true;
-        return category === e.categoryId;
-      }),
-    shallowEqual,
-  );
+
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
 
+  const filteredMemos = category
+    ? memos.filter((memo) => memo.categoryId === category)
+    : memos;
+
   return (
     <MemoListContainer ref={memoListContainerRef}>
-      {[...memos].reverse().map((e, i, arr) => {
+      {[...filteredMemos].reverse().map((e, i, arr) => {
         return (
           <MemoItemContainer key={e.id}>
             {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
@@ -77,10 +77,11 @@ const MemoBottom = ({
   openAddPhotoModal: any;
   openAddScheduleModal: any;
 }) => {
-  const dispatch = useAppDispatch();
 
   const [newMemo, setNewMemo] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const [postMemo] = usePostMemoMutation();
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -106,22 +107,25 @@ const MemoBottom = ({
   };
 
   const handleClickSend = () => {
+    // REFACTORED: usePostMemoMutation and new logic
     if (!newMemo.trim()) return;
 
-    dispatch(
-      addMemos({
-        type: isUrl(newMemo) ? 'link' : 'text',
-        content: newMemo,
-        categoryId: category,
-      }),
-    );
+    (async () => {
+      try {
+        await postMemo({
+          categoryUuid: category || '',
+          text: newMemo,
+        }).unwrap();
+      } catch (error) {
+        console.error('메모 전송 실패:', error);
+      }
 
-    if (textareaRef.current) {
-      textareaRef.current.value = '';
-    }
-    setNewMemo('');
-    postMemo('username', newMemo, category || '');
-    changeTextAreaSize();
+      if (textareaRef.current) {
+        textareaRef.current.value = '';
+      }
+      setNewMemo('');
+      changeTextAreaSize();
+    })();
   };
 
   return (
@@ -145,25 +149,28 @@ const MemoBottom = ({
 };
 
 const MemoPage = () => {
-  const dispatch = useAppDispatch();
-  const { username } = useParams();
   const [searchParams] = useSearchParams();
 
   const currentCategory = searchParams.get('category');
 
-  const addSchedule = (title: string, startDate: Date, endDate: Date) => {
-    dispatch(
-      addMemos({
-        type: 'schedule',
-        content: {
-          title,
-          startDate,
-          endDate,
-        },
-        categoryId: currentCategory,
-      }),
-    );
-    postCalendar('username', title, currentCategory || '', startDate.toISOString(), endDate.toISOString());
+  const { data: memos = [] } = useGetMemosQuery(currentCategory || '', {
+    skip: !currentCategory,
+  });
+
+  const [postCalendar] = usePostCalendarMutation();
+  const [postPhoto] = useUploadFileMutation();
+
+  const addSchedule = async (title: string, startDate: Date, endDate: Date) => {
+    try {
+      await postCalendar({
+        name: title,
+        startTime: startDate.toISOString(),
+        endTime: endDate.toISOString(),
+        categoryId: currentCategory || '',
+      }).unwrap();
+    } catch (error) {
+      console.error('일정 전송 실패:', error);
+    }
   };
 
   const addImage = (image: string) => {
@@ -180,15 +187,8 @@ const MemoPage = () => {
 
       return new File([u8arr], filename, { type: mime });
     };
-    const file = dataURLtoFile(image, 'image.png'); // base64 string → Fil
-    dispatch(
-      addMemos({
-        type: 'photo',
-        content: image,
-        categoryId: currentCategory,
-      }),
-    );
-    postPhoto('username', file, currentCategory || '');
+    const file = dataURLtoFile(image, 'image.png');
+    postPhoto({ file, category_uuid: currentCategory || '' });
   };
 
   const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal('addSchedule', FullScreenGray, MemoAddSchedule, [
@@ -196,18 +196,11 @@ const MemoPage = () => {
   ]);
   const [MemoAddImageModal, openMemoAddImageModal] = useModal('addImage', FullScreenGray, MemoAddImage, [addImage]);
 
-  useEffect(() => {
-    if (!username) return;
-    dispatch(loadMemos(username));
-  }, [dispatch, username]);
-
-  // if (!memos) return <div>Loading</div>;
-
   return (
     <MemoPageContainer>
       <MemoAddScheduleModal />
       <MemoAddImageModal />
-      <MemoList category={currentCategory} />
+      <MemoList category={currentCategory} memos={memos} />
       <MemoBottom
         category={currentCategory}
         openAddPhotoModal={openMemoAddImageModal}

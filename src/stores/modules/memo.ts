@@ -1,55 +1,68 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../config/configStore';
-import { fetchAllMemo } from '@controllers/api';
-import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
-import { userMemoType } from '@ts/type';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { customBaseQuery } from './customBaseQuery';
+import { MemoProp } from '@ts/Memo.Prop';
 
-// 초기값 상태 값
-const initialState: { value: MemoProp[] } = {
-  value: [],
-};
-
-// Async thunk
-export const loadMemos = createAsyncThunk('memo/loadMemos', async (username: string) => {
-  const memos = await fetchAllMemo(username);
-  return memos;
-});
-
-// Slice 설정
-export const memoSlice = createSlice({
-  name: 'memo',
-  initialState,
-  reducers: {
-    addMemos: (
-      state,
-      action: PayloadAction<{
-        type: userMemoType;
-        content: string | scheduleProp;
-        categoryId: string | null;
-      }>,
-    ) => {
-      state.value = [
-        ...state.value,
-        {
-          id: state.value.length + 1,
-          date: new Date(),
-          ...action.payload,
+export const memoApi = createApi({
+  reducerPath: 'memoApi',
+  baseQuery: customBaseQuery,
+  tagTypes: ['Memo'],
+  endpoints: (builder) => ({
+    getMemos: builder.query<MemoProp[], string>({
+      query: (categoryUuid) => `/api/v1/categories/chat/before?categoryUuid=${categoryUuid}`,
+      providesTags: (result) =>
+        result
+          ? [...result.map((memo) => ({ type: 'Memo' as const, id: memo.id })), { type: 'Memo', id: 'LIST' }]
+          : [{ type: 'Memo', id: 'LIST' }],
+    }),
+    getMemoById: builder.query<MemoProp, string>({
+      query: (memoId) => `/api/v1/chat/${memoId}`,
+      providesTags: (_result, _error, id) => [{ type: 'Memo', id }],
+    }),
+    postMemo: builder.mutation<void, { categoryUuid: string; text: string }>({
+      query: ({ categoryUuid, text }) => ({
+        url: '/api/v1/chat',
+        method: 'POST',
+        body: {
+          categoryUuid,
+          text,
         },
-      ];
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(loadMemos.fulfilled, (state, action) => {
-      state.value = action.payload;
-    });
-  },
+      }),
+      invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
+    }),
+    postCalendar: builder.mutation<void, { name: string; startTime: string; endTime: string; categoryId: string }>({
+      query: ({ name, startTime, endTime, categoryId }) => ({
+        url: '/api/v1/calendar',
+        method: 'POST',
+        body: {
+          name,
+          startTime,
+          endTime,
+          categoryId,
+        },
+      }),
+      invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
+    }),
+    uploadFile: builder.mutation<void, { file: File; category_uuid: string }>({
+      query: ({ file, category_uuid }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('category_uuid', category_uuid);
+
+        return {
+          url: '/api/v1/upload/files',
+          method: 'POST',
+          body: formData,
+        };
+      },
+      invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
+    }),
+  }),
 });
 
-// actions
-export const { addMemos } = memoSlice.actions;
-
-// slice의 상태값
-export const categoryState = (state: RootState) => state.memo.value;
-
-// slice의 reducers
-export default memoSlice.reducer;
+export const {
+  useGetMemosQuery,
+  usePostMemoMutation,
+  usePostCalendarMutation,
+  useUploadFileMutation,
+  useGetMemoByIdQuery,
+} = memoApi;
