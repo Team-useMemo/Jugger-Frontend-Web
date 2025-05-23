@@ -1,20 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { customBaseQuery } from './customBaseQuery';
 import { CategoryProp } from '@ts/Category.Prop';
-
-const baseURL = import.meta.env.VITE_BASE_URL;
 
 export const categoryApi = createApi({
   reducerPath: 'categoryApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: baseURL,
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: customBaseQuery,
   tagTypes: ['Category'],
   endpoints: (builder) => ({
     getCategories: builder.query<CategoryProp[], void>({
@@ -25,7 +15,10 @@ export const categoryApi = createApi({
           name: category.name,
           isPinned: category.isPinned,
           color: category.color.replace(/^color/, ''),
-          recentMessage: category.recentMessage,
+          recentMessage: category.recentMessage ?? {
+            content: '대화를 시작해보세요!',
+            createdAt: new Date().toISOString(),
+          },
           updatedAt: new Date(category.updatedAt),
         })),
       providesTags: (result) =>

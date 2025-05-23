@@ -13,7 +13,11 @@ import { useGetCategoriesQuery } from '@stores/modules/category';
 const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: () => void }) => {
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('category');
-  const { data: categories = [] } = useGetCategoriesQuery();
+  const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
+
+  const { data: categories = [], } = useGetCategoriesQuery(undefined, {
+    skip: !isLoggedIn,
+  });
   const category = categories.find((e) => e.uuid == categoryId);
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();

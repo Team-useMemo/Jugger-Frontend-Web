@@ -21,7 +21,7 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
   const [selected, setSelected] = useState(-1);
   // const navigate = useNavigate();
   const [addCategory] = useAddCategoryMutation();
-
+  console.log(addCategory);
   return (
     <MemoModalContainer>
       <MemoModalCloseContainer>
@@ -81,20 +81,19 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
           </CategoryItem>
         </CategorylItemList>
         <MemoModalButton
-          onClick={() => {
+          onClick={async () => {
             if (!title || selected == -1) return;
-            // dispatch(
-            addCategory({
-              name: title,
-              color: colors[selected],
-            });
+            try {
+              const result = await addCategory({
+                name: title,
+                color: colors[selected],
+              }).unwrap();
+              console.log('카테고리 생성 성공:', result);
+              // TODO: 여기에 로컬 상태 업데이트 또는 refetch 필요 시 처리
+            } catch (error) {
+              console.error('카테고리 생성 실패:', error);
+            }
             closeModal();
-            // const id =
-            //   categories.reduce((acc, e) => {
-            //     return Math.max(acc, Number(e.id));
-            //   }, 0) + 1;
-
-            // navigate(`?category=${id}`);
           }}
         >
           추가

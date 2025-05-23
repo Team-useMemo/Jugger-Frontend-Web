@@ -27,10 +27,14 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get('category');
   const modalRef = useRef<HTMLDivElement>(null);
-  const { data: categories = [] } = useGetCategoriesQuery();
+  const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
 
-  const [AddCategoryModal, openAddCategoryModal] = useModal(
-    'addCategory',
+  const { data: categories = [], } = useGetCategoriesQuery(undefined, {
+    skip: !isLoggedIn,
+  });
+
+
+  const [AddCategoryModal, openAddCategoryModal] = useModal('addCategory',
     FullScreenGray,
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
@@ -43,7 +47,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     [],
     modalProps,
   );
-
   const onWholeMemoClick = () => {
     setSearchParams({});
   };
@@ -63,7 +66,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     openMemoCollectionModal();
   };
 
-  const onSettingClick = () => {};
+  const onSettingClick = () => { };
 
   const onAddCategoryClick = () => {
     openAddCategoryModal();
