@@ -19,7 +19,7 @@ export const categoryApi = createApi({
             content: '대화를 시작해보세요!',
             createdAt: new Date().toISOString(),
           },
-          updatedAt: new Date(category.updatedAt),
+          updateAt: new Date(category.updateAt),
         })),
       providesTags: (result) =>
         result

@@ -32,7 +32,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const { data: categories = [], } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
   });
-
+  console.log(categories);
 
   const [AddCategoryModal, openAddCategoryModal] = useModal('addCategory',
     FullScreenGray,
@@ -113,7 +113,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
               ...categories.filter((msg) => msg.isPinned),
               ...categories
                 .filter((msg) => !msg.isPinned)
-                .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
+                .sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()),
             ].map((msg, index) => (
               <SideMessage
                 key={index}
@@ -122,7 +122,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
                 color={msg.color}
                 title={msg.name}
                 isPinned={msg.isPinned}
-                updatedAt={msg.updatedAt}
+                updateAt={msg.updateAt}
                 recentMessage={msg.recentMessage}
               />
             ))}

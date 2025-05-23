@@ -4,7 +4,7 @@ export interface CategoryProp {
   isPinned: boolean;
   color: string;
   recentMessage: string;
-  updatedAt: Date;
+  updateAt: Date;
 }
 export interface CategoryResponseProp {
   uuid: string;
@@ -12,5 +12,5 @@ export interface CategoryResponseProp {
   isPinned: boolean;
   color: string;
   recentMessage: string;
-  updatedAt: Date;
+  updateAt: Date;
 }
