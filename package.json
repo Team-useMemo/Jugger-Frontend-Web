@@ -13,6 +13,7 @@
     "@emotion/react": "11.13",
     "@emotion/styled": "11.13",
     "@reduxjs/toolkit": "^2.6.1",
+    "framer-motion": "^12.12.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
