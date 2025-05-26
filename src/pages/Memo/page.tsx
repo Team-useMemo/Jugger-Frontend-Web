@@ -160,7 +160,7 @@ const MemoPage = () => {
     page: 0,
     size: 20,
   });
-  console.log(memos);
+
 
   const [postCalendar] = usePostCalendarMutation();
   const [postPhoto] = useUploadFileMutation();

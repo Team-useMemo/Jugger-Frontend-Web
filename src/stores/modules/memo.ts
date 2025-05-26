@@ -9,6 +9,24 @@ export const memoApi = createApi({
   endpoints: (builder) => ({
     getMemos: builder.query<MemoProp[], { before: string; page: number; size: number }>({
       query: ({ before, page, size }) => `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
+      transformResponse: (response: any) => {
+        return response.flatMap((categoryBlock: any) =>
+          categoryBlock.chatItems.map((item: any, index: number) => ({
+            id: index, // or generate unique id
+            type: item.linkUrl ? 'link' : item.scheduleName ? 'schedule' : item.imgUrl ? 'photo' : 'text',
+            content:
+              item.linkUrl || item.data || item.scheduleName
+                ? {
+                    title: item.scheduleName,
+                    startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
+                    endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
+                  }
+                : item.imgUrl,
+            date: new Date(item.timestamp),
+            categoryId: categoryBlock.categoryId,
+          })),
+        );
+      },
       providesTags: (result) =>
         result
           ? [...result.map((memo) => ({ type: 'Memo' as const, id: memo.id })), { type: 'Memo', id: 'LIST' }]
