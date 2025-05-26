@@ -1,41 +1,35 @@
-import { StyledMain, StyledMainlayout } from '@layout/MainLayout/MainLayout.Style';
-import LogoPNG from '@assets/Logo.png';
-import { LogoImage } from '@layout/SideBar/SideBar.style';
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
+import useWindowSize from '@hooks/useWindowSize';
+import { StyledMain, StyledMainlayout } from '@layout/MainLayout/MainLayout.Style';
+import { LogoImage } from '@layout/SideBar/SideBar.style';
+import IndexHeader from '@components/Index/Header/Header';
+import IndexFirstSection from '@components/Index/Section/First/FirstSection';
 import { media, theme } from '@styles/theme';
-
-import WriteSVG from '@assets/landing/write.svg?react';
-import StackSVG from '@assets/landing/stack.svg?react';
-import TagSVG from '@assets/landing/tag.svg?react';
-import PigTailSVG from '@assets/landing/pigTail.svg?react';
-import UpRightSVG from '@assets/landing/upRight.svg?react';
-import PencilSVG from '@assets/landing/pencil.svg?react';
-import EnvelopeSVG from '@assets/landing/envelope.svg?react';
-import ProfileCheerSVG from '@assets/landing/profilecheer.svg?react';
-
-import InstagramSVG from '@assets/landing/instagram.svg?react';
-import LinkedInSVG from '@assets/landing/linkedin.svg?react';
-
-import GraphicPNG from '@assets/landing/Graphic.png';
-
-import ChatWebPng from '@assets/landing/ChatWeb.png';
-import Modal1Png from '@assets/landing/modal1.png';
-import Modal2Png from '@assets/landing/modal2.png';
-import CheckCategoryPng from '@assets/landing/CheckCategorypng.png';
+import LogoPNG from '@assets/Logo.png';
 import CategoryModal1Png from '@assets/landing/CategoryModal1.png';
 import CategoryModal2Png from '@assets/landing/CategoryModal2.png';
 import CategoryModal3Png from '@assets/landing/CategoryModal3.png';
-
-import ChatMobilePNG from '@assets/landing/ChatMobile.png';
 import ChatPNG from '@assets/landing/Chat.png';
+import ChatMobilePNG from '@assets/landing/ChatMobile.png';
+import ChatWebPng from '@assets/landing/ChatWeb.png';
+import MobileCheckCategoryPng from '@assets/landing/CheckCategoryMobile.png';
+import CheckCategoryPng from '@assets/landing/CheckCategorypng.png';
+import GraphicPNG from '@assets/landing/Graphic.png';
 import MobileModal1Png from '@assets/landing/MobileModal1.png';
 import MobileModal2Png from '@assets/landing/MobileModal2.png';
-import MobileCheckCategoryPng from '@assets/landing/CheckCategoryMobile.png';
-
-import { motion } from 'framer-motion';
-import useWindowSize from '@hooks/useWindowSize';
-import IndexHeader from '@components/Index/Header/Header';
-import IndexFirstSection from '@components/Index/Section/First/FirstSection';
+import EnvelopeSVG from '@assets/landing/envelope.svg?react';
+import InstagramSVG from '@assets/landing/instagram.svg?react';
+import LinkedInSVG from '@assets/landing/linkedin.svg?react';
+import Modal1Png from '@assets/landing/modal1.png';
+import Modal2Png from '@assets/landing/modal2.png';
+import PencilSVG from '@assets/landing/pencil.svg?react';
+import PigTailSVG from '@assets/landing/pigTail.svg?react';
+import ProfileCheerSVG from '@assets/landing/profilecheer.svg?react';
+import StackSVG from '@assets/landing/stack.svg?react';
+import TagSVG from '@assets/landing/tag.svg?react';
+import UpRightSVG from '@assets/landing/upRight.svg?react';
+import WriteSVG from '@assets/landing/write.svg?react';
 
 const JuggerButton = styled.button(
   ({ color, size }: { color: 'primary' | 'secondary'; size: 'small' | 'medium' | 'large' }) => ({
