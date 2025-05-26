@@ -87,7 +87,11 @@ const Search = ({ closeModal }: { closeModal: () => void }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery(selectedCategoryId || '');
+  const { data: memos = [] } = useGetMemosQuery({
+    before: new Date().toISOString(),
+    page: 0,
+    size: 20,
+  });
 
   // const memos = useAppSelector((state) => state.memo.value);
 
