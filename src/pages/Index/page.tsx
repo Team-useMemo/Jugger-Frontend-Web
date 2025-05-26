@@ -60,15 +60,10 @@ const IndexHeader = styled.div({
   ['>svg']: {
     display: 'none',
   },
-  // [media[0]]: { ['>svg']: { display: 'block' } },
-});
 
-const LoginButton = styled.div({
-  background: theme.color.primary.normal,
-  padding: '12px 16px',
-  color: theme.color.label.inverse,
-  ...theme.font.body1normal.medium,
-  borderRadius: theme.radius[4],
+  [media[480]]: {
+    padding: '16px 20px',
+  },
 });
 
 const EmptyBlock = styled.div(({ width, height }: { width?: string; height?: string }) => ({
@@ -240,7 +235,7 @@ const Index1ComponentBackgroundRadial = styled.div(
   },
 );
 
-const Index1ComponentImageContainer = styled.div({});
+const Index1ComponentImageContainer = styled(motion.div)({});
 
 const Index1Component = ({ width }: { width: number }) => {
   return (
@@ -265,7 +260,12 @@ const Index1Component = ({ width }: { width: number }) => {
               바로 시작하기
             </JuggerButton>
           </Index1ComponentTitleContainer>
-          <div>
+          <Index1ComponentImageContainer
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: false, amount: 0 }}
+          >
             {width >= 480 ? (
               <img
                 src={MacBookPng}
@@ -279,7 +279,7 @@ const Index1Component = ({ width }: { width: number }) => {
                 />
               </div>
             )}
-          </div>
+          </Index1ComponentImageContainer>
         </Index1ComponentContent>
       </Index1ComponentContainer>
     </Index1ComponentLayout>
@@ -325,7 +325,7 @@ const Index2ComponentListContainer = styled.div({
   gap: '24px',
 });
 
-const Index2ComponentItemContainer = styled.div({
+const Index2ComponentItemContainer = styled(motion.div)({
   display: 'flex',
   padding: '0 64px',
   background: theme.color.background.normal,
@@ -482,7 +482,7 @@ const Index2Component = ({ width }: { width: number }) => {
       },
     },
     {
-      icon: <TagSVG />,
+      icon: <StackSVG />,
       title: {
         web: (
           <>
@@ -683,7 +683,12 @@ const Index2Component = ({ width }: { width: number }) => {
         <Index2ComponentTitle>어떻게 활용하나요?</Index2ComponentTitle>
         <Index2ComponentListContainer>
           {sectionList.map((e) => (
-            <Index2ComponentItemContainer>
+            <Index2ComponentItemContainer
+              initial={{ opacity: 0, x: 120 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: false, amount: 0 }}
+            >
               <Index2ComponentItemDesc>
                 {e.icon}
                 <Index2ComponentItemDescTitle>
@@ -724,6 +729,7 @@ const Index3Component1Container = styled.div({
   whiteSpace: 'nowrap',
   padding: '64px 32px',
   boxSizing: 'border-box',
+  overflow: 'hidden',
 
   [media[480]]: {
     flexDirection: 'column',
@@ -796,6 +802,7 @@ const Index3Component2Content = styled.div({
   padding: '32px',
   boxSizing: 'border-box',
   alignItems: 'center',
+  overflow: 'hidden',
 });
 
 const Index3Component2TitleContainer = styled.div({
@@ -951,11 +958,15 @@ const Index3Component = ({ width }: { width: number }) => {
           </p>
         </Index3Component1TitleContainer>
         {width >= 480 ? (
-          <div
+          <motion.div
             style={{
               width: '800px',
               alignContent: 'center',
             }}
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: false, amount: 0 }}
           >
             <img
               src={ChatWebPng}
@@ -966,15 +977,19 @@ const Index3Component = ({ width }: { width: number }) => {
                   '0px 0px 2.28px 0px #0000000D, 0px 1.14px 36.44px 0px #0000000D, 0px 5.69px 13.67px 0px #0000000D',
               }}
             />
-          </div>
+          </motion.div>
         ) : (
-          <div
+          <motion.div
             style={{
               height: '420px',
               width: '100%',
               position: 'relative',
               overflow: 'hidden',
             }}
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: false, amount: 0.2 }}
           >
             <img
               src={ChatMobilePNG}
@@ -987,7 +1002,7 @@ const Index3Component = ({ width }: { width: number }) => {
                 transform: 'translate(-50%, 0)',
               }}
             />
-          </div>
+          </motion.div>
         )}
       </Index3Component1Container>
       <Index3Component2Container>
@@ -1001,7 +1016,17 @@ const Index3Component = ({ width }: { width: number }) => {
             </p>
           </Index3Component2TitleContainer>
           <Index3Component2ImageContainer>
-            <div style={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'end' }}>
+            <motion.div
+              style={{
+                display: 'flex',
+                flexDirection: 'column-reverse',
+                alignItems: 'end',
+              }}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: -0.2, duration: 0.5 }}
+              viewport={{ once: false, amount: 0 }}
+            >
               <div
                 style={{
                   width: '40%',
@@ -1012,8 +1037,14 @@ const Index3Component = ({ width }: { width: number }) => {
                 <PigTailSVG style={{ height: '100%', width: '100%' }} />
               </div>
               <img src={CategoryModal1Png} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'end' }}>
+            </motion.div>
+            <motion.div
+              style={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'end' }}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: -0.1, duration: 0.5 }}
+              viewport={{ once: false, amount: 0.2 }}
+            >
               <img src={CategoryModal2Png} />
               <div
                 style={{
@@ -1024,8 +1055,14 @@ const Index3Component = ({ width }: { width: number }) => {
               >
                 <UpRightSVG style={{ width: '100%', height: '100%' }} />
               </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
+            </motion.div>
+            <motion.div
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0, duration: 0.5 }}
+              viewport={{ once: false, amount: 0.2 }}
+            >
               <img src={CategoryModal3Png} />
               <div
                 style={{
@@ -1033,14 +1070,24 @@ const Index3Component = ({ width }: { width: number }) => {
                   aspectRatio: '3 / 2',
                 }}
               ></div>
-            </div>
+            </motion.div>
           </Index3Component2ImageContainer>
         </Index3Component2Content>
       </Index3Component2Container>
       <Index3Component3Container>
         <Index3Component3Content>
           {width >= 480 ? (
-            <div style={{ position: 'relative', width: '600px', height: '550px' }}>
+            <motion.div
+              style={{
+                position: 'relative',
+                width: '600px',
+                height: '550px',
+              }}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: false, amount: 0.2 }}
+            >
               <img
                 src={Modal1Png}
                 style={{
@@ -1067,14 +1114,18 @@ const Index3Component = ({ width }: { width: number }) => {
                   right: '0',
                 }}
               />
-            </div>
+            </motion.div>
           ) : (
-            <div
+            <motion.div
               style={{
                 position: 'relative',
                 width: '100%',
                 height: '380px',
               }}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: false, amount: 0.2 }}
             >
               <img
                 src={MobileModal1Png}
@@ -1095,7 +1146,7 @@ const Index3Component = ({ width }: { width: number }) => {
                   borderRadius: theme.radius[12],
                 }}
               />
-            </div>
+            </motion.div>
           )}
           <Index3Component3TitleContainer>
             <Index3Component3Index>
@@ -1181,10 +1232,31 @@ const Index4Component = ({ width }: { width: number }) => {
       </Index4ComponentContent>
       <JuggerButton color="primary" size={width >= 480 ? 'large' : 'small'}>
         바로 시작하기
+        <b>asd</b>
       </JuggerButton>
     </Index4ComponentContainer>
   );
 };
+
+const TTTT = styled.p(
+  ({ strongColor }: { strongColor: 'black' | 'blue' }) => ({
+    color: theme.color.label[strongColor == 'black' ? 'alternative' : 'normal'],
+    ['b']: {
+      color: strongColor == 'black' ? theme.color.label.normal : theme.color.primary.normal,
+    },
+  }),
+  {},
+);
+
+const TTTTT = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  '&::before': {
+    content: '""',
+    padding: '4px',
+    background: 'black',
+  },
+});
 
 const IndexFooterContainer = styled.div({
   background: theme.palette.blue[20],
@@ -1260,6 +1332,7 @@ const IndexFooter = ({ width }: { width: number }) => {
             만든이들
           </JuggerButton>
         </IndexFooterButtonContainer>
+        <TTTTT>asd</TTTTT>
         <IndexFooterIconContainer>
           <InstagramSVG />
           <LinkedInSVG />
@@ -1278,8 +1351,14 @@ const IndexPage = () => {
       <StyledMain>
         <IndexHeader>
           <LogoImage src={LogoPNG} />
-          <LoginButton>로그인 및 회원가입</LoginButton>
+          <JuggerButton color="primary" size={width >= 480 ? 'medium' : 'small'}>
+            로그인 및 회원가입
+          </JuggerButton>
         </IndexHeader>
+        {/* <picture style={{}}>
+          <source media="(max-width: 480px)" srcSet={ChatMobilePNG} />
+          <img src={ChatWebPng} style={{ width: '' }} />
+        </picture> */}
         <div
           style={{
             background: theme.color.background.alternative,
