@@ -18,7 +18,6 @@ import LinkedInSVG from '@assets/landing/linkedin.svg?react';
 
 import GraphicPNG from '@assets/landing/Graphic.png';
 
-import MacBookPng from '@assets/landing/DeviceMacbookAir.png';
 import ChatWebPng from '@assets/landing/ChatWeb.png';
 import Modal1Png from '@assets/landing/modal1.png';
 import Modal2Png from '@assets/landing/modal2.png';
@@ -33,16 +32,10 @@ import MobileModal1Png from '@assets/landing/MobileModal1.png';
 import MobileModal2Png from '@assets/landing/MobileModal2.png';
 import MobileCheckCategoryPng from '@assets/landing/CheckCategoryMobile.png';
 
-import { keyframes } from '@emotion/react';
-
 import { motion } from 'framer-motion';
 import useWindowSize from '@hooks/useWindowSize';
 import IndexHeader from '@components/Index/Header/Header';
-
-const EmptyBlock = styled.div(({ width, height }: { width?: string; height?: string }) => ({
-  width: width ?? 0,
-  height: height ?? 0,
-}));
+import IndexFirstSection from '@components/Index/Section/First/FirstSection';
 
 const JuggerButton = styled.button(
   ({ color, size }: { color: 'primary' | 'secondary'; size: 'small' | 'medium' | 'large' }) => ({
@@ -116,148 +109,6 @@ const JuggerButton = styled.button(
     },
   },
 );
-
-const Index1ComponentLayout = styled.div({
-  width: '100%',
-});
-
-const ltor = keyframes({
-  ['from']: {
-    left: '-50%',
-  },
-  ['50%']: {
-    left: '50%',
-  },
-  ['to']: {
-    left: '-50%',
-  },
-});
-
-const Index1ComponentContainer = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-  margin: '24px 32px',
-  height: 'calc(100vh - 128px)',
-  borderRadius: theme.radius[32],
-  // background: `radial-gradient(ellipse 60% 125% at 80% 160%,${theme.palette.blue[30]} 25%, transparent), radial-gradient(ellipse 60% 125% at 20% 160%,${theme.palette.blue[50]} 25%, transparent), ${theme.color.background.normal}`,
-  boxShadow: '0px 50px 50px 0px #00235B0D, 0px 1px 50px 0px #00235B08, 0px 5px 50px 0px #0000000D',
-  boxSizing: 'border-box',
-  overflow: 'hidden',
-  position: 'relative',
-
-  [media[480]]: {
-    margin: '16px 20px',
-    height: 'calc(100vh - 112px)',
-    borderRadius: theme.radius[20],
-  },
-});
-
-const Index1ComponentContent = styled.div({
-  position: 'relative',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '48px 0',
-  gap: '72px',
-});
-
-const Index1ComponentTitleContainer = styled.div({
-  margin: 'auto 0',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-
-  ['.title']: {
-    ...theme.font.display1.bold,
-    margin: 0,
-    backgroundImage: `linear-gradient(115.01deg, ${theme.palette.blue[50]} 28.24%, ${theme.palette.blue[40]} 85.69%)`,
-    backgroundClip: 'text',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-  },
-
-  ['.desc']: {
-    ...theme.font.title3.medium,
-    color: theme.color.label.neutral,
-    margin: 0,
-  },
-
-  [media[480]]: {
-    ['.title']: {
-      ...theme.font.title1.bold,
-    },
-    ['.desc']: {
-      ...theme.font.body1reading.medium,
-    },
-  },
-});
-
-const Index1ComponentBackgroundRadial = styled.div(
-  ({ idx }: { idx: number }) => ({
-    background: `radial-gradient(ellipse 50% 120% at 50% 160%,${theme.palette.blue[idx == 1 ? 30 : idx == 2 ? 40 : 50]} 30%, transparent)`,
-    animationDelay: `${-5 * idx}s`,
-  }),
-  {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    animationName: ltor,
-    animationIterationCount: 'infinite',
-    animationDuration: '15s',
-    animationTimingFunction: 'ease-in-out',
-  },
-);
-
-const Index1ComponentImageContainer = styled(motion.div)({});
-
-const Index1Component = ({ width }: { width: number }) => {
-  return (
-    <Index1ComponentLayout>
-      <Index1ComponentContainer>
-        <Index1ComponentBackgroundRadial idx={0} />
-        <Index1ComponentBackgroundRadial idx={1} />
-        <Index1ComponentBackgroundRadial idx={2} />
-        <Index1ComponentContent>
-          <Index1ComponentTitleContainer>
-            <LogoImage src={LogoPNG} style={{ width: '113px' }} />
-            <EmptyBlock height={width >= 480 ? '32px' : '24px'} />
-            <p className="title">
-              빠르게 '톡' 남기고
-              <br />
-              편하게 정리하는
-            </p>
-            <EmptyBlock height={width >= 480 ? '12px' : '8px'} />
-            <p className="desc">새로운 메모 서비스</p>
-            <EmptyBlock height={width >= 480 ? '48px' : '20px'} />
-            <JuggerButton color="primary" size={width >= 480 ? 'large' : 'small'}>
-              바로 시작하기
-            </JuggerButton>
-          </Index1ComponentTitleContainer>
-          <Index1ComponentImageContainer
-            initial={{ opacity: 0, y: 80 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: false, amount: 0 }}
-          >
-            {width >= 480 ? (
-              <img
-                src={MacBookPng}
-                style={{ width: '100%', maxWidth: '960px', padding: '0 32px', boxSizing: 'border-box' }}
-              />
-            ) : (
-              <div style={{ height: '100%', position: 'relative' }}>
-                <img
-                  src={ChatMobilePNG}
-                  style={{ width: '75%', boxShadow: theme.shadow.emphasize, borderRadius: theme.radius[24] }}
-                />
-              </div>
-            )}
-          </Index1ComponentImageContainer>
-        </Index1ComponentContent>
-      </Index1ComponentContainer>
-    </Index1ComponentLayout>
-  );
-};
 
 const Index2ComponentContainer = styled.div({
   width: '100%',
@@ -1350,7 +1201,7 @@ const IndexPage = () => {
                 overflow: 'hidden',
               }}
             >
-              <Index1Component width={width} />
+              <IndexFirstSection />
               <Index2Component width={width} />
               <Index3Component width={width} />
               <Index4Component width={width} />
