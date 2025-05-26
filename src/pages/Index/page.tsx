@@ -33,38 +33,11 @@ import MobileModal1Png from '@assets/landing/MobileModal1.png';
 import MobileModal2Png from '@assets/landing/MobileModal2.png';
 import MobileCheckCategoryPng from '@assets/landing/CheckCategoryMobile.png';
 
-import { useEffect, useState } from 'react';
 import { keyframes } from '@emotion/react';
 
 import { motion } from 'framer-motion';
-
-const useWindowSize = () => {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-};
-
-const IndexHeader = styled.div({
-  display: 'flex',
-  padding: '16px 56px',
-  borderBottom: '1px solid #E0E0E2',
-  justifyContent: 'space-between',
-  boxSizing: 'border-box',
-
-  ['>svg']: {
-    display: 'none',
-  },
-
-  [media[480]]: {
-    padding: '16px 20px',
-  },
-});
+import useWindowSize from '@hooks/useWindowSize';
+import IndexHeader from '@components/Index/Header/Header';
 
 const EmptyBlock = styled.div(({ width, height }: { width?: string; height?: string }) => ({
   width: width ?? 0,
@@ -1349,12 +1322,7 @@ const IndexPage = () => {
   return (
     <StyledMainlayout>
       <StyledMain>
-        <IndexHeader>
-          <LogoImage src={LogoPNG} />
-          <JuggerButton color="primary" size={width >= 480 ? 'medium' : 'small'}>
-            로그인 및 회원가입
-          </JuggerButton>
-        </IndexHeader>
+        <IndexHeader />
         {/* <picture style={{}}>
           <source media="(max-width: 480px)" srcSet={ChatMobilePNG} />
           <img src={ChatWebPng} style={{ width: '' }} />
