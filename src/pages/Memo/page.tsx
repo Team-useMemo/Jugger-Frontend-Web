@@ -159,8 +159,8 @@ const MemoPage = () => {
     before: new Date().toISOString(),
     page: 0,
     size: 20,
-  }, { skip: !currentCategory });
-
+  });
+  console.log(memos);
 
   const [postCalendar] = usePostCalendarMutation();
   const [postPhoto] = useUploadFileMutation();
@@ -205,7 +205,9 @@ const MemoPage = () => {
     <MemoPageContainer>
       <MemoAddScheduleModal />
       <MemoAddImageModal />
-      <MemoList category={currentCategory} memos={memos} />
+      {memos && (
+        <MemoList category={currentCategory} memos={memos} />
+      )}
       <MemoBottom
         category={currentCategory}
         openAddPhotoModal={openMemoAddImageModal}
