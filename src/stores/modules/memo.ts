@@ -8,15 +8,11 @@ export const memoApi = createApi({
   tagTypes: ['Memo'],
   endpoints: (builder) => ({
     getMemos: builder.query<MemoProp[], string>({
-      query: (categoryUuid) => `/api/v1/categories/chat/before?categoryUuid=${categoryUuid}`,
+      query: (categoryUuid) => `/api/v1/chat/before?categoryUuid=${categoryUuid}`,
       providesTags: (result) =>
         result
           ? [...result.map((memo) => ({ type: 'Memo' as const, id: memo.id })), { type: 'Memo', id: 'LIST' }]
           : [{ type: 'Memo', id: 'LIST' }],
-    }),
-    getMemoById: builder.query<MemoProp, string>({
-      query: (memoId) => `/api/v1/chat/${memoId}`,
-      providesTags: (_result, _error, id) => [{ type: 'Memo', id }],
     }),
     postMemo: builder.mutation<void, { categoryUuid: string; text: string }>({
       query: ({ categoryUuid, text }) => ({
@@ -59,10 +55,4 @@ export const memoApi = createApi({
   }),
 });
 
-export const {
-  useGetMemosQuery,
-  usePostMemoMutation,
-  usePostCalendarMutation,
-  useUploadFileMutation,
-  useGetMemoByIdQuery,
-} = memoApi;
+export const { useGetMemosQuery, usePostMemoMutation, usePostCalendarMutation, useUploadFileMutation } = memoApi;

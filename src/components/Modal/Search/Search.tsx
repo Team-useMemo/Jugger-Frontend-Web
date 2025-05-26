@@ -1,5 +1,4 @@
 import { MemoModalContainer } from '../Modal.Style';
-import { useAppSelector } from '@hooks/useRedux';
 import SearchSVG from '@assets/Header/search.svg?react';
 import { useState } from 'react';
 import TextSVG from '@assets/Search/Text.svg?react';
@@ -27,6 +26,7 @@ import {
 } from './Search.Style';
 import { useNavigate } from 'react-router-dom';
 import { useGetCategoriesQuery } from '@stores/modules/category';
+import { useGetMemosQuery } from '@stores/modules/memo';
 
 const getSearchableText = (memo: any): string => {
   if (memo.type === 'text') return memo.content;
@@ -87,8 +87,9 @@ const Search = ({ closeModal }: { closeModal: () => void }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   const { data: categories = [] } = useGetCategoriesQuery();
+  const { data: memos = [] } = useGetMemosQuery(selectedCategoryId || '');
 
-  const memos = useAppSelector((state) => state.memo.value);
+  // const memos = useAppSelector((state) => state.memo.value);
 
   const filteredMemos = memos.filter((memo) => {
     if (getSearchableText(memo) === null) return false; // 추후 null 처리 삭제
