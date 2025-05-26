@@ -29,7 +29,6 @@ import { MemoProp } from '@ts/Memo.Prop';
 const MemoList = ({
   memos,
 }: {
-  category: string | null;
   memos: MemoProp[];
 }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
@@ -204,7 +203,7 @@ const MemoPage = () => {
       <MemoAddScheduleModal />
       <MemoAddImageModal />
       {memos && (
-        <MemoList category={currentCategory} memos={filteredMemos} />
+        <MemoList memos={filteredMemos} />
       )}
       <MemoBottom
         category={currentCategory}
