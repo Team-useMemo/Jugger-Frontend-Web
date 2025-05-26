@@ -36,7 +36,6 @@ const MemoList = ({
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
 
-
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
@@ -44,6 +43,8 @@ const MemoList = ({
   const filteredMemos = category
     ? memos.filter((memo) => memo.categoryId === category)
     : memos;
+
+  console.log(memos, filteredMemos);
 
   return (
     <MemoListContainer ref={memoListContainerRef}>
@@ -152,16 +153,13 @@ const MemoPage = () => {
   const [searchParams] = useSearchParams();
 
   const currentCategory = searchParams.get('category');
-
-  // const { data: memos = [] } = useGetMemosQuery(currentCategory || '', {
-  //   skip: !currentCategory,
-  // });
+  console.log(currentCategory);
 
   const { data: memos = [] } = useGetMemosQuery({
     before: new Date().toISOString(),
     page: 0,
     size: 20,
-  });
+  }, { skip: !currentCategory });
 
 
   const [postCalendar] = usePostCalendarMutation();
