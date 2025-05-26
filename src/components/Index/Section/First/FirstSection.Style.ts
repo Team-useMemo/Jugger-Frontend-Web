@@ -14,12 +14,13 @@ const IndexFirstSectionLayout = styled.div({
 });
 
 const IndexFirstSectionContainer = styled.div({
+  position: 'relative',
+  zIndex: '10',
   height: '100%',
   boxSizing: 'border-box',
   padding: '32px',
   background: theme.color.background.normal,
   borderRadius: theme.radius[32],
-  position: 'relative',
   overflow: 'hidden',
   boxShadow: '0px 50px 50px 0px #00235B0D, 0px 1px 50px 0px #00235B08, 0px 5px 50px 0px #0000000D',
 

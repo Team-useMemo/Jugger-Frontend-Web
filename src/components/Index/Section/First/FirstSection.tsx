@@ -1,8 +1,9 @@
-import WebPNG from '@assets/landing/FirstSection/Web.png';
-import MobilePNG from '@assets/landing/FirstSection/Mobile.png';
 import { motion } from 'framer-motion';
+import useWindowSize from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
 import LogoPNG from '@assets/Logo.png';
+import MobilePNG from '@assets/landing/Section/First/Mobile.png';
+import WebPNG from '@assets/landing/Section/First/Web.png';
 import {
   IndexFirstSectionBackgroundContainer,
   IndexFirstSectionBackgroundRadial,
@@ -17,7 +18,6 @@ import {
   IndexFirstSectionTitleLogo,
   IndexFirstSectionTitleMain,
 } from './FirstSection.Style';
-import useWindowSize from '@hooks/useWindowSize';
 
 const IndexFirstSection = () => {
   const width = useWindowSize();
