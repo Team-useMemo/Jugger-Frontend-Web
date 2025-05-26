@@ -93,10 +93,8 @@ const Search = ({ closeModal }: { closeModal: () => void }) => {
     size: 20,
   });
 
-  // const memos = useAppSelector((state) => state.memo.value);
 
   const filteredMemos = memos.filter((memo) => {
-    if (getSearchableText(memo) === null) return false; // 추후 null 처리 삭제
     const matchesQuery = getSearchableText(memo).toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategoryId === null || memo.categoryId === selectedCategoryId;
     return matchesQuery && matchesCategory;

@@ -27,10 +27,8 @@ import { useGetCategoriesQuery } from '@stores/modules/category';
 import { MemoProp } from '@ts/Memo.Prop';
 
 const MemoList = ({
-  category,
   memos,
 }: {
-  category: string | null;
   memos: MemoProp[];
 }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
@@ -40,15 +38,11 @@ const MemoList = ({
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
 
-  const filteredMemos = category
-    ? memos.filter((memo) => memo.categoryId === category)
-    : memos;
 
-  console.log(memos, filteredMemos);
 
   return (
     <MemoListContainer ref={memoListContainerRef}>
-      {[...filteredMemos].reverse().map((e, i, arr) => {
+      {[...memos].reverse().map((e, i, arr) => {
         return (
           <MemoItemContainer key={e.id}>
             {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
@@ -153,7 +147,6 @@ const MemoPage = () => {
   const [searchParams] = useSearchParams();
 
   const currentCategory = searchParams.get('category');
-  console.log(currentCategory);
 
   const { data: memos = [] } = useGetMemosQuery({
     before: new Date().toISOString(),
@@ -161,6 +154,10 @@ const MemoPage = () => {
     size: 20,
   });
 
+
+  const filteredMemos = currentCategory
+    ? memos.filter((memo) => memo.categoryId === currentCategory)
+    : memos;
 
   const [postCalendar] = usePostCalendarMutation();
   const [postPhoto] = useUploadFileMutation();
@@ -206,7 +203,7 @@ const MemoPage = () => {
       <MemoAddScheduleModal />
       <MemoAddImageModal />
       {memos && (
-        <MemoList category={currentCategory} memos={memos} />
+        <MemoList memos={filteredMemos} />
       )}
       <MemoBottom
         category={currentCategory}
