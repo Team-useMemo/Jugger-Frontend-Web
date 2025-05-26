@@ -153,9 +153,16 @@ const MemoPage = () => {
 
   const currentCategory = searchParams.get('category');
 
-  const { data: memos = [] } = useGetMemosQuery(currentCategory || '', {
-    skip: !currentCategory,
+  // const { data: memos = [] } = useGetMemosQuery(currentCategory || '', {
+  //   skip: !currentCategory,
+  // });
+
+  const { data: memos = [] } = useGetMemosQuery({
+    before: new Date().toISOString(),
+    page: 0,
+    size: 20,
   });
+
 
   const [postCalendar] = usePostCalendarMutation();
   const [postPhoto] = useUploadFileMutation();
