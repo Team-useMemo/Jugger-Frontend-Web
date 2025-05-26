@@ -7,8 +7,8 @@ export const memoApi = createApi({
   baseQuery: customBaseQuery,
   tagTypes: ['Memo'],
   endpoints: (builder) => ({
-    getMemos: builder.query<MemoProp[], string>({
-      query: (categoryUuid) => `/api/v1/chat/before?categoryUuid=${categoryUuid}`,
+    getMemos: builder.query<MemoProp[], { before: string; page: number; size: number }>({
+      query: ({ before, page, size }) => `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       providesTags: (result) =>
         result
           ? [...result.map((memo) => ({ type: 'Memo' as const, id: memo.id })), { type: 'Memo', id: 'LIST' }]
