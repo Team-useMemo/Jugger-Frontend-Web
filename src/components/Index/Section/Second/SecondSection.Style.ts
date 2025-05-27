@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
 import { media, theme } from '@styles/theme';
 
 const IndexSecondSectionLayout = styled.div({
@@ -82,7 +83,7 @@ const IndexSecondSectionList = styled.div({
   },
 });
 
-const IndexSecondSectionItem = styled.div({
+const IndexSecondSectionItem = styled(motion.div)({
   display: 'flex',
   background: theme.color.background.normal,
   borderRadius: theme.radius[24],
@@ -92,8 +93,12 @@ const IndexSecondSectionItem = styled.div({
   gap: '32px',
   justifyContent: 'space-between',
 
-  [media[480]]: {
+  [media[1024]]: {
     flexDirection: 'column',
+    alignItems: 'center',
+  },
+
+  [media[480]]: {
     borderRadius: theme.radius[20],
     boxShadow: '0px 1.04px 8.33px 0px #0000000D',
     padding: '40px 0',
@@ -110,6 +115,7 @@ const IndexSecondSectionItemTitle = styled.div({
   justifyContent: 'center',
   width: '320px',
   padding: '0 32px',
+  textAlign: 'left',
 
   ['svg']: {
     width: '36px',
@@ -117,7 +123,6 @@ const IndexSecondSectionItemTitle = styled.div({
 
   ['p']: {
     margin: '0',
-    textAlign: 'left',
     whiteSpace: 'nowrap',
 
     ['&.title']: {
@@ -139,9 +144,12 @@ const IndexSecondSectionItemTitle = styled.div({
     },
   },
 
-  [media[480]]: {
-    width: 'auto',
+  [media[1024]]: {
     alignItems: 'center',
+    textAlign: 'center',
+  },
+
+  [media[480]]: {
     gap: '8px',
 
     ['svg']: {
@@ -149,8 +157,6 @@ const IndexSecondSectionItemTitle = styled.div({
     },
 
     ['p']: {
-      textAlign: 'center',
-
       ['&.title']: {
         ...theme.font.title3.bold,
       },
@@ -174,12 +180,25 @@ const IndexSecondSectionItemImage = styled.div(
             borderRadius: theme.radius[12],
           },
 
+          [media[1024]]: {
+            width: '100%',
+
+            ['img']: {
+              top: '0%',
+              left: '50%',
+              width: 'auto',
+              height: '100%',
+              transform: 'translate(-50%, 0)',
+            },
+          },
+
           [media[480]]: {
             ['img']: {
               width: '80%',
+              height: 'auto',
               top: '0',
               left: '50%',
-              transform: 'translate(-50%, 0);',
+              transform: 'translate(-50%, 0)',
               borderRadius: theme.radius[16],
             },
           },
@@ -201,12 +220,8 @@ const IndexSecondSectionItemImage = styled.div(
             transform: 'translate(0, -30%)',
           },
 
-          [media[480]]: {
-            ['img']: {
-              width: '63%',
-              borderRadius: theme.radius[12],
-              top: 'auto',
-            },
+          [media[1024]]: {
+            width: '100%',
 
             ['>:nth-of-type(1)>img']: {
               transform: 'none',
@@ -217,6 +232,14 @@ const IndexSecondSectionItemImage = styled.div(
               transform: 'none',
               right: '10%',
               bottom: '-15%',
+            },
+          },
+
+          [media[480]]: {
+            ['img']: {
+              width: '63%',
+              borderRadius: theme.radius[12],
+              top: 'auto',
             },
           },
         },
