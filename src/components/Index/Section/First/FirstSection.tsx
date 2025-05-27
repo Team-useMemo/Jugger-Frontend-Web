@@ -21,6 +21,7 @@ import {
 
 const IndexFirstSection = () => {
   const width = useWindowSize();
+  const isMobile = width < 480;
 
   return (
     <IndexFirstSectionLayout>
@@ -43,7 +44,7 @@ const IndexFirstSection = () => {
                 <IndexFirstSectionTitleDesc>새로운 메모 서비스</IndexFirstSectionTitleDesc>
               </IndexFirstSectionTitle>
             </IndexFirstSectionTitleContents>
-            <JuggerButton color="primary" size={width >= 480 ? 'large' : 'small'}>
+            <JuggerButton color="primary" size={!isMobile ? 'large' : 'small'}>
               바로 시작하기
             </JuggerButton>
           </IndexFirstSectionTitleContainer>
