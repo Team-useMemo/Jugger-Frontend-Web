@@ -4,25 +4,28 @@ import LoginPage from '@pages/Login/page';
 import Root from './Root';
 import MemoPage from '@pages/Memo/page';
 import KakaoCallback from '@pages/Oauth/KakaoCallback';
+import RootPage from '@pages/Root/page';
+import IndexPage from '@pages/Index/page';
 
-const webPath = {
+export const webPath = {
+  root: () => '/',
+  index: () => '/index',
   login: () => '/login',
 };
 
 const routes = [
   { path: '*', element: <div>404 Not Found</div> },
+  { path: webPath.root(), element: <RootPage /> },
+  { path: webPath.index(), element: <IndexPage /> },
+  { path: webPath.login(), element: <LoginPage /> },
   {
     path: '/',
     element: <Root />,
     children: [
-      // { path: 'home', element: <HomePage /> },
       { path: '/memo', element: <MemoPage /> },
       { path: '/login/oauth/callback/kakao', element: <KakaoCallback /> },
+      // { path: 'home', element: <HomePage /> },
     ],
-  },
-  {
-    path: webPath.login(),
-    element: <LoginPage />,
   },
 ];
 

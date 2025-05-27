@@ -699,8 +699,14 @@ const theme = {
 export type themeColor = typeof color;
 export type themeFont = typeof font;
 
-const breakpoints = [720, 480];
+const breakpoints = {
+  480: 480,
+  768: 768,
+  1024: 1024,
+};
 
-const media = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
+const media = Object.fromEntries(
+  Object.entries(breakpoints).map(([key, value]) => [key, `@media (max-width: ${value}px)`]),
+);
 
 export { theme, media };
