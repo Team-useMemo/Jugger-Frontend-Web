@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import useWindowSize from '@hooks/useWindowSize';
+import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
 import LogoPNG from '@assets/Logo.png';
 import MobilePNG from '@assets/landing/Section/First/Mobile.png';
@@ -23,6 +25,19 @@ const IndexFirstSection = () => {
   const width = useWindowSize();
   const isMobile = width < 480;
 
+  const navigate = useNavigate();
+
+  const handleClickStart = () => {
+    const isLogin = false;
+    if (isLogin) {
+      // 로그인 시 메모페이지로 이동
+      navigate(webPath.root());
+      return;
+    }
+
+    navigate(webPath.login());
+  };
+
   return (
     <IndexFirstSectionLayout>
       <IndexFirstSectionContainer>
@@ -44,7 +59,7 @@ const IndexFirstSection = () => {
                 <IndexFirstSectionTitleDesc>새로운 메모 서비스</IndexFirstSectionTitleDesc>
               </IndexFirstSectionTitle>
             </IndexFirstSectionTitleContents>
-            <JuggerButton color="primary" size={!isMobile ? 'large' : 'small'}>
+            <JuggerButton color="primary" size={!isMobile ? 'large' : 'small'} onClick={handleClickStart}>
               바로 시작하기
             </JuggerButton>
           </IndexFirstSectionTitleContainer>

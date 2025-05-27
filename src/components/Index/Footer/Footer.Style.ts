@@ -68,6 +68,7 @@ const IndexFooterSNSContainer = styled.div({
   ['svg']: {
     width: '32px',
     height: 'auto',
+    cursor: 'pointer',
   },
 
   [media[480]]: {
