@@ -35,7 +35,7 @@ const IndexFooter = () => {
   };
 
   const handleClickLinnkedIn = () => {
-    alert('링크드인');
+    window.open('https://www.linkedin.com/in/usememo-offcial-75381b353/');
   };
 
   return (
