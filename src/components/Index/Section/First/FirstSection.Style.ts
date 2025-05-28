@@ -1,5 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
 import { media, theme } from '@styles/theme';
 
 const IndexFirstSectionLayout = styled.div({
@@ -85,12 +86,17 @@ const IndexFirstSectionContents = styled.div({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
+  gap: '32px',
+  boxSizing: 'border-box',
+
+  [media[480]]: {
+    gap: '0',
+  },
 });
 
 // Title
 
 const IndexFirstSectionTitleContainer = styled.div({
-  height: '100%',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -159,17 +165,30 @@ const IndexFirstSectionTitleDesc = styled.p({
 
 // Image
 
-const IndexFirstSectionImage = styled.img({
+const IndexFirstSectionImage = styled(motion.div)({
+  flexGrow: 1,
   maxWidth: '1024px',
-  width: '100%',
-  filter: 'drop-shadow(0 5px 5px rgba(0, 0, 0, 0.4))',
+  display: 'contents',
 
-  [media[480]]: {
-    width: '90%',
-    borderRadius: theme.radius[16],
-    overflow: 'hidden',
-    filter: 'none',
-    boxShadow: theme.shadow.emphasize,
+  ['picture']: {
+    minHeight: '0',
+    minWidth: '0',
+  },
+
+  ['img']: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+    filter: 'drop-shadow(0 5px 5px rgba(0, 0, 0, 0.4))',
+
+    [media[480]]: {
+      width: '90%',
+      height: 'auto',
+      borderRadius: theme.radius[16],
+      overflow: 'hidden',
+      filter: 'none',
+      boxShadow: theme.shadow.emphasize,
+    },
   },
 });
 

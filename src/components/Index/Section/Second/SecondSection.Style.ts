@@ -90,6 +90,7 @@ const IndexSecondSectionItem = styled(motion.div)({
   boxShadow: '0px 4px 32px 0px #0000000D',
   overflow: 'hidden',
   padding: '72px 48px',
+  boxSizing: 'border-box',
   gap: '32px',
   justifyContent: 'space-between',
 
@@ -102,7 +103,6 @@ const IndexSecondSectionItem = styled(motion.div)({
     borderRadius: theme.radius[20],
     boxShadow: '0px 1.04px 8.33px 0px #0000000D',
     padding: '40px 0',
-    height: 'calc(100vh - 256px)',
   },
 });
 
@@ -254,6 +254,8 @@ const IndexSecondSectionItemImage = styled.div(
     },
 
     [media[480]]: {
+      height: 'auto',
+      aspectRatio: '5 / 6',
       ['img']: {
         boxShadow: theme.shadow.emphasize,
       },
