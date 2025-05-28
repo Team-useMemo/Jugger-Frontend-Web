@@ -4,7 +4,7 @@ import { theme } from '@styles/theme';
 const IndexLayout = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  height: '100vh',
+  height: '100dvh',
 });
 
 const IndexContainer = styled.div({
