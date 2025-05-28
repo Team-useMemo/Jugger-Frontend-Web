@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import useWindowSize from '@hooks/useWindowSize';
 import { webPath } from '@router/index';
@@ -63,7 +62,7 @@ const IndexFirstSection = () => {
               바로 시작하기
             </JuggerButton>
           </IndexFirstSectionTitleContainer>
-          <motion.div
+          <IndexFirstSectionImage
             initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -71,9 +70,9 @@ const IndexFirstSection = () => {
           >
             <picture>
               <source media="(max-width: 480px)" srcSet={MobilePNG} />
-              <IndexFirstSectionImage src={WebPNG} />
+              <img src={WebPNG} />
             </picture>
-          </motion.div>
+          </IndexFirstSectionImage>
         </IndexFirstSectionContents>
       </IndexFirstSectionContainer>
     </IndexFirstSectionLayout>
