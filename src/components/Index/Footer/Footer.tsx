@@ -1,6 +1,6 @@
 import useWindowSize from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import LogoPNG from '@assets/Logo.png';
+import LogoPNG from '@assets/landing/FooterLogo.png';
 import EnvelopeSVG from '@assets/landing/envelope.svg?react';
 import InstagramSVG from '@assets/landing/instagram.svg?react';
 import LinkedInSVG from '@assets/landing/linkedin.svg?react';
