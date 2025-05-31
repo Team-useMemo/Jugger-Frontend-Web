@@ -54,7 +54,7 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinne
   const handlePinClick = useCallback(() => {
     togglePin({ id, isPinned: !isPinned });
     setShowPinIcon(false);
-  }, [id, togglePin,]);
+  }, [id, isPinned, togglePin]);
 
   const handleDeleteClick = useCallback(() => {
     deleteCategory(id);

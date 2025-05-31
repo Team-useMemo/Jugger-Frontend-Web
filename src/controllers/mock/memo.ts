@@ -1,6 +1,6 @@
-import { MemoProp } from '@ts/Memo.Prop';
+import { MemoResponseProp } from '@ts/Memo.Prop';
 
-const memoMock: MemoProp[] = [
+const memoMock: MemoResponseProp[] = [
   {
     id: 1,
     type: 'text',
