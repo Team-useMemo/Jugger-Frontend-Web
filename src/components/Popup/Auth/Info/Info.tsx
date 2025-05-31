@@ -21,14 +21,15 @@ const Info = ({
   checkedTerms,
 }: {
   closeModal: () => void;
-  checkedTerms: { all: boolean; age: boolean; privacy: boolean; terms: boolean; marketing: boolean; ads: boolean };
+  checkedTerms: { all: boolean; age: boolean; privacy: boolean; terms: boolean; marketing: boolean; ads: boolean; email: string; nickname: string; };
 }) => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
+  const [name, setName] = useState(checkedTerms.nickname);
   const [gender, setGender] = useState<'남자' | '여자' | ''>('');
   const [birth, setBirth] = useState('');
   const [source, setSource] = useState('');
   const isRequiredChecked = name && gender && birth && source;
+
   const handleCloseModal = () => {
     closeModal();
     navigate('/login');
@@ -40,7 +41,7 @@ const Info = ({
       try {
         const response = await postKakaoSignup({
           name,
-          email: 'hong3@example.com', // 실제 이메일로 교체 필요
+          email: checkedTerms.email, // 실제 이메일로 교체 필요
           domain: 'kakao',
           terms: {
             termsOfService: checkedTerms.terms,

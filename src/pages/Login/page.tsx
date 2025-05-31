@@ -33,7 +33,7 @@ const LoginPage = () => {
         onClick={() => {
           localStorage.setItem('accessToken', 'testAccessToken');
           localStorage.setItem('username', 'testUser');
-          navigate('/');
+          navigate('/memo');
         }}
       >
         TEST 로그인
