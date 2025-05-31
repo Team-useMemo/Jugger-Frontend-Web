@@ -52,9 +52,9 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinne
   const handleCategoryClick = useCallback(() => navigate(`?category=${id}`), [navigate, id]);
 
   const handlePinClick = useCallback(() => {
-    togglePin(id);
+    togglePin({ id, isPinned: !isPinned });
     setShowPinIcon(false);
-  }, [id, togglePin]);
+  }, [id, isPinned, togglePin]);
 
   const handleDeleteClick = useCallback(() => {
     deleteCategory(id);

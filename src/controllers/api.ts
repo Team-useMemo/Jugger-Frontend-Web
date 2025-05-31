@@ -1,4 +1,4 @@
-import { MemoProp } from '@ts/Memo.Prop';
+import { MemoResponseProp } from '@ts/Memo.Prop';
 import categoryMock from './mock/category';
 import memoMock from './mock/memo';
 
@@ -59,11 +59,11 @@ const fetchAllMemo = async (username: string) => {
   const now = new Date().toISOString();
   const result: CategoryResponse[] = await fetchData(`/api/v1/chat/before?before=${now}&size=20`);
 
-  const convertedResult: MemoProp[] = result
+  const convertedResult: MemoResponseProp[] = result
     .flatMap((category) =>
       category.chatItems.map((item) => {
-        let type: MemoProp['type'] = 'text';
-        let content: MemoProp['content'] = item.data;
+        let type: MemoResponseProp['type'] = 'text';
+        let content: MemoResponseProp['content'] = item.data;
 
         if (item.calendar) {
           type = 'schedule';

@@ -89,7 +89,6 @@ const AddCategory = ({ closeModal }: { closeModal: () => void }) => {
                 color: colors[selected],
               }).unwrap();
               console.log('카테고리 생성 성공:', result);
-              // TODO: 여기에 로컬 상태 업데이트 또는 refetch 필요 시 처리
             } catch (error) {
               console.error('카테고리 생성 실패:', error);
             }

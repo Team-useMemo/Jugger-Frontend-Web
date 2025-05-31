@@ -24,25 +24,30 @@ import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 import { usePostMemoMutation, useGetMemosQuery, usePostCalendarMutation, useUploadFileMutation } from '@stores/modules/memo';
 
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { MemoProp } from '@ts/Memo.Prop';
 
-const MemoList = ({
-  memos,
-}: {
-  memos: MemoProp[];
-}) => {
+
+const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
+  const { data: memos = [] } = useGetMemosQuery({
+    before: "2025-06-01T00:00:00Z",
+    // before: new Date().toISOString(),
+    page: 0,
+    size: 20,
+  });
+
+  const filteredMemos = currentCategory
+    ? memos.filter((memo) => memo.categoryId === currentCategory)
+    : memos;
+
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
 
-
-
   return (
     <MemoListContainer ref={memoListContainerRef}>
-      {[...memos].reverse().map((e, i, arr) => {
+      {[...filteredMemos].reverse().map((e, i, arr) => {
         return (
           <MemoItemContainer key={e.id}>
             {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
@@ -145,19 +150,7 @@ const MemoBottom = ({
 
 const MemoPage = () => {
   const [searchParams] = useSearchParams();
-
   const currentCategory = searchParams.get('category');
-
-  const { data: memos = [] } = useGetMemosQuery({
-    before: new Date().toISOString(),
-    page: 0,
-    size: 20,
-  });
-
-
-  const filteredMemos = currentCategory
-    ? memos.filter((memo) => memo.categoryId === currentCategory)
-    : memos;
 
   const [postCalendar] = usePostCalendarMutation();
   const [postPhoto] = useUploadFileMutation();
@@ -202,9 +195,7 @@ const MemoPage = () => {
     <MemoPageContainer>
       <MemoAddScheduleModal />
       <MemoAddImageModal />
-      {memos && (
-        <MemoList memos={filteredMemos} />
-      )}
+      <MemoList currentCategory={currentCategory || ''} />
       <MemoBottom
         category={currentCategory}
         openAddPhotoModal={openMemoAddImageModal}

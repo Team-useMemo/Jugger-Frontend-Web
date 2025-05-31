@@ -3,7 +3,7 @@ import MemoSchedule from './Schedule/MemoSchedule';
 import MemoText from './Text/MemoText';
 import MemoImage from './Image/MemoImage';
 import { MemoCategoryContainer, MemoContainer, MemoContent } from './Memo.Style';
-import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoResponseProp, scheduleProp } from '@ts/Memo.Prop';
 
 const MemoCategory = ({ category }: { category: { title: string; color: string } }) => {
   return (
@@ -14,7 +14,7 @@ const MemoCategory = ({ category }: { category: { title: string; color: string }
   );
 };
 
-const MemoComponent = ({ memo, category }: { memo: MemoProp; category: any }) => {
+const MemoComponent = ({ memo, category }: { memo: MemoResponseProp; category: any }) => {
   return (
     <MemoContainer>
       {category && <MemoCategory category={category} />}

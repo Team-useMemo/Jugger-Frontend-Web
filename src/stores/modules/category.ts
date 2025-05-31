@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { customBaseQuery } from './customBaseQuery';
 import { CategoryProp } from '@ts/Category.Prop';
+import { customBaseQuery } from './customBaseQuery';
 
 export const categoryApi = createApi({
   reducerPath: 'categoryApi',
@@ -49,12 +49,15 @@ export const categoryApi = createApi({
       }),
       invalidatesTags: (_result, _error, id) => [{ type: 'Category', id }],
     }),
-    togglePin: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `/api/v1/categories/pin/${id}`,
+    togglePin: builder.mutation<void, { id: string; isPinned: boolean }>({
+      query: (params: { id: string; isPinned: boolean }) => ({
+        url: `/api/v1/categories/pin?categoryId=${params.id}&isPinned=${params.isPinned}`,
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, id) => [{ type: 'Category', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Category', id },
+        { type: 'Category', id: 'LIST' },
+      ],
     }),
   }),
 });

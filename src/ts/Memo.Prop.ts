@@ -6,7 +6,7 @@ export interface scheduleProp {
   endDate: Date | null;
 }
 
-export interface MemoProp {
+export interface MemoResponseProp {
   id: number;
   type: userMemoType;
   content: string | scheduleProp;

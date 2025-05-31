@@ -1,31 +1,43 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { MemoResponseProp } from '@ts/Memo.Prop';
 import { customBaseQuery } from './customBaseQuery';
-import { MemoProp } from '@ts/Memo.Prop';
 
 export const memoApi = createApi({
   reducerPath: 'memoApi',
   baseQuery: customBaseQuery,
   tagTypes: ['Memo'],
   endpoints: (builder) => ({
-    getMemos: builder.query<MemoProp[], { before: string; page: number; size: number }>({
+    getMemos: builder.query<MemoResponseProp[], { before: string; page: number; size: number }>({
       query: ({ before, page, size }) => `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any) => {
-        return response.flatMap((categoryBlock: any) =>
-          categoryBlock.chatItems.map((item: any, index: number) => ({
-            id: index, // or generate unique id
-            type: item.linkUrl ? 'link' : item.scheduleName ? 'schedule' : item.imgUrl ? 'photo' : 'text',
-            content:
-              item.linkUrl || item.data || item.scheduleName
-                ? {
-                    title: item.scheduleName,
-                    startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
-                    endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
-                  }
-                : item.imgUrl,
-            date: new Date(item.timestamp),
-            categoryId: categoryBlock.categoryId,
-          })),
-        );
+        return response
+          .flatMap((categoryBlock: any) =>
+            categoryBlock.chatItems.map((item: any, index: number) => {
+              const type = item.linkUrl ? 'link' : item.scheduleName ? 'schedule' : item.imgUrl ? 'photo' : 'text';
+
+              const content =
+                type === 'schedule'
+                  ? {
+                      title: item.scheduleName,
+                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : null,
+                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : null,
+                    }
+                  : type === 'link'
+                    ? item.linkUrl
+                    : type === 'photo'
+                      ? item.imgUrl
+                      : item.data;
+
+              return {
+                id: index,
+                type,
+                content,
+                date: new Date(item.timestamp),
+                categoryId: categoryBlock.categoryId,
+              };
+            }),
+          )
+          .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
       },
       providesTags: (result) =>
         result
