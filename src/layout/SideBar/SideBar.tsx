@@ -32,7 +32,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const { data: categories = [], } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
   });
-  console.log(categories);
 
   const [AddCategoryModal, openAddCategoryModal] = useModal('addCategory',
     FullScreenGray,
