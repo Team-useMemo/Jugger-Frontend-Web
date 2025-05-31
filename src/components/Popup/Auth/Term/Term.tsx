@@ -10,7 +10,7 @@ import {
   TermsContainer,
 } from './Term.Style';
 
-type TermsProps = {
+export type TermsProps = {
   closeModal: () => void;
   openInfoModal: () => void;
   checked: {
@@ -29,6 +29,8 @@ type TermsProps = {
       terms: boolean;
       marketing: boolean;
       ads: boolean;
+      email: string;
+      nickname: string;
     }>
   >;
 };
@@ -37,14 +39,15 @@ const Terms = ({ closeModal, openInfoModal, checked, setChecked }: TermsProps) =
   const navigate = useNavigate();
   const handleAllChange = () => {
     const newValue = !checked.all;
-    setChecked({
+    setChecked((prev) => ({
+      ...prev,
       all: newValue,
       age: newValue,
       privacy: newValue,
       terms: newValue,
       marketing: newValue,
       ads: newValue,
-    });
+    }));
   };
 
   const handleSingleChange = (key: keyof typeof checked) => {

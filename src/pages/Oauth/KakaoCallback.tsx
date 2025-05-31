@@ -15,6 +15,8 @@ const KakaoCallback = () => {
     terms: false,
     marketing: false,
     ads: false,
+    email: '',
+    nickname: '',
   });
 
   const [InfoModal, openInfoModal] = useModal(
@@ -56,17 +58,24 @@ const KakaoCallback = () => {
             localStorage.setItem('refreshToken', data.refreshToken);
 
             navigate('/');
-          } else {
-            const email = data.userInfo.email;
-            const nickname = data.userInfo.nickname;
-            console.log('이메일:', email);
-            console.log('닉네임:', nickname);
-            openTermsModal();
           }
         })
-        .catch((err) => {
-          console.error('로그인 처리 실패:', err);
-          navigate('/login');
+        .catch((error) => {
+          const match = error.message.match(/{.*}/);
+          console.log(match);
+          const data = JSON.parse(match[0]);
+
+          if (data?.needSignUp && data.userInfo) {
+            const { email, nickname } = data.userInfo;
+            setCheckedTerms((prev) => ({
+              ...prev,
+              email,
+              nickname,
+            }));
+            openTermsModal();
+          } else {
+            console.error('예상치 못한 로그인 실패:', error);
+          }
         });
     } else {
       console.error('인가 코드가 없습니다.');

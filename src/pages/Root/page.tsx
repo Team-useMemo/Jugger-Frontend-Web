@@ -6,8 +6,8 @@ const RootPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isAuth = false;
-    if (isAuth) {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
       console.log('has been logined');
     } else {
       navigate(webPath.index());
