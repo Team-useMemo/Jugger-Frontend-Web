@@ -30,8 +30,6 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: memos = [] } = useGetMemosQuery({
-    before: "2025-06-01T00:00:00Z",
-    // before: new Date().toISOString(),
     page: 0,
     size: 20,
   });
@@ -39,7 +37,7 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const filteredMemos = currentCategory
     ? memos.filter((memo) => memo.categoryId === currentCategory)
     : memos;
-
+  console.log(new Date().toISOString());
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });

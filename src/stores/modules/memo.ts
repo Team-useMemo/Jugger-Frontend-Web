@@ -7,8 +7,9 @@ export const memoApi = createApi({
   baseQuery: customBaseQuery,
   tagTypes: ['Memo'],
   endpoints: (builder) => ({
-    getMemos: builder.query<MemoResponseProp[], { before: string; page: number; size: number }>({
-      query: ({ before, page, size }) => `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
+    getMemos: builder.query<MemoResponseProp[], { before?: string; page: number; size: number }>({
+      query: ({ before = new Date().toISOString(), page, size }) =>
+        `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any) => {
         return response
           .flatMap((categoryBlock: any) =>
