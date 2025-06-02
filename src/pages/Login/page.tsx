@@ -31,8 +31,7 @@ const LoginPage = () => {
     <Container>
       <button
         onClick={() => {
-          localStorage.setItem('accessToken', 'testAccessToken');
-          localStorage.setItem('username', 'testUser');
+          localStorage.setItem('accessToken', 'masetermasterjugger123123123!');
           navigate('/memo');
         }}
       >
