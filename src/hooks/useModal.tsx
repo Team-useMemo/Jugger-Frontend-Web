@@ -35,9 +35,6 @@ const useModal = (
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (initialProps) {
-        return;
-      }
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
         closeModal();
       }

@@ -37,6 +37,7 @@ const _dateList = Array.from({ length: 50 }, (_, i) => {
     startDate: startDate,
     endDate: Math.random() > 0.3 ? endDate : null,
     category: Math.ceil(Math.random() * 6).toString(),
+    categoryColor: '#FF0000',
   };
 }).sort((a: any, b: any) => a.startDate - b.startDate);
 
@@ -60,7 +61,6 @@ const MemoCollectionSchedule = () => {
   );
 
   const [dates] = useState(_dateList);
-
   const dateList = getCalendarDates(date);
 
   return (
@@ -139,7 +139,7 @@ const MemoCollectionSchedule = () => {
                 </MemoCollectionScheduleItemDateTitle>
                 <span className="divider" />
                 <MemoCollectionScheduleItemDateContents
-                  color={categories.find(({ uuid }) => uuid == e.category)?.color}
+                  color={e.categoryColor}
                 >
                   <span />
                   {e.title}

@@ -1,16 +1,16 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { MemoResponseProp } from '@ts/Memo.Prop';
+import { CalendarResponseProp, MemoResponseProp, PhotoResponseProp } from '@ts/Memo.Prop';
 import { customBaseQuery } from './customBaseQuery';
 
 export const memoApi = createApi({
   reducerPath: 'memoApi',
   baseQuery: customBaseQuery,
-  tagTypes: ['Memo'],
+  tagTypes: ['Memo', 'Calendar', 'Photo'],
   endpoints: (builder) => ({
     getMemos: builder.query<MemoResponseProp[], { before?: string; page: number; size: number }>({
       query: ({ before = new Date().toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
-      transformResponse: (response: any) => {
+      transformResponse: (response: any): MemoResponseProp[] => {
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any, index: number) => {
@@ -20,8 +20,8 @@ export const memoApi = createApi({
                 type === 'schedule'
                   ? {
                       title: item.scheduleName,
-                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : null,
-                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : null,
+                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
+                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
                     }
                   : type === 'link'
                     ? item.linkUrl
@@ -34,15 +34,21 @@ export const memoApi = createApi({
                 type,
                 content,
                 date: new Date(item.timestamp),
-                categoryId: categoryBlock.categoryId,
+                categoryId: categoryBlock.categoryId ?? undefined,
               };
             }),
           )
           .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
       },
-      providesTags: (result) =>
+      providesTags: (result): readonly { type: 'Memo'; id: string | number }[] =>
         result
-          ? [...result.map((memo) => ({ type: 'Memo' as const, id: memo.id })), { type: 'Memo', id: 'LIST' }]
+          ? [
+              ...result.map((memo) => ({
+                type: 'Memo' as const,
+                id: memo.id,
+              })),
+              { type: 'Memo', id: 'LIST' },
+            ]
           : [{ type: 'Memo', id: 'LIST' }],
     }),
     postMemo: builder.mutation<void, { categoryUuid: string; text: string }>({
@@ -69,6 +75,13 @@ export const memoApi = createApi({
       }),
       invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
     }),
+    getCalendar: builder.query<CalendarResponseProp[], { start: string; end: string }>({
+      query: ({ start, end }) => ({
+        url: `/api/v1/calendar?start=${start}&end=${end}`,
+        method: 'GET',
+      }),
+      providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
+    }),
     uploadFile: builder.mutation<void, { file: File; category_uuid: string }>({
       query: ({ file, category_uuid }) => {
         const formData = new FormData();
@@ -83,7 +96,21 @@ export const memoApi = createApi({
       },
       invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
     }),
+    getPhotos: builder.query<PhotoResponseProp[], { category_uuid: string }>({
+      query: ({ category_uuid }) => ({
+        url: `/api/v1/photos?category_uuid=${category_uuid}`,
+        method: 'GET',
+      }),
+      providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
+    }),
   }),
 });
 
-export const { useGetMemosQuery, usePostMemoMutation, usePostCalendarMutation, useUploadFileMutation } = memoApi;
+export const {
+  useGetMemosQuery,
+  usePostMemoMutation,
+  usePostCalendarMutation,
+  useGetCalendarQuery,
+  useUploadFileMutation,
+  useGetPhotosQuery,
+} = memoApi;

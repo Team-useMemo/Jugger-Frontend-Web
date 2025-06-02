@@ -13,3 +13,16 @@ export interface MemoResponseProp {
   date: Date;
   categoryId: string | null;
 }
+export interface CalendarResponseProp {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  categoryId: string;
+}
+
+export interface PhotoResponseProp {
+  url: string;
+  categoryName: string;
+  timestamp: Date;
+}
