@@ -29,15 +29,9 @@ import { useGetCategoriesQuery } from '@stores/modules/category';
 const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery({
-    page: 0,
-    size: 20,
-  });
+  const { data: memos = [] } = useGetMemosQuery({ page: 0, size: 20, });
 
-  const filteredMemos = currentCategory
-    ? memos.filter((memo) => memo.categoryId === currentCategory)
-    : memos;
-  console.log(new Date().toISOString());
+  const filteredMemos = currentCategory ? memos.filter((memo) => memo.categoryId === currentCategory) : memos;
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
@@ -105,7 +99,6 @@ const MemoBottom = ({
   };
 
   const handleClickSend = () => {
-    // REFACTORED: usePostMemoMutation and new logic
     if (!newMemo.trim()) return;
 
     (async () => {
