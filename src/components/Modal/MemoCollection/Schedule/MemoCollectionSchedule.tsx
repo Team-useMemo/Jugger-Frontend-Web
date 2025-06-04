@@ -23,26 +23,26 @@ import {
   MemoCollectionScheduleItemDateTitle,
   MemoCollectionScheduleItemListContainer,
 } from './MemoCollectionSchedule.Style';
-import { useGetCategoriesQuery } from '@stores/modules/category';
+import { useGetCalendarQuery } from '@stores/modules/memo';
 
-const _dateList = Array.from({ length: 50 }, (_, i) => {
-  const startDate = new Date();
-  startDate.setDate(Math.ceil(Math.random() * 30));
-  startDate.setHours(Math.floor(Math.random() * 24));
-  const endDate = new Date(startDate);
-  endDate.setHours(endDate.getHours() + Math.ceil(Math.random() * 12));
+// const _dateList = Array.from({ length: 50 }, (_, i) => {
+//   const startDate = new Date();
+//   startDate.setDate(Math.ceil(Math.random() * 30));
+//   startDate.setHours(Math.floor(Math.random() * 24));
+//   const endDate = new Date(startDate);
+//   endDate.setHours(endDate.getHours() + Math.ceil(Math.random() * 12));
 
-  return {
-    title: i,
-    startDate: startDate,
-    endDate: Math.random() > 0.3 ? endDate : null,
-    category: Math.ceil(Math.random() * 6).toString(),
-    categoryColor: '#FF0000',
-  };
-}).sort((a: any, b: any) => a.startDate - b.startDate);
+//   return {
+//     title: i,
+//     startDate: startDate,
+//     endDate: Math.random() > 0.3 ? endDate : null,
+//     category: Math.ceil(Math.random() * 6).toString(),
+//     categoryColor: '#FF0000',
+//   };
+// }).sort((a: any, b: any) => a.startDate - b.startDate);
 
 const MemoCollectionSchedule = () => {
-  const { data: categories = [] } = useGetCategoriesQuery();
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(() => {
     const date = new Date();
@@ -50,17 +50,16 @@ const MemoCollectionSchedule = () => {
     return date;
   });
 
-  const [modalProp, setModalProp] = useState({});
 
   const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(
     `memoDetailSchedule`,
     FullScreenGray,
     MemoDetailSchedule,
     [],
-    modalProp,
   );
 
-  const [dates] = useState(_dateList);
+  const { data: dates = [] } = useGetCalendarQuery({});
+
   const dateList = getCalendarDates(date);
 
   return (
@@ -106,11 +105,11 @@ const MemoCollectionSchedule = () => {
                 </MemoCollectionScheduleCalendarDateItemText>
                 <MemoCollectionScheduleCalendarDateItemContents>
                   {dates
-                    .filter((e2) => e2.startDate.toDateString() == e.toDateString())
+                    .filter((e2) => new Date(e2.startDateTime).toDateString() == e.toDateString())
                     .map((e2, i) => (
                       <MemoCollectionScheduleCalendarDateItemContentsDot
                         key={e.toDateString() + i}
-                        color={categories.find(({ uuid }) => uuid == e2.category)?.color}
+                        color={e2.categoryColor}
                       />
                     ))}
                 </MemoCollectionScheduleCalendarDateItemContents>
@@ -121,21 +120,17 @@ const MemoCollectionSchedule = () => {
       </MemoCollectionScheduleCalendarContainer>
       <MemoCollectionScheduleItemListContainer>
         {dates
-          .filter(({ startDate }) => startDate.toDateString() == selectedDate.toDateString())
+          .filter(({ startDateTime }) => new Date(startDateTime).toDateString() == selectedDate.toDateString())
           .map((e) => {
             return (
               <MemoCollectionScheduleItemContainer
                 onClick={() => {
-                  setModalProp({
-                    isEdit: false,
-                    ...e,
-                  });
-                  openMemoDetailScheduleModal();
+                  openMemoDetailScheduleModal({ isEdit: false, e });
                 }}
               >
                 <MemoCollectionScheduleItemDateTitle>
-                  <p className="month">{CalendarMonths[e.startDate.getMonth()].substring(0, 3)}</p>
-                  <p className="date">{e.startDate.getDate()}</p>
+                  <p className="month">{CalendarMonths[new Date(e.startDateTime).getMonth()].substring(0, 3)}</p>
+                  <p className="date">{new Date(e.startDateTime).getDate()}</p>
                 </MemoCollectionScheduleItemDateTitle>
                 <span className="divider" />
                 <MemoCollectionScheduleItemDateContents

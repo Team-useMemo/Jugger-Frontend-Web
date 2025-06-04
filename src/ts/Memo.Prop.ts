@@ -14,15 +14,19 @@ export interface MemoResponseProp {
   categoryId: string | null;
 }
 export interface CalendarResponseProp {
-  id: string;
-  name: string;
-  startTime: string;
-  endTime: string;
+  startDateTime: string;
+  endDateTime: string;
   categoryId: string;
+  categoryColor: string;
+  title: string;
 }
 
 export interface PhotoResponseProp {
   url: string;
   categoryName: string;
   timestamp: Date;
+}
+export interface LinkResponseProp {
+  caption: string;
+  link: string;
 }

@@ -1,11 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CalendarResponseProp, MemoResponseProp, PhotoResponseProp } from '@ts/Memo.Prop';
+import { CalendarResponseProp, LinkResponseProp, MemoResponseProp, PhotoResponseProp } from '@ts/Memo.Prop';
 import { customBaseQuery } from './customBaseQuery';
 
 export const memoApi = createApi({
   reducerPath: 'memoApi',
   baseQuery: customBaseQuery,
-  tagTypes: ['Memo', 'Calendar', 'Photo'],
+  tagTypes: ['Memo', 'Calendar', 'Photo', 'Link'],
   endpoints: (builder) => ({
     getMemos: builder.query<MemoResponseProp[], { before?: string; page: number; size: number }>({
       query: ({ before = new Date().toISOString(), page, size }) =>
@@ -19,10 +19,10 @@ export const memoApi = createApi({
               const content =
                 type === 'schedule'
                   ? {
-                      title: item.scheduleName,
-                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
-                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
-                    }
+                    title: item.scheduleName,
+                    startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
+                    endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
+                  }
                   : type === 'link'
                     ? item.linkUrl
                     : type === 'photo'
@@ -43,12 +43,12 @@ export const memoApi = createApi({
       providesTags: (result): readonly { type: 'Memo'; id: string | number }[] =>
         result
           ? [
-              ...result.map((memo) => ({
-                type: 'Memo' as const,
-                id: memo.id,
-              })),
-              { type: 'Memo', id: 'LIST' },
-            ]
+            ...result.map((memo) => ({
+              type: 'Memo' as const,
+              id: memo.id,
+            })),
+            { type: 'Memo', id: 'LIST' },
+          ]
           : [{ type: 'Memo', id: 'LIST' }],
     }),
     postMemo: builder.mutation<void, { categoryUuid: string; text: string }>({
@@ -75,8 +75,8 @@ export const memoApi = createApi({
       }),
       invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
     }),
-    getCalendar: builder.query<CalendarResponseProp[], { start: string; end: string }>({
-      query: ({ start, end }) => ({
+    getCalendar: builder.query<CalendarResponseProp[], { start?: string; end?: string }>({
+      query: ({ start = '2025-01-01T00:00:00.007Z', end = new Date().toISOString() }) => ({
         url: `/api/v1/calendar?start=${start}&end=${end}`,
         method: 'GET',
       }),
@@ -103,6 +103,14 @@ export const memoApi = createApi({
       }),
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
+    getLinks: builder.query<LinkResponseProp[], { category_uuid: string }>({
+      query: ({ category_uuid }) => ({
+        url: `/api/v1/links?category_uuid=${category_uuid}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: any): LinkResponseProp[] => (response.linkData),
+      providesTags: (result) => (result ? [{ type: 'Link', id: 'LIST' }] : []),
+    }),
   }),
 });
 
@@ -113,4 +121,5 @@ export const {
   useGetCalendarQuery,
   useUploadFileMutation,
   useGetPhotosQuery,
+  useGetLinksQuery
 } = memoApi;

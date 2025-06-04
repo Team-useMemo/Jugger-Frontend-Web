@@ -228,17 +228,23 @@ const SelectCalendar = ({
 
   const [selectMode, setSelectMode] = useState<'month' | 'date' | 'time'>('date');
 
-  const [selectedDate, _setSelectedDate] = useState<Date>(date ?? nowDate);
+  // const [selectedDate, _setSelectedDate] = useState<Date>(date ?? nowDate);
+
+  const [selectedDate, _setSelectedDate] = useState<Date>(() => {
+    if (date instanceof Date) return date;
+    if (nowDate instanceof Date) return nowDate;
+    return new Date();
+  });
 
   const setSelectedDate = (date: Date) => {
     _setSelectedDate(date);
     setDate(date);
   };
 
-  useEffect(() => {
-    if (date) return;
-    setDate(nowDate);
-  });
+  // useEffect(() => {
+  //   if (date) return;
+  //   setDate(nowDate);
+  // });
 
   return (
     <SelectCalendarContainer>
