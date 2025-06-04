@@ -25,31 +25,14 @@ import {
 } from './MemoCollectionSchedule.Style';
 import { useGetCalendarQuery } from '@stores/modules/memo';
 
-// const _dateList = Array.from({ length: 50 }, (_, i) => {
-//   const startDate = new Date();
-//   startDate.setDate(Math.ceil(Math.random() * 30));
-//   startDate.setHours(Math.floor(Math.random() * 24));
-//   const endDate = new Date(startDate);
-//   endDate.setHours(endDate.getHours() + Math.ceil(Math.random() * 12));
 
-//   return {
-//     title: i,
-//     startDate: startDate,
-//     endDate: Math.random() > 0.3 ? endDate : null,
-//     category: Math.ceil(Math.random() * 6).toString(),
-//     categoryColor: '#FF0000',
-//   };
-// }).sort((a: any, b: any) => a.startDate - b.startDate);
-
-const MemoCollectionSchedule = () => {
-
+const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(() => {
     const date = new Date();
     date.setDate(1);
     return date;
   });
-
 
   const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(
     `memoDetailSchedule`,
@@ -58,7 +41,8 @@ const MemoCollectionSchedule = () => {
     [],
   );
 
-  const { data: dates = [] } = useGetCalendarQuery({});
+  const { data: _dates = [] } = useGetCalendarQuery({});
+  const dates = categoryId ? _dates.filter((date) => date.categoryId === categoryId) : _dates;
 
   const dateList = getCalendarDates(date);
 
