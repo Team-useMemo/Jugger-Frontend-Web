@@ -26,7 +26,7 @@ export const MemoDetailTextContents = styled.p({
     display: 'none',
   },
 
-  [media[0]]: {
+  [media[480]]: {
     width: 'auto',
   },
 });

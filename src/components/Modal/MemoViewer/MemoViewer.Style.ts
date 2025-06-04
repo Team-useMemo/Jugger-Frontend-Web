@@ -10,7 +10,7 @@ export const MemoViewerContainer = styled.div({
   outline: 'none',
   boxSizing: 'border-box',
 
-  [media[0]]: {
+  [media[480]]: {
     maxWidth: '360px',
   },
 });

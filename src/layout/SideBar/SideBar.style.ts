@@ -9,13 +9,13 @@ export const StyledSideBar = styled.div(
     height: '100%',
     background: '#989BA288',
 
-    [media[0]]: {
+    [media[480]]: {
       width: '100%',
       position: 'absolute',
     },
   },
   ({ active }: { active: boolean }) => ({
-    [media[0]]: {
+    [media[480]]: {
       left: active ? '0' : '',
       right: active ? '' : '100%',
     },
@@ -25,7 +25,7 @@ export const StyledSideBar = styled.div(
 export const SideBarContainer = styled.div({
   height: '100%',
   background: 'white',
-  [media[0]]: { width: '315px' },
+  [media[480]]: { width: '315px' },
 });
 
 export const SideBarHeader = styled.div({

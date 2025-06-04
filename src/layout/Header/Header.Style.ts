@@ -12,7 +12,7 @@ export const StyledHeader = styled.div({
   ['>svg']: {
     display: 'none',
   },
-  [media[0]]: { ['>svg']: { display: 'block' } },
+  [media[480]]: { ['>svg']: { display: 'block' } },
 });
 
 export const HeaderTitle = styled.div({
