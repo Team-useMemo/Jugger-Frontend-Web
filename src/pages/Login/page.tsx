@@ -1,12 +1,12 @@
-import Kakao from '@assets/Login/kakao.svg?react';
-import Naver from '@assets/Login/naver.svg?react';
-import Google from '@assets/Login/google.svg?react';
-import Apple from '@assets/Login/apple.svg?react';
-import LoginLogo from '@assets/Login/loginLogo.svg?react';
-import { Button, Container, Description, Divider } from './LoginPage.style';
-
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { webPath } from '@router/index';
+import Apple from '@assets/Login/apple.svg?react';
+import Google from '@assets/Login/google.svg?react';
+import Kakao from '@assets/Login/kakao.svg?react';
+import LoginLogo from '@assets/Login/loginLogo.svg?react';
+import Naver from '@assets/Login/naver.svg?react';
+import { Button, Container, Description, Divider } from './LoginPage.style';
 
 declare global {
   interface Window {
@@ -30,6 +30,7 @@ const LoginPage = () => {
   return (
     <Container>
       <button
+        style={{ color: 'black' }}
         onClick={() => {
           localStorage.setItem('accessToken', 'masetermasterjugger123123123!');
           navigate('/memo');
@@ -58,6 +59,15 @@ const LoginPage = () => {
         <Apple />
         Apple로 계속하기
       </Button>
+      <button
+        style={{ color: 'black' }}
+        onClick={() => {
+          localStorage.clear();
+          navigate(webPath.root());
+        }}
+      >
+        TEST 로그아웃
+      </button>
     </Container>
   );
 };
