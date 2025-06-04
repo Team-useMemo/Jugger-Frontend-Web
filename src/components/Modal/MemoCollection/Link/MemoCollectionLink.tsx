@@ -9,14 +9,9 @@ import {
 } from './MemoCollectionLink.Style';
 import { fetchUrlPreview, OgData } from '@utils/ogData';
 import { useGetCategoriesQuery } from '@stores/modules/category';
+import { useGetLinksQuery } from '@stores/modules/memo';
+import { useSearchParams } from 'react-router-dom';
 
-const linkList = [
-  { content: 'https://www.youtube.com/watch?v=v8zk7DECvqs', category: '1' },
-  { content: 'https://www.youtube.com/watch?v=gDlfKQpQZkQ', category: '2' },
-  { content: 'https://www.youtube.com/watch?v=EMLxA1P119U', category: '5' },
-  { content: 'https://www.youtube.com/watch?v=f_-I4yaMfK4&pp=0gcJCb8Ag7Wk3p_U' },
-  { content: 'https://www.youtube.com/watch?v=UIN8CtE6Wis', category: '4' },
-];
 
 const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
   const [ogData, setOgData] = useState<OgData | null>(null);
@@ -56,13 +51,15 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
 };
 
 const MemoCollectionLink = () => {
-  const [links] = useState(linkList);
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category') ?? '';
+  const { data: linkDatas = [] } = useGetLinksQuery({ category_uuid: currentCategory });
 
   return (
     <MemoCollectionLinkContainer>
       <MemoCollectionLinkContents>
-        {links.map((e) => {
-          return <MemoCollectionLinkItem content={e.content} category={e.category} />;
+        {linkDatas.map((e) => {
+          return <MemoCollectionLinkItem content={e.link} category={currentCategory} />;
         })}
       </MemoCollectionLinkContents>
     </MemoCollectionLinkContainer>

@@ -24,7 +24,7 @@ const KakaoCallback = () => {
     FullScreenGray,
     ({ closeModal }) => <Info closeModal={closeModal} checkedTerms={checkedTerms} />,
     [],
-    { skipOutsideClose: true },
+
   );
 
   const [TermsModal, openTermsModal] = useModal(
@@ -39,7 +39,6 @@ const KakaoCallback = () => {
       />
     ),
     [],
-    { skipOutsideClose: true },
   );
 
   useEffect(() => {

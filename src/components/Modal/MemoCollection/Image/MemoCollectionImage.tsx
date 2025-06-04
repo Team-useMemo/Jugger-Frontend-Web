@@ -2,19 +2,14 @@ import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage';
 import useModal from '@hooks/useModal';
 import { formatDate } from '@utils/Date';
-import { useState } from 'react';
 import {
   MemoColectionImageItemContainer,
   MemoCollectionImageListContainer,
   MemoCollectionImageListContents,
   MemoCollectionImageListTitle,
 } from './MemoCollectionImage.Style';
+import { useGetPhotosQuery } from '@stores/modules/memo';
 
-const imageList = Array.from({ length: 30 }, () => ({
-  image:
-    'https://plus.unsplash.com/premium_photo-1681437096361-c5f1e29d6997?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8JUVDJTk3JUFDJUVCJUE2JTg0JTIwJUVCJUIwJUIwJUVBJUIyJUJEJUVEJTk5JTk0JUVCJUE5JUI0fGVufDB8fDB8fHww',
-  date: new Date(`2024-04-0${Math.ceil(Math.random() * 9)}`),
-})).sort((a: any, b: any) => b.date - a.date);
 
 const MemoCollectionImageItem = ({
   image,
@@ -50,48 +45,42 @@ const MemoCollectionImageList = ({
       </MemoCollectionImageListTitle>
       <MemoCollectionImageListContents>
         {images.map((e, i) => {
-          return <MemoCollectionImageItem key={i} image={e.image} handleClickImage={handleClickImage} />;
+          return <MemoCollectionImageItem key={i} image={e.url} handleClickImage={handleClickImage} />;
         })}
       </MemoCollectionImageListContents>
     </MemoCollectionImageListContainer>
   );
 };
 
-const MemoCollectionImage = () => {
-  const [selectedImage, setSelectedImage] = useState('');
-  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal('image', FullScreenGray, MemoDetailImage, [], {
-    image: selectedImage,
-  });
+const MemoCollectionImage = ({ categoryId }: { categoryId: string }) => {
+  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal('image', FullScreenGray, MemoDetailImage, [],);
+  const { data: imageLists = [] } = useGetPhotosQuery({ category_uuid: categoryId });
 
-  const [images] = useState(
+  const images =
     Object.entries(
-      imageList.reduce((acc: any, e) => {
-        const dateStr = e.date.toDateString();
-
+      imageLists.reduce((acc: any, e) => {
+        const dateStr = new Date(e.timestamp).toDateString();
         return {
-          ...acc,
+          ...acc.url,
           [dateStr]: acc[dateStr] ? [...acc[dateStr], e] : [e],
         };
       }, {}),
-    ).sort(([aKey], [bKey]) => new Date(bKey).getTime() - new Date(aKey).getTime()),
-  );
+    ).sort(([aKey], [bKey]) => new Date(bKey).getTime() - new Date(aKey).getTime());
 
-  const handleClickImage = (image: string) => {
-    setSelectedImage(image);
-    openMemoDetailImageModal();
+  const handleClickImage = (url: string) => {
+    openMemoDetailImageModal({ url });
   };
-
   return (
     <>
       <MemoDetailImageModal />
-      {images.map(([key, value]: [string, any]) => (
+      {images.map(([key, value]: [string, any]) =>
         <MemoCollectionImageList
           key={`Image_${key}`}
           dateStr={key}
           images={value}
           handleClickImage={handleClickImage}
         />
-      ))}
+      )}
     </>
   );
 };

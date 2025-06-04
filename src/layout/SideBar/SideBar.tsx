@@ -15,7 +15,7 @@ import {
   StyledSideBar,
 } from './SideBar.style';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import useModal from '@hooks/useModal';
 import AddCategory from '@components/Modal/AddCategory';
@@ -32,38 +32,41 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const { data: categories = [], } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
   });
-  console.log(categories);
 
   const [AddCategoryModal, openAddCategoryModal] = useModal('addCategory',
     FullScreenGray,
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
   );
-  const [modalProps, setModalProps] = useState({ categoryId: category });
   const [MemoCollectionModal, openMemoCollectionModal] = useModal(
     'memoCollection',
     FullScreenGray,
     MemoCollection,
     [],
-    modalProps,
   );
   const onWholeMemoClick = () => {
     setSearchParams({});
   };
 
   const onCalendarClick = () => {
-    setModalProps((prev) => ({ ...prev, contentsType: 'Calendar' }));
-    openMemoCollectionModal();
+    openMemoCollectionModal({
+      categoryId: category,
+      contentsType: 'Calendar',
+    });
   };
 
   const onImageClick = () => {
-    setModalProps((prev) => ({ ...prev, contentsType: 'Image' }));
-    openMemoCollectionModal();
+    openMemoCollectionModal({
+      categoryId: category,
+      contentsType: 'Image',
+    });
   };
 
   const onLinkClick = () => {
-    setModalProps((prev) => ({ ...prev, contentsType: 'Link' }));
-    openMemoCollectionModal();
+    openMemoCollectionModal({
+      categoryId: category,
+      contentsType: 'Link',
+    });
   };
 
   const onSettingClick = () => { };

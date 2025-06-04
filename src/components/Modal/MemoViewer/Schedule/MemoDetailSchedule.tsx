@@ -25,9 +25,15 @@ const MemoDetailSchedule = ({
   nowDate.setMinutes(0);
 
   const [isEdit, setIsEdit] = useState(!!props.isEdit);
-  const [title, setTitle] = useState(props.title);
-  const [startDate, setStartDate] = useState(props.startDate);
-  const [endDate, setEndDate] = useState(props.endDate);
+  const [title, setTitle] = useState(props.e.title);
+  const [startDate, setStartDate] = useState(() => {
+    const date = props.e.startDateTime;
+    return typeof date === 'string' ? new Date(date) : date;
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const date = props.e.endDateTime;
+    return typeof date === 'string' ? new Date(date) : date;
+  });
 
   const [SelectCalendarStartDateModal, openSelectCalendarStartDateModal] = useModal(
     'selectStartDate',

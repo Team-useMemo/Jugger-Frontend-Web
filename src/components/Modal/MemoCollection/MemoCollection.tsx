@@ -25,7 +25,7 @@ const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: 
   const [contentsType, setContentsType] = useState(props.contentsType);
   const [categoryId, setCategoryId] = useState(props.categoryId);
   const { data: _categories = [] } = useGetCategoriesQuery();
-  const categories = [{ uuid: null, color: '#171719', name: '전체' }, ..._categories];
+  const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
   // 추후 수정 필요
   return (
     <MemoCollectionContainer>
@@ -73,9 +73,9 @@ const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: 
           )}
           <MemoCollectionBodyContents>
             {contentsType == 'Image' ? (
-              <MemoCollectionImage />
+              <MemoCollectionImage categoryId={categoryId} />
             ) : contentsType == 'Calendar' ? (
-              <MemoCollectionSchedule />
+              <MemoCollectionSchedule categoryId={categoryId} />
             ) : contentsType == 'Link' ? (
               <MemoCollectionLink />
             ) : (

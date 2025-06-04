@@ -5,14 +5,14 @@ import DownloadSVG from '@assets/icons/download.svg?react';
 import { MemoViewerCloseContainer, MemoViewerContainer } from '../MemoViewer.Style';
 import { GrowDiv, MemoDetailImageButtonContainer, MemoDetailImageContainer } from './MemoViewerImage.Style';
 
-const MemoDetailImage = ({ closeModal, props }: { closeModal: () => void; props: { image: string } }) => {
+const MemoDetailImage = ({ closeModal, props }: { closeModal: () => void; props: { url: string } }) => {
   return (
     <MemoViewerContainer>
       <MemoViewerCloseContainer>
         <CloseSVG onClick={closeModal} />
       </MemoViewerCloseContainer>
       <MemoDetailImageContainer>
-        <img src={props.image} />
+        <img src={props.url} />
       </MemoDetailImageContainer>
       <MemoDetailImageButtonContainer>
         <CategorySVG />
