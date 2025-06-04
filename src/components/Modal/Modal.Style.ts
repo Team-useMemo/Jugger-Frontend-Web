@@ -15,7 +15,7 @@ export const MemoModalContainer = styled.div({
   transform: 'translate(-50%, -50%)',
   zIndex: 1000,
 
-  [media[0]]: {
+  [media[480]]: {
     width: '90%',
     maxWidth: '400px',
     backgroundColor: 'white',
@@ -70,7 +70,7 @@ export const CategoryContainer = styled.div({
   padding: '0 32px',
   boxSizing: 'border-box',
 
-  [media[0]]: {
+  [media[480]]: {
     width: '100%',
     padding: '0 24px',
   },
@@ -124,7 +124,7 @@ export const SearchCategoryWrapper = styled.div({
   width: '100%',
   boxSizing: 'border-box',
 
-  [media[0]]: {
+  [media[480]]: {
     padding: '0 24px',
   },
 });

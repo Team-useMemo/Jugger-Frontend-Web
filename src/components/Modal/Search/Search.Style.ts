@@ -158,7 +158,7 @@ export const ResultText = styled.span({
   whiteSpace: 'nowrap',
   maxWidth: '300px',
 
-  [media[0]]: {
+  [media[480]]: {
     maxWidth: '100px',
   },
 });

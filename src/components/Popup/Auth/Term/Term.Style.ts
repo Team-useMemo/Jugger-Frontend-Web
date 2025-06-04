@@ -8,7 +8,7 @@ export const TermsContainer = styled.div({
   width: 384,
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
 
-  [media[0]]: {
+  [media[480]]: {
     width: '100%',
     padding: 16,
   },
