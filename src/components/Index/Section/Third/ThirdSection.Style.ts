@@ -76,10 +76,15 @@ const IndexThirdSectionTitleIndex = styled.p(
     idx == 0
       ? {
           background: theme.color.primary.normal,
-          color: theme.color.label.inverse,
+          display: 'flex',
+          justifyContent: 'center',
+          width: '52px',
           aspectRatio: '1 / 1',
           borderRadius: theme.radius[8],
+          color: theme.color.label.inverse,
+
           [media[480]]: {
+            width: '24px',
             borderRadius: theme.radius[4],
           },
         }
@@ -88,6 +93,7 @@ const IndexThirdSectionTitleIndex = styled.p(
             color: theme.color.label.normal,
             lineHeight: '1.25 !important',
             borderBottom: `4px solid ${theme.color.primary.normal}`,
+
             [media[480]]: {
               borderBottom: `2px solid ${theme.color.primary.normal}`,
             },
