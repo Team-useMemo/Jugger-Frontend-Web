@@ -88,7 +88,6 @@ const Search = ({ closeModal }: { closeModal: () => void }) => {
 
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: memos = [] } = useGetMemosQuery({
-    before: new Date().toISOString(),
     page: 0,
     size: 20,
   });
