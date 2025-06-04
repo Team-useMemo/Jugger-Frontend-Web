@@ -57,10 +57,19 @@ const SearchResultItem = ({
 }) => {
   const category = categories.find((cat) => cat.id === memo.categoryId);
   const navigate = useNavigate();
+
   const handleClick = () => {
-    navigate(`?category=${memo.categoryId}`);
+    navigate(`?category=${memo.categoryId}`, { replace: false });
     closeModal();
+
+    setTimeout(() => {
+      const memoElement = document.getElementById(`memo-${memo.id}`);
+      if (memoElement) {
+        memoElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
   };
+
   return (
     <ResultItem key={memo.id} onClick={handleClick}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

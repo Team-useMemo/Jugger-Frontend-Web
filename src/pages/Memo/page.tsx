@@ -41,7 +41,7 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
     <MemoListContainer ref={memoListContainerRef}>
       {[...filteredMemos].reverse().map((e, i, arr) => {
         return (
-          <MemoItemContainer key={e.id}>
+          <MemoItemContainer key={e.id} id={`memo-${e.id}`}>
             {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
               <MemoDateDivideContainer>
                 <MemoDateDivideLineTip />
