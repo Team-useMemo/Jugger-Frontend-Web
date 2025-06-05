@@ -14,7 +14,7 @@ const Mainlayout = ({ children }: LayoutProps) => {
     <StyledMainlayout>
       <SideBar toggleMenu={toggleMenu} closeMenu={closeMenu} />
       <StyledMain>
-        <Header activeMenu={openMenu} closeMenu={closeMenu} />
+        <Header activeMenu={openMenu} />
         <StyledContent>{children}</StyledContent>
       </StyledMain>
     </StyledMainlayout>

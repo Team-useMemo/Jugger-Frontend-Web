@@ -80,25 +80,24 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   };
 
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       const target = e.target as HTMLElement;
-      const isInsideModal = target.closest('.modal-container');
-
-      if (modalRef.current && !modalRef.current.contains(e.target as Node) && !isInsideModal) {
+      if (modalRef.current && !modalRef.current.contains(target)) {
         closeMenu();
       }
     };
 
-    window.addEventListener('mousedown', handleClick);
-    return () => window.removeEventListener('mousedown', handleClick);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [closeMenu]);
 
   return (
     <StyledSideBar active={toggleMenu}>
-      <div className="modal-container">
-        <AddCategoryModal />
-        <MemoCollectionModal />
-      </div>
+      <AddCategoryModal />
+      <MemoCollectionModal />
       <SideBarContainer ref={modalRef}>
         <SideBarHeader>
           <LogoImage src={LogoPNG} onClick={handleLogoClick} />
@@ -127,6 +126,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
                 isPinned={msg.isPinned}
                 updateAt={msg.updateAt}
                 recentMessage={msg.recentMessage}
+                closeMenu={closeMenu}
               />
             ))}
           </MessageSection>
