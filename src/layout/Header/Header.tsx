@@ -7,10 +7,10 @@ import MenuSVG from '@assets/icons/menu.svg?react';
 import useModal from '@hooks/useModal';
 import Search from '@components/Modal/Search/Search';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useGetCategoriesQuery } from '@stores/modules/category';
 
-const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: () => void }) => {
+const Header = ({ activeMenu }: { activeMenu: () => void }) => {
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('category');
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
@@ -36,19 +36,19 @@ const Header = ({ activeMenu, closeMenu }: { activeMenu: () => void; closeMenu: 
 
   const onDetailClick = () => alert('상세');
 
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const isInsideModal = target.closest('.modal-container');
+  // useEffect(() => {
+  //   const handleClick = (e: MouseEvent) => {
+  //     const target = e.target as HTMLElement;
+  //     console.log(target);
+  //     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+  //       closeMenu();
+  //       console.log(cl);
+  //     }
+  //   };
 
-      if (modalRef.current && !modalRef.current.contains(e.target as Node) && !isInsideModal) {
-        closeMenu();
-      }
-    };
-
-    window.addEventListener('mousedown', handleClick);
-    return () => window.removeEventListener('mousedown', handleClick);
-  }, [closeMenu]);
+  //   window.addEventListener('mousedown', handleClick);
+  //   return () => window.removeEventListener('mousedown', handleClick);
+  // }, [closeMenu]);
 
   return (
     <>

@@ -30,9 +30,10 @@ interface SideMessageItemProps {
   isPinned: boolean;
   updateAt: Date;
   recentMessage: string;
+  closeMenu: () => void;
 }
 
-const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinned }: SideMessageItemProps) => {
+const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinned, closeMenu }: SideMessageItemProps) => {
   const navigate = useNavigate();
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
@@ -49,7 +50,10 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinne
     { id, name: title, initialColor: color },
   );
 
-  const handleCategoryClick = useCallback(() => navigate(`?category=${id}`), [navigate, id]);
+  const handleCategoryClick = useCallback(() => {
+    navigate(`?category=${id}`);
+    closeMenu();
+  }, [navigate, id, closeMenu]);
 
   const handlePinClick = useCallback(() => {
     togglePin({ id, isPinned: !isPinned });
