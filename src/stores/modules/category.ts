@@ -10,14 +10,16 @@ export const categoryApi = createApi({
     getCategories: builder.query<CategoryProp[], void>({
       query: () => `/api/v1/categories/recent`,
       transformResponse: (response: CategoryProp[]) =>
-        response.map((category) => ({
-          uuid: category.uuid,
-          name: category.name,
-          isPinned: category.isPinned,
-          color: category.color.replace(/^color/, ''),
-          recentMessage: category.recentMessage,
-          updateAt: new Date(category.updateAt),
-        })),
+        response
+          .map((category) => ({
+            uuid: category.uuid,
+            name: category.name,
+            isPinned: category.isPinned,
+            color: category.color.replace(/^color/, ''),
+            recentMessage: category.recentMessage,
+            updateAt: new Date(category.updateAt),
+          }))
+          .sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()),
       providesTags: (result) =>
         result
           ? [...result.map(({ uuid }) => ({ type: 'Category' as const, uuid })), { type: 'Category', id: 'LIST' }]

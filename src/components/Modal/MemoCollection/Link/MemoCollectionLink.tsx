@@ -51,8 +51,6 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
 
 const MemoCollectionLink = ({ categoryId }: { categoryId: string }) => {
   const { data: linkData = [] } = useGetLinksQuery({ categoryId });
-  console.log(categoryId);
-  console.log(linkData);
   return (
     <MemoCollectionLinkContainer>
       <MemoCollectionLinkContents>

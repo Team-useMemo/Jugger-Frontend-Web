@@ -60,7 +60,7 @@ export const memoApi = createApi({
           text,
         },
       }),
-      invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Memo', id: 'LIST' }, { type: 'Link', id: 'LIST' }],
     }),
     postCalendar: builder.mutation<void, { name: string; startTime: string; endTime: string; categoryId: string }>({
       query: ({ name, startTime, endTime, categoryId }) => ({
@@ -73,7 +73,7 @@ export const memoApi = createApi({
           categoryId,
         },
       }),
-      invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Memo', id: 'LIST' }, { type: 'Calendar', id: 'LIST' }],
     }),
     getCalendar: builder.query<CalendarResponseProp[], { start?: string; end?: string }>({
       query: ({ start = '2025-01-01T00:00:00.007Z', end = new Date().toISOString() }) => ({
@@ -94,7 +94,7 @@ export const memoApi = createApi({
           body: formData,
         };
       },
-      invalidatesTags: [{ type: 'Memo', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Memo', id: 'LIST' }, { type: 'Photo', id: 'LIST' }],
     }),
     getPhotos: builder.query<PhotoResponseProp[], { category_uuid: string }>({
       query: ({ category_uuid }) => ({
@@ -108,7 +108,7 @@ export const memoApi = createApi({
         url: `/api/v1/links?categoryId=${categoryId}`,
         method: 'GET',
       }),
-      transformResponse: (response: any): LinkResponseProp[] => (response.linkData),
+      transformResponse: (response: any): LinkResponseProp[] => (response[0].linkData),
       providesTags: (result) => (result ? [{ type: 'Link', id: 'LIST' }] : []),
     }),
   }),

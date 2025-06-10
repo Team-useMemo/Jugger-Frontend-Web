@@ -95,10 +95,10 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   }, [closeMenu]);
 
   return (
-    <StyledSideBar active={toggleMenu}>
+    <StyledSideBar active={toggleMenu} ref={modalRef}>
       <AddCategoryModal />
       <MemoCollectionModal />
-      <SideBarContainer ref={modalRef}>
+      <SideBarContainer>
         <SideBarHeader>
           <LogoImage src={LogoPNG} onClick={handleLogoClick} />
         </SideBarHeader>
@@ -115,7 +115,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
               ...categories.filter((msg) => msg.isPinned),
               ...categories
                 .filter((msg) => !msg.isPinned)
-                .sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()),
             ].map((msg, index) => (
               <SideMessage
                 key={index}

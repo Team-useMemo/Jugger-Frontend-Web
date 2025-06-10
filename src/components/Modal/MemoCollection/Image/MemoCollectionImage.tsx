@@ -67,6 +67,7 @@ const MemoCollectionImage = ({ categoryId }: { categoryId: string }) => {
       }, {}),
     ).sort(([aKey], [bKey]) => new Date(bKey).getTime() - new Date(aKey).getTime());
 
+
   const handleClickImage = (url: string) => {
     openMemoDetailImageModal({ url });
   };

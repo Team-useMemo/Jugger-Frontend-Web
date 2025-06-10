@@ -27,7 +27,7 @@ import { useGetCalendarQuery } from '@stores/modules/memo';
 
 
 const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [date, setDate] = useState(() => {
     const date = new Date();
     date.setDate(1);
@@ -52,22 +52,27 @@ const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
       <MemoCollectionScheduleCalendarContainer>
         <MemoCollectionScheduleCalendarTitle>
           <LeftArrowSVG
-            onClick={() =>
+            onClick={() => {
               setDate((prev) => {
                 const date = new Date(prev);
                 date.setMonth(date.getMonth() - 1);
                 return date;
               })
+              setSelectedDate(null);
+            }
             }
           />
           {CalendarMonths[date.getMonth()] + ' ' + date.getFullYear()}
           <RightArrowSVG
-            onClick={() =>
+            onClick={() => {
               setDate((prev) => {
                 const date = new Date(prev);
                 date.setMonth(date.getMonth() + 1);
                 return date;
               })
+
+              setSelectedDate(null);
+            }
             }
           />
         </MemoCollectionScheduleCalendarTitle>
@@ -83,7 +88,7 @@ const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
                 <MemoCollectionScheduleCalendarDateItemText
                   isCurrentMonth={e.getMonth() == date.getMonth()}
                   isToday={e.toDateString() == new Date().toDateString()}
-                  isSelected={e.toDateString() == selectedDate.toDateString()}
+                  isSelected={e.toDateString() == selectedDate?.toDateString()}
                 >
                   {e.getDate()}
                 </MemoCollectionScheduleCalendarDateItemText>
@@ -104,7 +109,7 @@ const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
       </MemoCollectionScheduleCalendarContainer>
       <MemoCollectionScheduleItemListContainer>
         {dates
-          .filter(({ startDateTime }) => new Date(startDateTime).toDateString() == selectedDate.toDateString())
+          .filter(({ startDateTime }) => new Date(startDateTime).toDateString() == selectedDate?.toDateString())
           .map((e) => {
             return (
               <MemoCollectionScheduleItemContainer

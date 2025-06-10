@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@styles/theme';
 
 export const Container = styled.div`
   display: flex;
@@ -30,12 +31,13 @@ export const Divider = styled.div`
   }
 `;
 
-export const Button = styled.button<{ bgColor: string; textColor?: string }>`
+export const Button = styled.button<{ bgColor?: string; textColor?: string }>`
+  position: relative;
   width: 250px;
   padding: 12px;
   margin: 8px 0;
-  background-color: ${({ bgColor }) => bgColor};
-  color: ${({ textColor }) => textColor || '#000'};
+  background-color: ${({ bgColor }) => bgColor || theme.color.label.inverse};
+  color: ${({ textColor }) => textColor || theme.color.label.normal};
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -48,5 +50,31 @@ export const Button = styled.button<{ bgColor: string; textColor?: string }>`
 
   &:hover {
     opacity: 0.9;
+  }
+`;
+
+export const RecentLoginBadge = styled.span`
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background: ${theme.color.label.normal};
+  color: ${theme.color.label.inverse};
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 10px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid black;
   }
 `;
