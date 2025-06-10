@@ -19,9 +19,14 @@ const MemoText = ({ memoId, content }: { memoId: number; content: string }) => {
   const [activeMore, setActiveMore] = useState(false);
 
   useEffect(() => {
+    setActiveMore(false); // Reset first
     if (!memoRef.current) return;
-    setActiveMore(memoRef.current.scrollHeight > memoRef.current.clientHeight);
-  }, []);
+    setTimeout(() => {
+      if (memoRef.current) {
+        setActiveMore(memoRef.current.scrollHeight > memoRef.current.clientHeight);
+      }
+    }, 0);
+  }, [content, memoId]);
 
   return (
     <>

@@ -29,9 +29,13 @@ import { useGetCategoriesQuery } from '@stores/modules/category';
 const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery({ page: 0, size: 20, });
-
-  const filteredMemos = currentCategory ? memos.filter((memo) => memo.categoryId === currentCategory) : memos;
+  const { data: memos = [] } = useGetMemosQuery({ page: 0, size: 20, }, {
+    selectFromResult: ({ data }) => ({
+      data: currentCategory
+        ? data?.filter((memo) => memo.categoryId === currentCategory)
+        : data
+    }),
+  });
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
@@ -39,9 +43,9 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
 
   return (
     <MemoListContainer ref={memoListContainerRef}>
-      {[...filteredMemos].reverse().map((e, i, arr) => {
+      {memos.map((e, i, arr) => {
         return (
-          <MemoItemContainer key={e.id} id={`memo-${e.id}`}>
+          <MemoItemContainer key={`memo-${e.id}-${i}`} id={`memo-${e.id}`}>
             {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
               <MemoDateDivideContainer>
                 <MemoDateDivideLineTip />

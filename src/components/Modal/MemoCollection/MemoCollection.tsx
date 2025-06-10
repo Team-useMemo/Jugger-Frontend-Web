@@ -77,7 +77,7 @@ const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: 
             ) : contentsType == 'Calendar' ? (
               <MemoCollectionSchedule categoryId={categoryId} />
             ) : contentsType == 'Link' ? (
-              <MemoCollectionLink />
+              <MemoCollectionLink categoryId={categoryId} />
             ) : (
               ''
             )}
