@@ -36,20 +36,6 @@ const Header = ({ activeMenu }: { activeMenu: () => void }) => {
 
   const onDetailClick = () => alert('상세');
 
-  // useEffect(() => {
-  //   const handleClick = (e: MouseEvent) => {
-  //     const target = e.target as HTMLElement;
-  //     console.log(target);
-  //     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-  //       closeMenu();
-  //       console.log(cl);
-  //     }
-  //   };
-
-  //   window.addEventListener('mousedown', handleClick);
-  //   return () => window.removeEventListener('mousedown', handleClick);
-  // }, [closeMenu]);
-
   return (
     <>
       <SearchCategoryModal />
@@ -71,10 +57,10 @@ const Header = ({ activeMenu }: { activeMenu: () => void }) => {
               localStorage.removeItem('accessToken');
               localStorage.removeItem('refreshToken');
               localStorage.removeItem('username');
-              navigate('/login');
+              navigate('/');
             }}
           >
-            TEST 로그아웃
+            로그아웃
           </button>
         </HeaderButtonContainer>
       </StyledHeader>

@@ -38,7 +38,7 @@ export const memoApi = createApi({
               };
             }),
           )
-          .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
+          .sort((a: MemoResponseProp, b: MemoResponseProp) => b.date.getTime() - a.date.getTime());
       },
       providesTags: (result): readonly { type: 'Memo'; id: string | number }[] =>
         result
@@ -103,9 +103,9 @@ export const memoApi = createApi({
       }),
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    getLinks: builder.query<LinkResponseProp[], { category_uuid: string }>({
-      query: ({ category_uuid }) => ({
-        url: `/api/v1/links?category_uuid=${category_uuid}`,
+    getLinks: builder.query<LinkResponseProp[], { categoryId: string }>({
+      query: ({ categoryId }) => ({
+        url: `/api/v1/links?categoryId=${categoryId}`,
         method: 'GET',
       }),
       transformResponse: (response: any): LinkResponseProp[] => (response.linkData),

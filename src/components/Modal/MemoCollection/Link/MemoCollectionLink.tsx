@@ -10,7 +10,6 @@ import {
 import { fetchUrlPreview, OgData } from '@utils/ogData';
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetLinksQuery } from '@stores/modules/memo';
-import { useSearchParams } from 'react-router-dom';
 
 
 const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
@@ -50,16 +49,15 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
   );
 };
 
-const MemoCollectionLink = () => {
-  const [searchParams] = useSearchParams();
-  const currentCategory = searchParams.get('category') ?? '';
-  const { data: linkDatas = [] } = useGetLinksQuery({ category_uuid: currentCategory });
-
+const MemoCollectionLink = ({ categoryId }: { categoryId: string }) => {
+  const { data: linkData = [] } = useGetLinksQuery({ categoryId });
+  console.log(categoryId);
+  console.log(linkData);
   return (
     <MemoCollectionLinkContainer>
       <MemoCollectionLinkContents>
-        {linkDatas.map((e) => {
-          return <MemoCollectionLinkItem content={e.link} category={currentCategory} />;
+        {linkData.map((e) => {
+          return <MemoCollectionLinkItem content={e.link} category={categoryId} />;
         })}
       </MemoCollectionLinkContents>
     </MemoCollectionLinkContainer>
