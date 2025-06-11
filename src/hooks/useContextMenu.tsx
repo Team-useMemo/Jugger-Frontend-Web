@@ -39,8 +39,8 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps): [() => R
       const { clientX, clientY } = 'touches' in e ? e.touches[0] : e;
 
       const adjustedY = Math.min(clientY, window.innerHeight - 210);
-
-      openMenu(clientX, adjustedY);
+      const adjustedX = Math.min(clientX, window.innerWidth - 210);
+      openMenu(adjustedX, adjustedY);
     },
     [openMenu],
   );

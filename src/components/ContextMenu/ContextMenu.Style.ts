@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@styles/theme';
 
 export const ContextMenu = styled.div({
   position: 'fixed',
@@ -51,7 +52,7 @@ export const ContextMenuItem = styled.div<{ active?: boolean }>(({ active }) => 
   letterSpacing: '0.150px',
   padding: '8px 16px',
   color: '#171719',
-  backgroundColor: active ? '#F4F4F5' : 'transparent',
+  backgroundColor: active ? theme.color.background.normal : 'transparent',
 
   cursor: 'pointer',
   '&:hover': {
