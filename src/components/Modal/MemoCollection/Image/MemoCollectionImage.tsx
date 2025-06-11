@@ -9,6 +9,7 @@ import {
   MemoCollectionImageListTitle,
 } from './MemoCollectionImage.Style';
 import { useGetPhotosQuery } from '@stores/modules/memo';
+import { useContextMenu } from '@hooks/useContextMenu';
 
 
 const MemoCollectionImageItem = ({
@@ -18,14 +19,50 @@ const MemoCollectionImageItem = ({
   image: string;
   handleClickImage: (image: string) => void;
 }) => {
+
+
+  const handleCopy = () => {
+    // TODO: 카테고리 설정 모달 열기
+  };
+
+  const handleShare = () => {
+    // TODO: 즐겨찾기 토글 API 연결 예정
+  };
+
+  const handleDeleteMemo = () => {
+    // TODO: 삭제 확인 모달 또는 삭제 API 호출
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
+    items: [
+      {
+        label: '복사',
+        onClick: handleCopy,
+      },
+      {
+        label: '공유',
+        onClick: handleShare,
+      },
+      {
+        label: '삭제',
+        onClick: handleDeleteMemo,
+      },
+    ],
+  });
+
   return (
-    <MemoColectionImageItemContainer
-      onClick={() => {
-        handleClickImage(image);
-      }}
-    >
-      <img src={image} />
-    </MemoColectionImageItemContainer>
+    <>
+      <ContextMenu />
+      <MemoColectionImageItemContainer
+        {...BindContextMenuHandlers}
+        onClick={() => {
+          handleClickImage(image);
+        }}
+      >
+        <img src={image} />
+      </MemoColectionImageItemContainer>
+    </>
   );
 };
 

@@ -14,7 +14,7 @@ interface ContextMenuItemProps {
 }
 
 interface UseContextMenuProps {
-  header: { color: string; title: string };
+  header?: { color: string; title: string };
   items: ContextMenuItemProps[];
 }
 
@@ -100,11 +100,15 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps): [() => R
 
     return (
       <ContextMenuWrapper ref={contextMenuRef} style={{ top: anchor.y, left: anchor.x }}>
-        <ContextMenuHeader>
-          <Dot style={{ backgroundColor: header.color }} />
-          <ContextMenuTitle>{header.title}</ContextMenuTitle>
-        </ContextMenuHeader>
-        <Divider />
+        {header &&
+          <>
+            <ContextMenuHeader>
+              <Dot style={{ backgroundColor: header.color }} />
+              <ContextMenuTitle>{header.title}</ContextMenuTitle>
+            </ContextMenuHeader>
+            <Divider />
+          </>
+        }
         {items.map((item, idx) => (
           <ContextMenuItem
             key={idx}

@@ -47,7 +47,6 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: _category?.color || '#FFF', title: _category?.name || '' },
     items: [
       {
         label: '링크 수정',
