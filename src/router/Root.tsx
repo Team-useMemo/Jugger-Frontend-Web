@@ -9,8 +9,7 @@ const Root = () => {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     const currentPath = window.location.pathname;
-    console.log(currentPath);
-    console.log(token);
+
     if (currentPath.startsWith('/oauth/callback/kakao') || currentPath.startsWith('/login')) {
       return; // 카카오 콜백 페이지는 리다이렉트 건너뜀
     }

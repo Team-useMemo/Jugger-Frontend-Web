@@ -29,10 +29,11 @@ import { useGetCalendarQuery } from '@stores/modules/memo';
 const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [date, setDate] = useState(() => {
-    const date = new Date();
-    date.setDate(1);
-    return date;
+    return new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   });
+
+  const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
 
   const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(
     `memoDetailSchedule`,
@@ -41,7 +42,12 @@ const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
     [],
   );
 
-  const { data: _dates = [] } = useGetCalendarQuery({});
+
+  const { data: _dates = [] } = useGetCalendarQuery({
+    start: startOfMonth.toISOString(),
+    end: endOfMonth.toISOString(),
+  });
+
   const dates = categoryId ? _dates.filter((date) => date.categoryId === categoryId) : _dates;
 
   const dateList = getCalendarDates(date);
@@ -110,9 +116,10 @@ const MemoCollectionSchedule = ({ categoryId }: { categoryId: string }) => {
       <MemoCollectionScheduleItemListContainer>
         {dates
           .filter(({ startDateTime }) => new Date(startDateTime).toDateString() == selectedDate?.toDateString())
-          .map((e) => {
+          .map((e, idx) => {
             return (
               <MemoCollectionScheduleItemContainer
+                key={e.categoryId + idx}
                 onClick={() => {
                   openMemoDetailScheduleModal({ isEdit: false, e });
                 }}

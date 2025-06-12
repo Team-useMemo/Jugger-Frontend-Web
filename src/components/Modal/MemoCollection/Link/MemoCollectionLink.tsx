@@ -10,6 +10,7 @@ import {
 import { fetchUrlPreview, OgData } from '@utils/ogData';
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetLinksQuery } from '@stores/modules/memo';
+import { useContextMenu } from '@hooks/useContextMenu';
 
 
 const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
@@ -29,23 +30,64 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
     window.open(content);
   };
 
+  const handleEdit = () => {
+    // TODO: 카테고리 설정 모달 열기
+  };
+
+  const handleCopy = () => {
+    // TODO: 카테고리 설정 모달 열기
+  };
+
+  const handleShare = () => {
+    // TODO: 즐겨찾기 토글 API 연결 예정
+  };
+
+  const handleDeleteMemo = () => {
+    // TODO: 삭제 확인 모달 또는 삭제 API 호출
+  };
+
+  const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
+    items: [
+      {
+        label: '링크 수정',
+        onClick: handleEdit,
+      },
+      {
+        label: '복사',
+        onClick: handleCopy,
+      },
+      {
+        label: '공유',
+        onClick: handleShare,
+      },
+      {
+        label: '삭제',
+        onClick: handleDeleteMemo,
+      },
+    ],
+  });
+
   return (
-    <MemoCollectionLinkItemContainer onClick={handleLinkClick}>
-      <MemoCollectionLinkItemThumbnailContainer>
-        {_category && (
-          <MemoCollectionLinkItemCategory color={_category.color}>
-            <span />
-            {_category.name}
-          </MemoCollectionLinkItemCategory>
-        )}
-        <img src={ogData?.ogImage} />
-      </MemoCollectionLinkItemThumbnailContainer>
-      <MemoCollectionLinkItemContents>
-        <p className="title">{ogData?.ogTitle}</p>
-        <p className="desc">{ogData?.ogDescription}</p>
-        <p className="url">{ogData?.ogUrl}</p>
-      </MemoCollectionLinkItemContents>
-    </MemoCollectionLinkItemContainer>
+    <>
+      <ContextMenu />
+      <MemoCollectionLinkItemContainer onClick={handleLinkClick}
+        {...BindContextMenuHandlers}>
+        <MemoCollectionLinkItemThumbnailContainer>
+          {_category && (
+            <MemoCollectionLinkItemCategory color={_category.color}>
+              <span />
+              {_category.name}
+            </MemoCollectionLinkItemCategory>
+          )}
+          <img src={ogData?.ogImage} />
+        </MemoCollectionLinkItemThumbnailContainer>
+        <MemoCollectionLinkItemContents>
+          <p className="title">{ogData?.ogTitle}</p>
+          <p className="desc">{ogData?.ogDescription}</p>
+          <p className="url">{ogData?.ogUrl}</p>
+        </MemoCollectionLinkItemContents>
+      </MemoCollectionLinkItemContainer>
+    </>
   );
 };
 

@@ -5,7 +5,7 @@ import MemoDetailText from '@components/Modal/MemoViewer/MemoDetail/MemoDetailTe
 import { MemoTextContainer, MemoTextContents, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
-const MemoText = ({ memoId, content }: { memoId: number; content: string }) => {
+const MemoText = ({ categoryName, memoId, content }: { categoryName: any; memoId: number; content: string }) => {
   const memoRef = useRef<HTMLParagraphElement>(null);
   const [MemoDetailTextModal, openMemoDetailTextModal] = useModal(
     `memoText_${memoId}`,
@@ -13,6 +13,7 @@ const MemoText = ({ memoId, content }: { memoId: number; content: string }) => {
     MemoDetailText,
     [],
     {
+      categoryName: categoryName,
       text: content,
     },
   );
