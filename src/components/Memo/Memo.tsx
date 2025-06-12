@@ -56,7 +56,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoResponseProp; category?: 
       <MemoContent
         {...BindContextMenuHandlers}>
         {memo.type == 'text' ? (
-          <MemoText memoId={memo.id} content={memo.content as string} />
+          <MemoText categoryName={category?.name} memoId={memo.id} content={memo.content as string} />
         ) : memo.type == 'schedule' ? (
           <MemoSchedule memoId={memo.id} content={memo.content as scheduleProp} />
         ) : memo.type == 'photo' ? (

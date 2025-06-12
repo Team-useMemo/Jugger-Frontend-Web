@@ -21,6 +21,7 @@ export const MemoDetailTextContents = styled.p({
   color: theme.color.label.normal,
   margin: '0',
   width: '400px',
+  maxHeight: '500px',
   overflow: 'auto',
   ['::-webkit-scrollbar']: {
     display: 'none',

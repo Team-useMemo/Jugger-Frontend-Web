@@ -12,13 +12,7 @@ import { useGetPhotosQuery } from '@stores/modules/memo';
 import { useContextMenu } from '@hooks/useContextMenu';
 
 
-const MemoCollectionImageItem = ({
-  image,
-  handleClickImage,
-}: {
-  image: string;
-  handleClickImage: (image: string) => void;
-}) => {
+const MemoCollectionImageItem = ({ image, handleClickImage, }: { image: string; handleClickImage: (image: string) => void; }) => {
 
 
   const handleCopy = () => {
@@ -33,7 +27,6 @@ const MemoCollectionImageItem = ({
     // TODO: 삭제 확인 모달 또는 삭제 API 호출
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
     items: [
       {
