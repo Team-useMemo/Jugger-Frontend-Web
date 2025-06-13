@@ -1,12 +1,17 @@
 import styled from '@emotion/styled';
+import { theme } from '@styles/theme';
 
-export const MenuItem = styled.div`
-  display: flex;
-  padding: 12px 24px;
-  align-items: center;
-  gap: 16px;
-  align-self: stretch;
-`;
+export const MenuItem = styled.div({
+  display: 'flex',
+  padding: '12px 24px',
+  alignItems: 'center',
+  gap: '16px',
+  cursor: 'pointer',
+
+  [':hover']: {
+    background: theme.color.background.alternative,
+  },
+});
 
 export const IconWrapper = styled.div`
   width: 24px;
