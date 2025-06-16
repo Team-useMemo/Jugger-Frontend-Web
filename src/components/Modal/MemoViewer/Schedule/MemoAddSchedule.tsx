@@ -1,3 +1,10 @@
+import { useState } from 'react';
+import { formatDate, getDateAfterOneHour } from '@utils/Date';
+import useModal from '@hooks/useModal';
+import BottomTransparent from '@components/Modal/Background/BottomTransparent';
+import SelectCalendar from '@components/Modal/SelectCalendar/SelectCalendar';
+import CloseSVG from '@assets/icons/close.svg?react';
+import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import { MemoViewerButton, MemoViewerCloseContainer, MemoViewerContainer, MemoViewerTitle } from '../MemoViewer.Style';
 import {
   MemoViewerScheduleContents,
@@ -5,13 +12,6 @@ import {
   MemoViewerScheduleItemContent,
   MemoViewerScheduleItemListContainer,
 } from './MemoViewerSchedule.Style';
-import CloseSVG from '@assets/icons/close.svg?react';
-import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
-import { useState } from 'react';
-import { formatDate, getDateAfterOneHour } from '@utils/Date';
-import useModal from '@hooks/useModal';
-import BottomTransparent from '@components/Modal/Background/BottomTransparent';
-import SelectCalendar from '@components/Modal/SelectCalendar/SelectCalendar';
 
 const MemoAddSchedule = ({
   closeModal,
@@ -22,11 +22,12 @@ const MemoAddSchedule = ({
   props: any;
 }) => {
   const [addSchedule] = actions;
-  const nowDate = new Date();
-  nowDate.setMinutes(0);
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState(null);
+
+  const nowDate = new Date();
+  nowDate.setMinutes(0);
 
   const [SelectCalendarStartDateModal, openSelectCalendarStartDateModal] = useModal(
     'selectStartDate',

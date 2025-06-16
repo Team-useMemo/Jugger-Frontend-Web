@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import modalToggle from '@stores/modules/todoSlice';
+// 추가 필요
+import { CalendarSlice } from '@stores/modules/calendar';
+import { categoryApi } from '@stores/modules/category';
 import { memoApi } from '@stores/modules/memo';
-import { categoryApi } from '@stores/modules/category'; // 추가 필요
+import { ModalSlice } from '@stores/modules/modal';
 
 const store = configureStore({
   reducer: {
-    modal: modalToggle,
+    modal: ModalSlice.reducer,
+    calendar: CalendarSlice.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [memoApi.reducerPath]: memoApi.reducer,
   },

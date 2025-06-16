@@ -18,6 +18,7 @@ export const CalendarMonths = [
 export const getCalendarDates = (date: Date) => {
   const dateList = [];
   const firstDate = new Date(date);
+  firstDate.setDate(1);
   const firstDay = firstDate.getDay() == 0 ? 7 : firstDate.getDay();
   const lastDate = new Date(firstDate);
   lastDate.setMonth(lastDate.getMonth() + 1, 0);

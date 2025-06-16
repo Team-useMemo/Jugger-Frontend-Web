@@ -1,10 +1,25 @@
-import PaperClipSVG from '@assets/icons/paperclip.svg?react';
-import CalendarSVG from '@assets/icons/calendar.svg?react';
-import SendSVG from '@assets/icons/send.svg?react';
+import { useGetCategoriesQuery } from '@stores/modules/category';
+import {
+  useGetMemosQuery,
+  usePostCalendarMutation,
+  usePostMemoMutation,
+  useUploadFileMutation,
+} from '@stores/modules/memo';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { formatDate } from '@utils/Date';
 import useModal from '@hooks/useModal';
+import useParamModal from '@hooks/useParamModal';
+import { webPath } from '@router/index';
 import MemoComponent from '@components/Memo/Memo';
-import { useSearchParams } from 'react-router-dom';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
+import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
+import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
+import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedule';
+import CalendarSVG from '@assets/icons/calendar.svg?react';
+import PaperClipSVG from '@assets/icons/paperclip.svg?react';
+import SendSVG from '@assets/icons/send.svg?react';
 import {
   MemoBottomButtonContainer,
   MemoBottomContainer,
@@ -17,32 +32,33 @@ import {
   MemoListContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
-import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedule';
-import { formatDate } from '@utils/Date';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
-import { usePostMemoMutation, useGetMemosQuery, usePostCalendarMutation, useUploadFileMutation } from '@stores/modules/memo';
-
-import { useGetCategoriesQuery } from '@stores/modules/category';
-
 
 const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery({ page: 0, size: 20, }, {
-    selectFromResult: ({ data }) => ({
-      data: currentCategory
-        ? data?.filter((memo) => memo.categoryId === currentCategory)
-        : data
-    }),
-  });
+  const { data: memos = [] } = useGetMemosQuery(
+    { page: 0, size: 20 },
+    {
+      selectFromResult: ({ data }) => ({
+        data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
+      }),
+    },
+  );
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [open, Modal] = useParamModal('calendar', ModalLayoutGray, AddScheduleMemo);
+  const [tmp, setTmp] = useState('');
+
   return (
     <MemoListContainer ref={memoListContainerRef}>
+      <input value={tmp} onChange={(e) => setTmp(e.target.value)} />
+      <div onClick={open}>asd</div>
+      <Modal props={tmp} />
       {memos.map((e, i, arr) => {
         return (
           <MemoItemContainer key={`memo-${e.id}-${i}`} id={`memo-${e.id}`}>
@@ -73,7 +89,6 @@ const MemoBottom = ({
   openAddPhotoModal: any;
   openAddScheduleModal: any;
 }) => {
-
   const [newMemo, setNewMemo] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import { CalendarDays, CalendarMonths, getCalendarDates } from '@utils/Date';
+import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import {
   SelectCalendarContainer,
   SelectCalendarDateGrid,
@@ -215,7 +215,6 @@ const SelectCalendarDate = ({
 };
 
 const SelectCalendar = ({
-  // closeModal,
   actions,
   props,
 }: {
