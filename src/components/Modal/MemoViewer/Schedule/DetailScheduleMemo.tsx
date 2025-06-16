@@ -1,12 +1,12 @@
-import { usePostCalendarMutation } from '@stores/modules/memo';
+// import { usePostCalendarMutation } from '@stores/modules/memo';
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+// import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
-import { MemoViewerContainer, MemoViewerContents, MemoViewerTitle } from '../MemoViewer.Style';
+import { MemoViewerContainer, MemoViewerContents } from '../MemoViewer.Style';
 import CalendarView from './CalendarView/CalendarView';
 import {
   ViewerScheduleMemoContainer,
@@ -16,37 +16,43 @@ import {
   ViewerScheduleMemoItemTitle,
 } from './ViewerScheduleMemo.Style';
 
-const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
-  const [title, setTitle] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+const DetailScheduleMemo = ({ closeModal, props }: ModalComponentProps) => {
+  const [title, setTitle] = useState<string>(props.title);
+  const [startDate, setStartDate] = useState<Date | null>(props.startDate);
+  const [endDate, setEndDate] = useState<Date | null>(props.endDate);
+  const [isEdit, setIsEdit] = useState(false);
 
   const startDateCalendarRef = useRef<HTMLDivElement>(null);
   const endDateCalendarRef = useRef<HTMLDivElement>(null);
 
-  const [postCalendar] = usePostCalendarMutation();
+  // const [postCalendar] = usePostCalendarMutation();
 
-  const [searchParams] = useSearchParams();
-
-  const currentCategory = searchParams.get('category');
+  // const [searchParams] = useSearchParams();
+  // const currentCategory = searchParams.get('category');
 
   const handleClickSend = () => {
-    if (!startDate) return;
+    if (!isEdit) {
+      setIsEdit(true);
+      return;
+    }
 
-    (async () => {
-      try {
-        await postCalendar({
-          name: title,
-          startTime: startDate.toISOString(),
-          endTime: endDate?.toISOString(),
-          categoryId: currentCategory || '',
-        }).unwrap();
+    setIsEdit(false);
+    // if (!startDate) return;
 
-        closeModal();
-      } catch (error) {
-        console.error('메모 전송 실패:', error);
-      }
-    })();
+    // (async () => {
+    //   try {
+    //     await postCalendar({
+    //       name: title,
+    //       startTime: startDate.toISOString(),
+    //       endTime: endDate?.toISOString(),
+    //       categoryId: currentCategory || '',
+    //     }).unwrap();
+
+    //     closeModal();
+    //   } catch (error) {
+    //     console.error('메모 전송 실패:', error);
+    //   }
+    // })();
   };
 
   const startDatePlaceHolder = (() => {
@@ -116,21 +122,19 @@ const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
     <MemoViewerContainer>
       <CloseSVG onClick={closeModal} />
       <MemoViewerContents>
-        <MemoViewerTitle>일정 추가</MemoViewerTitle>
-
-        <ViewerScheduleMemoContainer>
+        <ViewerScheduleMemoContainer isDetail>
           <ViewerScheduleMemoItemContainer>
             <ViewerScheduleMemoItemContents>
               <ViewerScheduleMemoItemTitle>일정 제목</ViewerScheduleMemoItemTitle>
               <ViewerScheduleMemoItemInput>
-                <input placeholder="입력" value={title} onChange={handleTitleChange} />
-                {title && <EndContainerSVG onClick={handleTitleReset} />}
+                <input placeholder="입력" value={title} onChange={handleTitleChange} readOnly={!isEdit} />
+                {title && isEdit && <EndContainerSVG onClick={handleTitleReset} />}
               </ViewerScheduleMemoItemInput>
             </ViewerScheduleMemoItemContents>
             <ViewerScheduleMemoItemContents>
               <ViewerScheduleMemoItemTitle>시작</ViewerScheduleMemoItemTitle>
               <div ref={startDateCalendarRef}>
-                {isOpenStartDateCalendar ? (
+                {isEdit && isOpenStartDateCalendar ? (
                   <CalendarView date={startDate} setDate={setStartDate} />
                 ) : (
                   <ViewerScheduleMemoItemInput onClick={handleClickStartDate}>
@@ -144,26 +148,28 @@ const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
                 )}
               </div>
             </ViewerScheduleMemoItemContents>
-            <ViewerScheduleMemoItemContents>
-              <ViewerScheduleMemoItemTitle>종료</ViewerScheduleMemoItemTitle>
-              <div ref={endDateCalendarRef}>
-                {isOpenEndDateCalendar ? (
-                  <CalendarView date={endDate} setDate={setEndDate} />
-                ) : (
-                  <ViewerScheduleMemoItemInput onClick={handleClickEndDate}>
-                    <input
-                      placeholder={toDateString(endDatePlaceHolder)}
-                      value={endDate ? toDateString(endDate) : ''}
-                      onChange={handleTitleChange}
-                      readOnly
-                    />
-                  </ViewerScheduleMemoItemInput>
-                )}
-              </div>
-            </ViewerScheduleMemoItemContents>
+            {(isEdit || endDate) && (
+              <ViewerScheduleMemoItemContents>
+                <ViewerScheduleMemoItemTitle>종료</ViewerScheduleMemoItemTitle>
+                <div ref={endDateCalendarRef}>
+                  {isEdit && isOpenEndDateCalendar ? (
+                    <CalendarView date={endDate} setDate={setEndDate} />
+                  ) : (
+                    <ViewerScheduleMemoItemInput onClick={handleClickEndDate}>
+                      <input
+                        placeholder={toDateString(endDatePlaceHolder)}
+                        value={endDate ? toDateString(endDate) : ''}
+                        onChange={handleTitleChange}
+                        readOnly
+                      />
+                    </ViewerScheduleMemoItemInput>
+                  )}
+                </div>
+              </ViewerScheduleMemoItemContents>
+            )}
           </ViewerScheduleMemoItemContainer>
           <JuggerButton color="primary" size="medium" disabled={!(title && startDate)} onClick={handleClickSend}>
-            추가
+            {!isEdit ? '수정' : '수정 완료'}
           </JuggerButton>
         </ViewerScheduleMemoContainer>
       </MemoViewerContents>
@@ -171,4 +177,4 @@ const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
   );
 };
 
-export default AddScheduleMemo;
+export default DetailScheduleMemo;

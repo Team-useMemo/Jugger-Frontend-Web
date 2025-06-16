@@ -1,4 +1,4 @@
-import { getModalIsOpen, modalState, setModalClose } from '@stores/modules/modal';
+import { getModalIsOpen, getModalValue, modalState, setModalClose } from '@stores/modules/modal';
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './useRedux';
@@ -18,6 +18,7 @@ const useParamModal = (
   const dispatch = useAppDispatch();
   const modalSelector = useAppSelector(modalState);
   const modalIsOpen = getModalIsOpen(modalSelector, modalName);
+  const modalValue = getModalValue(modalSelector, modalName);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -47,13 +48,13 @@ const useParamModal = (
     };
   }, []);
 
-  const Modal = ({ props }: { props?: any }) => {
+  const Modal = () => {
     if (!searchParams.has(modalName)) return null;
 
     return (
       <ModalLayout>
         <div ref={modalRef}>
-          <ModalComponent closeModal={closeModal} props={props} />
+          <ModalComponent closeModal={closeModal} props={modalValue} />
         </div>
       </ModalLayout>
     );

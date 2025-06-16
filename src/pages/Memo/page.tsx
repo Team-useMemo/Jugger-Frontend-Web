@@ -1,24 +1,20 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import {
-  useGetMemosQuery,
-  usePostCalendarMutation,
-  usePostMemoMutation,
-  useUploadFileMutation,
-} from '@stores/modules/memo';
+import { useGetCalendarQuery, useGetMemosQuery, useGetPhotosQuery, usePostMemoMutation } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { MemoResponseProp } from '@ts/Memo.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
-import useModal from '@hooks/useModal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import MemoComponent from '@components/Memo/Memo';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import AddImageMemo from '@components/Modal/MemoViewer/Image/AddImageMemo';
-import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
+import DetailImageMemo from '@components/Modal/MemoViewer/Image/DetailImageMemo';
 import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
+import DetailScheduleMemo from '@components/Modal/MemoViewer/Schedule/DetailScheduleMemo';
+import DetailTextMemo from '@components/Modal/MemoViewer/Text/DetailTextMemo';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
@@ -35,10 +31,10 @@ import {
   MemoPageContainer,
 } from './MemoPage.Style';
 
-const MemoList = ({ currentCategory }: { currentCategory: string }) => {
+const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery(
+  const { data: textMemos = [] } = useGetMemosQuery(
     { page: 0, size: 20 },
     {
       selectFromResult: ({ data }) => ({
@@ -46,6 +42,44 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
       }),
     },
   );
+
+  const { data: scheduleMemos = [] } = useGetCalendarQuery(
+    { start: '2025-01-01T11:24:37.506Z', end: '2025-12-31T11:24:37.506Z' },
+    {
+      selectFromResult: ({ data }) => ({
+        data: ((currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data) ?? []).map(
+          (e) => ({
+            id: 1,
+            type: 'schedule',
+            categoryId: e.categoryId,
+            content: {
+              title: e.title,
+              startDate: new Date(e.startDateTime),
+              endDate: new Date(e.endDateTime),
+            },
+            date: new Date(e.startDateTime),
+          }),
+        ) as MemoResponseProp[],
+      }),
+    },
+  );
+
+  const { data: imageMemos = [] } = useGetPhotosQuery(
+    { category_uuid: currentCategory },
+    {
+      selectFromResult: ({ data }) => ({
+        data: (data ?? []).map((e) => ({
+          id: 1,
+          type: 'image',
+          categoryId: currentCategory,
+          content: e.url,
+          date: new Date(e.timestamp),
+        })) as MemoResponseProp[],
+      }),
+    },
+  );
+
+  const memos = [...textMemos, ...scheduleMemos, ...imageMemos].sort((a, b) => b.date.getTime() - a.date.getTime());
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
@@ -72,7 +106,7 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
       })}
     </MemoListContainer>
   );
-};
+});
 
 const MemoBottom = ({ category }: { category: string | null }) => {
   const [newMemo, setNewMemo] = useState('');
@@ -159,11 +193,17 @@ const MemoPage = () => {
 
   const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
   const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
+  const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, DetailTextMemo);
+  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, DetailImageMemo);
+  const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, DetailScheduleMemo);
 
   return (
     <MemoPageContainer>
       <AddScheduleMemoModal />
       <AddImageMemoModal />
+      <DetailTextMemoModal />
+      <DetailImageMemoModal />
+      <DetailScheduleMemoModal />
       <MemoList currentCategory={currentCategory || ''} />
       <MemoBottom category={currentCategory} />
     </MemoPageContainer>

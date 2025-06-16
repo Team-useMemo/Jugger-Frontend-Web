@@ -7,32 +7,7 @@ import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
 import { theme } from '@styles/theme';
 import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
-
-const MemoViewerContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '32px 0',
-  background: theme.color.background.normal,
-  borderRadius: theme.radius[16],
-  width: '460px',
-
-  [':focus']: {
-    outline: 'none',
-  },
-});
-
-const MemoViewerContents = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '0 32px',
-});
-
-const MemoViewerTitle = styled.div({
-  ...theme.font.title3.bold,
-  color: theme.color.label.normal,
-  margin: '0',
-  textAlign: 'left',
-});
+import { MemoViewerContainer, MemoViewerContents, MemoViewerTitle } from '../MemoViewer.Style';
 
 const AddImageMemoContainer = styled.div({
   marginTop: '24px',

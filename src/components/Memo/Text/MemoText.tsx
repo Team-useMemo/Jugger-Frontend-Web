@@ -1,22 +1,12 @@
+import { setModalOpen } from '@stores/modules/modal';
 import { useEffect, useRef, useState } from 'react';
+import { ModalName } from '@utils/Modal';
+import { useAppDispatch } from '@hooks/useRedux';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
-import useModal from '@hooks/useModal';
-import MemoDetailText from '@components/Modal/MemoViewer/MemoDetail/MemoDetailText';
 import { MemoTextContainer, MemoTextContents, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 
-const MemoText = ({ categoryName, memoId, content }: { categoryName: any; memoId: number; content: string }) => {
+const MemoText = ({ memoId, content }: { categoryName: any; memoId: number; content: string }) => {
   const memoRef = useRef<HTMLParagraphElement>(null);
-  const [MemoDetailTextModal, openMemoDetailTextModal] = useModal(
-    `memoText_${memoId}`,
-    FullScreenGray,
-    MemoDetailText,
-    [],
-    {
-      categoryName: categoryName,
-      text: content,
-    },
-  );
   const [activeMore, setActiveMore] = useState(false);
 
   useEffect(() => {
@@ -29,22 +19,33 @@ const MemoText = ({ categoryName, memoId, content }: { categoryName: any; memoId
     }, 0);
   }, [content, memoId]);
 
+  const dispatch = useAppDispatch();
+
+  const openDetailTextMemoModal = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.detailTextMemo,
+        value: {
+          title: '',
+          text: content,
+        },
+      }),
+    );
+  };
+
   return (
-    <>
-      <MemoDetailTextModal />
-      <MemoTextContainer>
-        <MemoTextContents ref={memoRef}>{content}</MemoTextContents>
-        {activeMore && (
-          <>
-            <MemoTextMoreDivideLine />
-            <MemoTextMoreButton onClick={() => openMemoDetailTextModal()}>
-              전체 보기
-              <RightArrowSVG fill="white" />
-            </MemoTextMoreButton>
-          </>
-        )}
-      </MemoTextContainer>
-    </>
+    <MemoTextContainer>
+      <MemoTextContents ref={memoRef}>{content}</MemoTextContents>
+      {activeMore && (
+        <>
+          <MemoTextMoreDivideLine />
+          <MemoTextMoreButton onClick={openDetailTextMemoModal}>
+            전체 보기
+            <RightArrowSVG fill="white" />
+          </MemoTextMoreButton>
+        </>
+      )}
+    </MemoTextContainer>
   );
 };
 

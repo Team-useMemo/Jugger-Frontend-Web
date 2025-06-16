@@ -11,7 +11,6 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 1000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoResponseProp[] => {
-        console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any, index: number) => {
@@ -87,9 +86,6 @@ export const memoApi = createApi({
         url: `/api/v1/calendar?start=${start}&end=${end}`,
         method: 'GET',
       }),
-      transformResponse: (response: any): any => {
-        console.log(response);
-      },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
     uploadFile: builder.mutation<void, { file: File; category_uuid: string }>({

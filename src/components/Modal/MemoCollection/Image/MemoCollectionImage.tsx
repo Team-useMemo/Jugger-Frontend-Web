@@ -1,20 +1,23 @@
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage';
-import useModal from '@hooks/useModal';
+import { useGetPhotosQuery } from '@stores/modules/memo';
 import { formatDate } from '@utils/Date';
+import { useContextMenu } from '@hooks/useContextMenu';
+// import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage';
+import useModal from '@hooks/useModal';
+import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import {
   MemoColectionImageItemContainer,
   MemoCollectionImageListContainer,
   MemoCollectionImageListContents,
   MemoCollectionImageListTitle,
 } from './MemoCollectionImage.Style';
-import { useGetPhotosQuery } from '@stores/modules/memo';
-import { useContextMenu } from '@hooks/useContextMenu';
 
-
-const MemoCollectionImageItem = ({ image, handleClickImage, }: { image: string; handleClickImage: (image: string) => void; }) => {
-
-
+const MemoCollectionImageItem = ({
+  image,
+  handleClickImage,
+}: {
+  image: string;
+  handleClickImage: (image: string) => void;
+}) => {
   const handleCopy = () => {
     // TODO: 카테고리 설정 모달 열기
   };
@@ -83,35 +86,33 @@ const MemoCollectionImageList = ({
 };
 
 const MemoCollectionImage = ({ categoryId }: { categoryId: string }) => {
-  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal('image', FullScreenGray, MemoDetailImage, [],);
+  // const [MemoDetailImageModal, openMemoDetailImageModal] = useModal('image', FullScreenGray, MemoDetailImage, [],);
   const { data: imageLists = [] } = useGetPhotosQuery({ category_uuid: categoryId });
 
-  const images =
-    Object.entries(
-      imageLists.reduce((acc: any, e) => {
-        const dateStr = new Date(e.timestamp).toDateString();
-        return {
-          ...acc.url,
-          [dateStr]: acc[dateStr] ? [...acc[dateStr], e] : [e],
-        };
-      }, {}),
-    ).sort(([aKey], [bKey]) => new Date(bKey).getTime() - new Date(aKey).getTime());
-
+  const images = Object.entries(
+    imageLists.reduce((acc: any, e) => {
+      const dateStr = new Date(e.timestamp).toDateString();
+      return {
+        ...acc.url,
+        [dateStr]: acc[dateStr] ? [...acc[dateStr], e] : [e],
+      };
+    }, {}),
+  ).sort(([aKey], [bKey]) => new Date(bKey).getTime() - new Date(aKey).getTime());
 
   const handleClickImage = (url: string) => {
-    openMemoDetailImageModal({ url });
+    // openMemoDetailImageModal({ url });
   };
   return (
     <>
-      <MemoDetailImageModal />
-      {images.map(([key, value]: [string, any]) =>
+      {/* <MemoDetailImageModal /> */}
+      {images.map(([key, value]: [string, any]) => (
         <MemoCollectionImageList
           key={`Image_${key}`}
           dateStr={key}
           images={value}
           handleClickImage={handleClickImage}
         />
-      )}
+      ))}
     </>
   );
 };

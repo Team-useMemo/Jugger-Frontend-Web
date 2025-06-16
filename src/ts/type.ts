@@ -1,1 +1,1 @@
-export type userMemoType = 'text' | 'schedule' | 'link' | 'photo';
+export type userMemoType = 'text' | 'schedule' | 'link' | 'image';
