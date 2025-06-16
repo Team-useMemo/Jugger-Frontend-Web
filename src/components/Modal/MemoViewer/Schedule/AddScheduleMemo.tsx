@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
+import { usePostCalendarMutation } from '@stores/modules/memo';
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
@@ -18,6 +20,8 @@ const AddScheduleMemoContainer = styled.div({
   boxSizing: 'border-box',
   textAlign: 'left',
   borderRadius: theme.radius[16],
+
+  ['>svg']: { cursor: 'pointer' },
 });
 
 const AddScheduleMemoContents = styled.div({
@@ -102,6 +106,31 @@ const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
 
   const startDateCalendarRef = useRef<HTMLDivElement>(null);
   const endDateCalendarRef = useRef<HTMLDivElement>(null);
+
+  const [postCalendar] = usePostCalendarMutation();
+
+  const [searchParams] = useSearchParams();
+
+  const currentCategory = searchParams.get('category');
+
+  const handleClickSend = () => {
+    if (!startDate) return;
+
+    (async () => {
+      try {
+        await postCalendar({
+          name: title,
+          startTime: startDate.toISOString(),
+          endTime: endDate?.toISOString(),
+          categoryId: currentCategory || '',
+        }).unwrap();
+
+        closeModal();
+      } catch (error) {
+        console.error('메모 전송 실패:', error);
+      }
+    })();
+  };
 
   const startDatePlaceHolder = (() => {
     const date = new Date();
@@ -214,7 +243,7 @@ const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
             </div>
           </AddScheduleMemoItemContents>
         </AddScheduleMemoItemContainer>
-        <JuggerButton color="primary" size="medium" disabled={!(title && startDate)}>
+        <JuggerButton color="primary" size="medium" disabled={!(title && startDate)} onClick={handleClickSend}>
           추가
         </JuggerButton>
       </AddScheduleMemoContents>

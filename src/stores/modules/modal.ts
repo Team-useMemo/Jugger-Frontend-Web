@@ -22,7 +22,7 @@ export const ModalSlice = createSlice({
         },
       };
     },
-    setModalOpen: (state, action: PayloadAction<{ name: string; value: any }>) => {
+    setModalOpen: (state, action: PayloadAction<{ name: string; value?: any }>) => {
       state.value = {
         ...state.value,
         [action.payload.name]: {

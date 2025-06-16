@@ -1,5 +1,7 @@
+import { getModalIsOpen, modalState, setModalClose } from '@stores/modules/modal';
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from './useRedux';
 
 export type ModalComponentProps = {
   closeModal: () => void;
@@ -10,20 +12,27 @@ const useParamModal = (
   modalName: string,
   ModalLayout: ({ children }: { children: React.ReactNode }) => React.ReactNode,
   ModalComponent: (props: ModalComponentProps) => React.ReactNode,
-): [() => void, ({ props }: { props: any }) => React.ReactNode] => {
+): [({ props }: { props?: any }) => React.ReactNode] => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const modalRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+  const modalSelector = useAppSelector(modalState);
+  const modalIsOpen = getModalIsOpen(modalSelector, modalName);
 
-  const openModal = () => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set(modalName, 'open');
-    setSearchParams(newParams);
-  };
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const closeModal = () => {
     navigate(-1);
+    dispatch(setModalClose(modalName));
   };
+
+  useEffect(() => {
+    if (modalIsOpen) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set(modalName, 'open');
+      setSearchParams(newParams);
+    }
+  }, [modalIsOpen]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -38,7 +47,7 @@ const useParamModal = (
     };
   }, []);
 
-  const Modal = ({ props }: { props: any }) => {
+  const Modal = ({ props }: { props?: any }) => {
     if (!searchParams.has(modalName)) return null;
 
     return (
@@ -50,7 +59,7 @@ const useParamModal = (
     );
   };
 
-  return [openModal, Modal];
+  return [Modal];
 };
 
 export default useParamModal;
