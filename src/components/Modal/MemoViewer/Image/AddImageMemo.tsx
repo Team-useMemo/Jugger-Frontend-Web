@@ -1,89 +1,19 @@
-import styled from '@emotion/styled';
 import { useUploadFileMutation } from '@stores/modules/memo';
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import dataURLtoFile from '@utils/dataURLtoFile';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
-import { theme } from '@styles/theme';
 import AddPhotoPNG from '@assets/icons/tmp_add_photo.png';
 import { MemoViewerContainer, MemoViewerContents, MemoViewerTitle } from '../MemoViewer.Style';
-
-const AddImageMemoContainer = styled.div({
-  marginTop: '24px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '16px',
-});
-
-const AddImageMemoImageContainer = styled.div({
-  background: theme.color.material.dimmer,
-  borderRadius: theme.radius[8],
-  display: 'flex',
-  overflow: 'hidden',
-});
-
-const AddImageMemoEmpty = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: theme.color.label.inverse,
-  height: '280px',
-  width: '100%',
-  gap: '12px',
-});
-
-const AddImageMemoImage = styled.img({
-  width: '100%',
-  maxHeight: '480px',
-  objectFit: 'contain',
-});
-
-const AddImageMemoDescContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-  textAlign: 'left',
-  ...theme.font.body1normal.semibold,
-  color: theme.color.text.onView,
-
-  ['>input']: {
-    background: 'transparent',
-    border: 'none',
-    borderBottom: `1px solid ${theme.color.line.neutral}`,
-    padding: '8px 0',
-
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-
-    [':focus']: {
-      outline: 'none',
-    },
-
-    ['::placeholder']: {
-      color: theme.color.label.alternative,
-    },
-  },
-
-  ['>p']: {
-    ...theme.font.caption1.regular,
-    color: theme.color.label.alternative,
-
-    margin: '0',
-    textAlign: 'right',
-  },
-});
-
-const AddImageMemoButtonContainer = styled.div({
-  display: 'flex',
-  gap: '12px',
-  width: '100%',
-
-  ['>button']: {
-    width: '100%',
-  },
-});
+import {
+  AddImageMemoButtonContainer,
+  AddImageMemoContainer,
+  AddImageMemoDescContainer,
+  AddImageMemoEmpty,
+  AddImageMemoImage,
+  AddImageMemoImageContainer,
+} from './ViewerImageMemo.Style';
 
 const AddImageMemo = ({ closeModal }: ModalComponentProps) => {
   const MAX_LENGTH = 50;

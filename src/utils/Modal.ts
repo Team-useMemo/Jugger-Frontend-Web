@@ -4,4 +4,6 @@ export const ModalName = {
   detailTextMemo: 'detailTextMemo',
   detailImageMemo: 'detailImageMemo',
   detailScheduleMemo: 'detailScheduleMemo',
+  memoCollection: 'memoCollection',
+  detailImageMemoCollection: 'detailImageMemoCollection',
 };

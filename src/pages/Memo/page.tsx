@@ -10,6 +10,7 @@ import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import MemoComponent from '@components/Memo/Memo';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
+import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
 import AddImageMemo from '@components/Modal/MemoViewer/Image/AddImageMemo';
 import DetailImageMemo from '@components/Modal/MemoViewer/Image/DetailImageMemo';
 import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
@@ -108,7 +109,9 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
   );
 });
 
-const MemoBottom = ({ category }: { category: string | null }) => {
+const MemoBottom = () => {
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category');
   const [newMemo, setNewMemo] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useAppDispatch();
@@ -144,7 +147,7 @@ const MemoBottom = ({ category }: { category: string | null }) => {
     (async () => {
       try {
         await postMemo({
-          categoryUuid: category || '',
+          categoryUuid: currentCategory || '',
           text: newMemo,
         }).unwrap();
       } catch (error) {
@@ -187,10 +190,18 @@ const MemoBottom = ({ category }: { category: string | null }) => {
   );
 };
 
+const MemoCollectionModalTmp = React.memo(({ text }) => {
+  console.log(12333114515555);
+  const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
+
+  return <div>{text}</div>;
+});
+
 const MemoPage = () => {
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get('category');
 
+  const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
   const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
   const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
   const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, DetailTextMemo);
@@ -199,13 +210,14 @@ const MemoPage = () => {
 
   return (
     <MemoPageContainer>
+      <MemoCollectionModal />
       <AddScheduleMemoModal />
       <AddImageMemoModal />
       <DetailTextMemoModal />
       <DetailImageMemoModal />
       <DetailScheduleMemoModal />
       <MemoList currentCategory={currentCategory || ''} />
-      <MemoBottom category={currentCategory} />
+      <MemoBottom />
     </MemoPageContainer>
   );
 };

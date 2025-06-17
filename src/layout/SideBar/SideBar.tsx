@@ -1,10 +1,12 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
+import { setModalOpen } from '@stores/modules/modal';
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { ModalName } from '@utils/Modal';
 import useModal from '@hooks/useModal';
+import { useAppDispatch } from '@hooks/useRedux';
 import AddCategory from '@components/Modal/AddCategory';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
 import SideMenu from '@components/SideBar/SideMenu/SideMenu';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import LogoPNG from '@assets/Logo.png';
@@ -33,36 +35,28 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     skip: !isLoggedIn,
   });
 
+  const dispatch = useAppDispatch();
+
   const [AddCategoryModal, openAddCategoryModal] = useModal(
     'addCategory',
     FullScreenGray,
     ({ closeModal }) => <AddCategory closeModal={closeModal} />,
     [],
   );
-  const [MemoCollectionModal, openMemoCollectionModal] = useModal('memoCollection', FullScreenGray, MemoCollection, []);
+
   const onWholeMemoClick = () => {
     setSearchParams({});
   };
 
-  const onCalendarClick = () => {
-    openMemoCollectionModal({
-      categoryId: category,
-      contentsType: 'Calendar',
-    });
-  };
-
-  const onImageClick = () => {
-    openMemoCollectionModal({
-      categoryId: category,
-      contentsType: 'Image',
-    });
-  };
-
-  const onLinkClick = () => {
-    openMemoCollectionModal({
-      categoryId: category,
-      contentsType: 'Link',
-    });
+  const onMemoCollectionClick = (type: 'schedule' | 'image' | 'link') => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.memoCollection,
+        value: {
+          type: type,
+        },
+      }),
+    );
   };
 
   const onSettingClick = () => {
@@ -95,16 +89,15 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   return (
     <StyledSideBar active={toggleMenu} ref={modalRef}>
       <AddCategoryModal />
-      <MemoCollectionModal />
       <SideBarContainer>
         <SideBarHeader>
           <LogoImage src={LogoPNG} onClick={handleLogoClick} />
         </SideBarHeader>
         <SideBarContents>
           <SideMenu title="전체 메모" icon={CategorySVG} onClick={onWholeMemoClick} />
-          <SideMenu title="캘린더" icon={CalendarSVG} onClick={onCalendarClick} />
-          <SideMenu title="사진" icon={ImageSVG} onClick={onImageClick} />
-          <SideMenu title="링크" icon={LinkSVG} onClick={onLinkClick} />
+          <SideMenu title="캘린더" icon={CalendarSVG} onClick={() => onMemoCollectionClick('schedule')} />
+          <SideMenu title="사진" icon={ImageSVG} onClick={() => onMemoCollectionClick('image')} />
+          <SideMenu title="링크" icon={LinkSVG} onClick={() => onMemoCollectionClick('link')} />
           <SideMenu title="설정" icon={SettingSVG} onClick={onSettingClick} />
           <AddCategoryButton onClick={onAddCategoryClick}>+ 새 카테고리 추가</AddCategoryButton>
 

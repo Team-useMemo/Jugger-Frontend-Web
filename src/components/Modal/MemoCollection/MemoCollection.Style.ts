@@ -1,107 +1,137 @@
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
-export const MemoCollectionContainer = styled.div({
+const MemoCollectionContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
+  background: theme.color.background.normal,
   width: '820px',
   height: '840px',
-  background: theme.color.background.normal,
   borderRadius: theme.radius[16],
-  zIndex: 1000,
 });
 
-export const MemoCollectionHeader = styled.div({
+const MemoCollectionHeader = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  padding: '32px 0 20px',
+  alignItems: 'end',
+  padding: '32px 32px 20px',
+  borderBottom: `1px solid ${theme.color.line.normal}`,
+
+  ['>svg']: {
+    cursor: 'pointer',
+  },
 });
 
-export const MemoCollectionTitle = styled.div({
+const MemoCollectionHeaderContents = styled.div({
   display: 'flex',
-  padding: '0 32px',
+  width: '100%',
   gap: '16px',
 });
 
-export const MemoCollectionTitleItem = styled.div(
-  ({ isFocus }: { isFocus: boolean }) => ({
-    ...theme.font.title3[isFocus ? 'bold' : 'regular'],
-    color: theme.color.label[isFocus ? 'normal' : 'assistive'],
-  }),
+const MemoCollectionHeaderItem = styled.p(
+  ({ isFocused }: { isFocused?: boolean }) =>
+    isFocused
+      ? {
+          ...theme.font.title3.bold,
+          color: theme.color.label.normal,
+        }
+      : {
+          ...theme.font.title3.regular,
+          color: theme.color.label.assistive,
+        },
   {
-    cursor: 'pointer',
     margin: '0',
+    cursor: 'pointer',
   },
 );
 
-export const MemoCollectionContents = styled.div({
+const MemoCollectionContents = styled.div({
   display: 'flex',
-  borderTop: `1px solid ${theme.color.line.normal}`,
   height: '100%',
   overflow: 'hidden',
 });
 
-export const MemoCollectionCategories = styled.div({
-  display: 'flex',
-  overflow: 'auto',
-  flexDirection: 'column',
-  width: '192px',
+const MemoCollectionSideBar = styled.div({
+  width: '180px',
   background: theme.color.background.alternative,
-  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'auto',
 });
 
-export const MemoCollectionCategoryItem = styled.div(
-  ({ isFocus, color }: { isFocus: boolean; color: string }) => ({
-    background: theme.color.fill[isFocus ? 'strong' : 'alternative'],
-    ['span']: {
+const MemoCollectionSideBarItemContainer = styled.div(
+  ({ isFocused, color }: { isFocused: boolean; color: string }) => ({
+    background: isFocused ? theme.color.fill.strong : '',
+    ['>span']: {
       background: color,
     },
   }),
   {
     display: 'flex',
     gap: '8px',
-    padding: '16px 24px',
     alignItems: 'center',
-    cursor: 'pointer',
-
+    padding: '16px 24px',
     ...theme.font.body2normal.semibold,
     color: theme.color.label.normal,
+    cursor: 'pointer',
 
-    ['span']: {
+    ['>span']: {
+      display: 'block',
       width: '8px',
-      height: '8px',
-      borderRadius: '4px',
+      aspectRatio: '1 / 1',
+      height: 'auto',
+      borderRadius: theme.radius.full,
     },
   },
 );
 
-export const MemoCollectionBodyContainer = styled.div({
-  padding: '32px 24px',
-  flexGrow: '1',
-  overflow: 'auto',
-  ['::-webkit-scrollbar']: {
-    display: 'none',
-  },
-});
-
-export const MemoCollectionBodyTitle = styled.div({
-  ...theme.font.headline1.semibold,
-  color: theme.color.label.normal,
-  paddingBottom: '20px',
-  margin: '0',
-  display: 'flex',
-  gap: '6',
-  alignItems: 'center',
-
-  ['svg']: {
-    stroke: theme.color.label.alternative,
-    width: '20px',
-    height: '20px',
-  },
-});
-
-export const MemoCollectionBodyContents = styled.div({
+const MemoCollectionBodyContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  gap: '32px',
+  padding: '32px',
+  flexGrow: '1',
+  overflow: 'auto',
+
+  ['::-webkit-scrollbar']: {
+    opacity: '0',
+    background: '#FFFFFF11',
+    width: '12px',
+    borderLeft: '1px solid #E8E8E8',
+  },
+
+  ['::-webkit-scrollbar-thumb']: {
+    background: '#7A7A7A',
+    borderRadius: '100px',
+    backgroundClip: 'padding-box',
+    border: '3px solid transparent',
+
+    [':hover']: {
+      background: '#AAAAAA',
+      backgroundClip: 'padding-box',
+    },
+  },
 });
+
+const MemoCollectionBodyTitle = styled.div({
+  display: 'flex',
+  gap: '6px',
+  alignItems: 'center',
+  ...theme.font.headline1.semibold,
+  color: theme.color.label.normal,
+  padding: '8px 0 20px',
+  ['>svg']: {
+    stroke: theme.color.label.alternative,
+  },
+});
+
+export {
+  MemoCollectionContainer,
+  MemoCollectionContents,
+  MemoCollectionHeader,
+  MemoCollectionHeaderContents,
+  MemoCollectionHeaderItem,
+  MemoCollectionSideBar,
+  MemoCollectionSideBarItemContainer,
+  MemoCollectionBodyContainer,
+  MemoCollectionBodyTitle,
+};

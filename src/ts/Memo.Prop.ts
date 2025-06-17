@@ -13,6 +13,7 @@ export interface MemoResponseProp {
   date: Date;
   categoryId: string | null;
 }
+
 export interface CalendarResponseProp {
   startDateTime: string;
   endDateTime: string;

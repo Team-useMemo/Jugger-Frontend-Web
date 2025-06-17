@@ -1,5 +1,5 @@
 import { getModalIsOpen, getModalValue, modalState, setModalClose } from '@stores/modules/modal';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './useRedux';
 
@@ -22,18 +22,23 @@ const useParamModal = (
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const closeModal = () => {
-    navigate(-1);
-    dispatch(setModalClose(modalName));
-  };
-
   useEffect(() => {
     if (modalIsOpen) {
+      if (searchParams.has(modalName)) return;
       const newParams = new URLSearchParams(searchParams);
       newParams.set(modalName, 'open');
       setSearchParams(newParams);
     }
   }, [modalIsOpen]);
+
+  const closeModal = useCallback(() => {
+    const currentParams = new URLSearchParams(window.location.search);
+    if (modalName != Array.from(currentParams.entries()).at(-1)?.[0]) return;
+    navigate(-1);
+    dispatch(setModalClose(modalName));
+  }, []);
+
+  const modalProps = useMemo(() => modalValue, [modalValue]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -48,17 +53,18 @@ const useParamModal = (
     };
   }, []);
 
-  const Modal = () => {
-    if (!searchParams.has(modalName)) return null;
+  const Modal = useCallback(() => {
+    const currentParams = new URLSearchParams(window.location.search);
+    if (!currentParams.has(modalName)) return null;
 
     return (
       <ModalLayout>
         <div ref={modalRef}>
-          <ModalComponent closeModal={closeModal} props={modalValue} />
+          <ModalComponent closeModal={closeModal} props={modalProps} />
         </div>
       </ModalLayout>
     );
-  };
+  }, [closeModal, modalProps]);
 
   return [Modal];
 };

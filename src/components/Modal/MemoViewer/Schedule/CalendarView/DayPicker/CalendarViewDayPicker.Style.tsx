@@ -10,7 +10,8 @@ const CalendarViewDayPickerContainer = styled.div({
 const CalendarViewDayPickerGrid = styled.div({
   display: 'grid',
   gridTemplateColumns: 'repeat(7, 1fr)',
-  columnGap: '8px',
+  columnGap: '12px',
+  rowGap: '4px',
 });
 
 const CalendarViewDayPickerDayItem = styled.p({
@@ -24,7 +25,7 @@ const CalendarViewDayPickerDateItem = styled.p(
   ({ color, selected, today }: { color: keyof typeof theme.color.label; selected: boolean; today: boolean }) => ({
     color: theme.color.label[color],
     background: selected ? theme.color.primary.normal : '',
-    border: `2px solid ${today ? theme.color.primary.normal : 'transparent'}`,
+    border: today ? `2px dotted ${theme.color.primary.normal}` : '',
   }),
   {
     ...theme.font.body1normal.medium,
