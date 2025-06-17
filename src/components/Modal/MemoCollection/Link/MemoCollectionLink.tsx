@@ -1,4 +1,8 @@
+import { useGetCategoriesQuery } from '@stores/modules/category';
+import { useGetLinksQuery } from '@stores/modules/memo';
 import { useEffect, useState } from 'react';
+import { useContextMenu } from '@hooks/useContextMenu';
+import { OgData, fetchUrlPreview } from '@hooks/useOgData';
 import {
   MemoCollectionLinkContainer,
   MemoCollectionLinkContents,
@@ -7,11 +11,6 @@ import {
   MemoCollectionLinkItemContents,
   MemoCollectionLinkItemThumbnailContainer,
 } from './MemoCollectionLink.Style';
-import { fetchUrlPreview, OgData } from '@utils/ogData';
-import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetLinksQuery } from '@stores/modules/memo';
-import { useContextMenu } from '@hooks/useContextMenu';
-
 
 const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
   const [ogData, setOgData] = useState<OgData | null>(null);
@@ -70,8 +69,7 @@ const MemoCollectionLinkItem = ({ content, category }: { content: any; category?
   return (
     <>
       <ContextMenu />
-      <MemoCollectionLinkItemContainer onClick={handleLinkClick}
-        {...BindContextMenuHandlers}>
+      <MemoCollectionLinkItemContainer onClick={handleLinkClick} {...BindContextMenuHandlers}>
         <MemoCollectionLinkItemThumbnailContainer>
           {_category && (
             <MemoCollectionLinkItemCategory color={_category.color}>

@@ -62,6 +62,8 @@ export const formatDate = (date: Date, format: string) => {
     APh: (~~_hour % 12).toString(),
     m: _minute,
     mm: _minute.padStart(2, '0'),
+    MW: CalendarMonths[date.getMonth()],
+    Mw: CalendarMonths[date.getMonth()].substring(0, 3),
   };
 
   return Object.entries(dateInfo).reduce((acc, [key, value]) => {

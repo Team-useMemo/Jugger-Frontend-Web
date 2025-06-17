@@ -81,11 +81,30 @@ export const memoApi = createApi({
         { type: 'Calendar', id: 'LIST' },
       ],
     }),
-    getCalendar: builder.query<CalendarResponseProp[], { start?: string; end?: string }>({
+    getCalendar: builder.query<MemoResponseProp[], { start?: string; end?: string }>({
       query: ({ start = '2025-01-01T00:00:00.007Z', end = '2025-12-31T00:00:00.007Z' }) => ({
         url: `/api/v1/calendar?start=${start}&end=${end}`,
         method: 'GET',
       }),
+      transformResponse: (response: CalendarResponseProp[]): MemoResponseProp[] => {
+        return response
+          .map(
+            (e, i: number) =>
+              ({
+                id: i,
+                type: 'schedule',
+                content: {
+                  title: e.title,
+                  startDate: new Date(e.startDateTime),
+                  endDate: e.endDateTime ? new Date(e.endDateTime) : null,
+                },
+                categoryId: e.categoryId,
+                categoryColor: e.categoryColor,
+                date: new Date(e.startDateTime),
+              }) as MemoResponseProp,
+          )
+          .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
+      },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
     uploadFile: builder.mutation<void, { file: File; category_uuid: string }>({
@@ -113,12 +132,22 @@ export const memoApi = createApi({
       }),
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    getLinks: builder.query<LinkResponseProp[], { categoryId: string }>({
+    getLinks: builder.query<MemoResponseProp[], { categoryId: string }>({
       query: ({ categoryId }) => ({
         url: `/api/v1/links?categoryId=${categoryId}`,
         method: 'GET',
       }),
-      transformResponse: (response: any): LinkResponseProp[] => response[0].linkData,
+      transformResponse: (response: any): MemoResponseProp[] => {
+        if (!response?.[0]) return [];
+        const { linkData } = response[0];
+        return linkData.map((e: LinkResponseProp, i: number) => ({
+          id: i,
+          type: 'link',
+          content: e.link,
+          categoryId: response[0].categoryUuid,
+          date: new Date(new Date().getTime() + i),
+        }));
+      },
       providesTags: (result) => (result ? [{ type: 'Link', id: 'LIST' }] : []),
     }),
   }),

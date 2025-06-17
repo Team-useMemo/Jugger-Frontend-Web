@@ -48,19 +48,7 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
     { start: '2025-01-01T11:24:37.506Z', end: '2025-12-31T11:24:37.506Z' },
     {
       selectFromResult: ({ data }) => ({
-        data: ((currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data) ?? []).map(
-          (e) => ({
-            id: 1,
-            type: 'schedule',
-            categoryId: e.categoryId,
-            content: {
-              title: e.title,
-              startDate: new Date(e.startDateTime),
-              endDate: new Date(e.endDateTime),
-            },
-            date: new Date(e.startDateTime),
-          }),
-        ) as MemoResponseProp[],
+        data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
       }),
     },
   );
@@ -189,13 +177,6 @@ const MemoBottom = () => {
     </MemoBottomContainer>
   );
 };
-
-const MemoCollectionModalTmp = React.memo(({ text }) => {
-  console.log(12333114515555);
-  const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
-
-  return <div>{text}</div>;
-});
 
 const MemoPage = () => {
   const [searchParams] = useSearchParams();

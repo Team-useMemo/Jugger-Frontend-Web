@@ -1,17 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useOgData } from '@hooks/useOgData';
 import { MemoLinkContainer, MemoLinkDefaultText, MemoLinkImage, MemoLinkTextContainer } from './MemoLink.Style';
-import { fetchUrlPreview, OgData } from '@utils/ogData';
 
 const MemoLink = ({ content }: { content: string }) => {
-  const [ogData, setOgData] = useState<OgData | null>(null);
-
-  useEffect(() => {
-    const fetchAndUpdate = async () => {
-      setOgData(await fetchUrlPreview(content));
-    };
-
-    fetchAndUpdate();
-  }, [content]);
+  const ogData = useOgData(content);
 
   if (!ogData) return <MemoLinkDefaultText>{content}</MemoLinkDefaultText>;
 

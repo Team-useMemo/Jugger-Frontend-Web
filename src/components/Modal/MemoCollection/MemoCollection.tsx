@@ -1,20 +1,25 @@
 import styled from '@emotion/styled';
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetPhotosQuery } from '@stores/modules/memo';
+import { useGetLinksQuery, useGetPhotosQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
+import { useOgData } from '@hooks/useOgData';
 import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { theme } from '@styles/theme';
+import LoadingGIF from '@assets/Loading.gif';
 import CloseSVG from '@assets/icons/close.svg?react';
+import MoreSVG from '@assets/icons/more.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import ModalLayoutGray from '../Layout/ModalLayoutGray';
 import DetailImageMemo from '../MemoViewer/Image/DetailImageMemo';
+import DetailScheduleMemo from '../MemoViewer/Schedule/DetailScheduleMemo';
 import {
   MemoCollectionBodyContainer,
+  MemoCollectionBodyLayout,
   MemoCollectionBodyTitle,
   MemoCollectionContainer,
   MemoCollectionContents,
@@ -24,6 +29,7 @@ import {
   MemoCollectionSideBar,
   MemoCollectionSideBarItemContainer,
 } from './MemoCollection.Style';
+import MemoCollectionSchedule from './Schedule/MemoCollectionSchedule';
 
 const MemoCollectionImageContainer = styled.div({
   display: 'flex',
@@ -58,7 +64,7 @@ const MemoCollectionImageListContents = styled.div({
 
   boxShadow: theme.shadow.emphasize,
   borderRadius: theme.radius[12],
-  borderTopLeftRadius: '',
+  borderTopLeftRadius: '0',
   background: theme.color.background.normal,
 });
 
@@ -117,6 +123,180 @@ const MemoCollectionImage = ({ category }: { category: string }) => {
   );
 };
 
+const MemoCollectionLinkContainer = styled.div({
+  display: 'grid',
+  gridAutoFlow: 'row',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  columnGap: '12px',
+  rowGap: '24px',
+});
+
+const MemoCollectionLinkItemContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: theme.radius[12],
+  padding: '12px',
+  boxShadow: theme.shadow.emphasize,
+  gap: '12px',
+});
+
+const MemoCollectionLinkItemImageContainer = styled.div({
+  aspectRatio: '4 / 3',
+  borderRadius: theme.radius[6],
+  overflow: 'hidden',
+  position: 'relative',
+  cursor: 'pointer',
+
+  ['>img']: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    objectFit: 'cover',
+  },
+
+  ['>svg']: {
+    position: 'absolute',
+    background: theme.color.material.dimmer,
+    borderRadius: theme.radius[4],
+    right: '0',
+    margin: '10px',
+    display: 'none',
+
+    [':hover']: {
+      background: theme.color.label.alternative,
+    },
+  },
+
+  [':hover']: {
+    ['>svg']: {
+      display: 'block',
+    },
+  },
+});
+
+const MemoCollectionLinkItemTextContainer = styled.div({
+  width: '100%',
+  overflow: 'hidden',
+
+  ['>p']: {
+    margin: '0',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+
+    ['&.title']: {
+      ...theme.font.caption1.semibold,
+      color: theme.color.label.neutral,
+    },
+    ['&.desc']: {
+      ...theme.font.caption2.medium,
+      color: theme.color.label.assistive,
+      margin: '2px 0px 4px',
+    },
+    ['&.url']: {
+      ...theme.font.caption2.medium,
+      color: theme.color.label.alternative,
+    },
+  },
+});
+
+const MemoCollectionLinkItemCategoryContainer = styled.div(
+  ({ color }: { color?: string }) => ({
+    ['>span']: {
+      background: color,
+    },
+
+    ['::before']: {
+      background: color,
+    },
+  }),
+  {
+    background: 'white',
+    padding: '6px 10px',
+    position: 'absolute',
+    margin: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    borderRadius: theme.radius[48],
+    overflow: 'hidden',
+    zIndex: '1',
+
+    ...theme.font.caption1.medium,
+    color: theme.color.label.normal,
+
+    ['>span']: {
+      width: '6px',
+      aspectRatio: '1 / 1',
+      borderRadius: theme.radius.full,
+    },
+
+    ['::before']: {
+      content: '""',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      opacity: '0.1',
+      left: 0,
+      zIndex: '-1',
+    },
+  },
+);
+
+const MemoCollectionLinkItem = ({ link, category }: any) => {
+  const { content } = link;
+  const ogData = useOgData(content);
+  const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
+
+  const handleClickLinkItemMore = (e: React.MouseEvent<HTMLOrSVGElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleClickLinkItem = () => {
+    window.open(content);
+  };
+
+  return (
+    <MemoCollectionLinkItemContainer>
+      <MemoCollectionLinkItemImageContainer onClick={handleClickLinkItem}>
+        <img src={ogImage || LoadingGIF} />
+        <MemoCollectionLinkItemCategoryContainer color={category.color}>
+          <span />
+          {category.name}
+        </MemoCollectionLinkItemCategoryContainer>
+        <MoreSVG onClick={handleClickLinkItemMore} />
+      </MemoCollectionLinkItemImageContainer>
+      <MemoCollectionLinkItemTextContainer>
+        <p className="title">{ogTitle}</p>
+        <p className="desc">{ogDescription}</p>
+        <p className="url">{ogUrl}</p>
+      </MemoCollectionLinkItemTextContainer>
+    </MemoCollectionLinkItemContainer>
+  );
+};
+
+const MemoCollectionLink = ({ category }: { category: string }) => {
+  const { data: linkList = [] } = useGetLinksQuery({ categoryId: category });
+  const { data: _categories = [] } = useGetCategoriesQuery();
+  const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
+  console.log(linkList);
+
+  return (
+    <MemoCollectionLinkContainer>
+      {linkList.map((e) => (
+        <MemoCollectionLinkItem
+          key={`LINK_COLLECTION_${category}_${e.content}`}
+          link={e}
+          category={categories.find((category) => category.uuid == e.categoryId)}
+        />
+      ))}
+    </MemoCollectionLinkContainer>
+  );
+};
+
 const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
   const [collectionType, setCollectionType] = useState(props.type);
 
@@ -133,10 +313,16 @@ const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
   };
 
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, DetailImageMemo);
+  const [DetailScheduleMemoModal] = useParamModal(
+    ModalName.detailScheduleMemoCollection,
+    ModalLayoutGray,
+    DetailScheduleMemo,
+  );
 
   return (
     <MemoCollectionContainer>
       <DetailImageMemoModal />
+      <DetailScheduleMemoModal />
       <MemoCollectionHeader>
         <CloseSVG onClick={closeModal} />
         <MemoCollectionHeaderContents>
@@ -168,111 +354,20 @@ const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
             </MemoCollectionSideBarItemContainer>
           ))}
         </MemoCollectionSideBar>
-        <MemoCollectionBodyContainer>
-          {selectedCategory && (
+        <MemoCollectionBodyLayout>
+          <MemoCollectionBodyContainer>
             <MemoCollectionBodyTitle>
               {categories.find((e) => e.uuid == selectedCategory)?.name}
               <RightArrowSVG />
             </MemoCollectionBodyTitle>
-          )}
-          {collectionType}
-          {collectionType == 'image' && <MemoCollectionImage category={selectedCategory} />}
-        </MemoCollectionBodyContainer>
+            {collectionType == 'image' && <MemoCollectionImage category={selectedCategory} />}
+            {collectionType == 'schedule' && <MemoCollectionSchedule category={selectedCategory} />}
+            {collectionType == 'link' && <MemoCollectionLink category={selectedCategory} />}
+          </MemoCollectionBodyContainer>
+        </MemoCollectionBodyLayout>
       </MemoCollectionContents>
     </MemoCollectionContainer>
   );
 };
 
 export default MemoCollection;
-
-// import { useGetCategoriesQuery } from '@stores/modules/category';
-// import { useState } from 'react';
-// import CloseSVG from '@assets/icons/close.svg?react';
-// import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
-// import MemoCollectionImage from './Image/MemoCollectionImage';
-// import MemoCollectionLink from './Link/MemoCollectionLink';
-// import {
-//   MemoCollectionBodyContainer,
-//   MemoCollectionBodyContents,
-//   MemoCollectionBodyTitle,
-//   MemoCollectionCategories,
-//   MemoCollectionCategoryItem,
-//   MemoCollectionContainer,
-//   MemoCollectionContents,
-//   MemoCollectionHeader,
-//   MemoCollectionTitle,
-//   MemoCollectionTitleItem,
-// } from './MemoCollection.Style';
-// import MemoCollectionSchedule from './Schedule/MemoCollectionSchedule';
-// import { ModalComponentProps } from '@hooks/useParamModal';
-
-// const contentsTypeList = [{ Image: '사진' }, { Calendar: '캘린더' }, { Link: '링크' }];
-
-// const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
-//   const [contentsType, setContentsType] = useState(props.contentsType);
-//   const [categoryId, setCategoryId] = useState(props.categoryId);
-//   const { data: _categories = [] } = useGetCategoriesQuery();
-//   const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
-//   // 추후 수정 필요
-//   return (
-//     <MemoCollectionContainer>
-//       <MemoCollectionHeader>
-//         {/* <MemoViewerCloseContainer>
-//           <CloseSVG onClick={closeModal} />
-//         </MemoViewerCloseContainer> */}
-//         <MemoCollectionTitle>
-//           {contentsTypeList.map((e) => {
-//             const [[key, value]] = Object.entries(e);
-//             return (
-//               <MemoCollectionTitleItem
-//                 isFocus={contentsType == key}
-//                 key={`CONTENTS_${key}`}
-//                 onClick={() => setContentsType(key)}
-//               >
-//                 {value}
-//               </MemoCollectionTitleItem>
-//             );
-//           })}
-//         </MemoCollectionTitle>
-//       </MemoCollectionHeader>
-//       <MemoCollectionContents>
-//         <MemoCollectionCategories>
-//           {categories.map((e, i) => (
-//             <MemoCollectionCategoryItem
-//               isFocus={categoryId == e.uuid}
-//               color={e.color}
-//               key={`COLLECTION_${i}`}
-//               onClick={() => {
-//                 setCategoryId(e.uuid);
-//               }}
-//             >
-//               <span />
-//               {e.name}
-//             </MemoCollectionCategoryItem>
-//           ))}
-//         </MemoCollectionCategories>
-//         <MemoCollectionBodyContainer>
-//           {categoryId && (
-//             <MemoCollectionBodyTitle>
-//               {categories.find(({ uuid }) => uuid == categoryId)?.name}
-//               <RightArrowSVG />
-//             </MemoCollectionBodyTitle>
-//           )}
-//           <MemoCollectionBodyContents>
-//             {contentsType == 'Image' ? (
-//               <MemoCollectionImage categoryId={categoryId} />
-//             ) : contentsType == 'Calendar' ? (
-//               <MemoCollectionSchedule categoryId={categoryId} />
-//             ) : contentsType == 'Link' ? (
-//               <MemoCollectionLink categoryId={categoryId} />
-//             ) : (
-//               ''
-//             )}
-//           </MemoCollectionBodyContents>
-//         </MemoCollectionBodyContainer>
-//       </MemoCollectionContents>
-//     </MemoCollectionContainer>
-//   );
-// };
-
-// export default MemoCollection;

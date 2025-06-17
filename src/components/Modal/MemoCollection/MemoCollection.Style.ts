@@ -8,6 +8,7 @@ const MemoCollectionContainer = styled.div({
   width: '820px',
   height: '840px',
   borderRadius: theme.radius[16],
+  overflow: 'hidden',
 });
 
 const MemoCollectionHeader = styled.div({
@@ -85,12 +86,21 @@ const MemoCollectionSideBarItemContainer = styled.div(
   },
 );
 
+const MemoCollectionBodyLayout = styled.div({
+  flexGrow: '1',
+  height: '100%',
+  position: 'relative',
+});
+
 const MemoCollectionBodyContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   padding: '32px',
-  flexGrow: '1',
-  overflow: 'auto',
+  width: '100%',
+  height: '100%',
+  overflowY: 'scroll',
+  position: 'absolute',
+  boxSizing: 'border-box',
 
   ['::-webkit-scrollbar']: {
     opacity: '0',
@@ -132,6 +142,7 @@ export {
   MemoCollectionHeaderItem,
   MemoCollectionSideBar,
   MemoCollectionSideBarItemContainer,
+  MemoCollectionBodyLayout,
   MemoCollectionBodyContainer,
   MemoCollectionBodyTitle,
 };
