@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const StyledMainlayout = styled.div({
   display: 'flex',
-  height: '100vh',
+  height: '100dvh',
   width: '100%',
 });
 
