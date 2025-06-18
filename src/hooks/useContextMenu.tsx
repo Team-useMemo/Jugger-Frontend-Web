@@ -7,7 +7,6 @@ import {
   ContextMenuWrapper,
   Divider,
 } from '@components/ContextMenu/ContextMenu.Style';
-import { Dot } from '@components/SideBar/SideMessage/SideMessage.Style';
 
 type ContextMenuHandlers = {
   onContextMenu: (e: React.MouseEvent | React.TouchEvent) => void;
@@ -111,8 +110,7 @@ export const useContextMenu = ({
       <ContextMenuWrapper ref={contextMenuRef} style={{ top: anchor.y, left: anchor.x }}>
         {header && (
           <>
-            <ContextMenuHeader>
-              <Dot style={{ backgroundColor: header.color }} />
+            <ContextMenuHeader color={header.color}>
               <ContextMenuTitle>{header.title}</ContextMenuTitle>
             </ContextMenuHeader>
             <Divider />

@@ -1,6 +1,7 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { CategoryProp } from '@ts/Category.Prop';
 import { ModalName } from '@utils/Modal';
 import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import CloseSVG from '@assets/icons/close.svg?react';
@@ -30,7 +31,19 @@ const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
   const [searchParams] = useSearchParams();
   const [currentCategory] = useState(searchParams.get('category') ?? '');
   const { data: _categories = [] } = useGetCategoriesQuery();
-  const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
+  const categories: CategoryProp[] = useMemo(() => {
+    return [
+      {
+        categoryId: '',
+        categoryColor: '#171719',
+        categoryName: '전체',
+        isPinned: false,
+        recentMessage: '',
+        updateAt: new Date(),
+      },
+      ..._categories,
+    ];
+  }, [_categories]);
   const [selectedCategory, setSelectedCategory] = useState(currentCategory);
 
   const typeList = [{ image: '사진' }, { schedule: '캘린더' }, { link: '링크' }];
@@ -69,22 +82,21 @@ const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
       </MemoCollectionHeader>
       <MemoCollectionContents>
         <MemoCollectionSideBar>
-          {categories.map((e) => (
+          {categories.map(({ categoryId, categoryColor, categoryName }) => (
             <MemoCollectionSideBarItemContainer
-              key={`COLLECTION_CATEGORY_${e.uuid}`}
-              isFocused={e.uuid == selectedCategory}
-              color={e.color}
-              onClick={() => setSelectedCategory(e.uuid)}
+              key={`COLLECTION_CATEGORY_${categoryId}`}
+              isFocused={categoryId == selectedCategory}
+              color={categoryColor}
+              onClick={() => setSelectedCategory(categoryId)}
             >
-              <span />
-              {e.name}
+              <p>{categoryName}</p>
             </MemoCollectionSideBarItemContainer>
           ))}
         </MemoCollectionSideBar>
         <MemoCollectionBodyLayout>
           <MemoCollectionBodyContainer>
             <MemoCollectionBodyTitle>
-              {categories.find((e) => e.uuid == selectedCategory)?.name}
+              <p>{categories.find(({ categoryId }) => categoryId == selectedCategory)?.categoryName}</p>
               <RightArrowSVG />
             </MemoCollectionBodyTitle>
             {collectionType == 'image' && <MemoCollectionImage category={selectedCategory} />}

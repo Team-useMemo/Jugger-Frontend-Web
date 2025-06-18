@@ -43,7 +43,7 @@ const EditCategory = ({ closeModal, props }: ModalComponentProps) => {
         color: selectedColor,
       }).unwrap();
       console.log('카테고리 생성 성공:', result);
-      closeModal();
+      closeModal?.();
     } catch (error) {
       console.error('카테고리 생성 실패:', error);
     }
@@ -52,7 +52,7 @@ const EditCategory = ({ closeModal, props }: ModalComponentProps) => {
   return (
     <CategoryViewerContainer>
       <CloseSVG onClick={closeModal} />
-      <CategoryViewerTitle>카테고리 추가</CategoryViewerTitle>
+      <CategoryViewerTitle>카테고리 수정</CategoryViewerTitle>
       <CategoryViewerContents>
         <CategoryViewerItemContainer>
           카테고리 이름
@@ -81,7 +81,7 @@ const EditCategory = ({ closeModal, props }: ModalComponentProps) => {
         disabled={!title || !selectedColor || (title == props.title && selectedColor == props.color)}
         onClick={handleAddCategory}
       >
-        변경
+        수정
       </JuggerButton>
     </CategoryViewerContainer>
   );

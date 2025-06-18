@@ -1,8 +1,8 @@
 export interface CategoryProp {
-  uuid: string;
-  name: string;
+  categoryId: string;
+  categoryName: string;
   isPinned: boolean;
-  color: string;
+  categoryColor: string;
   recentMessage: string;
   updateAt: Date;
 }

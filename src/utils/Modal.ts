@@ -1,4 +1,5 @@
 export const ModalName = {
+  sideBar: 'sideBar',
   addScheduleMemo: 'addScheduleMemo',
   addImageMemo: 'addImageMemo',
   detailTextMemo: 'detailTextMemo',

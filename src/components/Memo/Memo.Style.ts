@@ -33,9 +33,10 @@ export const MemoCategoryContainer = styled.div(({ color }: { color: string }) =
   },
 
   [media[480]]: {
-    flexGrow: '1',
+    // flexGrow: '1',
     justifyContent: 'end',
-    width: '72px',
+    minWidth: '72px',
+    maxWidth: '128px',
   },
 }));
 

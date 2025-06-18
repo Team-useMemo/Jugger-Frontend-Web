@@ -96,6 +96,7 @@ export const MemoPageBottomContainer = styled.div({
   background: theme.color.background.normal,
   maxWidth: '1080px',
   width: '100%',
+  minWidth: '0',
   boxSizing: 'border-box',
   display: 'flex',
   alignItems: 'center',
@@ -133,13 +134,14 @@ export const MemoPageBottomInputContainer = styled.div({
     height: '22px',
     padding: '0',
     margin: '0',
-    flexGrow: '1',
+    width: '100%',
     textAlign: 'left',
     border: 'none',
     outline: 'none',
     background: 'none',
     resize: 'none',
     maxHeight: '160px',
+    minWidth: '0',
 
     ['::placeholder']: {
       color: theme.color.label.assistive,

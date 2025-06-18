@@ -31,12 +31,26 @@ export const ModalSlice = createSlice({
         },
       };
     },
-    setModalClose: (state, action: PayloadAction<string>) => {
+    setModalClose: (state, action: PayloadAction<{ name: string; to?: string; replace?: boolean }>) => {
       state.value = {
         ...state.value,
-        [action.payload]: {
+        [action.payload.name]: {
           state: false,
-          value: state.value[action.payload].value ?? null,
+          value: null,
+          to: action.payload.to,
+          replace: action.payload.replace,
+        },
+      };
+    },
+    setModalReplace: (state, action: PayloadAction<{ prev: string; to: string; value?: any }>) => {
+      state.value = {
+        ...state.value,
+        [action.payload.prev]: {
+          state: true,
+          replace: {
+            to: action.payload.to,
+            value: action.payload.value,
+          },
         },
       };
     },
@@ -44,7 +58,7 @@ export const ModalSlice = createSlice({
 });
 
 //actions
-export const { setModalValue, setModalOpen, setModalClose } = ModalSlice.actions;
+export const { setModalValue, setModalOpen, setModalClose, setModalReplace } = ModalSlice.actions;
 
 // slice의 상태값
 export const modalState = (state: RootState) => state.modal.value;

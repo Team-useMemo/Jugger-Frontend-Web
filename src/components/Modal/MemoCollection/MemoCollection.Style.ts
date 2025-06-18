@@ -63,7 +63,7 @@ const MemoCollectionSideBar = styled.div({
 const MemoCollectionSideBarItemContainer = styled.div(
   ({ isFocused, color }: { isFocused: boolean; color: string }) => ({
     background: isFocused ? theme.color.fill.strong : '',
-    ['>span']: {
+    ['::before']: {
       background: color,
     },
   }),
@@ -72,16 +72,24 @@ const MemoCollectionSideBarItemContainer = styled.div(
     gap: '8px',
     alignItems: 'center',
     padding: '16px 24px',
-    ...theme.font.body2normal.semibold,
-    color: theme.color.label.normal,
     cursor: 'pointer',
+    ['>p']: {
+      ...theme.font.body2normal.semibold,
+      color: theme.color.label.normal,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      margin: '0',
+    },
 
-    ['>span']: {
+    ['::before']: {
+      content: '""',
       display: 'block',
       width: '8px',
       aspectRatio: '1 / 1',
       height: 'auto',
       borderRadius: theme.radius.full,
+      flexShrink: '0',
     },
   },
 );
@@ -126,11 +134,25 @@ const MemoCollectionBodyTitle = styled.div({
   display: 'flex',
   gap: '6px',
   alignItems: 'center',
-  ...theme.font.headline1.semibold,
-  color: theme.color.label.normal,
   padding: '8px 0 20px',
+
+  ['>p']: {
+    ...theme.font.headline1.semibold,
+    color: theme.color.label.normal,
+
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    margin: '0',
+  },
+
   ['>svg']: {
     stroke: theme.color.label.alternative,
+    width: '20px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    flexShrink: '0',
+    paddingRight: '120px',
   },
 });
 

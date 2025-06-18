@@ -7,11 +7,11 @@ import { MemoCategoryContainer, MemoContainer, MemoContent } from './Memo.Style'
 import MemoSchedule from './Schedule/MemoSchedule';
 import MemoText from './Text/MemoText';
 
-const MemoCategory = ({ category }: { category: { name: string; color: string } }) => {
+const MemoCategory = ({ category }: { category: CategoryProp }) => {
   return (
-    <MemoCategoryContainer color={category.color}>
+    <MemoCategoryContainer color={category.categoryColor}>
       <span />
-      <p>{category?.name}</p>
+      <p>{category?.categoryName}</p>
     </MemoCategoryContainer>
   );
 };
@@ -30,7 +30,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoResponseProp; category?: 
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: category?.color || '#FFF', title: category?.name || '' },
+    header: { color: category?.categoryColor || '#FFF', title: category?.categoryName || '' },
     items: [
       {
         label: '카테고리 설정',
@@ -53,7 +53,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoResponseProp; category?: 
       <ContextMenu />
       <MemoContent {...BindContextMenuHandlers}>
         {memo.type == 'text' ? (
-          <MemoText categoryName={category?.name} memoId={memo.id} content={memo.content as string} />
+          <MemoText categoryName={category?.categoryName} memoId={memo.id} content={memo.content as string} />
         ) : memo.type == 'schedule' ? (
           <MemoSchedule memoId={memo.id} content={memo.content as scheduleProp} />
         ) : memo.type == 'image' ? (

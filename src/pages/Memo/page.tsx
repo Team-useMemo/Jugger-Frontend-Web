@@ -16,6 +16,7 @@ import DetailImageMemo from '@components/Modal/MemoViewer/Image/DetailImageMemo'
 import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
 import DetailScheduleMemo from '@components/Modal/MemoViewer/Schedule/DetailScheduleMemo';
 import DetailTextMemo from '@components/Modal/MemoViewer/Text/DetailTextMemo';
+import SearchMemo from '@components/Modal/SearchMemo/SearchMemo';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
@@ -71,12 +72,13 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
       {memos.map((e, i, arr) => {
         return (
           <MemoItemContainer key={`memo-${e.id}-${i}`} id={`memo-${e.id}`}>
-            {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
+            {(i == arr.length - 1 ||
+              (i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString())) && (
               <MemoItemDateContainer>
                 <MemoItemDateContents>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
               </MemoItemDateContainer>
             )}
-            <MemoComponent memo={e} category={categories.find(({ uuid }) => uuid == e.categoryId)} />
+            <MemoComponent memo={e} category={categories.find(({ categoryId }) => categoryId == e.categoryId)} />
           </MemoItemContainer>
         );
       })}
@@ -173,6 +175,7 @@ const MemoPage = () => {
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get('category');
 
+  const [SearchMemoModal] = useParamModal(ModalName.searchMemo, ModalLayoutGray, SearchMemo);
   const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
   const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
   const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
@@ -182,6 +185,7 @@ const MemoPage = () => {
 
   return (
     <MemoPageContainer>
+      <SearchMemoModal />
       <MemoCollectionModal />
       <AddScheduleMemoModal />
       <AddImageMemoModal />

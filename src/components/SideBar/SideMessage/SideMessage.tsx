@@ -1,109 +1,144 @@
 import { useDeleteCategoryMutation, useTogglePinMutation } from '@stores/modules/category';
-import { setModalOpen } from '@stores/modules/modal';
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { setModalClose, setModalOpen } from '@stores/modules/modal';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { CategoryProp } from '@ts/Category.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
+import useStateRef from '@hooks/useStateRef';
+import { useIsMobile } from '@hooks/useWindowSize';
 import { webPath } from '@router/index';
-import { theme } from '@styles/theme';
 import PinSVG from '@assets/icons/pin.svg?react';
 import {
-  Content,
-  Dot,
-  HeaderLeft,
-  MessageBody,
-  MessageHeader,
-  MessageInnerWrapper,
-  MessageItem,
-  PinTriggerWrapper,
-  Time,
-  Title,
+  SideMessageContainer,
+  SideMessageContents,
+  SideMessageHeader,
+  SideMessageHeaderDate,
+  SideMessageHeaderTitle,
+  SideMessagePinContainer,
+  SideMessageRecentMessage,
 } from './SideMessage.Style';
 
-interface SideMessageItemProps {
-  focus: boolean;
-  id: string;
-  title: string;
-  color: string;
-  isPinned: boolean;
-  updateAt: Date;
-  recentMessage: string;
-  closeMenu: () => void;
-}
+const SideMessage = ({ category }: { category: CategoryProp }) => {
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category');
 
-const SideMessage = ({
-  focus,
-  id,
-  color,
-  title,
-  recentMessage,
-  updateAt,
-  isPinned,
-  closeMenu,
-}: SideMessageItemProps) => {
+  const { categoryId, categoryColor, categoryName, isPinned, updateAt, recentMessage } = category;
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const isMobile = useIsMobile();
 
-  const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
+  const [startXRef, setStartX] = useStateRef<number | null>(null);
+  const [toggleChangedRef, setToggleChanged] = useStateRef<boolean>(false);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [togglePin] = useTogglePinMutation();
 
   const handleCategoryClick = useCallback(() => {
-    navigate(`?category=${id}`);
-    closeMenu();
-  }, [navigate, id, closeMenu]);
+    if (toggleChangedRef.current) {
+      setToggleChanged(false);
+      return;
+    }
+
+    const to = `?category=${categoryId}`;
+
+    if (!isMobile) {
+      if (categoryId == currentCategory) {
+        return;
+      }
+      navigate(to);
+      return;
+    }
+
+    if (categoryId == currentCategory) {
+      dispatch(setModalClose({ name: ModalName.sideBar }));
+      return;
+    }
+
+    dispatch(setModalClose({ name: ModalName.sideBar, to: to, replace: true }));
+  }, [categoryId, dispatch, navigate, isMobile, currentCategory]);
 
   const handleCategoryPinClick = useCallback(() => {
-    togglePin({ id, isPinned: !isPinned });
+    console.log(isPinned);
+    togglePin({ id: categoryId, isPinned: !isPinned });
     setShowPinIcon(false);
-  }, [id, isPinned, togglePin]);
-
-  const handleCategoryDeleteClick = useCallback(() => {
-    const currentParams = new URLSearchParams(window.location.search);
-    const category = currentParams.get('category');
-
-    deleteCategory(id);
-    if (category == id) navigate(webPath.memo());
-  }, [deleteCategory, id]);
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    setStartX(e.clientX);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (startX === null) return;
-    const deltaX = e.clientX - startX;
-
-    if (deltaX > 40) setShowPinIcon(true);
-    else if (deltaX < -40) setShowPinIcon(false);
-  };
-
-  const handlePointerUp = () => {
-    setStartX(null);
-  };
+  }, [categoryId, isPinned, togglePin]);
 
   const handleCategoryEditClick = () => {
     dispatch(
       setModalOpen({
         name: ModalName.editCategory,
         value: {
-          id,
-          title,
-          color,
+          id: categoryId,
+          title: categoryName,
+          color: categoryColor,
         },
       }),
     );
   };
 
+  const handleCategoryDeleteClick = useCallback(() => {
+    deleteCategory(categoryId);
+    if (currentCategory == categoryId) navigate(webPath.memo());
+  }, [deleteCategory, currentCategory, categoryId]);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setStartX(e.clientX);
+  };
+
+  const handlePointerMove = (e: Event) => {
+    if (startXRef.current === null) return;
+    const deltaX = (() => {
+      if (!isMobile) {
+        const event = e as MouseEvent;
+        return event.clientX - startXRef.current;
+      } else {
+        const event = e as TouchEvent;
+        return event.touches[0].clientX - startXRef.current;
+      }
+    })();
+
+    if (deltaX > 40) {
+      setShowPinIcon(true);
+      setToggleChanged(true);
+    } else if (deltaX < -40) {
+      setShowPinIcon(false);
+      setToggleChanged(true);
+    }
+  };
+
+  const handlePointerUp = () => {
+    setStartX(null);
+  };
+
+  useEffect(() => {
+    if (!isMobile) {
+      document.addEventListener('pointerup', handlePointerUp);
+      document.addEventListener('pointermove', handlePointerMove);
+    } else {
+      document.addEventListener('touchend', handlePointerUp);
+      document.addEventListener('touchmove', handlePointerMove);
+    }
+    return () => {
+      if (!isMobile) {
+        document.removeEventListener('pointerup', handlePointerUp);
+        document.removeEventListener('pointermove', handlePointerMove);
+      } else {
+        document.removeEventListener('touchend', handlePointerUp);
+        document.removeEventListener('touchmove', handlePointerMove);
+      }
+    };
+  }, [isMobile]);
+
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color, title },
+    header: { color: categoryColor, title: categoryName },
     items: [
-      { label: '즐겨찾기', onClick: handleCategoryPinClick },
+      { label: !isPinned ? '즐겨찾기' : '즐겨찾기 해제', onClick: handleCategoryPinClick },
       {
-        label: '카테고리 변경',
+        label: '카테고리 수정',
         onClick: handleCategoryEditClick,
       },
       { label: '삭제', onClick: handleCategoryDeleteClick },
@@ -111,68 +146,32 @@ const SideMessage = ({
   });
 
   return (
-    <>
+    <SideMessageContainer>
       <ContextMenu />
-      <MessageItem
+      <SideMessagePinContainer isPinned={isPinned}>
+        <PinSVG onClick={handleCategoryPinClick} />
+      </SideMessagePinContainer>
+      <SideMessageContents
+        isFocused={currentCategory == categoryId}
+        showPinIcon={showPinIcon}
         onClick={handleCategoryClick}
         {...BindContextMenuHandlers}
         onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        focus={focus}
-        style={{
-          transform: showPinIcon ? 'translateX(10px)' : 'translateX(0)',
-          transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
-        }}
       >
-        {showPinIcon && (
-          <PinTriggerWrapper
-            style={{
-              transform: showPinIcon ? 'translateX(0)' : 'translateX(-10px)',
-              opacity: showPinIcon ? 1 : 0,
-              transition: 'transform 0.25s ease, opacity 0.25s ease',
-            }}
-          >
-            <PinSVG
-              style={{
-                stroke: theme.color.label.normal,
-                fill: isPinned ? theme.color.label.normal : '',
-              }}
-              onClick={handleCategoryPinClick}
-            />
-          </PinTriggerWrapper>
-        )}
-        <MessageInnerWrapper>
-          <Dot style={{ backgroundColor: color }} />
-          <MessageBody>
-            <MessageHeader>
-              <HeaderLeft>
-                <Title>{title}</Title>
-                {isPinned && (
-                  <PinSVG
-                    style={{
-                      width: '16px',
-                      height: 'auto',
-                      aspectRatio: '1 / 1',
-                      stroke: theme.color.label.normal,
-                      strokeWidth: '2',
-                      fill: isPinned && theme.color.label.normal,
-                    }}
-                    onClick={handleCategoryPinClick}
-                  />
-                )}
-              </HeaderLeft>
-              <Time>
-                {updateAt.toDateString() !== new Date().toDateString()
-                  ? formatDate(updateAt, '{M}.{DD}')
-                  : formatDate(updateAt, '{hh}:{mm}')}
-              </Time>
-            </MessageHeader>
-            <Content>{recentMessage}</Content>
-          </MessageBody>
-        </MessageInnerWrapper>
-      </MessageItem>
-    </>
+        <SideMessageHeader>
+          <SideMessageHeaderTitle categoryColor={categoryColor}>
+            <p>{categoryName}</p>
+            {isPinned && <PinSVG onClick={handleCategoryPinClick} />}
+          </SideMessageHeaderTitle>
+          <SideMessageHeaderDate>
+            {updateAt.toDateString() !== new Date().toDateString()
+              ? formatDate(updateAt, '{M}.{DD}')
+              : formatDate(updateAt, '{hh}:{mm}')}
+          </SideMessageHeaderDate>
+        </SideMessageHeader>
+        <SideMessageRecentMessage>{recentMessage}</SideMessageRecentMessage>
+      </SideMessageContents>
+    </SideMessageContainer>
   );
 };
 
