@@ -1,4 +1,4 @@
-import { useGetCategoriesQuery } from '@stores/modules/category';
+import { categoryApi, useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetCalendarQuery, useGetMemosQuery, useGetPhotosQuery, usePostMemoMutation } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
@@ -131,6 +131,7 @@ const MemoBottom = () => {
           categoryUuid: currentCategory || '',
           text: newMemo,
         }).unwrap();
+        dispatch(categoryApi.util.invalidateTags([{ type: 'Category', id: 'LIST' }]));
       } catch (error) {
         console.error('메모 전송 실패:', error);
       }
