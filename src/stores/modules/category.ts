@@ -22,7 +22,7 @@ export const categoryApi = createApi({
           .sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()),
       providesTags: (result) =>
         result
-          ? [...result.map(({ uuid }) => ({ type: 'Category' as const, uuid })), { type: 'Category', id: 'LIST' }]
+          ? [...result.map(({ uuid }) => ({ type: 'Category' as const, id: uuid })), { type: 'Category', id: 'LIST' }]
           : [],
     }),
     addCategory: builder.mutation<void, { name: string; color: string }>({
