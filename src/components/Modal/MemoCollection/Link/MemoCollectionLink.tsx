@@ -1,5 +1,7 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetLinksQuery } from '@stores/modules/memo';
+import { useMemo } from 'react';
+import { CategoryProp } from '@ts/Category.Prop';
 import {
   ContextMenuCategory,
   ContextMenuCopy,
@@ -19,7 +21,7 @@ import {
   MemoCollectionLinkItemTextContainer,
 } from './MemoCollectionLink.Style';
 
-const MemoCollectionLinkItem = ({ link, category }: any) => {
+const MemoCollectionLinkItem = ({ link, category }: { link: any; category?: CategoryProp }) => {
   const { content } = link;
   const ogData = useOgData(content);
   const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
@@ -33,7 +35,7 @@ const MemoCollectionLinkItem = ({ link, category }: any) => {
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: category?.color ?? '', title: category?.name ?? '' },
+    header: { color: category?.categoryColor ?? '', title: category?.categoryName ?? '' },
     items: [
       {
         label: '카테고리 설정',
@@ -63,9 +65,9 @@ const MemoCollectionLinkItem = ({ link, category }: any) => {
       <ContextMenu />
       <MemoCollectionLinkItemImageContainer onClick={handleClickLinkItem}>
         <img src={ogImage || LoadingGIF} />
-        <MemoCollectionLinkItemCategoryContainer color={category.color}>
+        <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor}>
           <span />
-          {category.name}
+          {category?.categoryName}
         </MemoCollectionLinkItemCategoryContainer>
         <MoreSVG onClick={handleClickLinkItemMore} />
       </MemoCollectionLinkItemImageContainer>
@@ -81,7 +83,19 @@ const MemoCollectionLinkItem = ({ link, category }: any) => {
 const MemoCollectionLink = ({ category }: { category: string }) => {
   const { data: linkList = [] } = useGetLinksQuery({ categoryId: category });
   const { data: _categories = [] } = useGetCategoriesQuery();
-  const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
+  const categories: CategoryProp[] = useMemo(() => {
+    return [
+      {
+        categoryId: '',
+        categoryColor: '#171719',
+        categoryName: '전체',
+        isPinned: false,
+        recentMessage: '',
+        updateAt: new Date(),
+      },
+      ..._categories,
+    ];
+  }, [_categories]);
   console.log(linkList);
 
   return (
@@ -90,7 +104,7 @@ const MemoCollectionLink = ({ category }: { category: string }) => {
         <MemoCollectionLinkItem
           key={`LINK_COLLECTION_${category}_${e.content}`}
           link={e}
-          category={categories.find((category) => category.uuid == e.categoryId)}
+          category={categories.find((category) => category.categoryId == e.categoryId)}
         />
       ))}
     </MemoCollectionLinkContainer>

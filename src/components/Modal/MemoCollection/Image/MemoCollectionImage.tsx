@@ -32,7 +32,7 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoResponseProp; c
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: category?.color ?? '', title: category?.name ?? '' },
+    header: { color: category?.categoryColor ?? '', title: category?.categoryName ?? '' },
     items: [
       {
         label: '카테고리 설정',
@@ -91,7 +91,7 @@ const MemoCollectionImage = ({ category }: { category: string }) => {
               <MemoCollectionImageItem
                 key={`IMAGE_COLLECTION_${date}_${i}`}
                 memo={memo}
-                category={categories.find((e) => e.uuid == category)}
+                category={categories.find((e) => e.categoryId == category)}
               />
             ))}
           </MemoCollectionImageListContents>

@@ -7,6 +7,7 @@ import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
+import { useIsMobile } from '@hooks/useWindowSize';
 import MemoComponent from '@components/Memo/Memo';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
@@ -15,19 +16,18 @@ import DetailImageMemo from '@components/Modal/MemoViewer/Image/DetailImageMemo'
 import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
 import DetailScheduleMemo from '@components/Modal/MemoViewer/Schedule/DetailScheduleMemo';
 import DetailTextMemo from '@components/Modal/MemoViewer/Text/DetailTextMemo';
+import SearchMemo from '@components/Modal/SearchMemo/SearchMemo';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
 import {
-  MemoBottomButtonContainer,
-  MemoBottomContainer,
-  MemoBottomInputContainer,
-  MemoDateDivideContainer,
-  MemoDateDivideContents,
-  MemoDateDivideLine,
-  MemoDateDivideLineTip,
   MemoItemContainer,
+  MemoItemDateContainer,
+  MemoItemDateContents,
   MemoListContainer,
+  MemoPageBottomButtonContainer,
+  MemoPageBottomContainer,
+  MemoPageBottomInputContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
 
@@ -72,17 +72,13 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
       {memos.map((e, i, arr) => {
         return (
           <MemoItemContainer key={`memo-${e.id}-${i}`} id={`memo-${e.id}`}>
-            {i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString() && (
-              <MemoDateDivideContainer>
-                <MemoDateDivideLineTip />
-                <MemoDateDivideContents>
-                  <p>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</p>
-                  <MemoDateDivideLine />
-                </MemoDateDivideContents>
-                <MemoDateDivideLineTip />
-              </MemoDateDivideContainer>
+            {(i == arr.length - 1 ||
+              (i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString())) && (
+              <MemoItemDateContainer>
+                <MemoItemDateContents>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
+              </MemoItemDateContainer>
             )}
-            <MemoComponent memo={e} category={categories.find(({ uuid }) => uuid == e.categoryId)} />
+            <MemoComponent memo={e} category={categories.find(({ categoryId }) => categoryId == e.categoryId)} />
           </MemoItemContainer>
         );
       })}
@@ -90,12 +86,15 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
   );
 });
 
-const MemoBottom = () => {
+const MemoPageBottom = () => {
+  const isMobile = useIsMobile();
+  const dispatch = useAppDispatch();
+
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get('category');
+
   const [newMemo, setNewMemo] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const dispatch = useAppDispatch();
 
   const [postMemo] = usePostMemoMutation();
 
@@ -114,7 +113,7 @@ const MemoBottom = () => {
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      if (e.shiftKey) {
+      if (e.shiftKey || isMobile) {
         return;
       }
       e.preventDefault();
@@ -153,12 +152,12 @@ const MemoBottom = () => {
   };
 
   return (
-    <MemoBottomContainer>
-      <MemoBottomButtonContainer>
+    <MemoPageBottomContainer>
+      <MemoPageBottomButtonContainer>
         <PaperClipSVG onClick={openAddImageMemoModal} />
         <CalendarSVG onClick={openAddScheduleMemoModal} />
-      </MemoBottomButtonContainer>
-      <MemoBottomInputContainer>
+      </MemoPageBottomButtonContainer>
+      <MemoPageBottomInputContainer>
         <textarea
           ref={textareaRef}
           placeholder="메시지를 입력하세요"
@@ -167,8 +166,8 @@ const MemoBottom = () => {
           value={newMemo}
         />
         <SendSVG onClick={handleClickSend} />
-      </MemoBottomInputContainer>
-    </MemoBottomContainer>
+      </MemoPageBottomInputContainer>
+    </MemoPageBottomContainer>
   );
 };
 
@@ -176,6 +175,7 @@ const MemoPage = () => {
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get('category');
 
+  const [SearchMemoModal] = useParamModal(ModalName.searchMemo, ModalLayoutGray, SearchMemo);
   const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
   const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
   const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
@@ -185,6 +185,7 @@ const MemoPage = () => {
 
   return (
     <MemoPageContainer>
+      <SearchMemoModal />
       <MemoCollectionModal />
       <AddScheduleMemoModal />
       <AddImageMemoModal />
@@ -192,7 +193,7 @@ const MemoPage = () => {
       <DetailImageMemoModal />
       <DetailScheduleMemoModal />
       <MemoList currentCategory={currentCategory || ''} />
-      <MemoBottom />
+      <MemoPageBottom />
     </MemoPageContainer>
   );
 };

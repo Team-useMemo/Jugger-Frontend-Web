@@ -12,7 +12,11 @@ const MemoLink = ({ content }: { content: string }) => {
         window.open(content);
       }}
     >
-      {ogData.ogImage && <MemoLinkImage src={ogData.ogImage} />}
+      {ogData.ogImage && (
+        <MemoLinkImage>
+          <img src={ogData.ogImage} />
+        </MemoLinkImage>
+      )}
       <MemoLinkTextContainer>
         {ogData.ogTitle && <p className="title">{ogData.ogTitle}</p>}
         {ogData.ogDescription && <p className="desc">{ogData.ogDescription}</p>}

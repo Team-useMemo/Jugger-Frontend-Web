@@ -1,10 +1,10 @@
-import { getModalIsOpen, getModalValue, modalState, setModalClose } from '@stores/modules/modal';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { modalState, setModalClose, setModalOpen } from '@stores/modules/modal';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './useRedux';
 
 export type ModalComponentProps = {
-  closeModal: () => void;
+  closeModal?: () => void;
   props?: any;
 };
 
@@ -13,32 +13,51 @@ const useParamModal = (
   ModalLayout: ({ children }: { children: React.ReactNode }) => React.ReactNode,
   ModalComponent: (props: ModalComponentProps) => React.ReactNode,
 ): [({ props }: { props?: any }) => React.ReactNode] => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const modalSelector = useAppSelector(modalState);
-  const modalIsOpen = getModalIsOpen(modalSelector, modalName);
-  const modalValue = getModalValue(modalSelector, modalName);
+  const modalInfo = modalSelector?.[modalName];
+  const [modalProps, setModalProps] = useState();
 
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (modalIsOpen) {
-      if (searchParams.has(modalName)) return;
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set(modalName, 'open');
-      setSearchParams(newParams);
+    console.log(modalName, modalInfo);
+    if (!modalInfo) return;
+    const currentParams = new URLSearchParams(window.location.search);
+    const { state, value, to, replace } = modalInfo;
+    if (state) {
+      if (currentParams.has(modalName)) {
+        if (replace) {
+          currentParams.delete(modalName);
+          currentParams.set(replace.to, 'open');
+          setSearchParams(currentParams, { replace: true });
+          dispatch(setModalOpen({ name: replace.to, value: replace.value }));
+        }
+        return;
+      }
+      currentParams.set(modalName, 'open');
+      setSearchParams(currentParams);
+    } else {
+      if (!currentParams.has(modalName)) return;
+      if (modalName != Array.from(currentParams.entries()).at(-1)?.[0]) return;
+      if (!to) {
+        navigate(-1);
+        return;
+      }
+      if (!replace) {
+        navigate(to);
+        return;
+      }
+      navigate(to, { replace: true });
     }
-  }, [modalIsOpen]);
+    setModalProps(value);
+  }, [modalInfo]);
 
   const closeModal = useCallback(() => {
-    const currentParams = new URLSearchParams(window.location.search);
-    if (modalName != Array.from(currentParams.entries()).at(-1)?.[0]) return;
-    navigate(-1);
-    dispatch(setModalClose(modalName));
+    dispatch(setModalClose({ name: modalName }));
   }, []);
-
-  const modalProps = useMemo(() => modalValue, [modalValue]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {

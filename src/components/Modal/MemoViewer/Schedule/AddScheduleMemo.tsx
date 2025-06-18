@@ -42,7 +42,7 @@ const AddScheduleMemo = ({ closeModal }: ModalComponentProps) => {
           categoryId: currentCategory || '',
         }).unwrap();
 
-        closeModal();
+        closeModal?.();
       } catch (error) {
         console.error('메모 전송 실패:', error);
       }

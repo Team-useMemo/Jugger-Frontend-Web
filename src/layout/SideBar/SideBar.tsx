@@ -1,34 +1,37 @@
+import styled from '@emotion/styled';
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { setModalOpen } from '@stores/modules/modal';
-import { useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { setModalClose, setModalOpen, setModalReplace } from '@stores/modules/modal';
+import { useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
+import { useIsMobile } from '@hooks/useWindowSize';
+import JuggerButton from '@components/Common/JuggerButton';
 import AddCategory from '@components/Modal/Category/AddCategory';
 import EditCategory from '@components/Modal/Category/EditCategory';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
-import SideMenu from '@components/SideBar/SideMenu/SideMenu';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
+import { theme } from '@styles/theme';
+import SearchSVG from '@assets/Header/search.svg?react';
 import LogoPNG from '@assets/Logo.png';
 import CalendarSVG from '@assets/Sidebar/Calendar.svg?react';
-import CategorySVG from '@assets/Sidebar/Category.svg?react';
 import ImageSVG from '@assets/Sidebar/Image.svg?react';
 import LinkSVG from '@assets/Sidebar/Link.svg?react';
 import SettingSVG from '@assets/Sidebar/Setting.svg?react';
+import CategorySVG from '@assets/icons/category.svg?react';
+import PlusSVG from '@assets/icons/plus.svg?react';
 import {
-  AddCategoryButton,
-  LogoImage,
-  MessageSection,
+  SideBarCategoryContainer,
   SideBarContainer,
   SideBarContents,
   SideBarHeader,
-  StyledSideBar,
+  SideBarMenuContainer,
+  SideBarMenuItemContainer,
 } from './SideBar.style';
 
-const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: () => void }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const category = searchParams.get('category');
+const SideBar = () => {
+  const [, setSearchParams] = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
 
@@ -37,6 +40,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   });
 
   const dispatch = useAppDispatch();
+  const isMobile = useIsMobile();
 
   const onWholeMemoClick = () => {
     setSearchParams({});
@@ -61,65 +65,116 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     dispatch(setModalOpen({ name: ModalName.addCategory }));
   };
 
-  const handleLogoClick = () => {
-    setSearchParams({});
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category');
+  const navigate = useNavigate();
+
+  const handleClickLogo = () => {
+    if (isMobile) {
+      if (!currentCategory) {
+        dispatch(setModalClose({ name: ModalName.sideBar }));
+        return;
+      }
+      dispatch(setModalClose({ name: ModalName.sideBar, to: '.', replace: true }));
+      return;
+    }
+    if (!currentCategory) return;
+    navigate('.');
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as HTMLElement;
-      if (modalRef.current && !modalRef.current.contains(target)) {
-        closeMenu();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [closeMenu]);
+  const handleClickSearch = () => {
+    dispatch(
+      setModalReplace({
+        prev: ModalName.sideBar,
+        to: ModalName.searchMemo,
+      }),
+    );
+  };
 
   const [AddCategoryModal] = useParamModal(ModalName.addCategory, ModalLayoutGray, AddCategory);
   const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, EditCategory);
 
+  const sidebarMenus = [
+    { title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
+    ...(!isMobile
+      ? [
+          { title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
+          { title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
+          { title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
+        ]
+      : []),
+    { title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
+  ];
+
   return (
-    <StyledSideBar active={toggleMenu} ref={modalRef}>
+    <SideBarContainer ref={modalRef}>
       <AddCategoryModal />
       <EditCategoryModal />
-      <SideBarContainer>
-        <SideBarHeader>
-          <LogoImage src={LogoPNG} onClick={handleLogoClick} />
-        </SideBarHeader>
-        <SideBarContents>
-          <SideMenu title="전체 메모" icon={CategorySVG} onClick={onWholeMemoClick} />
-          <SideMenu title="캘린더" icon={CalendarSVG} onClick={() => onMemoCollectionClick('schedule')} />
-          <SideMenu title="사진" icon={ImageSVG} onClick={() => onMemoCollectionClick('image')} />
-          <SideMenu title="링크" icon={LinkSVG} onClick={() => onMemoCollectionClick('link')} />
-          <SideMenu title="설정" icon={SettingSVG} onClick={onSettingClick} />
-          <AddCategoryButton onClick={handleClickAddCategory}>+ 새 카테고리 추가</AddCategoryButton>
+      <SideBarHeader>
+        <img src={LogoPNG} onClick={handleClickLogo} />
+      </SideBarHeader>
+      {isMobile && (
+        <SideBarSearchContainer onClick={handleClickSearch}>
+          <SearchSVG />
+          <input placeholder="검색" readOnly />
+        </SideBarSearchContainer>
+      )}
+      <SideBarContents>
+        <SideBarMenuContainer>
+          {sidebarMenus.map((menu) => (
+            <SideBarMenuItemContainer onClick={menu.onClick}>
+              <menu.iconSVG />
+              {menu.title}
+            </SideBarMenuItemContainer>
+          ))}
+        </SideBarMenuContainer>
+        <JuggerButton size={!isMobile ? 'medium' : 'small'} color="primary" onClick={handleClickAddCategory}>
+          <PlusSVG />새 카테고리 추가
+        </JuggerButton>
 
-          <MessageSection>
-            {[...categories.filter((msg) => msg.isPinned), ...categories.filter((msg) => !msg.isPinned)].map(
-              (msg, index) => (
-                <SideMessage
-                  key={index}
-                  focus={category == msg.uuid}
-                  id={msg.uuid}
-                  color={msg.color}
-                  title={msg.name}
-                  isPinned={msg.isPinned}
-                  updateAt={msg.updateAt}
-                  recentMessage={msg.recentMessage}
-                  closeMenu={closeMenu}
-                />
-              ),
-            )}
-          </MessageSection>
-        </SideBarContents>
-      </SideBarContainer>
-    </StyledSideBar>
+        <SideBarCategoryContainer>
+          {[
+            ...categories.filter((category) => category.isPinned),
+            ...categories.filter((category) => !category.isPinned),
+          ].map((category, index) => (
+            <SideMessage key={index} category={category} />
+          ))}
+        </SideBarCategoryContainer>
+      </SideBarContents>
+    </SideBarContainer>
   );
 };
+
+const SideBarSearchContainer = styled.label({
+  background: theme.color.background.alternative,
+  margin: '12px 16px',
+  boxSizing: 'border-box',
+  padding: '16px 12px',
+  borderRadius: theme.radius[8],
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+
+  ['>svg']: {
+    width: '20px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+  },
+
+  ['>input']: {
+    background: 'transparent',
+    border: 'none',
+
+    ...theme.font.body2normal.medium,
+
+    [':focus']: {
+      outline: 'none',
+    },
+
+    ['::placeholder']: {
+      color: theme.color.label.alternative,
+    },
+  },
+});
 
 export default SideBar;

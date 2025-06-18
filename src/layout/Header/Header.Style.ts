@@ -1,50 +1,103 @@
 import styled from '@emotion/styled';
-import { media } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
-export const StyledHeader = styled.div({
-  height: '78px',
+const HeaderContainer = styled.div({
   display: 'flex',
-  padding: '28px 24px 20px',
-  borderBottom: '1px solid #E0E0E2',
-  justifyContent: 'space-between',
+  width: '100%',
+  flexGrow: '1',
   boxSizing: 'border-box',
+  padding: '28px 24px 20px',
+  gap: '64px',
+  minWidth: 0,
+  borderBottom: '1px solid #E0E0E2',
+  height: '78px',
 
-  ['>svg']: {
-    display: 'none',
+  [media[480]]: {
+    justifyContent: 'space-between',
+    padding: '14px 12px',
+    gap: '12px',
+    height: 'auto',
   },
-  [media[480]]: { ['>svg']: { display: 'block' } },
 });
 
-export const HeaderTitle = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
-  textAlign: 'left',
-  color: '#000000',
-  fontSize: '22px',
-  fontWeight: '600',
-  lineHeight: '1.32',
+const HeaderMenuContainer = styled.div({
+  ['>svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    cursor: 'pointer',
+  },
+
+  display: 'none',
+  [media[480]]: {
+    display: 'flex',
+    width: '64px',
+    flexShrink: '0',
+  },
 });
 
-export const HeaderTitleCircle = styled.span(
+const HeaderTitleContainer = styled.div(
   ({ color }: { color: string }) => ({
-    background: color,
+    ['::before']: {
+      background: color,
+    },
   }),
   {
-    width: '8px',
-    height: '8px',
-    borderRadius: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexGrow: '1',
+    overflow: 'hidden',
+
+    ['>p']: {
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+
+      color: theme.color.label.normal,
+      ...theme.font.heading1.semibold,
+      margin: '0',
+    },
+
+    ['::before']: {
+      content: '""',
+      width: '8px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      borderRadius: theme.radius.full,
+      flexShrink: '0',
+    },
+
+    [media[480]]: {
+      width: 'auto',
+      flexGrow: '0',
+
+      ['>p']: {
+        ...theme.font.body2normal.semibold,
+      },
+    },
   },
 );
 
-export const HeaderButtonContainer = styled.div({
+const HeaderButtonContainer = styled.div({
   display: 'flex',
-  gap: '12px',
+  gap: '8px',
   alignItems: 'center',
+  flexShrink: '0',
+  marginLeft: 'auto',
 
-  ['svg']: {
-    cursor: 'pointer',
+  ['>svg']: {
     width: '24px',
-    height: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    cursor: 'pointer',
+  },
+
+  [media[480]]: {
+    width: '64px',
+    gap: '4px',
+    justifyContent: 'end',
   },
 });
+
+export { HeaderContainer, HeaderMenuContainer, HeaderTitleContainer, HeaderButtonContainer };

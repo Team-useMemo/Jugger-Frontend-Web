@@ -1,99 +1,141 @@
 import styled from '@emotion/styled';
+import { media, theme } from '@styles/theme';
 
-export const MessageItem = styled.div(
-  ({ focus }: { focus: boolean }) => ({
-    background: focus ? '#F7FBFF' : 'transparent',
+const SideMessageContainer = styled.div({
+  background: theme.color.background.alternative,
+  position: 'relative',
+  userSelect: 'none',
+});
+
+const SideMessagePinContainer = styled.div(
+  ({ isPinned }: { isPinned: boolean }) => ({
+    ['>svg']: {
+      fill: isPinned ? theme.color.label.normal : '',
+    },
   }),
   {
+    position: 'absolute',
+    height: '100%',
     display: 'flex',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    width: '100%',
-    boxSizing: 'border-box',
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '72px',
+
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      stroke: theme.color.label.normal,
+    },
   },
 );
 
-export const MessageInnerWrapper = styled.div({
-  padding: '12px 16px',
-  width: '100%',
-  display: 'flex',
-  boxSizing: 'border-box',
-});
+const SideMessageContents = styled.div(
+  ({ showPinIcon, isFocused }: { showPinIcon: boolean; isFocused: boolean }) => ({
+    transform: showPinIcon ? 'translateX(72px)' : 'translateX(0)',
+    background: isFocused ? '#F7FBFF' : theme.color.background.normal,
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
 
-export const Dot = styled.div({
-  width: '10px',
-  height: '10px',
-  borderRadius: '50%',
-  marginRight: '10px',
-  marginTop: '6px',
-  flexShrink: 0,
-  alignSelf: 'flex-start',
-});
+    transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
 
-export const PinTriggerWrapper = styled.div({
-  width: '60px',
-  height: '100%', // 변경
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexShrink: 0,
-  backgroundColor: '#F7F7F8',
-  margin: '0 12px 0 0',
-});
+    position: 'relative',
+    padding: '16px 20px',
+    gap: '6px',
+    cursor: 'pointer',
+  },
+);
 
-export const MessageBody = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  overflow: 'hidden',
-});
-
-export const MessageHeader = styled.div({
+const SideMessageHeader = styled.div({
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'center',
-  maxWidth: '100%',
-});
-
-export const Title = styled.div({
-  fontFamily: 'Pretendard',
-  fontSize: '15px',
-  fontStyle: 'normal',
-  fontWeight: 600,
-  lineHeight: '146.7%',
-  letterSpacing: '0.144px',
-});
-
-export const Pin = styled.div({
-  marginLeft: '6px',
-});
-
-export const Time = styled.div({
-  fontSize: '12px',
-  color: '#888',
-  minWidth: '32px',
-  textAlign: 'right',
-});
-
-export const Content = styled.div({
-  fontSize: '13px',
-  color: '#444',
-  marginTop: '4px',
   width: '100%',
-  whiteSpace: 'normal',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  textAlign: 'left',
+  gap: '12px',
+});
 
+const SideMessageHeaderTitle = styled.div(
+  ({ categoryColor }: { categoryColor: string }) => ({
+    ['::before']: {
+      background: categoryColor,
+    },
+  }),
+  {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    width: '100%',
+    minWidth: '0',
+
+    ['>p']: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      textAlign: 'left',
+      margin: '0',
+      ...theme.font.body2normal.semibold,
+      color: theme.color.label.normal,
+    },
+
+    ['>svg']: {
+      width: '16px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      stroke: theme.color.label.normal,
+      strokeWidth: '2',
+      fill: theme.color.label.normal,
+      flexShrink: '0',
+    },
+
+    ['::before']: {
+      content: '""',
+      width: '8px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      borderRadius: theme.radius.full,
+      flexShrink: '0',
+    },
+
+    [media[480]]: {
+      ['>p']: {
+        ...theme.font.label1normal.semibold,
+      },
+    },
+  },
+);
+
+const SideMessageHeaderDate = styled.p({
+  ...theme.font.label1normal.medium,
+  color: theme.color.label.assistive,
+  margin: '0',
+  whiteSpace: 'nowrap',
+
+  [media[480]]: {
+    ...theme.font.caption1.medium,
+  },
+});
+
+const SideMessageRecentMessage = styled.p({
+  whiteSpace: 'wrap',
   WebkitLineClamp: '2',
   display: '-webkit-box',
   WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  textAlign: 'left',
+  margin: '0',
+  wordBreak: 'break-all',
+
+  ...theme.font.label1normal.semibold,
+  color: theme.color.label.neutral,
 });
 
-export const HeaderLeft = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-});
+export {
+  SideMessageContainer,
+  SideMessagePinContainer,
+  SideMessageContents,
+  SideMessageHeader,
+  SideMessageHeaderTitle,
+  SideMessageHeaderDate,
+  SideMessageRecentMessage,
+};

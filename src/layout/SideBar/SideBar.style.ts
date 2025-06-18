@@ -1,31 +1,16 @@
 import styled from '@emotion/styled';
-import { media } from '@styles/theme';
-
-export const StyledSideBar = styled.div(
-  {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '360px',
-    height: '100%',
-    background: '#989BA288',
-
-    [media[480]]: {
-      width: '100%',
-      position: 'absolute',
-    },
-  },
-  ({ active }: { active: boolean }) => ({
-    [media[480]]: {
-      left: active ? '0' : '',
-      right: active ? '' : '100%',
-    },
-  }),
-);
+import { media, theme } from '@styles/theme';
 
 export const SideBarContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '360px',
   height: '100%',
-  background: 'white',
-  [media[480]]: { width: '315px' },
+  background: theme.color.background.normal,
+  [media[480]]: {
+    width: '315px',
+    height: '100dvh',
+  },
 });
 
 export const SideBarHeader = styled.div({
@@ -34,15 +19,36 @@ export const SideBarHeader = styled.div({
   borderBottom: '1px solid #E0E0E2',
   height: '78px',
   boxSizing: 'border-box',
+
+  ['>img']: {
+    width: '100%',
+    objectFit: 'contain',
+    objectPosition: 'left',
+  },
+
+  [media[480]]: {
+    borderBottom: 'none',
+    borderRight: '1px solid #E0E0E2',
+
+    padding: '20px 24px 16px',
+    height: 'auto',
+
+    ['>img']: {
+      width: '105px',
+    },
+  },
 });
 
 export const SideBarContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
   overflowY: 'auto',
+  overflowX: 'hidden',
   flex: 1,
   borderRight: '1px solid #E0E0E2',
-  height: 'calc(100% - 78px)',
+  padding: '16px 0',
+  gap: '16px',
+  boxSizing: 'border-box',
 
   ['::-webkit-scrollbar']: {
     opacity: '0',
@@ -61,42 +67,43 @@ export const SideBarContents = styled.div({
       backgroundColor: '#AAAAAA',
     },
   },
-});
 
-export const AddCategoryButton = styled.button({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '40px',
-  width: 'calc(100% - 32px)', // 양쪽 패딩 포함 여백 확보
-  margin: '12px 16px',
-  padding: '12px 16px',
-  gap: '4px',
-  borderRadius: '6px',
-  fontSize: '14px',
-  fontWeight: '500',
-  background: 'var(--primary-Normal, #0054D1)',
-  color: '#FFFFFF',
-  border: 'none',
-  cursor: 'pointer',
+  ['>button']: {
+    margin: '0 24px',
+  },
 
-  '&:hover': {
-    background: '#0046B5',
+  [media[480]]: {
+    padding: '0 0 16px',
   },
 });
 
-export const MessageSection = styled.div({
-  marginTop: '12px',
-  padding: '0 10px',
+export const SideBarMenuContainer = styled.div({
   display: 'flex',
-  justifyContent: 'center',
   flexDirection: 'column',
-  alignSelf: 'stretch',
-  maxWidth: '100%',
 });
 
-export const LogoImage = styled.img({
-  width: '120px',
-  height: 'auto',
-  objectFit: 'contain',
+export const SideBarMenuItemContainer = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+  padding: '12px 24px',
+  cursor: 'pointer',
+
+  ...theme.font.body2normal.semibold,
+  color: theme.color.label.normal,
+
+  ['>svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+  },
+
+  [':hover']: {
+    background: theme.palette.blue[99],
+  },
+});
+
+export const SideBarCategoryContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
 });

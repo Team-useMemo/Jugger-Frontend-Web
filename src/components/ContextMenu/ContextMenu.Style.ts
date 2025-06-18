@@ -15,17 +15,33 @@ export const ContextMenu = styled.div({
   textAlign: 'left',
 });
 
-export const ContextMenuHeader = styled.div({
-  fontFamily: 'Pretendard',
-  fontSize: '15px',
-  fontStyle: 'normal',
-  fontWeight: 600,
-  lineHeight: '146.7%',
-  letterSpacing: '0.144px',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '8px 16px',
-});
+export const ContextMenuHeader = styled.div(
+  ({ color }: { color: string }) => ({
+    ['::before']: {
+      background: color,
+    },
+  }),
+  {
+    fontFamily: 'Pretendard',
+    fontSize: '15px',
+    fontStyle: 'normal',
+    fontWeight: 600,
+    lineHeight: '146.7%',
+    letterSpacing: '0.144px',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '8px 16px',
+    gap: '8px',
+
+    ['::before']: {
+      content: '""',
+      width: '8px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      borderRadius: theme.radius.full,
+    },
+  },
+);
 
 export const ContextMenuTitle = styled.span({
   fontFamily: 'Pretendard',

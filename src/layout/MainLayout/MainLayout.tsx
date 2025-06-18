@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import { ModalName } from '@utils/Modal';
+import useParamModal from '@hooks/useParamModal';
+import { useIsMobile } from '@hooks/useWindowSize';
 import SideBar from '@layout/SideBar/SideBar';
+import ModalLayoutGrayLeft from '@components/Modal/Layout/ModalLayoutGrayLeft';
 import Header from '../Header/Header';
 import { StyledContent, StyledMain, StyledMainlayout } from './MainLayout.Style';
 import { LayoutProps } from './Mainlayout.Props';
 
 const Mainlayout = ({ children }: LayoutProps) => {
-  const [toggleMenu, setToggleMenu] = useState(false);
+  const isMobile = useIsMobile();
 
-  const openMenu = () => setToggleMenu(true);
-  const closeMenu = () => setToggleMenu(false);
+  const [SideBarModal] = useParamModal(ModalName.sideBar, ModalLayoutGrayLeft, SideBar);
 
   return (
     <StyledMainlayout>
-      <SideBar toggleMenu={toggleMenu} closeMenu={closeMenu} />
+      <SideBarModal />
+      {!isMobile && <SideBar />}
       <StyledMain>
-        <Header activeMenu={openMenu} />
+        <Header />
         <StyledContent>{children}</StyledContent>
       </StyledMain>
     </StyledMainlayout>

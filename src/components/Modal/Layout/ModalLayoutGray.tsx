@@ -10,7 +10,7 @@ const ModalLayoutGrayContainer = styled.div({
   background: '#989BA288',
   width: '100%',
   height: '100%',
-  zIndex: 1,
+  zIndex: 20,
 });
 
 const ModalLayoutGray = ({ children }: { children: React.ReactNode }) => {

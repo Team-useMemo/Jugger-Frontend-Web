@@ -1,30 +1,28 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalOpen } from '@stores/modules/modal';
-import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
-import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
-import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
-import SearchMemo from '@components/Modal/SearchMemo/SearchMemo';
+import { useIsMobile } from '@hooks/useWindowSize';
 import DetailSVG from '@assets/Header/detail.svg?react';
 import SearchSVG from '@assets/Header/search.svg?react';
 import MenuSVG from '@assets/icons/menu.svg?react';
-import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } from './Header.Style';
+import { HeaderButtonContainer, HeaderContainer, HeaderMenuContainer, HeaderTitleContainer } from './Header.Style';
 
-const Header = ({ activeMenu }: { activeMenu: () => void }) => {
+const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const isMobile = useIsMobile();
+
   const [searchParams] = useSearchParams();
-  const categoryId = searchParams.get('category');
+
+  const currentCategory = searchParams.get('category');
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
 
   const { data: categories = [] } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
   });
-  const category = categories.find((e) => e.uuid == categoryId);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-
-  const dispatch = useAppDispatch();
+  const category = categories.find((e) => e.categoryId == currentCategory);
 
   const onSearchClick = () => {
     dispatch(setModalOpen({ name: ModalName.searchMemo }));
@@ -32,35 +30,38 @@ const Header = ({ activeMenu }: { activeMenu: () => void }) => {
 
   const onDetailClick = () => alert('상세');
 
-  const [SearchMemoModal] = useParamModal(ModalName.searchMemo, ModalLayoutGray, SearchMemo);
+  const handleClickOpenMenu = () => {
+    dispatch(setModalOpen({ name: ModalName.sideBar }));
+  };
 
   return (
-    <StyledHeader ref={modalRef}>
-      <SearchMemoModal />
-      <MenuSVG onClick={activeMenu} />
-      <HeaderTitle>
-        {category && (
-          <>
-            <HeaderTitleCircle color={category.color} />
-            {category.name}
-          </>
-        )}
-      </HeaderTitle>
+    <HeaderContainer>
+      <HeaderMenuContainer>
+        <MenuSVG onClick={handleClickOpenMenu} />
+      </HeaderMenuContainer>
+      {category && (
+        <HeaderTitleContainer color={category.categoryColor}>
+          <p>{category.categoryName}</p>
+        </HeaderTitleContainer>
+      )}
       <HeaderButtonContainer>
         <SearchSVG onClick={onSearchClick} />
         <DetailSVG onClick={onDetailClick} />
-        <button
-          onClick={() => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('username');
-            navigate('/');
-          }}
-        >
-          로그아웃
-        </button>
+        {!isMobile && (
+          <button
+            style={{ background: 'gray' }}
+            onClick={() => {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('username');
+              navigate('/');
+            }}
+          >
+            로그아웃
+          </button>
+        )}
       </HeaderButtonContainer>
-    </StyledHeader>
+    </HeaderContainer>
   );
 };
 

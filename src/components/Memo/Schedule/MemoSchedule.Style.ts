@@ -1,5 +1,5 @@
-import { theme } from '@styles/theme';
 import styled from '@emotion/styled';
+import { theme } from '@styles/theme';
 
 export const MemoScheduleContainer = styled.div({
   display: 'flex',
@@ -11,15 +11,18 @@ export const MemoScheduleContainer = styled.div({
 export const MemoScheduleContents = styled.div({
   ...theme.font.body2normal.medium,
   color: theme.color.label.normal,
+
   margin: '0',
-  padding: '12px 16px',
+  padding: '12px 16px 16px',
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
+
   ['svg']: {
     fill: theme.color.label.normal,
     width: '16px',
-    height: '16px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
   },
 });
 

@@ -43,7 +43,7 @@ const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoResponse
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: category?.color ?? '', title: category?.name ?? '' },
+    header: { color: category?.categoryColor ?? '', title: category?.categoryName ?? '' },
     items: [
       {
         label: '카테고리 설정',
@@ -68,7 +68,7 @@ const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoResponse
         {content.startDate.getDate()}
       </MemoCollectionScheduleListItemDate>
       <span className="divider" />
-      <MemoCollectionScheduleListItemTitle color={category?.color}>
+      <MemoCollectionScheduleListItemTitle color={category?.categoryColor}>
         <span />
         {content.title}
       </MemoCollectionScheduleListItemTitle>
@@ -177,7 +177,10 @@ const MemoCollectionSchedule = ({ category }: { category: string }) => {
 
       <MemoCollectionScheduleListContainer>
         {scheduleList.map((e) => (
-          <MemoCollectionScheduleListItem memo={e} category={categories.find(({ uuid }) => uuid == e.categoryId)} />
+          <MemoCollectionScheduleListItem
+            memo={e}
+            category={categories.find(({ categoryId }) => categoryId == e.categoryId)}
+          />
         ))}
       </MemoCollectionScheduleListContainer>
     </MemoCollectionScheduleContainer>

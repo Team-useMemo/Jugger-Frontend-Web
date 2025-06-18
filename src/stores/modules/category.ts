@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CategoryProp } from '@ts/Category.Prop';
+import { CategoryProp, CategoryResponseProp } from '@ts/Category.Prop';
 import { customBaseQuery } from './customBaseQuery';
 
 export const categoryApi = createApi({
@@ -9,21 +9,25 @@ export const categoryApi = createApi({
   endpoints: (builder) => ({
     getCategories: builder.query<CategoryProp[], void>({
       query: () => `/api/v1/categories/recent`,
-      transformResponse: (response: CategoryProp[]) =>
+      transformResponse: (response: CategoryResponseProp[]) =>
         response
           .map((category) => ({
-            uuid: category.uuid,
-            name: category.name,
+            categoryId: category.uuid,
+            categoryName: category.name,
             isPinned: category.isPinned,
-            color: category.color.replace(/^color/, ''),
+            categoryColor: category.color.replace(/^color/, ''),
             recentMessage: category.recentMessage,
             updateAt: new Date(category.updateAt),
           }))
           .sort((a, b) => new Date(b.updateAt).getTime() - new Date(a.updateAt).getTime()),
-      providesTags: (result) =>
-        result
-          ? [...result.map(({ uuid }) => ({ type: 'Category' as const, id: uuid })), { type: 'Category', id: 'LIST' }]
-          : [],
+      providesTags: (result) => {
+        return result
+          ? [
+              ...result.map(({ categoryId }) => ({ type: 'Category' as const, id: categoryId })),
+              { type: 'Category', id: 'LIST' },
+            ]
+          : [];
+      },
     }),
     addCategory: builder.mutation<void, { name: string; color: string }>({
       query: (body) => ({
