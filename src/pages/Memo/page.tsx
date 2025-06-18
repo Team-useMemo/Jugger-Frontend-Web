@@ -3,7 +3,6 @@ import { useGetCalendarQuery, useGetMemosQuery, useGetPhotosQuery, usePostMemoMu
 import { setModalOpen } from '@stores/modules/modal';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MemoResponseProp } from '@ts/Memo.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
@@ -57,13 +56,7 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
     { category_uuid: currentCategory },
     {
       selectFromResult: ({ data }) => ({
-        data: (data ?? []).map((e) => ({
-          id: 1,
-          type: 'image',
-          categoryId: currentCategory,
-          content: e.url,
-          date: new Date(e.timestamp),
-        })) as MemoResponseProp[],
+        data: data?.map((e) => ({ ...e, categoryId: currentCategory })),
       }),
     },
   );

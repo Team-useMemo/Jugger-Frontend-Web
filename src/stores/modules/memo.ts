@@ -125,11 +125,25 @@ export const memoApi = createApi({
         { type: 'Photo', id: 'LIST' },
       ],
     }),
-    getPhotos: builder.query<PhotoResponseProp[], { category_uuid: string }>({
+    getPhotos: builder.query<MemoResponseProp[], { category_uuid: string }>({
       query: ({ category_uuid }) => ({
         url: `/api/v1/photos?category_uuid=${category_uuid}`,
         method: 'GET',
       }),
+      transformResponse: (response: PhotoResponseProp[]): MemoResponseProp[] => {
+        return response
+          .map(
+            (e, i: number) =>
+              ({
+                id: i,
+                type: 'image',
+                content: e.url,
+                categoryId: e.categoryName,
+                date: new Date(e.timestamp),
+              }) as MemoResponseProp,
+          )
+          .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
+      },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
     getLinks: builder.query<MemoResponseProp[], { categoryId: string }>({

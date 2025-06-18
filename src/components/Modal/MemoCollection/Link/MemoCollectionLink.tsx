@@ -1,103 +1,98 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetLinksQuery } from '@stores/modules/memo';
-import { useEffect, useState } from 'react';
+import {
+  ContextMenuCategory,
+  ContextMenuCopy,
+  ContextMenuDelete,
+  ContextMenuEdit,
+  ContextMenuShare,
+} from '@utils/ContextMenu';
 import { useContextMenu } from '@hooks/useContextMenu';
-import { OgData, fetchUrlPreview } from '@hooks/useOgData';
+import { useOgData } from '@hooks/useOgData';
+import LoadingGIF from '@assets/Loading.gif';
+import MoreSVG from '@assets/icons/more.svg?react';
 import {
   MemoCollectionLinkContainer,
-  MemoCollectionLinkContents,
-  MemoCollectionLinkItemCategory,
+  MemoCollectionLinkItemCategoryContainer,
   MemoCollectionLinkItemContainer,
-  MemoCollectionLinkItemContents,
-  MemoCollectionLinkItemThumbnailContainer,
+  MemoCollectionLinkItemImageContainer,
+  MemoCollectionLinkItemTextContainer,
 } from './MemoCollectionLink.Style';
 
-const MemoCollectionLinkItem = ({ content, category }: { content: any; category?: string }) => {
-  const [ogData, setOgData] = useState<OgData | null>(null);
+const MemoCollectionLinkItem = ({ link, category }: any) => {
+  const { content } = link;
+  const ogData = useOgData(content);
+  const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
 
-  const { data: categories = [] } = useGetCategoriesQuery();
-  const _category = categories.find((e: any) => e.id == category);
-  useEffect(() => {
-    const fetchAndUpdate = async () => {
-      setOgData(await fetchUrlPreview(content));
-    };
+  const handleClickLinkItemMore = (e: React.MouseEvent<HTMLOrSVGElement>) => {
+    e.stopPropagation();
+  };
 
-    fetchAndUpdate();
-  }, [content]);
-
-  const handleLinkClick = () => {
+  const handleClickLinkItem = () => {
     window.open(content);
   };
 
-  const handleEdit = () => {
-    // TODO: 카테고리 설정 모달 열기
-  };
-
-  const handleCopy = () => {
-    // TODO: 카테고리 설정 모달 열기
-  };
-
-  const handleShare = () => {
-    // TODO: 즐겨찾기 토글 API 연결 예정
-  };
-
-  const handleDeleteMemo = () => {
-    // TODO: 삭제 확인 모달 또는 삭제 API 호출
-  };
-
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
+    header: { color: category?.color ?? '', title: category?.name ?? '' },
     items: [
       {
-        label: '링크 수정',
-        onClick: handleEdit,
+        label: '카테고리 설정',
+        onClick: ContextMenuCategory,
       },
       {
         label: '복사',
-        onClick: handleCopy,
+        onClick: ContextMenuCopy,
+      },
+      {
+        label: '수정',
+        onClick: ContextMenuEdit,
       },
       {
         label: '공유',
-        onClick: handleShare,
+        onClick: ContextMenuShare,
       },
       {
         label: '삭제',
-        onClick: handleDeleteMemo,
+        onClick: ContextMenuDelete,
       },
     ],
   });
 
   return (
-    <>
+    <MemoCollectionLinkItemContainer {...BindContextMenuHandlers}>
       <ContextMenu />
-      <MemoCollectionLinkItemContainer onClick={handleLinkClick} {...BindContextMenuHandlers}>
-        <MemoCollectionLinkItemThumbnailContainer>
-          {_category && (
-            <MemoCollectionLinkItemCategory color={_category.color}>
-              <span />
-              {_category.name}
-            </MemoCollectionLinkItemCategory>
-          )}
-          <img src={ogData?.ogImage} />
-        </MemoCollectionLinkItemThumbnailContainer>
-        <MemoCollectionLinkItemContents>
-          <p className="title">{ogData?.ogTitle}</p>
-          <p className="desc">{ogData?.ogDescription}</p>
-          <p className="url">{ogData?.ogUrl}</p>
-        </MemoCollectionLinkItemContents>
-      </MemoCollectionLinkItemContainer>
-    </>
+      <MemoCollectionLinkItemImageContainer onClick={handleClickLinkItem}>
+        <img src={ogImage || LoadingGIF} />
+        <MemoCollectionLinkItemCategoryContainer color={category.color}>
+          <span />
+          {category.name}
+        </MemoCollectionLinkItemCategoryContainer>
+        <MoreSVG onClick={handleClickLinkItemMore} />
+      </MemoCollectionLinkItemImageContainer>
+      <MemoCollectionLinkItemTextContainer>
+        <p className="title">{ogTitle}</p>
+        <p className="desc">{ogDescription}</p>
+        <p className="url">{ogUrl}</p>
+      </MemoCollectionLinkItemTextContainer>
+    </MemoCollectionLinkItemContainer>
   );
 };
 
-const MemoCollectionLink = ({ categoryId }: { categoryId: string }) => {
-  const { data: linkData = [] } = useGetLinksQuery({ categoryId });
+const MemoCollectionLink = ({ category }: { category: string }) => {
+  const { data: linkList = [] } = useGetLinksQuery({ categoryId: category });
+  const { data: _categories = [] } = useGetCategoriesQuery();
+  const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
+  console.log(linkList);
+
   return (
     <MemoCollectionLinkContainer>
-      <MemoCollectionLinkContents>
-        {linkData.map((e) => {
-          return <MemoCollectionLinkItem content={e.content} category={categoryId} />;
-        })}
-      </MemoCollectionLinkContents>
+      {linkList.map((e) => (
+        <MemoCollectionLinkItem
+          key={`LINK_COLLECTION_${category}_${e.content}`}
+          link={e}
+          category={categories.find((category) => category.uuid == e.categoryId)}
+        />
+      ))}
     </MemoCollectionLinkContainer>
   );
 };
