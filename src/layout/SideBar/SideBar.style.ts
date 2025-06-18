@@ -12,6 +12,7 @@ export const StyledSideBar = styled.div(
     [media[480]]: {
       width: '100%',
       position: 'absolute',
+      zIndex: '1',
     },
   },
   ({ active }: { active: boolean }) => ({
@@ -34,6 +35,18 @@ export const SideBarHeader = styled.div({
   borderBottom: '1px solid #E0E0E2',
   height: '78px',
   boxSizing: 'border-box',
+
+  [media[480]]: {
+    borderBottom: 'none',
+    borderRight: '1px solid #E0E0E2',
+
+    padding: '20px 24px 16px',
+    height: 'auto',
+
+    ['>img']: {
+      width: '105px',
+    },
+  },
 });
 
 export const SideBarContents = styled.div({

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 export const MemoLinkDefaultText = styled.p({
   margin: '0',
@@ -17,21 +17,33 @@ export const MemoLinkContainer = styled.div({
   flexDirection: 'column',
   background: theme.palette.blue[95],
   cursor: 'pointer',
+  width: '320px',
+
+  [media[480]]: {
+    width: '100%',
+  },
 });
 
-export const MemoLinkImage = styled.img({
-  width: '320px',
-  height: '180px',
-  objectFit: 'cover',
+export const MemoLinkImage = styled.div({
+  aspectRatio: '5 / 3',
+  position: 'relative',
+
+  ['img']: {
+    position: 'absolute',
+    objectFit: 'cover',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export const MemoLinkTextContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  padding: '12px 16px',
+  padding: '12px 16px 16px',
   gap: '4px',
   textAlign: 'left',
-  width: '288px',
 
   ['p']: {
     wordWrap: 'break-word',

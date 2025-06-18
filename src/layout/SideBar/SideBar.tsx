@@ -84,10 +84,10 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, EditCategory);
 
   return (
-    <StyledSideBar active={toggleMenu} ref={modalRef}>
+    <StyledSideBar active={toggleMenu}>
       <AddCategoryModal />
       <EditCategoryModal />
-      <SideBarContainer>
+      <SideBarContainer ref={modalRef}>
         <SideBarHeader>
           <LogoImage src={LogoPNG} onClick={handleLogoClick} />
         </SideBarHeader>

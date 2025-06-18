@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 export const MemoTextContainer = styled.div({
   background: theme.color.primary.normal,
@@ -12,18 +12,22 @@ export const MemoTextContainer = styled.div({
 
 export const MemoTextContents = styled.p({
   ...theme.font.body2normal.medium,
-  color: theme.palette.common[100],
+  color: theme.color.label.inverse,
   margin: '0',
   whiteSpace: 'pre-wrap',
-  WebkitLineClamp: '20',
+  WebkitLineClamp: '24',
   display: '-webkit-box',
   WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
+
+  [media[480]]: {
+    WebkitLineClamp: '16',
+  },
 });
 
 export const MemoTextMoreButton = styled.div({
   ...theme.font.body2normal.medium,
-  color: theme.palette.common[100],
+  color: theme.color.label.inverse,
   margin: '0',
 
   display: 'flex',
@@ -31,7 +35,7 @@ export const MemoTextMoreButton = styled.div({
   cursor: 'pointer',
 
   ['svg']: {
-    stroke: theme.palette.common[100],
+    stroke: theme.color.label.inverse,
     height: '16px',
     width: '16px',
   },

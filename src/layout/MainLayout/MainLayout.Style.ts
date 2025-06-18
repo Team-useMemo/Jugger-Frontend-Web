@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { media } from '@styles/theme';
 
 export const StyledMainlayout = styled.div({
   display: 'flex',
@@ -16,4 +17,8 @@ export const StyledMain = styled.div`
 export const StyledContent = styled.div({
   overflow: 'auto',
   height: 'calc(100% - 78px)',
+
+  [media[480]]: {
+    height: '100%',
+  },
 });

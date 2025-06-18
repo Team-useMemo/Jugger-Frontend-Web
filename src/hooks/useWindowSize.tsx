@@ -12,4 +12,9 @@ const useWindowSize = () => {
   return width;
 };
 
+export const useIsMobile = () => {
+  const width = useWindowSize();
+  return width < 480;
+};
+
 export default useWindowSize;

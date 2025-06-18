@@ -1,80 +1,132 @@
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #fff;
-`;
+const LoginPageLayout = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '100dvh',
+  padding: '0 32px',
+  background: theme.color.background.normal,
+});
 
-export const Description = styled.p`
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 10px;
-`;
+const LoginPageContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '44px',
+  width: '100%',
+});
 
-export const Divider = styled.div`
-  width: 250px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-  line-height: 0.1em;
-  margin: 30px 0 20px;
+const LoginPageTitleContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
 
-  span {
-    background: #fff;
-    padding: 0 10px;
-    color: #888;
-    font-size: 12px;
-  }
-`;
+  ...theme.font.body2normal.medium,
+  color: theme.color.label.neutral,
 
-export const Button = styled.button<{ bgColor?: string; textColor?: string }>`
-  position: relative;
-  width: 250px;
-  padding: 12px;
-  margin: 8px 0;
-  background-color: ${({ bgColor }) => bgColor || theme.color.label.inverse};
-  color: ${({ textColor }) => textColor || theme.color.label.normal};
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  gap: 20%;
+  ['>img']: {
+    width: '210px',
+  },
+});
 
-  &:hover {
-    opacity: 0.9;
-  }
-`;
+const LoginPageSocialLoginContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+  width: '100%',
+  maxWidth: '320px',
+  boxSizing: 'border-box',
+});
 
-export const RecentLoginBadge = styled.span`
-  position: absolute;
-  top: -12px;
-  left: 12px;
-  background: ${theme.color.label.normal};
-  color: ${theme.color.label.inverse};
-  border-radius: 12px;
-  padding: 4px 8px;
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1;
-  z-index: 1;
+const LoginPageSocialLoginTitle = styled.div({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 10px;
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid black;
-  }
-`;
+  ...theme.font.body2normal.medium,
+  color: theme.color.label.alternative,
+
+  ['::before,::after']: {
+    content: '""',
+    flexGrow: '1',
+    borderBottom: `1px solid ${theme.color.line.normal}`,
+  },
+});
+
+const LoginPageSocialLoginButtonContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+});
+
+const LoginPageSocialLoginButton = styled.button(
+  ({ textColor, bgColor, borderColor }: { textColor: string; bgColor: string; borderColor: string }) => ({
+    color: textColor,
+    background: bgColor,
+    borderColor: borderColor,
+  }),
+  {
+    display: 'grid',
+    gridTemplateColumns: 'auto 1fr',
+    alignItems: 'center',
+    padding: '16px',
+    borderRadius: theme.radius[6],
+
+    ...theme.font.body1normal.medium,
+
+    position: 'relative',
+
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+    },
+
+    [':hover']: {
+      opacity: '0.9',
+    },
+
+    [':focus']: {
+      outline: 'none',
+    },
+  },
+);
+
+const LoginPageRecentSocialLoginBadge = styled.span({
+  position: 'absolute',
+  top: '-16px',
+  left: '32px',
+  background: theme.color.label.normal,
+
+  ...theme.font.label1reading.medium,
+  color: theme.color.label.inverse,
+  borderRadius: theme.radius[32],
+  padding: '4px 16px',
+  zIndex: '1',
+
+  ['&::after']: {
+    content: '""',
+    position: 'absolute',
+    bottom: '-4px',
+    left: '50%',
+    transform: 'translate(-50%, 0)',
+    width: '0',
+    height: '0',
+    borderLeft: '8px solid transparent',
+    borderRight: '8px solid transparent',
+    borderTop: '8px solid black',
+  },
+});
+
+export {
+  LoginPageLayout,
+  LoginPageContainer,
+  LoginPageTitleContainer,
+  LoginPageSocialLoginContainer,
+  LoginPageSocialLoginTitle,
+  LoginPageSocialLoginButtonContainer,
+  LoginPageSocialLoginButton,
+  LoginPageRecentSocialLoginBadge,
+};

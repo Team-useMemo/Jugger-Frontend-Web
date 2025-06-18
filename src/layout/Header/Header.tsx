@@ -5,12 +5,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
+import { useIsMobile } from '@hooks/useWindowSize';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SearchMemo from '@components/Modal/SearchMemo/SearchMemo';
 import DetailSVG from '@assets/Header/detail.svg?react';
 import SearchSVG from '@assets/Header/search.svg?react';
 import MenuSVG from '@assets/icons/menu.svg?react';
-import { HeaderButtonContainer, HeaderTitle, HeaderTitleCircle, StyledHeader } from './Header.Style';
+import { HeaderButtonContainer, HeaderTitle, StyledHeader } from './Header.Style';
 
 const Header = ({ activeMenu }: { activeMenu: () => void }) => {
   const [searchParams] = useSearchParams();
@@ -34,31 +35,28 @@ const Header = ({ activeMenu }: { activeMenu: () => void }) => {
 
   const [SearchMemoModal] = useParamModal(ModalName.searchMemo, ModalLayoutGray, SearchMemo);
 
+  const isMobile = useIsMobile();
+
   return (
     <StyledHeader ref={modalRef}>
       <SearchMemoModal />
       <MenuSVG onClick={activeMenu} />
-      <HeaderTitle>
-        {category && (
-          <>
-            <HeaderTitleCircle color={category.color} />
-            {category.name}
-          </>
-        )}
-      </HeaderTitle>
+      {category && <HeaderTitle color={category.color}>{category.name}</HeaderTitle>}
       <HeaderButtonContainer>
         <SearchSVG onClick={onSearchClick} />
         <DetailSVG onClick={onDetailClick} />
-        <button
-          onClick={() => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('username');
-            navigate('/');
-          }}
-        >
-          로그아웃
-        </button>
+        {!isMobile && (
+          <button
+            onClick={() => {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('username');
+              navigate('/');
+            }}
+          >
+            로그아웃
+          </button>
+        )}
       </HeaderButtonContainer>
     </StyledHeader>
   );

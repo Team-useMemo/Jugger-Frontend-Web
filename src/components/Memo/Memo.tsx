@@ -11,7 +11,7 @@ const MemoCategory = ({ category }: { category: { name: string; color: string } 
   return (
     <MemoCategoryContainer color={category.color}>
       <span />
-      {category?.name}
+      <p>{category?.name}</p>
     </MemoCategoryContainer>
   );
 };

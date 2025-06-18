@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 export const MemoPageContainer = styled.div({
   display: 'flex',
@@ -12,16 +12,21 @@ export const MemoPageContainer = styled.div({
 // MemoList
 
 export const MemoListContainer = styled.div({
-  gap: '16px',
+  gap: '12px',
   height: '100%',
   display: 'flex',
   flexDirection: 'column-reverse',
-  padding: '24px 0',
+  padding: '24px 0 0',
   overflowY: 'scroll',
   width: '100%',
 
   ['::-webkit-scrollbar']: {
     display: 'none',
+  },
+
+  [media[480]]: {
+    gap: '12px',
+    padding: '16px 0 0',
   },
 });
 
@@ -32,65 +37,89 @@ export const MemoItemContainer = styled.div({
   alignItems: 'center',
 });
 
-export const MemoDateDivideContainer = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  padding: '0 8px',
+export const MemoItemDateContainer = styled.div({
+  padding: '12px 8px',
   boxSizing: 'border-box',
   width: '100%',
-});
-
-export const MemoDateDivideLineTip = styled.span({
-  borderBottom: `1px solid ${theme.color.line.normal}`,
-  margin: '0',
-  height: '0',
-  minWidth: '20px',
-  flexGrow: '1',
-});
-
-export const MemoDateDivideContents = styled.div({
-  width: '100%',
-  maxWidth: '1080px',
-  boxSizing: 'content-box',
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
 
-  ['p']: {
-    margin: '0 12px',
-    color: theme.color.label.assistive,
-    ...theme.font.label1normal.medium,
+  ['::before,::after']: {
+    content: '""',
+    flexGrow: '1',
+    background: theme.color.line.normal,
+    height: '1px',
+  },
+
+  [media[480]]: {
+    padding: '12px 20px',
   },
 });
 
-export const MemoDateDivideLine = styled.span({
-  borderBottom: `1px solid ${theme.color.line.normal}`,
-  margin: '0',
-  height: '0',
-  flexGrow: '1',
+export const MemoItemDateContents = styled.div({
+  display: 'flex',
+  gap: '12px',
+  alignItems: 'center',
+
+  ...theme.font.label1normal.medium,
+  color: theme.color.label.assistive,
+
+  width: '100%',
+  maxWidth: '1080px',
+
+  ['::before']: {
+    content: '""',
+    width: '20px',
+    background: theme.color.line.normal,
+    height: '1px',
+  },
+
+  ['::after']: {
+    content: '""',
+    flexGrow: '1',
+    background: theme.color.line.normal,
+    height: '1px',
+  },
+
+  [media[480]]: {
+    ['::before']: {
+      width: 'auto',
+      flexGrow: '1',
+    },
+  },
 });
 
-// MemoBottom
+// MemoPageBottom
 
-export const MemoBottomContainer = styled.div({
+export const MemoPageBottomContainer = styled.div({
+  background: theme.color.background.normal,
   maxWidth: '1080px',
   width: '100%',
   boxSizing: 'border-box',
   display: 'flex',
   alignItems: 'center',
-  padding: '0 24px 24px',
+  padding: '24px',
   gap: '12px',
+
+  [media[480]]: {
+    padding: '16px 20px 24px',
+  },
 });
 
-export const MemoBottomButtonContainer = styled.div({
+export const MemoPageBottomButtonContainer = styled.div({
   display: 'flex',
   gap: '12px',
 
   ['svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
     cursor: 'pointer',
   },
 });
 
-export const MemoBottomInputContainer = styled.div({
+export const MemoPageBottomInputContainer = styled.div({
   background: theme.color.background.alternative,
   width: '100%',
   display: 'flex',
@@ -122,6 +151,9 @@ export const MemoBottomInputContainer = styled.div({
   },
 
   ['svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
     cursor: 'pointer',
   },
 });
