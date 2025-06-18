@@ -9,4 +9,5 @@ export const ModalName = {
   detailScheduleMemoCollection: 'detailScheduleMemoCollection',
   addCategory: 'addCategory',
   editCategory: 'editCategory',
+  searchMemo: 'searchMemo',
 };

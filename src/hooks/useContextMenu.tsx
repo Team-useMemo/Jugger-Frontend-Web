@@ -121,7 +121,8 @@ export const useContextMenu = ({
         {items.map((item, idx) => (
           <ContextMenuItem
             key={idx}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               item.onClick();
               closeMenu();
             }}

@@ -7,7 +7,6 @@ const CategoryViewerContainer = styled.div({
   background: theme.color.background.normal,
   padding: '32px 32px 40px',
   borderRadius: theme.radius[16],
-  // alignItems: 'end',
   width: '420px',
   boxSizing: 'border-box',
 

@@ -1,9 +1,13 @@
+import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetCalendarQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { useMemo, useState } from 'react';
+import { CategoryProp } from '@ts/Category.Prop';
 import { MemoResponseProp, scheduleProp } from '@ts/Memo.Prop';
+import { ContextMenuCategory, ContextMenuDelete, ContextMenuEdit } from '@utils/ContextMenu';
 import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
+import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
 import LeftArrowSVG from '@assets/icons/left_arrow.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
@@ -24,12 +28,61 @@ import {
   MemoCollectionScheduleListItemTitle,
 } from './MemoCollectionSchedule.Style';
 
-const MemoCollectionSchedule = ({ category }: { category: string }) => {
+const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoResponseProp; category?: CategoryProp }) => {
+  const content = memo.content as scheduleProp;
+
   const dispatch = useAppDispatch();
 
+  const handleCliekScheduleItem = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.detailScheduleMemoCollection,
+        value: content,
+      }),
+    );
+  };
+
+  const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
+    header: { color: category?.color ?? '', title: category?.name ?? '' },
+    items: [
+      {
+        label: '카테고리 설정',
+        onClick: ContextMenuCategory,
+      },
+      {
+        label: '공유',
+        onClick: ContextMenuEdit,
+      },
+      {
+        label: '삭제',
+        onClick: ContextMenuDelete,
+      },
+    ],
+  });
+
+  return (
+    <MemoCollectionScheduleListItemContainer onClick={handleCliekScheduleItem} {...BindContextMenuHandlers}>
+      <ContextMenu />
+      <MemoCollectionScheduleListItemDate>
+        <span>{formatDate(content.startDate, '{Mw}')}</span>
+        {content.startDate.getDate()}
+      </MemoCollectionScheduleListItemDate>
+      <span className="divider" />
+      <MemoCollectionScheduleListItemTitle color={category?.color}>
+        <span />
+        {content.title}
+      </MemoCollectionScheduleListItemTitle>
+      <span className="grow" />
+      <RightArrowSVG />
+    </MemoCollectionScheduleListItemContainer>
+  );
+};
+
+const MemoCollectionSchedule = ({ category }: { category: string }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(new Date(new Date().setDate(1)));
 
+  const { data: categories = [] } = useGetCategoriesQuery();
   const dateList = useMemo(() => getCalendarDates(selectedMonth), [selectedMonth]);
 
   const { data: scheduleMemos = [] } = useGetCalendarQuery({
@@ -63,15 +116,6 @@ const MemoCollectionSchedule = ({ category }: { category: string }) => {
       }),
     [filteredMemos, selectedDate, selectedMonth],
   );
-
-  const handleCliekScheduleItem = (content: scheduleProp) => {
-    dispatch(
-      setModalOpen({
-        name: ModalName.detailScheduleMemoCollection,
-        value: content,
-      }),
-    );
-  };
 
   const handleChangeMonth = (offset: number) => {
     setSelectedMonth((prev) => {
@@ -130,26 +174,11 @@ const MemoCollectionSchedule = ({ category }: { category: string }) => {
           </MemoCollectionScheduleCalendarContentsBody>
         </MemoCollectionScheduleCalendarContents>
       </MemoCollectionScheduleCalendarContainer>
-      <MemoCollectionScheduleListContainer>
-        {scheduleList.map((e) => {
-          const content = e.content as scheduleProp;
 
-          return (
-            <MemoCollectionScheduleListItemContainer onClick={() => handleCliekScheduleItem(content)}>
-              <MemoCollectionScheduleListItemDate>
-                <span>{formatDate(content.startDate, '{Mw}')}</span>
-                {content.startDate.getDate()}
-              </MemoCollectionScheduleListItemDate>
-              <span className="divider" />
-              <MemoCollectionScheduleListItemTitle color={e.categoryColor}>
-                <span />
-                {content.title}
-              </MemoCollectionScheduleListItemTitle>
-              <span className="grow" />
-              <RightArrowSVG />
-            </MemoCollectionScheduleListItemContainer>
-          );
-        })}
+      <MemoCollectionScheduleListContainer>
+        {scheduleList.map((e) => (
+          <MemoCollectionScheduleListItem memo={e} category={categories.find(({ uuid }) => uuid == e.categoryId)} />
+        ))}
       </MemoCollectionScheduleListContainer>
     </MemoCollectionScheduleContainer>
   );

@@ -1,14 +1,14 @@
 import { useDeleteCategoryMutation, useTogglePinMutation } from '@stores/modules/category';
 import { setModalOpen } from '@stores/modules/modal';
 import { useCallback, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
 import { webPath } from '@router/index';
-import PinSVG from '@assets/Sidebar/Pin.svg?react';
-import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
+import { theme } from '@styles/theme';
+import PinSVG from '@assets/icons/pin.svg?react';
 import {
   Content,
   Dot,
@@ -133,7 +133,13 @@ const SideMessage = ({
               transition: 'transform 0.25s ease, opacity 0.25s ease',
             }}
           >
-            <SettingPinSVG onClick={handleCategoryPinClick} />
+            <PinSVG
+              style={{
+                stroke: theme.color.label.normal,
+                fill: isPinned && theme.color.label.normal,
+              }}
+              onClick={handleCategoryPinClick}
+            />
           </PinTriggerWrapper>
         )}
         <MessageInnerWrapper>
@@ -142,7 +148,19 @@ const SideMessage = ({
             <MessageHeader>
               <HeaderLeft>
                 <Title>{title}</Title>
-                {isPinned && <PinSVG onClick={handleCategoryPinClick} />}
+                {isPinned && (
+                  <PinSVG
+                    style={{
+                      width: '16px',
+                      height: 'auto',
+                      aspectRatio: '1 / 1',
+                      stroke: theme.color.label.normal,
+                      strokeWidth: '2',
+                      fill: isPinned && theme.color.label.normal,
+                    }}
+                    onClick={handleCategoryPinClick}
+                  />
+                )}
               </HeaderLeft>
               <Time>
                 {updateAt.toDateString() !== new Date().toDateString()

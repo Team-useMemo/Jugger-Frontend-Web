@@ -95,7 +95,7 @@ const MemoCollectionLink = ({ categoryId }: { categoryId: string }) => {
     <MemoCollectionLinkContainer>
       <MemoCollectionLinkContents>
         {linkData.map((e) => {
-          return <MemoCollectionLinkItem content={e.link} category={categoryId} />;
+          return <MemoCollectionLinkItem content={e.content} category={categoryId} />;
         })}
       </MemoCollectionLinkContents>
     </MemoCollectionLinkContainer>
