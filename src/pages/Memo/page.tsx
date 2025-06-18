@@ -23,20 +23,20 @@ import FullScreenGray from '@components/Modal/Background/FullScreenGray';
 import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
 import { usePostMemoMutation, useGetMemosQuery, usePostCalendarMutation, useUploadFileMutation } from '@stores/modules/memo';
 
-import { useGetCategoriesQuery } from '@stores/modules/category';
+import { categoryApi, useGetCategoriesQuery } from '@stores/modules/category';
+import { useDispatch } from 'react-redux';
 
 
 const MemoList = ({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery({ page: 0, size: 20, }, {
-    selectFromResult: ({ data }) => ({
-      data: currentCategory
-        ? data?.filter((memo) => memo.categoryId === currentCategory)
-        : data
-    }),
-  });
 
+  const { data: allMemos = [] } = useGetMemosQuery({ before: '2099-12-31T23:59:59Z', page: 0, size: 20 });
+  const memos = currentCategory
+    ? allMemos.filter((memo) => memo.categoryId === currentCategory)
+    : allMemos;
+
+  console.log(memos);
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
@@ -73,6 +73,7 @@ const MemoBottom = ({
   openAddPhotoModal: any;
   openAddScheduleModal: any;
 }) => {
+  const dispatch = useDispatch();
 
   const [newMemo, setNewMemo] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -111,6 +112,7 @@ const MemoBottom = ({
           categoryUuid: category || '',
           text: newMemo,
         }).unwrap();
+        dispatch(categoryApi.util.invalidateTags([{ type: 'Category', id: 'LIST' }]));
       } catch (error) {
         console.error('메모 전송 실패:', error);
       }
