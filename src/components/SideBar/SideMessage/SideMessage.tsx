@@ -136,7 +136,7 @@ const SideMessage = ({
             <PinSVG
               style={{
                 stroke: theme.color.label.normal,
-                fill: isPinned && theme.color.label.normal,
+                fill: isPinned ? theme.color.label.normal : '',
               }}
               onClick={handleCategoryPinClick}
             />
