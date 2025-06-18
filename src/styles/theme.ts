@@ -243,6 +243,12 @@ const color = {
   material: {
     /** #171719b3 */ dimmer: '#171719b3',
   },
+
+  /** text */
+  text: {
+    /** #1D212C */
+    onView: '#1D212C',
+  },
 };
 
 const font = {

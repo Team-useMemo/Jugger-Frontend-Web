@@ -1,26 +1,27 @@
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage';
-import useModal from '@hooks/useModal';
+import { setModalOpen } from '@stores/modules/modal';
+import { ModalName } from '@utils/Modal';
+import { useAppDispatch } from '@hooks/useRedux';
 import MemoImageContainer from './MemoImage.Style';
 
-const MemoImage = ({ memoId, content }: { memoId: number; content: string }) => {
-  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal(
-    `memoImage_${memoId}`,
-    FullScreenGray,
-    MemoDetailImage,
-    [],
-    {
-      image: content,
-    },
-  );
+const MemoImage = ({ content }: { memoId: number; content: string }) => {
+  const dispatch = useAppDispatch();
+
+  const openDetailImageMemoModal = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.detailImageMemo,
+        value: {
+          title: '',
+          image: content,
+        },
+      }),
+    );
+  };
 
   return (
-    <>
-      <MemoDetailImageModal />
-      <MemoImageContainer>
-        <img src={content} onClick={() => openMemoDetailImageModal()} />
-      </MemoImageContainer>
-    </>
+    <MemoImageContainer>
+      <img src={content} onClick={openDetailImageMemoModal} />
+    </MemoImageContainer>
   );
 };
 

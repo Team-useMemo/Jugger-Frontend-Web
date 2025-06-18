@@ -18,6 +18,7 @@ export const CalendarMonths = [
 export const getCalendarDates = (date: Date) => {
   const dateList = [];
   const firstDate = new Date(date);
+  firstDate.setDate(1);
   const firstDay = firstDate.getDay() == 0 ? 7 : firstDate.getDay();
   const lastDate = new Date(firstDate);
   lastDate.setMonth(lastDate.getMonth() + 1, 0);
@@ -61,6 +62,8 @@ export const formatDate = (date: Date, format: string) => {
     APh: (~~_hour % 12).toString(),
     m: _minute,
     mm: _minute.padStart(2, '0'),
+    MW: CalendarMonths[date.getMonth()],
+    Mw: CalendarMonths[date.getMonth()].substring(0, 3),
   };
 
   return Object.entries(dateInfo).reduce((acc, [key, value]) => {

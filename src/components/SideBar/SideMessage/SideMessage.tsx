@@ -1,26 +1,26 @@
+import { useDeleteCategoryMutation, useTogglePinMutation } from '@stores/modules/category';
+import { setModalOpen } from '@stores/modules/modal';
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { formatDate } from '@utils/Date';
+import { ModalName } from '@utils/Modal';
+import { useContextMenu } from '@hooks/useContextMenu';
+import { useAppDispatch } from '@hooks/useRedux';
+import { webPath } from '@router/index';
+import { theme } from '@styles/theme';
+import PinSVG from '@assets/icons/pin.svg?react';
 import {
-  MessageItem,
-  MessageBody,
-  MessageHeader,
-  Title,
-  Time,
   Content,
   Dot,
   HeaderLeft,
-  PinTriggerWrapper,
+  MessageBody,
+  MessageHeader,
   MessageInnerWrapper,
+  MessageItem,
+  PinTriggerWrapper,
+  Time,
+  Title,
 } from './SideMessage.Style';
-import PinSVG from '@assets/Sidebar/Pin.svg?react';
-import SettingPinSVG from '@assets/Sidebar/SettingPin.svg?react';
-import { useNavigate } from 'react-router-dom';
-import { useState, useCallback } from 'react';
-import useModal from '@hooks/useModal';
-import EditCategory from '@components/Modal/EditCategory';
-
-import { useDeleteCategoryMutation, useTogglePinMutation } from '@stores/modules/category';
-import { formatDate } from '@utils/Date';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { useContextMenu } from '@hooks/useContextMenu';
 
 interface SideMessageItemProps {
   focus: boolean;
@@ -33,35 +33,40 @@ interface SideMessageItemProps {
   closeMenu: () => void;
 }
 
-const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinned, closeMenu }: SideMessageItemProps) => {
+const SideMessage = ({
+  focus,
+  id,
+  color,
+  title,
+  recentMessage,
+  updateAt,
+  isPinned,
+  closeMenu,
+}: SideMessageItemProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [startX, setStartX] = useState<number | null>(null);
   const [showPinIcon, setShowPinIcon] = useState(false);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [togglePin] = useTogglePinMutation();
-
-  const [EditCategoryModal, openEditCategoryModal] = useModal(
-    `editCategory_${id}`,
-    FullScreenGray,
-    ({ closeModal, props }) => (
-      <EditCategory id={props.id} name={props.name} initialColor={props.initialColor} closeModal={closeModal} />
-    ),
-    [],
-    { id, name: title, initialColor: color },
-  );
 
   const handleCategoryClick = useCallback(() => {
     navigate(`?category=${id}`);
     closeMenu();
   }, [navigate, id, closeMenu]);
 
-  const handlePinClick = useCallback(() => {
+  const handleCategoryPinClick = useCallback(() => {
     togglePin({ id, isPinned: !isPinned });
     setShowPinIcon(false);
   }, [id, isPinned, togglePin]);
 
-  const handleDeleteClick = useCallback(() => {
+  const handleCategoryDeleteClick = useCallback(() => {
+    const currentParams = new URLSearchParams(window.location.search);
+    const category = currentParams.get('category');
+
     deleteCategory(id);
+    if (category == id) navigate(webPath.memo());
   }, [deleteCategory, id]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -80,18 +85,33 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinne
     setStartX(null);
   };
 
+  const handleCategoryEditClick = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.editCategory,
+        value: {
+          id,
+          title,
+          color,
+        },
+      }),
+    );
+  };
+
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
     header: { color, title },
     items: [
-      { label: '즐겨찾기', onClick: handlePinClick },
-      { label: '카테고리 변경', onClick: openEditCategoryModal },
-      { label: '삭제', onClick: handleDeleteClick },
+      { label: '즐겨찾기', onClick: handleCategoryPinClick },
+      {
+        label: '카테고리 변경',
+        onClick: handleCategoryEditClick,
+      },
+      { label: '삭제', onClick: handleCategoryDeleteClick },
     ],
   });
 
   return (
     <>
-      <EditCategoryModal />
       <ContextMenu />
       <MessageItem
         onClick={handleCategoryClick}
@@ -113,7 +133,13 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinne
               transition: 'transform 0.25s ease, opacity 0.25s ease',
             }}
           >
-            <SettingPinSVG onClick={handlePinClick} />
+            <PinSVG
+              style={{
+                stroke: theme.color.label.normal,
+                fill: isPinned ? theme.color.label.normal : '',
+              }}
+              onClick={handleCategoryPinClick}
+            />
           </PinTriggerWrapper>
         )}
         <MessageInnerWrapper>
@@ -122,7 +148,19 @@ const SideMessage = ({ focus, id, color, title, recentMessage, updateAt, isPinne
             <MessageHeader>
               <HeaderLeft>
                 <Title>{title}</Title>
-                {isPinned && <PinSVG onClick={handlePinClick} />}
+                {isPinned && (
+                  <PinSVG
+                    style={{
+                      width: '16px',
+                      height: 'auto',
+                      aspectRatio: '1 / 1',
+                      stroke: theme.color.label.normal,
+                      strokeWidth: '2',
+                      fill: isPinned && theme.color.label.normal,
+                    }}
+                    onClick={handleCategoryPinClick}
+                  />
+                )}
               </HeaderLeft>
               <Time>
                 {updateAt.toDateString() !== new Date().toDateString()

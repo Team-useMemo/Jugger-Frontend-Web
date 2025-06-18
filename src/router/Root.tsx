@@ -13,10 +13,11 @@ const Root = () => {
     if (currentPath.startsWith('/oauth/callback/kakao') || currentPath.startsWith('/login')) {
       return; // 카카오 콜백 페이지는 리다이렉트 건너뜀
     }
-    if (token) {
-      navigate(webPath.memo());
-    } else {
-      navigate(webPath.index());
+
+    if (!token) {
+      navigate(webPath.index(), { replace: true });
+    } else if (currentPath == '/') {
+      navigate(webPath.memo(), { replace: true });
     }
   }, [navigate]);
 

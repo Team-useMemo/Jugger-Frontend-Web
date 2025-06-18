@@ -1,28 +1,23 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-export const MemoDetailTextContainer = styled.div({
+const MemoDetailTextContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
   textAlign: 'left',
-  padding: '0 32px',
-  maxHeight: '720px',
+  maxHeight: '640px',
+  marginTop: '24px',
 });
 
-export const MemoDetailTextTitle = styled.p({
-  ...theme.font.title3.bold,
-  color: theme.color.label.normal,
-  margin: '0',
-});
-
-export const MemoDetailTextContents = styled.p({
+const MemoDetailTextContents = styled.p({
   ...theme.font.body2normal.medium,
   color: theme.color.label.normal,
   margin: '0',
-  width: '400px',
-  maxHeight: '500px',
+  width: '100%',
   overflow: 'auto',
+  whiteSpace: 'pre-wrap',
+
   ['::-webkit-scrollbar']: {
     display: 'none',
   },
@@ -31,3 +26,5 @@ export const MemoDetailTextContents = styled.p({
     width: 'auto',
   },
 });
+
+export { MemoDetailTextContainer, MemoDetailTextContents };

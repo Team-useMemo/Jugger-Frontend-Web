@@ -1,39 +1,31 @@
-import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
-import useModal from '@hooks/useModal';
+import { setModalOpen } from '@stores/modules/modal';
 import { scheduleProp } from '@ts/Memo.Prop';
-import { MemoMainText, MemoScheduleContainer, MemoScheduleContents } from './MemoSchedule.Style';
-import MemoDetailSchedule from '@components/Modal/MemoViewer/Schedule/MemoDetailSchedule';
 import { formatDate } from '@utils/Date';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import { useState } from 'react';
+import { ModalName } from '@utils/Modal';
+import { useAppDispatch } from '@hooks/useRedux';
+import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
+import { MemoMainText, MemoScheduleContainer, MemoScheduleContents } from './MemoSchedule.Style';
 
-const MemoSchedule = ({ memoId, content }: { memoId: number; content: scheduleProp }) => {
-  const [modalProp] = useState({
-    isEdit: false,
-    title: content.title,
-    startDate: content.startDate,
-    endDate: content.endDate,
-  });
+const MemoSchedule = ({ content }: { memoId: number; content: scheduleProp }) => {
+  const dispatch = useAppDispatch();
 
-  const [MemoDetailScheduleModal, openMemoDetailScheduleModal] = useModal(
-    `memoSchedule_${memoId}`,
-    FullScreenGray,
-    MemoDetailSchedule,
-    [],
-    modalProp,
-  );
+  const openDetailScheduleMemoModal = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.detailScheduleMemo,
+        value: content,
+      }),
+    );
+  };
 
   return (
-    <>
-      <MemoDetailScheduleModal />
-      <MemoScheduleContainer onClick={() => openMemoDetailScheduleModal()}>
-        <MemoMainText>{content.title}</MemoMainText>
-        <MemoScheduleContents>
-          <TimeCircleSVG />
-          {formatDate(content.startDate, '{M}월 {D}일 {hh}:{mm}')}
-        </MemoScheduleContents>
-      </MemoScheduleContainer>
-    </>
+    <MemoScheduleContainer onClick={openDetailScheduleMemoModal}>
+      <MemoMainText>{content.title}</MemoMainText>
+      <MemoScheduleContents>
+        <TimeCircleSVG />
+        {formatDate(content.startDate, '{M}월 {D}일 {hh}:{mm}')}
+      </MemoScheduleContents>
+    </MemoScheduleContainer>
   );
 };
 

@@ -1,88 +1,97 @@
-import { MemoViewerCloseContainer } from '../MemoViewer/MemoViewer.Style';
+import { useGetCategoriesQuery } from '@stores/modules/category';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { ModalName } from '@utils/Modal';
+import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import CloseSVG from '@assets/icons/close.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
-import { useState } from 'react';
+import ModalLayoutGray from '../Layout/ModalLayoutGray';
+import DetailImageMemo from '../MemoViewer/Image/DetailImageMemo';
+import DetailScheduleMemo from '../MemoViewer/Schedule/DetailScheduleMemo';
+import MemoCollectionImage from './Image/MemoCollectionImage';
+import MemoCollectionLink from './Link/MemoCollectionLink';
 import {
   MemoCollectionBodyContainer,
-  MemoCollectionBodyContents,
+  MemoCollectionBodyLayout,
   MemoCollectionBodyTitle,
-  MemoCollectionCategories,
-  MemoCollectionCategoryItem,
   MemoCollectionContainer,
   MemoCollectionContents,
   MemoCollectionHeader,
-  MemoCollectionTitle,
-  MemoCollectionTitleItem,
+  MemoCollectionHeaderContents,
+  MemoCollectionHeaderItem,
+  MemoCollectionSideBar,
+  MemoCollectionSideBarItemContainer,
 } from './MemoCollection.Style';
-import MemoCollectionImage from './Image/MemoCollectionImage';
-import MemoCollectionLink from './Link/MemoCollectionLink';
 import MemoCollectionSchedule from './Schedule/MemoCollectionSchedule';
-import { useGetCategoriesQuery } from '@stores/modules/category';
 
-const contentsTypeList = [{ Image: '사진' }, { Calendar: '캘린더' }, { Link: '링크' }];
+const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
+  const [collectionType, setCollectionType] = useState(props.type);
 
-const MemoCollection = ({ closeModal, props }: { closeModal: () => void; props: any }) => {
-  const [contentsType, setContentsType] = useState(props.contentsType);
-  const [categoryId, setCategoryId] = useState(props.categoryId);
+  const [searchParams] = useSearchParams();
+  const [currentCategory] = useState(searchParams.get('category') ?? '');
   const { data: _categories = [] } = useGetCategoriesQuery();
   const categories = [{ uuid: '', color: '#171719', name: '전체' }, ..._categories];
-  // 추후 수정 필요
+  const [selectedCategory, setSelectedCategory] = useState(currentCategory);
+
+  const typeList = [{ image: '사진' }, { schedule: '캘린더' }, { link: '링크' }];
+
+  const handleClickCollectionType = (type: string) => {
+    setCollectionType(type);
+  };
+
+  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, DetailImageMemo);
+  const [DetailScheduleMemoModal] = useParamModal(
+    ModalName.detailScheduleMemoCollection,
+    ModalLayoutGray,
+    DetailScheduleMemo,
+  );
+
   return (
     <MemoCollectionContainer>
+      <DetailImageMemoModal />
+      <DetailScheduleMemoModal />
       <MemoCollectionHeader>
-        <MemoViewerCloseContainer>
-          <CloseSVG onClick={closeModal} />
-        </MemoViewerCloseContainer>
-        <MemoCollectionTitle>
-          {contentsTypeList.map((e) => {
+        <CloseSVG onClick={closeModal} />
+        <MemoCollectionHeaderContents>
+          {typeList.map((e) => {
             const [[key, value]] = Object.entries(e);
             return (
-              <MemoCollectionTitleItem
-                isFocus={contentsType == key}
-                key={`CONTENTS_${key}`}
-                onClick={() => setContentsType(key)}
+              <MemoCollectionHeaderItem
+                key={`COLLECTION_TYPE_${key}`}
+                isFocused={key == collectionType}
+                onClick={() => handleClickCollectionType(key)}
               >
                 {value}
-              </MemoCollectionTitleItem>
+              </MemoCollectionHeaderItem>
             );
           })}
-        </MemoCollectionTitle>
+        </MemoCollectionHeaderContents>
       </MemoCollectionHeader>
       <MemoCollectionContents>
-        <MemoCollectionCategories>
-          {categories.map((e, i) => (
-            <MemoCollectionCategoryItem
-              isFocus={categoryId == e.uuid}
+        <MemoCollectionSideBar>
+          {categories.map((e) => (
+            <MemoCollectionSideBarItemContainer
+              key={`COLLECTION_CATEGORY_${e.uuid}`}
+              isFocused={e.uuid == selectedCategory}
               color={e.color}
-              key={`COLLECTION_${i}`}
-              onClick={() => {
-                setCategoryId(e.uuid);
-              }}
+              onClick={() => setSelectedCategory(e.uuid)}
             >
               <span />
               {e.name}
-            </MemoCollectionCategoryItem>
+            </MemoCollectionSideBarItemContainer>
           ))}
-        </MemoCollectionCategories>
-        <MemoCollectionBodyContainer>
-          {categoryId && (
+        </MemoCollectionSideBar>
+        <MemoCollectionBodyLayout>
+          <MemoCollectionBodyContainer>
             <MemoCollectionBodyTitle>
-              {categories.find(({ uuid }) => uuid == categoryId)?.name}
+              {categories.find((e) => e.uuid == selectedCategory)?.name}
               <RightArrowSVG />
             </MemoCollectionBodyTitle>
-          )}
-          <MemoCollectionBodyContents>
-            {contentsType == 'Image' ? (
-              <MemoCollectionImage categoryId={categoryId} />
-            ) : contentsType == 'Calendar' ? (
-              <MemoCollectionSchedule categoryId={categoryId} />
-            ) : contentsType == 'Link' ? (
-              <MemoCollectionLink categoryId={categoryId} />
-            ) : (
-              ''
-            )}
-          </MemoCollectionBodyContents>
-        </MemoCollectionBodyContainer>
+            {collectionType == 'image' && <MemoCollectionImage category={selectedCategory} />}
+            {collectionType == 'schedule' && <MemoCollectionSchedule category={selectedCategory} />}
+            {collectionType == 'link' && <MemoCollectionLink category={selectedCategory} />}
+          </MemoCollectionBodyContainer>
+        </MemoCollectionBodyLayout>
       </MemoCollectionContents>
     </MemoCollectionContainer>
   );

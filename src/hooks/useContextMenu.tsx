@@ -1,7 +1,13 @@
 // src/hooks/useContextMenu.ts
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ContextMenuHeader,
+  ContextMenuItem,
+  ContextMenuTitle,
+  ContextMenuWrapper,
+  Divider,
+} from '@components/ContextMenu/ContextMenu.Style';
 import { Dot } from '@components/SideBar/SideMessage/SideMessage.Style';
-import { ContextMenuWrapper, ContextMenuHeader, ContextMenuTitle, Divider, ContextMenuItem } from '@components/ContextMenu/ContextMenu.Style';
 
 type ContextMenuHandlers = {
   onContextMenu: (e: React.MouseEvent | React.TouchEvent) => void;
@@ -18,7 +24,10 @@ interface UseContextMenuProps {
   items: ContextMenuItemProps[];
 }
 
-export const useContextMenu = ({ header, items }: UseContextMenuProps): [() => React.ReactNode, ContextMenuHandlers] => {
+export const useContextMenu = ({
+  header,
+  items,
+}: UseContextMenuProps): [() => React.ReactNode, ContextMenuHandlers] => {
   const [anchor, setAnchor] = useState<{ x: number; y: number } | null>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -100,7 +109,7 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps): [() => R
 
     return (
       <ContextMenuWrapper ref={contextMenuRef} style={{ top: anchor.y, left: anchor.x }}>
-        {header &&
+        {header && (
           <>
             <ContextMenuHeader>
               <Dot style={{ backgroundColor: header.color }} />
@@ -108,11 +117,12 @@ export const useContextMenu = ({ header, items }: UseContextMenuProps): [() => R
             </ContextMenuHeader>
             <Divider />
           </>
-        }
+        )}
         {items.map((item, idx) => (
           <ContextMenuItem
             key={idx}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               item.onClick();
               closeMenu();
             }}

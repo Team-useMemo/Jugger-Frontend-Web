@@ -70,6 +70,9 @@ const JuggerButton = styled.button(
       ['svg']: {
         stroke: theme.color.label.assistive,
       },
+      [':hover']: {
+        borderColor: 'transparent',
+      },
     },
   },
 );

@@ -1,10 +1,23 @@
-import PaperClipSVG from '@assets/icons/paperclip.svg?react';
-import CalendarSVG from '@assets/icons/calendar.svg?react';
-import SendSVG from '@assets/icons/send.svg?react';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import useModal from '@hooks/useModal';
-import MemoComponent from '@components/Memo/Memo';
+import { categoryApi, useGetCategoriesQuery } from '@stores/modules/category';
+import { useGetCalendarQuery, useGetMemosQuery, useGetPhotosQuery, usePostMemoMutation } from '@stores/modules/memo';
+import { setModalOpen } from '@stores/modules/modal';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { formatDate } from '@utils/Date';
+import { ModalName } from '@utils/Modal';
+import useParamModal from '@hooks/useParamModal';
+import { useAppDispatch } from '@hooks/useRedux';
+import MemoComponent from '@components/Memo/Memo';
+import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
+import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
+import AddImageMemo from '@components/Modal/MemoViewer/Image/AddImageMemo';
+import DetailImageMemo from '@components/Modal/MemoViewer/Image/DetailImageMemo';
+import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
+import DetailScheduleMemo from '@components/Modal/MemoViewer/Schedule/DetailScheduleMemo';
+import DetailTextMemo from '@components/Modal/MemoViewer/Text/DetailTextMemo';
+import CalendarSVG from '@assets/icons/calendar.svg?react';
+import PaperClipSVG from '@assets/icons/paperclip.svg?react';
+import SendSVG from '@assets/icons/send.svg?react';
 import {
   MemoBottomButtonContainer,
   MemoBottomContainer,
@@ -17,26 +30,39 @@ import {
   MemoListContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
-import MemoAddSchedule from '@components/Modal/MemoViewer/Schedule/MemoAddSchedule';
-import { formatDate } from '@utils/Date';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import MemoAddImage from '@components/Modal/MemoViewer/Image/MemoAddImage';
-import { usePostMemoMutation, useGetMemosQuery, usePostCalendarMutation, useUploadFileMutation } from '@stores/modules/memo';
 
-import { categoryApi, useGetCategoriesQuery } from '@stores/modules/category';
-import { useDispatch } from 'react-redux';
-
-
-const MemoList = ({ currentCategory }: { currentCategory: string }) => {
+const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
+  const { data: textMemos = [] } = useGetMemosQuery(
+    { page: 0, size: 20 },
+    {
+      selectFromResult: ({ data }) => ({
+        data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
+      }),
+    },
+  );
 
-  const { data: allMemos = [] } = useGetMemosQuery({ before: '2099-12-31T23:59:59Z', page: 0, size: 20 });
-  const memos = currentCategory
-    ? allMemos.filter((memo) => memo.categoryId === currentCategory)
-    : allMemos;
+  const { data: scheduleMemos = [] } = useGetCalendarQuery(
+    { start: '2025-01-01T11:24:37.506Z', end: '2025-12-31T11:24:37.506Z' },
+    {
+      selectFromResult: ({ data }) => ({
+        data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
+      }),
+    },
+  );
 
-  console.log(memos);
+  const { data: imageMemos = [] } = useGetPhotosQuery(
+    { category_uuid: currentCategory },
+    {
+      selectFromResult: ({ data }) => ({
+        data: data?.map((e) => ({ ...e, categoryId: currentCategory })),
+      }),
+    },
+  );
+
+  const memos = [...textMemos, ...scheduleMemos, ...imageMemos].sort((a, b) => b.date.getTime() - a.date.getTime());
+
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
@@ -62,21 +88,14 @@ const MemoList = ({ currentCategory }: { currentCategory: string }) => {
       })}
     </MemoListContainer>
   );
-};
+});
 
-const MemoBottom = ({
-  category,
-  openAddPhotoModal,
-  openAddScheduleModal,
-}: {
-  category: string | null;
-  openAddPhotoModal: any;
-  openAddScheduleModal: any;
-}) => {
-  const dispatch = useDispatch();
-
+const MemoBottom = () => {
+  const [searchParams] = useSearchParams();
+  const currentCategory = searchParams.get('category');
   const [newMemo, setNewMemo] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const dispatch = useAppDispatch();
 
   const [postMemo] = usePostMemoMutation();
 
@@ -109,7 +128,7 @@ const MemoBottom = ({
     (async () => {
       try {
         await postMemo({
-          categoryUuid: category || '',
+          categoryUuid: currentCategory || '',
           text: newMemo,
         }).unwrap();
         dispatch(categoryApi.util.invalidateTags([{ type: 'Category', id: 'LIST' }]));
@@ -125,11 +144,19 @@ const MemoBottom = ({
     })();
   };
 
+  const openAddImageMemoModal = () => {
+    dispatch(setModalOpen({ name: ModalName.addImageMemo }));
+  };
+
+  const openAddScheduleMemoModal = () => {
+    dispatch(setModalOpen({ name: ModalName.addScheduleMemo }));
+  };
+
   return (
     <MemoBottomContainer>
       <MemoBottomButtonContainer>
-        <PaperClipSVG onClick={() => openAddPhotoModal()} />
-        <CalendarSVG onClick={() => openAddScheduleModal()} />
+        <PaperClipSVG onClick={openAddImageMemoModal} />
+        <CalendarSVG onClick={openAddScheduleMemoModal} />
       </MemoBottomButtonContainer>
       <MemoBottomInputContainer>
         <textarea
@@ -149,55 +176,23 @@ const MemoPage = () => {
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get('category');
 
-  const [postCalendar] = usePostCalendarMutation();
-  const [postPhoto] = useUploadFileMutation();
-
-  const addSchedule = async (title: string, startDate: Date, endDate: Date) => {
-    try {
-      await postCalendar({
-        name: title,
-        startTime: startDate.toISOString(),
-        endTime: endDate.toISOString(),
-        categoryId: currentCategory || '',
-      }).unwrap();
-    } catch (error) {
-      console.error('일정 전송 실패:', error);
-    }
-  };
-
-  const addImage = (image: string) => {
-    const dataURLtoFile = (dataUrl: string, filename: string): File => {
-      const arr = dataUrl.split(',');
-      const mime = arr[0].match(/:(.*?);/)?.[1] || '';
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-
-      return new File([u8arr], filename, { type: mime });
-    };
-    const file = dataURLtoFile(image, 'image.png');
-    postPhoto({ file, category_uuid: currentCategory || '' });
-  };
-
-  const [MemoAddScheduleModal, openMemoAddScheduleModal] = useModal('addSchedule', FullScreenGray, MemoAddSchedule, [
-    addSchedule,
-  ]);
-  const [MemoAddImageModal, openMemoAddImageModal] = useModal('addImage', FullScreenGray, MemoAddImage, [addImage]);
+  const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
+  const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
+  const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
+  const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, DetailTextMemo);
+  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, DetailImageMemo);
+  const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, DetailScheduleMemo);
 
   return (
     <MemoPageContainer>
-      <MemoAddScheduleModal />
-      <MemoAddImageModal />
+      <MemoCollectionModal />
+      <AddScheduleMemoModal />
+      <AddImageMemoModal />
+      <DetailTextMemoModal />
+      <DetailImageMemoModal />
+      <DetailScheduleMemoModal />
       <MemoList currentCategory={currentCategory || ''} />
-      <MemoBottom
-        category={currentCategory}
-        openAddPhotoModal={openMemoAddImageModal}
-        openAddScheduleModal={openMemoAddScheduleModal}
-      />
+      <MemoBottom />
     </MemoPageContainer>
   );
 };

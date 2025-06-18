@@ -1,118 +1,103 @@
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import MemoDetailImage from '@components/Modal/MemoViewer/Image/MemoDetailImage';
-import useModal from '@hooks/useModal';
-import { formatDate } from '@utils/Date';
+import { useGetCategoriesQuery } from '@stores/modules/category';
+import { useGetPhotosQuery } from '@stores/modules/memo';
+import { setModalOpen } from '@stores/modules/modal';
+import { CategoryProp } from '@ts/Category.Prop';
+import { MemoResponseProp } from '@ts/Memo.Prop';
 import {
-  MemoColectionImageItemContainer,
+  ContextMenuCategory,
+  ContextMenuCopy,
+  ContextMenuDelete,
+  ContextMenuEdit,
+  ContextMenuShare,
+} from '@utils/ContextMenu';
+import { formatDate } from '@utils/Date';
+import { ModalName } from '@utils/Modal';
+import { useContextMenu } from '@hooks/useContextMenu';
+import { useAppDispatch } from '@hooks/useRedux';
+import {
+  MemoCollectionImageContainer,
+  MemoCollectionImageItemContainer,
   MemoCollectionImageListContainer,
   MemoCollectionImageListContents,
   MemoCollectionImageListTitle,
 } from './MemoCollectionImage.Style';
-import { useGetPhotosQuery } from '@stores/modules/memo';
-import { useContextMenu } from '@hooks/useContextMenu';
 
+const MemoCollectionImageItem = ({ memo, category }: { memo: MemoResponseProp; category?: CategoryProp }) => {
+  const dispatch = useAppDispatch();
 
-const MemoCollectionImageItem = ({ image, handleClickImage, }: { image: string; handleClickImage: (image: string) => void; }) => {
+  const content = memo.content as string;
 
-
-  const handleCopy = () => {
-    // TODO: 카테고리 설정 모달 열기
-  };
-
-  const handleShare = () => {
-    // TODO: 즐겨찾기 토글 API 연결 예정
-  };
-
-  const handleDeleteMemo = () => {
-    // TODO: 삭제 확인 모달 또는 삭제 API 호출
+  const handleClickImage = (image: string) => {
+    dispatch(setModalOpen({ name: ModalName.detailImageMemoCollection, value: { image: image } }));
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
+    header: { color: category?.color ?? '', title: category?.name ?? '' },
     items: [
       {
+        label: '카테고리 설정',
+        onClick: ContextMenuCategory,
+      },
+      {
         label: '복사',
-        onClick: handleCopy,
+        onClick: ContextMenuCopy,
+      },
+      {
+        label: '수정',
+        onClick: ContextMenuEdit,
       },
       {
         label: '공유',
-        onClick: handleShare,
+        onClick: ContextMenuShare,
       },
       {
         label: '삭제',
-        onClick: handleDeleteMemo,
+        onClick: ContextMenuDelete,
       },
     ],
   });
 
   return (
-    <>
+    <MemoCollectionImageItemContainer onClick={() => handleClickImage(content)} {...BindContextMenuHandlers}>
       <ContextMenu />
-      <MemoColectionImageItemContainer
-        {...BindContextMenuHandlers}
-        onClick={() => {
-          handleClickImage(image);
-        }}
-      >
-        <img src={image} />
-      </MemoColectionImageItemContainer>
-    </>
+      <img src={content} />
+    </MemoCollectionImageItemContainer>
   );
 };
 
-const MemoCollectionImageList = ({
-  dateStr,
-  images,
-  handleClickImage,
-}: {
-  dateStr: string;
-  images: any[];
-  handleClickImage: (image: string) => void;
-}) => {
-  return (
-    <MemoCollectionImageListContainer>
-      <MemoCollectionImageListTitle>
-        {formatDate(new Date(dateStr), '{YYYY}년 {MM}월 {DD}일 {W}요일')}
-      </MemoCollectionImageListTitle>
-      <MemoCollectionImageListContents>
-        {images.map((e, i) => {
-          return <MemoCollectionImageItem key={i} image={e.url} handleClickImage={handleClickImage} />;
-        })}
-      </MemoCollectionImageListContents>
-    </MemoCollectionImageListContainer>
+const MemoCollectionImage = ({ category }: { category: string }) => {
+  const { data: imageLists = [] } = useGetPhotosQuery({ category_uuid: category });
+  const { data: categories = [] } = useGetCategoriesQuery();
+
+  const images = Object.entries(
+    [...imageLists].reverse().reduce((acc: any, e) => {
+      const dateStr = e.date.toDateString();
+      return {
+        ...acc,
+        [dateStr]: acc[dateStr] ? [...acc[dateStr], { ...e, categoryId: category }] : [{ ...e, categoryId: category }],
+      };
+    }, {}),
   );
-};
 
-const MemoCollectionImage = ({ categoryId }: { categoryId: string }) => {
-  const [MemoDetailImageModal, openMemoDetailImageModal] = useModal('image', FullScreenGray, MemoDetailImage, [],);
-  const { data: imageLists = [] } = useGetPhotosQuery({ category_uuid: categoryId });
-
-  const images =
-    Object.entries(
-      imageLists.reduce((acc: any, e) => {
-        const dateStr = new Date(e.timestamp).toDateString();
-        return {
-          ...acc.url,
-          [dateStr]: acc[dateStr] ? [...acc[dateStr], e] : [e],
-        };
-      }, {}),
-    ).sort(([aKey], [bKey]) => new Date(bKey).getTime() - new Date(aKey).getTime());
-
-
-  const handleClickImage = (url: string) => {
-    openMemoDetailImageModal({ url });
-  };
   return (
-    <>
-      <MemoDetailImageModal />
-      {images.map(([key, value]: [string, any]) =>
-        <MemoCollectionImageList
-          key={`Image_${key}`}
-          dateStr={key}
-          images={value}
-          handleClickImage={handleClickImage}
-        />
-      )}
-    </>
+    <MemoCollectionImageContainer>
+      {images.map(([date, imageArr]: [string, any]) => (
+        <MemoCollectionImageListContainer key={`IMAGE_COLLECTION_${date}`}>
+          <MemoCollectionImageListTitle>
+            {formatDate(new Date(date), '{YYYY}년 {MM}월 {DD}일 {W}요일')}
+          </MemoCollectionImageListTitle>
+          <MemoCollectionImageListContents>
+            {imageArr.map((memo: MemoResponseProp, i: number) => (
+              <MemoCollectionImageItem
+                key={`IMAGE_COLLECTION_${date}_${i}`}
+                memo={memo}
+                category={categories.find((e) => e.uuid == category)}
+              />
+            ))}
+          </MemoCollectionImageListContents>
+        </MemoCollectionImageListContainer>
+      ))}
+    </MemoCollectionImageContainer>
   );
 };
 

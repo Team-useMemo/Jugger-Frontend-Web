@@ -12,10 +12,12 @@ export interface MemoResponseProp {
   content: string | scheduleProp;
   date: Date;
   categoryId: string | null;
+  categoryColor?: string;
 }
+
 export interface CalendarResponseProp {
   startDateTime: string;
-  endDateTime: string;
+  endDateTime?: string;
   categoryId: string;
   categoryColor: string;
   title: string;
