@@ -6,6 +6,7 @@ import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import AddCategory from '@components/Modal/Category/AddCategory';
+import EditCategory from '@components/Modal/Category/EditCategory';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMenu from '@components/SideBar/SideMenu/SideMenu';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
@@ -37,13 +38,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
 
   const dispatch = useAppDispatch();
 
-  // const [AddCategoryModal, openAddCategoryModal] = useModal(
-  //   'addCategory',
-  //   FullScreenGray,
-  //   ({ closeModal }) => <AddCategory closeModal={closeModal} />,
-  //   [],
-  // );
-
   const onWholeMemoClick = () => {
     setSearchParams({});
   };
@@ -64,7 +58,6 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   };
 
   const handleClickAddCategory = () => {
-    // openAddCategoryModal();
     dispatch(setModalOpen({ name: ModalName.addCategory }));
   };
 
@@ -88,10 +81,12 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
   }, [closeMenu]);
 
   const [AddCategoryModal] = useParamModal(ModalName.addCategory, ModalLayoutGray, AddCategory);
+  const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, EditCategory);
 
   return (
     <StyledSideBar active={toggleMenu} ref={modalRef}>
       <AddCategoryModal />
+      <EditCategoryModal />
       <SideBarContainer>
         <SideBarHeader>
           <LogoImage src={LogoPNG} onClick={handleLogoClick} />

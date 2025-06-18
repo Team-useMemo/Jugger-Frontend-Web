@@ -1,4 +1,4 @@
-import { useAddCategoryMutation } from '@stores/modules/category';
+import { useEditCategoryMutation } from '@stores/modules/category';
 import { useState } from 'react';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
@@ -16,10 +16,10 @@ import {
 
 const CATEGORY_COLORS = ['#FF4242', '#00BF40', '#00AEFF', '#FF5E00', '#00BDDE', '#4F29E5', '#CB59FF', '#F553DA'];
 
-const AddCategory = ({ closeModal }: ModalComponentProps) => {
-  const [title, setTitle] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
-  const [isEdit, setIsEdit] = useState(false);
+const EditCategory = ({ closeModal, props }: ModalComponentProps) => {
+  const { id: categoryId } = props;
+  const [title, setTitle] = useState(props.title);
+  const [selectedColor, setSelectedColor] = useState<string>(props.color);
 
   const [editCategory] = useEditCategoryMutation();
 
@@ -38,7 +38,7 @@ const AddCategory = ({ closeModal }: ModalComponentProps) => {
   const handleAddCategory = async () => {
     try {
       const result = await editCategory({
-        id,
+        id: categoryId,
         title: title,
         color: selectedColor,
       }).unwrap();
@@ -57,7 +57,7 @@ const AddCategory = ({ closeModal }: ModalComponentProps) => {
         <CategoryViewerItemContainer>
           카테고리 이름
           <CategoryViewerItemInput>
-            <input placeholder="입력" value={title} onChange={handleTitleChange} />
+            <input placeholder={props.title} value={title} onChange={handleTitleChange} />
             {title && <EndContainerSVG onClick={handleTitleReset} />}
           </CategoryViewerItemInput>
         </CategoryViewerItemContainer>
@@ -75,11 +75,16 @@ const AddCategory = ({ closeModal }: ModalComponentProps) => {
           </CategoryViewerItemColorContainer>
         </CategoryViewerItemContainer>
       </CategoryViewerContents>
-      <JuggerButton color="primary" size="medium" disabled={!title || !selectedColor} onClick={handleAddCategory}>
-        추가
+      <JuggerButton
+        color="primary"
+        size="medium"
+        disabled={!title || !selectedColor || (title == props.title && selectedColor == props.color)}
+        onClick={handleAddCategory}
+      >
+        변경
       </JuggerButton>
     </CategoryViewerContainer>
   );
 };
 
-export default AddCategory;
+export default EditCategory;
