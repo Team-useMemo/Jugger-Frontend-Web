@@ -7,4 +7,6 @@ export const ModalName = {
   memoCollection: 'memoCollection',
   detailImageMemoCollection: 'detailImageMemoCollection',
   detailScheduleMemoCollection: 'detailScheduleMemoCollection',
+  addCategory: 'addCategory',
+  editCategory: 'editCategory',
 };

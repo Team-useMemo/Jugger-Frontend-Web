@@ -3,10 +3,10 @@ import { setModalOpen } from '@stores/modules/modal';
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
-import useModal from '@hooks/useModal';
+import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
-import AddCategory from '@components/Modal/AddCategory';
-import FullScreenGray from '@components/Modal/Background/FullScreenGray';
+import AddCategory from '@components/Modal/Category/AddCategory';
+import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMenu from '@components/SideBar/SideMenu/SideMenu';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import LogoPNG from '@assets/Logo.png';
@@ -37,12 +37,12 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
 
   const dispatch = useAppDispatch();
 
-  const [AddCategoryModal, openAddCategoryModal] = useModal(
-    'addCategory',
-    FullScreenGray,
-    ({ closeModal }) => <AddCategory closeModal={closeModal} />,
-    [],
-  );
+  // const [AddCategoryModal, openAddCategoryModal] = useModal(
+  //   'addCategory',
+  //   FullScreenGray,
+  //   ({ closeModal }) => <AddCategory closeModal={closeModal} />,
+  //   [],
+  // );
 
   const onWholeMemoClick = () => {
     setSearchParams({});
@@ -63,8 +63,9 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     window.alert('환경설정');
   };
 
-  const onAddCategoryClick = () => {
-    openAddCategoryModal();
+  const handleClickAddCategory = () => {
+    // openAddCategoryModal();
+    dispatch(setModalOpen({ name: ModalName.addCategory }));
   };
 
   const handleLogoClick = () => {
@@ -86,6 +87,8 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
     };
   }, [closeMenu]);
 
+  const [AddCategoryModal] = useParamModal(ModalName.addCategory, ModalLayoutGray, AddCategory);
+
   return (
     <StyledSideBar active={toggleMenu} ref={modalRef}>
       <AddCategoryModal />
@@ -99,7 +102,7 @@ const SideBar = ({ toggleMenu, closeMenu }: { toggleMenu: boolean; closeMenu: ()
           <SideMenu title="사진" icon={ImageSVG} onClick={() => onMemoCollectionClick('image')} />
           <SideMenu title="링크" icon={LinkSVG} onClick={() => onMemoCollectionClick('link')} />
           <SideMenu title="설정" icon={SettingSVG} onClick={onSettingClick} />
-          <AddCategoryButton onClick={onAddCategoryClick}>+ 새 카테고리 추가</AddCategoryButton>
+          <AddCategoryButton onClick={handleClickAddCategory}>+ 새 카테고리 추가</AddCategoryButton>
 
           <MessageSection>
             {[...categories.filter((msg) => msg.isPinned), ...categories.filter((msg) => !msg.isPinned)].map(
