@@ -77,7 +77,7 @@ const SearchMemo = () => {
 
   const filteredMemos = memos.filter((memo) => {
     const matchesQuery = isSubsequence(getMemoSearchText(memo), searchQuery);
-    const matchesCategory = selectedCategory === null || memo.categoryId === selectedCategory?.uuid;
+    const matchesCategory = selectedCategory === null || memo.categoryId === selectedCategory?.categoryId;
     return matchesQuery && matchesCategory;
   });
 
@@ -90,7 +90,7 @@ const SearchMemo = () => {
   };
 
   const handleChangeSelectedCategory = (category: CategoryProp) => {
-    if (selectedCategory && selectedCategory.uuid == category.uuid) {
+    if (selectedCategory && selectedCategory.categoryId == category.categoryId) {
       setSelectedCategory(null);
       return;
     }
@@ -106,9 +106,9 @@ const SearchMemo = () => {
       <SearchMemoInputContainer>
         {!selectedCategory && <SearchSVG />}
         {selectedCategory && (
-          <SearchMemoInputCategory color={selectedCategory.color}>
+          <SearchMemoInputCategory color={selectedCategory.categoryColor}>
             <span />
-            {selectedCategory.name}
+            {selectedCategory.categoryName}
             <EndContainerSVG onClick={handleResetSelectedCategory} />
           </SearchMemoInputCategory>
         )}
@@ -120,9 +120,9 @@ const SearchMemo = () => {
         <SearchMemoCategoryContents>
           {categories.map((e) => {
             return (
-              <SearchMemoCategoryItem color={e.color} onClick={() => handleChangeSelectedCategory(e)}>
+              <SearchMemoCategoryItem color={e.categoryColor} onClick={() => handleChangeSelectedCategory(e)}>
                 <span />
-                {e.name}
+                {e.categoryName}
               </SearchMemoCategoryItem>
             );
           })}
@@ -134,7 +134,7 @@ const SearchMemo = () => {
             <SearchMemoResult
               searchQuery={searchQuery}
               memo={memo}
-              category={categories.find((category) => category.uuid == memo.categoryId)}
+              category={categories.find((category) => category.categoryId == memo.categoryId)}
             />
           ))}
         </SearchMemoResultContainer>
@@ -160,7 +160,7 @@ const SearchMemoResult = ({
 
   const handleClickResultItem = () => {
     navigate(`?category=${memo.categoryId}`, { replace: false });
-    dispatch(setModalClose(ModalName.searchMemo));
+    dispatch(setModalClose({ name: ModalName.searchMemo }));
 
     setTimeout(() => {
       const memoElement = document.getElementById(`memo-${memo.id}`);
@@ -180,9 +180,9 @@ const SearchMemoResult = ({
         {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.id}_${i}`}>{e.text}</span> : e.text))}
       </SearchMemoResultItemContents>
       {category && (
-        <SearchMemoResultItemCategory color={category.color}>
+        <SearchMemoResultItemCategory color={category.categoryColor}>
           <span />
-          {category.name}
+          {category.categoryName}
         </SearchMemoResultItemCategory>
       )}
     </SearchMemoResultItemContainer>

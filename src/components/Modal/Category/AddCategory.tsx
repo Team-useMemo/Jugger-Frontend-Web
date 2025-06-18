@@ -40,7 +40,7 @@ const AddCategory = ({ closeModal }: ModalComponentProps) => {
         color: selectedColor,
       }).unwrap();
       console.log('카테고리 생성 성공:', result);
-      closeModal();
+      closeModal?.();
     } catch (error) {
       console.error('카테고리 생성 실패:', error);
     }

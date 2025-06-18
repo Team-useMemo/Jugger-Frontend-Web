@@ -91,7 +91,7 @@ const AddImageMemo = ({ closeModal }: ModalComponentProps) => {
           category_uuid: currentCategory ?? '',
         }).unwrap();
 
-        closeModal();
+        closeModal?.();
       } catch (error) {
         console.error('사진 전송 실패:', error);
       }
