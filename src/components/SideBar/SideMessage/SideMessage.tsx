@@ -20,6 +20,7 @@ import {
   SideMessagePinContainer,
   SideMessageRecentMessage,
 } from './SideMessage.Style';
+import { memoApi } from '@stores/modules/memo';
 
 const SideMessage = ({ category }: { category: CategoryProp }) => {
   const [searchParams] = useSearchParams();
@@ -82,6 +83,8 @@ const SideMessage = ({ category }: { category: CategoryProp }) => {
 
   const handleCategoryDeleteClick = useCallback(() => {
     deleteCategory(categoryId);
+
+    dispatch(memoApi.util.invalidateTags([{ type: 'Memo', id: 'LIST' }]));
     if (currentCategory == categoryId) navigate(webPath.memo());
   }, [deleteCategory, currentCategory, categoryId]);
 
