@@ -11,8 +11,10 @@ import { useIsMobile } from '@hooks/useWindowSize';
 import MemoComponent from '@components/Memo/Memo';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
+import MemoDetailImage from '@components/Modal/MemoDetail/Image/MemoDetailImage';
+import MemoDetailSchedule from '@components/Modal/MemoDetail/Schedule/MemoDetailSchedule';
+import MemoDetailText from '@components/Modal/MemoDetail/Text/MemoDetailText';
 import AddImageMemo from '@components/Modal/MemoViewer/Image/AddImageMemo';
-import DetailImageMemo from '@components/Modal/MemoViewer/Image/DetailImageMemo';
 import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
 import DetailScheduleMemo from '@components/Modal/MemoViewer/Schedule/DetailScheduleMemo';
 import DetailTextMemo from '@components/Modal/MemoViewer/Text/DetailTextMemo';
@@ -33,10 +35,16 @@ import {
 
 const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(0);
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: textMemos = [] } = useGetMemosQuery(
-    { page: 0, size: 20 },
     {
+      page: page,
+      //  size: 20
+      size: 200,
+    },
+    {
+      skip: false,
       selectFromResult: ({ data }) => ({
         data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
       }),
@@ -69,16 +77,24 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
 
   return (
     <MemoListContainer ref={memoListContainerRef}>
-      {memos.map((e, i, arr) => {
+      <div
+        onClick={() => {
+          console.log(page);
+          setPage((prev) => prev + 1);
+        }}
+      >
+        asd
+      </div>
+      {memos.map((memo, i, arr) => {
         return (
-          <MemoItemContainer key={`memo-${e.id}-${i}`} id={`memo-${e.id}`}>
+          <MemoItemContainer key={`memo-${memo.memoId}-${i}`} id={`memo-${memo.memoId}`}>
             {(i == arr.length - 1 ||
-              (i + 1 < arr.length && arr[i + 1].date.toDateString() != e.date.toDateString())) && (
+              (i + 1 < arr.length && arr[i + 1].date.toDateString() != memo.date.toDateString())) && (
               <MemoItemDateContainer>
-                <MemoItemDateContents>{formatDate(e.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
+                <MemoItemDateContents>{formatDate(memo.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
               </MemoItemDateContainer>
             )}
-            <MemoComponent memo={e} category={categories.find(({ categoryId }) => categoryId == e.categoryId)} />
+            <MemoComponent memo={memo} category={categories.find(({ categoryId }) => categoryId == memo.categoryId)} />
           </MemoItemContainer>
         );
       })}
@@ -179,9 +195,9 @@ const MemoPage = () => {
   const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
   const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
   const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
-  const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, DetailTextMemo);
-  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, DetailImageMemo);
-  const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, DetailScheduleMemo);
+  const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, MemoDetailText);
+  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, MemoDetailImage);
+  const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, MemoDetailSchedule);
 
   return (
     <MemoPageContainer>

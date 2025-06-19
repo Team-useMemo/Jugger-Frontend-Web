@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const ViewerScheduleMemoContainer = styled.div(
   ({ isDetail }: { isDetail?: boolean }) =>
@@ -11,6 +11,10 @@ const ViewerScheduleMemoContainer = styled.div(
     flexDirection: 'column',
     gap: '36px',
     width: '100%',
+
+    [media[480]]: {
+      height: '100%',
+    },
   },
 );
 
@@ -18,6 +22,11 @@ const ViewerScheduleMemoItemContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
+
+  [media[480]]: {
+    flexGrow: '1',
+    overflow: 'auto',
+  },
 });
 
 const ViewerScheduleMemoItemContents = styled.div({
@@ -74,6 +83,7 @@ const ViewerScheduleMemoItemInput = styled.label({
     height: 'auto',
     aspectRatio: '1 / 1',
     cursor: 'pointer',
+    flexShrink: '0',
   },
 });
 

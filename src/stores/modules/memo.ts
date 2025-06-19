@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CalendarResponseProp, LinkResponseProp, MemoResponseProp, PhotoResponseProp } from '@ts/Memo.Prop';
+import { CalendarResponseProp, LinkResponseProp, MemoProp, MemoResponseProp, PhotoResponseProp } from '@ts/Memo.Prop';
 import { customBaseQuery } from './customBaseQuery';
 
 export const memoApi = createApi({
@@ -7,10 +7,11 @@ export const memoApi = createApi({
   baseQuery: customBaseQuery,
   tagTypes: ['Memo', 'Calendar', 'Photo', 'Link'],
   endpoints: (builder) => ({
-    getMemos: builder.query<MemoResponseProp[], { before?: string; page: number; size: number }>({
+    getMemos: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
       query: ({ before = new Date(Date.now() + 1000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
-      transformResponse: (response: any): MemoResponseProp[] => {
+      transformResponse: (response: any): MemoProp[] => {
+        // console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any, index: number) => {
@@ -30,7 +31,7 @@ export const memoApi = createApi({
                       : item.data;
 
               return {
-                id: index,
+                memoId: index,
                 type,
                 content,
                 date: new Date(item.timestamp),
@@ -40,12 +41,19 @@ export const memoApi = createApi({
           )
           .sort((a: MemoResponseProp, b: MemoResponseProp) => b.date.getTime() - a.date.getTime());
       },
+      // serializeQueryArgs: ({ endpointName }) => endpointName,
+      // merge: (currentCache, newItems) => {
+      //   currentCache.push(...newItems);
+      // },
+      // forceRefetch({ currentArg, previousArg }) {
+      //   return currentArg?.page !== previousArg?.page;
+      // },
       providesTags: (result): readonly { type: 'Memo'; id: string | number }[] =>
         result
           ? [
               ...result.map((memo) => ({
                 type: 'Memo' as const,
-                id: memo.id,
+                id: memo.memoId,
               })),
               { type: 'Memo', id: 'LIST' },
             ]
@@ -81,17 +89,17 @@ export const memoApi = createApi({
         { type: 'Calendar', id: 'LIST' },
       ],
     }),
-    getCalendar: builder.query<MemoResponseProp[], { start?: string; end?: string }>({
+    getCalendar: builder.query<MemoProp[], { start?: string; end?: string }>({
       query: ({ start = '2025-01-01T00:00:00.007Z', end = '2025-12-31T00:00:00.007Z' }) => ({
         url: `/api/v1/calendar?start=${start}&end=${end}`,
         method: 'GET',
       }),
-      transformResponse: (response: CalendarResponseProp[]): MemoResponseProp[] => {
+      transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
           .map(
             (e, i: number) =>
               ({
-                id: i,
+                memoId: i,
                 type: 'schedule',
                 content: {
                   title: e.title,
@@ -99,11 +107,10 @@ export const memoApi = createApi({
                   endDate: e.endDateTime ? new Date(e.endDateTime) : null,
                 },
                 categoryId: e.categoryId,
-                categoryColor: e.categoryColor,
                 date: new Date(e.startDateTime),
-              }) as MemoResponseProp,
+              }) as MemoProp,
           )
-          .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
+          .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
@@ -125,37 +132,37 @@ export const memoApi = createApi({
         { type: 'Photo', id: 'LIST' },
       ],
     }),
-    getPhotos: builder.query<MemoResponseProp[], { category_uuid: string }>({
+    getPhotos: builder.query<MemoProp[], { category_uuid: string }>({
       query: ({ category_uuid }) => ({
         url: `/api/v1/photos?category_uuid=${category_uuid}`,
         method: 'GET',
       }),
-      transformResponse: (response: PhotoResponseProp[]): MemoResponseProp[] => {
+      transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
         return response
           .map(
-            (e, i: number) =>
+            (e, i) =>
               ({
-                id: i,
+                memoId: i,
                 type: 'image',
                 content: e.url,
                 categoryId: e.categoryName,
                 date: new Date(e.timestamp),
-              }) as MemoResponseProp,
+              }) as MemoProp,
           )
-          .sort((a: MemoResponseProp, b: MemoResponseProp) => a.date.getTime() - b.date.getTime());
+          .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    getLinks: builder.query<MemoResponseProp[], { categoryId: string }>({
+    getLinks: builder.query<MemoProp[], { categoryId: string }>({
       query: ({ categoryId }) => ({
         url: `/api/v1/links?categoryId=${categoryId}`,
         method: 'GET',
       }),
-      transformResponse: (response: any): MemoResponseProp[] => {
+      transformResponse: (response: any): MemoProp[] => {
         if (!response?.[0]) return [];
         const { linkData } = response[0];
         return linkData.map((e: LinkResponseProp, i: number) => ({
-          id: i,
+          memoId: i,
           type: 'link',
           content: e.link,
           categoryId: response[0].categoryUuid,

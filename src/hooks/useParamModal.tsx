@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from './useRedux';
 export type ModalComponentProps = {
   closeModal?: () => void;
   props?: any;
+  modalRef?: any;
 };
 
 const useParamModal = (
@@ -78,9 +79,7 @@ const useParamModal = (
 
     return (
       <ModalLayout>
-        <div ref={modalRef}>
-          <ModalComponent closeModal={closeModal} props={modalProps} />
-        </div>
+        <ModalComponent closeModal={closeModal} props={modalProps} modalRef={modalRef} />
       </ModalLayout>
     );
   }, [closeModal, modalProps]);

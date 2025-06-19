@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalClose, setModalOpen, setModalReplace } from '@stores/modules/modal';
 import { useRef } from 'react';
@@ -12,7 +11,6 @@ import AddCategory from '@components/Modal/Category/AddCategory';
 import EditCategory from '@components/Modal/Category/EditCategory';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
-import { theme } from '@styles/theme';
 import SearchSVG from '@assets/Header/search.svg?react';
 import LogoPNG from '@assets/Logo.png';
 import CalendarSVG from '@assets/Sidebar/Calendar.svg?react';
@@ -28,6 +26,7 @@ import {
   SideBarHeader,
   SideBarMenuContainer,
   SideBarMenuItemContainer,
+  SideBarSearchContainer,
 } from './SideBar.style';
 
 const SideBar = () => {
@@ -95,15 +94,15 @@ const SideBar = () => {
   const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, EditCategory);
 
   const sidebarMenus = [
-    { title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
+    { key: 'memo', title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
     ...(!isMobile
       ? [
-          { title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
-          { title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
-          { title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
+          { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
+          { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
+          { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
         ]
       : []),
-    { title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
+    { key: 'setting', title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
   ];
 
   return (
@@ -122,7 +121,7 @@ const SideBar = () => {
       <SideBarContents>
         <SideBarMenuContainer>
           {sidebarMenus.map((menu) => (
-            <SideBarMenuItemContainer onClick={menu.onClick}>
+            <SideBarMenuItemContainer key={`SIDEBAR_MENU_${menu.key}`} onClick={menu.onClick}>
               <menu.iconSVG />
               {menu.title}
             </SideBarMenuItemContainer>
@@ -144,37 +143,5 @@ const SideBar = () => {
     </SideBarContainer>
   );
 };
-
-const SideBarSearchContainer = styled.label({
-  background: theme.color.background.alternative,
-  margin: '12px 16px',
-  boxSizing: 'border-box',
-  padding: '16px 12px',
-  borderRadius: theme.radius[8],
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
-
-  ['>svg']: {
-    width: '20px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-  },
-
-  ['>input']: {
-    background: 'transparent',
-    border: 'none',
-
-    ...theme.font.body2normal.medium,
-
-    [':focus']: {
-      outline: 'none',
-    },
-
-    ['::placeholder']: {
-      color: theme.color.label.alternative,
-    },
-  },
-});
 
 export default SideBar;

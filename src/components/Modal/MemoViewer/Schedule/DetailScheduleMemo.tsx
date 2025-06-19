@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 // import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
 import { ModalComponentProps } from '@hooks/useParamModal';
+import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
@@ -17,6 +18,7 @@ import {
 } from './ViewerScheduleMemo.Style';
 
 const DetailScheduleMemo = ({ closeModal, props }: ModalComponentProps) => {
+  const isMobile = useIsMobile();
   const [title, setTitle] = useState<string>(props.title);
   const [startDate, setStartDate] = useState<Date | null>(props.startDate);
   const [endDate, setEndDate] = useState<Date | null>(props.endDate);
@@ -168,7 +170,12 @@ const DetailScheduleMemo = ({ closeModal, props }: ModalComponentProps) => {
               </ViewerScheduleMemoItemContents>
             )}
           </ViewerScheduleMemoItemContainer>
-          <JuggerButton color="primary" size="medium" disabled={!(title && startDate)} onClick={handleClickSend}>
+          <JuggerButton
+            color="primary"
+            size={!isMobile ? 'medium' : 'small'}
+            disabled={!(title && startDate)}
+            onClick={handleClickSend}
+          >
             {!isEdit ? '수정' : '수정 완료'}
           </JuggerButton>
         </ViewerScheduleMemoContainer>

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const AddImageMemoContainer = styled.div({
   marginTop: '24px',
@@ -83,6 +83,12 @@ const DetailImageMemoContainer = styled.div({
   gap: '24px',
   marginTop: '24px',
   width: '100%',
+
+  [media[480]]: {
+    flexGrow: '1',
+    gap: '12px',
+    marginTop: '12px',
+  },
 });
 
 const DetailImageMemoImageContainer = styled.div({
@@ -93,6 +99,22 @@ const DetailImageMemoImageContainer = styled.div({
     maxHeight: '480px',
     width: '100%',
     objectFit: 'contain',
+  },
+
+  [media[480]]: {
+    flexGrow: '1',
+
+    display: 'flex',
+    position: 'relative',
+    background: theme.color.background.alternative,
+
+    ['>img']: {
+      position: 'absolute',
+      maxHeight: 'none',
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+    },
   },
 });
 

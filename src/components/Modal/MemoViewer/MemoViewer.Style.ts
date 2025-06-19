@@ -15,12 +15,19 @@ const MemoViewerContainer = styled.div({
   },
 
   ['>svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
     marginRight: '32px',
     cursor: 'pointer',
+    flexShrink: '0',
   },
 
   [media[480]]: {
-    maxWidth: '360px',
+    width: '100dvw',
+    height: '100dvh',
+    boxSizing: 'border-box',
+    borderRadius: '0',
   },
 });
 
@@ -30,6 +37,10 @@ const MemoViewerContents = styled.div({
   padding: '0 32px',
   width: '100%',
   boxSizing: 'border-box',
+
+  [media[480]]: {
+    height: '100%',
+  },
 });
 
 const MemoViewerTitle = styled.div({

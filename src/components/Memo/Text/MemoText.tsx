@@ -5,7 +5,7 @@ import { useAppDispatch } from '@hooks/useRedux';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import { MemoTextContainer, MemoTextContents, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
 
-const MemoText = ({ memoId, content }: { categoryName: any; memoId: number; content: string }) => {
+const MemoText = ({ content }: { content: string }) => {
   const memoRef = useRef<HTMLParagraphElement>(null);
   const [activeMore, setActiveMore] = useState(false);
 
@@ -17,7 +17,7 @@ const MemoText = ({ memoId, content }: { categoryName: any; memoId: number; cont
         setActiveMore(memoRef.current.scrollHeight > memoRef.current.clientHeight);
       }
     }, 0);
-  }, [content, memoId]);
+  }, [content]);
 
   const dispatch = useAppDispatch();
 
@@ -27,7 +27,7 @@ const MemoText = ({ memoId, content }: { categoryName: any; memoId: number; cont
         name: ModalName.detailTextMemo,
         value: {
           title: '',
-          text: content,
+          content,
         },
       }),
     );
