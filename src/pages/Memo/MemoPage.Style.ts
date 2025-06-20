@@ -120,6 +120,13 @@ export const MemoPageBottomButtonContainer = styled.div({
   },
 });
 
+export const MemoPageBottomButtonLabel = styled.label({
+  display: 'flex',
+  ['>input']: {
+    display: 'none',
+  },
+});
+
 export const MemoPageBottomInputContainer = styled.div({
   background: theme.color.background.alternative,
   width: '100%',

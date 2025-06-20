@@ -4,20 +4,19 @@ import { setModalOpen } from '@stores/modules/modal';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
+import { setStorageItem } from '@utils/LocalStorage';
 import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import MemoComponent from '@components/Memo/Memo';
+import AddImageMemo from '@components/Modal/AddImageMemo/AddImageMemo';
+import AddScheduleMemo from '@components/Modal/AddScheduleMemo/AddScheduleMemo';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
 import MemoDetailImage from '@components/Modal/MemoDetail/Image/MemoDetailImage';
 import MemoDetailSchedule from '@components/Modal/MemoDetail/Schedule/MemoDetailSchedule';
 import MemoDetailText from '@components/Modal/MemoDetail/Text/MemoDetailText';
-import AddImageMemo from '@components/Modal/MemoViewer/Image/AddImageMemo';
-import AddScheduleMemo from '@components/Modal/MemoViewer/Schedule/AddScheduleMemo';
-import DetailScheduleMemo from '@components/Modal/MemoViewer/Schedule/DetailScheduleMemo';
-import DetailTextMemo from '@components/Modal/MemoViewer/Text/DetailTextMemo';
 import SearchMemo from '@components/Modal/SearchMemo/SearchMemo';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
@@ -28,6 +27,7 @@ import {
   MemoItemDateContents,
   MemoListContainer,
   MemoPageBottomButtonContainer,
+  MemoPageBottomButtonLabel,
   MemoPageBottomContainer,
   MemoPageBottomInputContainer,
   MemoPageContainer,
@@ -159,7 +159,34 @@ const MemoPageBottom = () => {
     })();
   };
 
+  const handlePasteClipboardImage = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData.items;
+
+    [...items].some((e) => {
+      if (e.type.indexOf('image') === -1) return false;
+
+      const blob = e.getAsFile();
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        dispatch(
+          setModalOpen({
+            name: ModalName.addImageMemo,
+            value: { image: reader.result as string },
+          }),
+        );
+      };
+
+      if (blob) {
+        reader.readAsDataURL(blob);
+      }
+
+      return true;
+    });
+  };
+
   const openAddImageMemoModal = () => {
+    if (isMobile) return;
     dispatch(setModalOpen({ name: ModalName.addImageMemo }));
   };
 
@@ -167,10 +194,30 @@ const MemoPageBottom = () => {
     dispatch(setModalOpen({ name: ModalName.addScheduleMemo }));
   };
 
+  const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onloadend = () => {
+      dispatch(
+        setModalOpen({
+          name: ModalName.addImageMemo,
+          value: { image: reader.result as string },
+        }),
+      );
+    };
+  };
+
   return (
     <MemoPageBottomContainer>
       <MemoPageBottomButtonContainer>
-        <PaperClipSVG onClick={openAddImageMemoModal} />
+        <MemoPageBottomButtonLabel>
+          <PaperClipSVG onClick={openAddImageMemoModal} />
+          {isMobile && <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleChangeFile} />}
+        </MemoPageBottomButtonLabel>
         <CalendarSVG onClick={openAddScheduleMemoModal} />
       </MemoPageBottomButtonContainer>
       <MemoPageBottomInputContainer>
@@ -179,6 +226,7 @@ const MemoPageBottom = () => {
           placeholder="메시지를 입력하세요"
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
+          onPaste={handlePasteClipboardImage}
           value={newMemo}
         />
         <SendSVG onClick={handleClickSend} />
@@ -195,15 +243,30 @@ const MemoPage = () => {
   const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
   const [AddImageMemoModal] = useParamModal(ModalName.addImageMemo, ModalLayoutGray, AddImageMemo);
   const [AddScheduleMemoModal] = useParamModal(ModalName.addScheduleMemo, ModalLayoutGray, AddScheduleMemo);
+  const [EditScheduleMemoModal] = useParamModal(ModalName.editScheduleMemo, ModalLayoutGray, AddScheduleMemo);
   const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, MemoDetailText);
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, MemoDetailImage);
   const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, MemoDetailSchedule);
+
+  useEffect(() => {
+    console.log(
+      setStorageItem('tmp', {
+        tmp: {
+          content: {
+            date: new Date(),
+            title: 1233,
+          },
+        },
+      }),
+    );
+  }, []);
 
   return (
     <MemoPageContainer>
       <SearchMemoModal />
       <MemoCollectionModal />
       <AddScheduleMemoModal />
+      <EditScheduleMemoModal />
       <AddImageMemoModal />
       <DetailTextMemoModal />
       <DetailImageMemoModal />

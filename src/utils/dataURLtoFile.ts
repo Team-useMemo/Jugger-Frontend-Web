@@ -1,5 +1,5 @@
-const dataURLtoFile = (dataUrl: string, filename: string): File => {
-  const arr = dataUrl.split(',');
+const dataURLtoFile = (dataUrl: string | null, filename: string): File => {
+  const arr = (dataUrl ?? '').split(',');
   const mime = arr[0].match(/:(.*?);/)?.[1] || '';
   const bstr = atob(arr[1]);
   const u8arr = new Uint8Array(bstr.length);

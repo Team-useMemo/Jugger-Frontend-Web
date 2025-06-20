@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ModalName } from '@utils/Modal';
 import { useAppDispatch } from '@hooks/useRedux';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
-import { MemoTextContainer, MemoTextContents, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
+import { MemoTextContainer, MemoTextMoreButton, MemoTextMoreDivideLine } from './MemoText.Style';
 
 const MemoText = ({ content }: { content: string }) => {
   const memoRef = useRef<HTMLParagraphElement>(null);
@@ -35,7 +35,7 @@ const MemoText = ({ content }: { content: string }) => {
 
   return (
     <MemoTextContainer>
-      <MemoTextContents ref={memoRef}>{content}</MemoTextContents>
+      <p ref={memoRef}>{content}</p>
       {activeMore && (
         <>
           <MemoTextMoreDivideLine />

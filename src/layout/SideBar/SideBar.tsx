@@ -1,9 +1,8 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalClose, setModalOpen, setModalReplace } from '@stores/modules/modal';
-import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
-import useParamModal from '@hooks/useParamModal';
+import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
@@ -29,9 +28,8 @@ import {
   SideBarSearchContainer,
 } from './SideBar.style';
 
-const SideBar = () => {
+const SideBar = ({ modalRef }: ModalComponentProps) => {
   const [, setSearchParams] = useSearchParams();
-  const modalRef = useRef<HTMLDivElement>(null);
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
 
   const { data: categories = [] } = useGetCategoriesQuery(undefined, {

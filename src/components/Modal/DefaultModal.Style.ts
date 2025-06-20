@@ -9,14 +9,20 @@ const DefaultModalLayout = styled.div({
   display: 'flex',
   overflow: 'hidden',
 
-  [media['480']]: {
+  [media[480]]: {
     padding: '0',
+    width: '100%',
+    height: '100%',
   },
 });
 
 const DefaultModalContainer = styled.div(
-  ({ maxWidth }: { maxWidth: string }) => ({
-    maxWidth: maxWidth,
+  ({ maxWidth }: { maxWidth?: string }) => ({
+    maxWidth: maxWidth ?? '',
+    width: maxWidth ? '100vw' : '',
+    [media['480']]: {
+      maxWidth: '100dvw',
+    },
   }),
   {
     display: 'flex',
@@ -24,7 +30,6 @@ const DefaultModalContainer = styled.div(
     padding: '32px',
     background: theme.color.background.normal,
     borderRadius: theme.radius[16],
-    width: '100vw',
     boxSizing: 'border-box',
 
     ['>svg']: {
@@ -36,9 +41,15 @@ const DefaultModalContainer = styled.div(
       cursor: 'pointer',
     },
 
+    [':focus']: {
+      outline: 'none',
+    },
+
     [media['480']]: {
       borderRadius: '0',
       padding: '0px',
+      width: '100%',
+      height: '100%',
     },
   },
 );
@@ -49,12 +60,22 @@ const DefaultModalHeader = styled.div({
   flexShrink: '0',
   position: 'relative',
 
+  ['.grow']: {
+    flexGrow: '1',
+  },
+
   ['>svg']: {
     width: '24px',
     height: 'auto',
     aspectRatio: '1 / 1',
     cursor: 'pointer',
     stroke: theme.color.label.normal,
+  },
+
+  ['>p']: {
+    ...theme.font.body1normal.medium,
+    color: theme.color.primary.normal,
+    margin: '0 8px 0 0',
   },
 });
 

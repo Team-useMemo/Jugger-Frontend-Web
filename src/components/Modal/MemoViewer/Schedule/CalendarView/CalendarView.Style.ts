@@ -4,10 +4,11 @@ import { theme } from '@styles/theme';
 const CalendarViewContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  outline: `1.5px solid ${theme.color.primary.normal}`,
-  borderRadius: theme.radius[4],
+  outline: `2px solid ${theme.color.primary.normal}`,
+  borderRadius: theme.radius[6],
   padding: '24px',
   gap: '24px',
+  outlineOffset: '-2px',
 });
 
 const CalendarViewHeader = styled.div({

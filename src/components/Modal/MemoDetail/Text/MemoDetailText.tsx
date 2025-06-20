@@ -5,7 +5,7 @@ import {
   DefaultModalHeader,
   DefaultModalHeaderTitle,
   DefaultModalLayout,
-} from '@components/Modal/MemoViewer/DefaultModal.Style';
+} from '@components/Modal/DefaultModal.Style';
 import CloseSVG from '@assets/icons/close.svg?react';
 import LeftArrosSVG from '@assets/icons/left_arrow.svg?react';
 import { MemoDetailTextContainer, MemoDetailTextContents } from './MemoDetailText.Style';

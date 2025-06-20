@@ -8,20 +8,21 @@ export const MemoTextContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '8px',
-});
 
-export const MemoTextContents = styled.p({
-  ...theme.font.body2normal.medium,
-  color: theme.color.label.inverse,
-  margin: '0',
-  whiteSpace: 'pre-wrap',
-  WebkitLineClamp: '24',
-  display: '-webkit-box',
-  WebkitBoxOrient: 'vertical',
-  overflow: 'hidden',
+  ['>p']: {
+    ...theme.font.body2normal.medium,
+    color: theme.color.label.inverse,
+    margin: '0',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
+    WebkitLineClamp: '24',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
 
-  [media[480]]: {
-    WebkitLineClamp: '16',
+    [media[480]]: {
+      WebkitLineClamp: '16',
+    },
   },
 });
 

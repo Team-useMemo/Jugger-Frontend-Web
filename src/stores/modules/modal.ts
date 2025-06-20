@@ -17,40 +17,44 @@ export const ModalSlice = createSlice({
       state.value = {
         ...state.value,
         [action.payload.name]: {
-          state: state.value[action.payload.name].state ?? false,
+          state: 'set',
           value: action.payload.value,
         },
       };
     },
-    setModalOpen: (state, action: PayloadAction<{ name: string; value?: any }>) => {
+    setModalOpen: (state, action: PayloadAction<{ name: string; value?: any; replaced?: boolean }>) => {
       state.value = {
         ...state.value,
         [action.payload.name]: {
-          state: true,
+          state: 'open',
           value: action.payload.value,
+          replaced: action.payload.replaced,
         },
       };
     },
-    setModalClose: (state, action: PayloadAction<{ name: string; to?: string; replace?: boolean }>) => {
+    setModalClose: (state, action: PayloadAction<{ name: string; value?: any; to?: string; replace?: boolean }>) => {
       state.value = {
         ...state.value,
         [action.payload.name]: {
-          state: false,
-          value: null,
+          state: 'close',
+          value: action.payload.value,
           to: action.payload.to,
           replace: action.payload.replace,
         },
       };
     },
-    setModalReplace: (state, action: PayloadAction<{ prev: string; to: string; value?: any }>) => {
+    setModalReplace: (state, action: PayloadAction<{ prev: string; to: string; value?: any; replace?: boolean }>) => {
       state.value = {
         ...state.value,
         [action.payload.prev]: {
-          state: true,
-          replace: {
-            to: action.payload.to,
-            value: action.payload.value,
-          },
+          state: 'replace',
+          value: action.payload.value,
+          to: action.payload.to,
+          replace: action.payload.replace,
+        },
+        [action.payload.to]: {
+          state: 'replaced',
+          value: action.payload.value,
         },
       };
     },
