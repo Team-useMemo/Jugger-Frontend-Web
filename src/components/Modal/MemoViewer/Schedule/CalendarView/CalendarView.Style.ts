@@ -37,7 +37,7 @@ const CalendarViewTitle = styled.div({
   ...theme.font.heading1.semibold,
   color: theme.color.label.normal,
 
-  ['svg']: {
+  ['>svg']: {
     stroke: theme.color.primary.normal,
     width: '24px',
     height: 'auto',

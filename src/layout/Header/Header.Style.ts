@@ -6,17 +6,29 @@ const HeaderContainer = styled.div({
   width: '100%',
   flexGrow: '1',
   boxSizing: 'border-box',
-  padding: '28px 24px 20px',
-  gap: '64px',
+  padding: '0px 24px',
   minWidth: 0,
   borderBottom: '1px solid #E0E0E2',
   height: '78px',
+  position: 'relative',
+
+  [media[480]]: {
+    padding: '0 12px',
+    height: 'auto',
+  },
+});
+
+const HeaderContents = styled.div({
+  display: 'flex',
+  gap: '64px',
+  width: '100%',
+  boxSizing: 'border-box',
+  padding: '28px 0px 20px',
 
   [media[480]]: {
     justifyContent: 'space-between',
-    padding: '14px 12px',
     gap: '12px',
-    height: 'auto',
+    padding: '14px 0',
   },
 });
 
@@ -68,12 +80,24 @@ const HeaderTitleContainer = styled.div(
       flexShrink: '0',
     },
 
+    ['>svg']: {
+      flexShrink: '0',
+      stroke: theme.color.label.alternative,
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
+
     [media[480]]: {
       position: 'absolute',
       left: '50%',
       transform: 'translateX(-50%);',
       maxWidth: 'calc(100% - 72px * 2)',
       boxSizing: 'border-box',
+      gap: '0px',
+
+      ['::before']: {
+        marginRight: '8px',
+      },
 
       ['>p']: {
         overflow: 'hidden',
@@ -82,6 +106,11 @@ const HeaderTitleContainer = styled.div(
         margin: '0',
         ...theme.font.body2normal.semibold,
         color: theme.color.label.normal,
+      },
+
+      ['>svg']: {
+        width: '16px',
+        marginLeft: '2px',
       },
     },
   },
@@ -108,4 +137,4 @@ const HeaderButtonContainer = styled.div({
   },
 });
 
-export { HeaderContainer, HeaderMenuContainer, HeaderTitleContainer, HeaderButtonContainer };
+export { HeaderContainer, HeaderContents, HeaderMenuContainer, HeaderTitleContainer, HeaderButtonContainer };
