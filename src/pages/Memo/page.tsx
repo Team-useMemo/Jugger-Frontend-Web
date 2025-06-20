@@ -4,7 +4,6 @@ import { setModalOpen } from '@stores/modules/modal';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
-import { setStorageItem } from '@utils/LocalStorage';
 import { ModalName } from '@utils/Modal';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
@@ -20,6 +19,7 @@ import MemoDetailText from '@components/Modal/MemoDetail/Text/MemoDetailText';
 import SearchMemo from '@components/Modal/SearchMemo/SearchMemo';
 import CalendarSVG from '@assets/icons/calendar.svg?react';
 import PaperClipSVG from '@assets/icons/paperclip.svg?react';
+import PlusSVG from '@assets/icons/plus.svg?react';
 import SendSVG from '@assets/icons/send.svg?react';
 import {
   MemoItemContainer,
@@ -27,8 +27,9 @@ import {
   MemoItemDateContents,
   MemoListContainer,
   MemoPageBottomButtonContainer,
-  MemoPageBottomButtonLabel,
+  MemoPageBottomButtonMenuContainer,
   MemoPageBottomContainer,
+  MemoPageBottomContents,
   MemoPageBottomInputContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
@@ -102,6 +103,69 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
   );
 });
 
+const useMemoBottomMenu = (): [() => React.ReactNode, () => void] => {
+  const dispatch = useAppDispatch();
+
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const openMenu = () => setOpen(true);
+  const closeMenu = () => setOpen(false);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      dispatch(
+        setModalOpen({
+          name: ModalName.addImageMemo,
+          value: { image: reader.result as string },
+        }),
+      );
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddSchedule = () => {
+    dispatch(setModalOpen({ name: ModalName.addScheduleMemo }));
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener('mousedown', handleOutsideClick);
+    window.addEventListener('touchstart', handleOutsideClick);
+    return () => {
+      window.removeEventListener('mousedown', handleOutsideClick);
+      window.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [open]);
+
+  const Menu = () => {
+    if (!open) return null;
+
+    return (
+      <MemoPageBottomButtonMenuContainer ref={menuRef}>
+        <label>
+          사진 추가
+          <input type="file" accept="image/*" onChange={handleFileSelect} />
+        </label>
+        <p onClick={handleAddSchedule}>일정 추가</p>
+      </MemoPageBottomButtonMenuContainer>
+    );
+  };
+
+  return [Menu, openMenu];
+};
+
 const MemoPageBottom = () => {
   const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
@@ -113,6 +177,7 @@ const MemoPageBottom = () => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [postMemo] = usePostMemoMutation();
+  const [MemoBottomMenu, openMenu] = useMemoBottomMenu();
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -186,7 +251,6 @@ const MemoPageBottom = () => {
   };
 
   const openAddImageMemoModal = () => {
-    if (isMobile) return;
     dispatch(setModalOpen({ name: ModalName.addImageMemo }));
   };
 
@@ -194,43 +258,32 @@ const MemoPageBottom = () => {
     dispatch(setModalOpen({ name: ModalName.addScheduleMemo }));
   };
 
-  const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    reader.onloadend = () => {
-      dispatch(
-        setModalOpen({
-          name: ModalName.addImageMemo,
-          value: { image: reader.result as string },
-        }),
-      );
-    };
-  };
-
   return (
     <MemoPageBottomContainer>
-      <MemoPageBottomButtonContainer>
-        <MemoPageBottomButtonLabel>
-          <PaperClipSVG onClick={openAddImageMemoModal} />
-          {isMobile && <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleChangeFile} />}
-        </MemoPageBottomButtonLabel>
-        <CalendarSVG onClick={openAddScheduleMemoModal} />
-      </MemoPageBottomButtonContainer>
-      <MemoPageBottomInputContainer>
-        <textarea
-          ref={textareaRef}
-          placeholder="메시지를 입력하세요"
-          onChange={handleInputChange}
-          onKeyDown={handleInputKeyDown}
-          onPaste={handlePasteClipboardImage}
-          value={newMemo}
-        />
-        <SendSVG onClick={handleClickSend} />
-      </MemoPageBottomInputContainer>
+      <MemoPageBottomContents>
+        <MemoBottomMenu />
+        <MemoPageBottomButtonContainer>
+          {!isMobile ? (
+            <>
+              <PaperClipSVG onClick={openAddImageMemoModal} />
+              <CalendarSVG onClick={openAddScheduleMemoModal} />
+            </>
+          ) : (
+            <PlusSVG onClick={openMenu} />
+          )}
+        </MemoPageBottomButtonContainer>
+        <MemoPageBottomInputContainer>
+          <textarea
+            ref={textareaRef}
+            placeholder="메시지를 입력하세요"
+            onChange={handleInputChange}
+            onKeyDown={handleInputKeyDown}
+            onPaste={handlePasteClipboardImage}
+            value={newMemo}
+          />
+          <SendSVG onClick={handleClickSend} />
+        </MemoPageBottomInputContainer>
+      </MemoPageBottomContents>
     </MemoPageBottomContainer>
   );
 };
@@ -247,19 +300,6 @@ const MemoPage = () => {
   const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, MemoDetailText);
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, MemoDetailImage);
   const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, MemoDetailSchedule);
-
-  useEffect(() => {
-    console.log(
-      setStorageItem('tmp', {
-        tmp: {
-          content: {
-            date: new Date(),
-            title: 1233,
-          },
-        },
-      }),
-    );
-  }, []);
 
   return (
     <MemoPageContainer>

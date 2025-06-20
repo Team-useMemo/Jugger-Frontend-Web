@@ -98,13 +98,51 @@ export const MemoPageBottomContainer = styled.div({
   width: '100%',
   minWidth: '0',
   boxSizing: 'border-box',
-  display: 'flex',
-  alignItems: 'center',
   padding: '24px',
-  gap: '12px',
 
   [media[480]]: {
     padding: '16px 20px 24px',
+  },
+});
+
+export const MemoPageBottomContents = styled.div({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  [media[480]]: {
+    position: 'relative',
+  },
+});
+
+export const MemoPageBottomButtonMenuContainer = styled.div({
+  position: 'absolute',
+  background: theme.color.background.normal,
+  bottom: '100%',
+  left: '0',
+  padding: '12px 8px',
+  borderRadius: theme.radius[12],
+  boxShadow: theme.shadow.strong,
+  width: '160px',
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexDirection: 'column',
+
+  ['>p,>label']: {
+    margin: '0',
+    textAlign: 'left',
+    padding: '6px',
+    boxSizing: 'border-box',
+
+    ...theme.font.body2normal.semibold,
+    color: theme.color.label.normal,
+    borderRadius: theme.radius[4],
+
+    [':active']: {
+      background: theme.color.fill.normal,
+    },
+
+    ['>input']: { display: 'none' },
   },
 });
 
@@ -117,13 +155,6 @@ export const MemoPageBottomButtonContainer = styled.div({
     height: 'auto',
     aspectRatio: '1 / 1',
     cursor: 'pointer',
-  },
-});
-
-export const MemoPageBottomButtonLabel = styled.label({
-  display: 'flex',
-  ['>input']: {
-    display: 'none',
   },
 });
 

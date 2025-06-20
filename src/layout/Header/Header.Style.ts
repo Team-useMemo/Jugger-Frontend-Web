@@ -69,11 +69,19 @@ const HeaderTitleContainer = styled.div(
     },
 
     [media[480]]: {
-      width: 'auto',
-      flexGrow: '0',
+      position: 'absolute',
+      left: '50%',
+      transform: 'translateX(-50%);',
+      maxWidth: 'calc(100% - 72px * 2)',
+      boxSizing: 'border-box',
 
       ['>p']: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        margin: '0',
         ...theme.font.body2normal.semibold,
+        color: theme.color.label.normal,
       },
     },
   },

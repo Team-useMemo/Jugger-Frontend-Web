@@ -84,7 +84,7 @@ const DefaultModalHeaderTitle = styled.div({
   left: '50%',
   transform: 'translateX(-50%);',
   maxWidth: '100%',
-  padding: '0 48px',
+  padding: '0 72px',
   boxSizing: 'border-box',
 
   ['>p']: {
