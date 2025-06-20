@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const MemoCollectionLinkContainer = styled.div({
   display: 'grid',
@@ -7,6 +7,10 @@ const MemoCollectionLinkContainer = styled.div({
   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   columnGap: '12px',
   rowGap: '24px',
+
+  [media[480]]: {
+    columnGap: '8px',
+  },
 });
 
 const MemoCollectionLinkItemContainer = styled.div({
@@ -16,11 +20,16 @@ const MemoCollectionLinkItemContainer = styled.div({
   padding: '12px',
   boxShadow: theme.shadow.emphasize,
   gap: '12px',
+
+  [media[480]]: {
+    padding: '0px',
+    gap: '0px',
+  },
 });
 
 const MemoCollectionLinkItemImageContainer = styled.div({
   aspectRatio: '4 / 3',
-  borderRadius: theme.radius[6],
+  borderRadius: `${theme.radius[6]} ${theme.radius[6]} 0 0`,
   overflow: 'hidden',
   position: 'relative',
   cursor: 'pointer',
@@ -41,6 +50,8 @@ const MemoCollectionLinkItemImageContainer = styled.div({
     right: '0',
     margin: '10px',
     display: 'none',
+    height: 'auto',
+    aspectRatio: '1 / 1',
 
     [':hover']: {
       background: theme.color.label.alternative,
@@ -52,31 +63,12 @@ const MemoCollectionLinkItemImageContainer = styled.div({
       display: 'block',
     },
   },
-});
 
-const MemoCollectionLinkItemTextContainer = styled.div({
-  width: '100%',
-  overflow: 'hidden',
-
-  ['>p']: {
-    margin: '0',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    textAlign: 'left',
-
-    ['&.title']: {
-      ...theme.font.caption1.semibold,
-      color: theme.color.label.neutral,
-    },
-    ['&.desc']: {
-      ...theme.font.caption2.medium,
-      color: theme.color.label.assistive,
-      margin: '2px 0px 4px',
-    },
-    ['&.url']: {
-      ...theme.font.caption2.medium,
-      color: theme.color.label.alternative,
+  [media[480]]: {
+    ['>svg']: {
+      display: 'block',
+      width: '20px',
+      margin: '8px',
     },
   },
 });
@@ -124,10 +116,42 @@ const MemoCollectionLinkItemCategoryContainer = styled.div(
   },
 );
 
+const MemoCollectionLinkItemTextContainer = styled.div({
+  width: '100%',
+  overflow: 'hidden',
+  boxSizing: 'border-box',
+
+  ['>p']: {
+    margin: '0',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    textAlign: 'left',
+
+    ['&.title']: {
+      ...theme.font.caption1.semibold,
+      color: theme.color.label.neutral,
+    },
+    ['&.desc']: {
+      ...theme.font.caption2.medium,
+      color: theme.color.label.assistive,
+      margin: '2px 0px 4px',
+    },
+    ['&.url']: {
+      ...theme.font.caption2.medium,
+      color: theme.color.label.alternative,
+    },
+  },
+
+  [media[480]]: {
+    padding: '12px 10px',
+  },
+});
+
 export {
   MemoCollectionLinkContainer,
   MemoCollectionLinkItemContainer,
   MemoCollectionLinkItemImageContainer,
-  MemoCollectionLinkItemTextContainer,
   MemoCollectionLinkItemCategoryContainer,
+  MemoCollectionLinkItemTextContainer,
 };

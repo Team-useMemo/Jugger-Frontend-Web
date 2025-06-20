@@ -4,7 +4,7 @@ import { setModalClose } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoResponseProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
 import { ModalName } from '@utils/Modal';
 import { useAppDispatch } from '@hooks/useRedux';
 import SearchSVG from '@assets/Header/search.svg?react';
@@ -26,7 +26,7 @@ import {
   SearchMemoResultItemContents,
 } from './SearchMemo.Style';
 
-const getMemoSearchText = (memo: MemoResponseProp): string => {
+const getMemoSearchText = (memo: MemoProp): string => {
   if (memo.type === 'schedule') return (memo.content as scheduleProp)?.title ?? '';
   return String(memo.content ?? '');
 };
@@ -149,7 +149,7 @@ const SearchMemoResult = ({
   category,
 }: {
   searchQuery: string;
-  memo: MemoResponseProp;
+  memo: MemoProp;
   category?: CategoryProp;
 }) => {
   const searchedResult = getMemoSearchText(memo);
@@ -163,7 +163,7 @@ const SearchMemoResult = ({
     dispatch(setModalClose({ name: ModalName.searchMemo }));
 
     setTimeout(() => {
-      const memoElement = document.getElementById(`memo-${memo.id}`);
+      const memoElement = document.getElementById(`memo-${memo.memoId}`);
       if (memoElement) {
         memoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -177,7 +177,7 @@ const SearchMemoResult = ({
       {memo.type == 'schedule' && <ScheduleSVG />}
       {memo.type == 'image' && <PhotoSVG />}
       <SearchMemoResultItemContents>
-        {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.id}_${i}`}>{e.text}</span> : e.text))}
+        {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.memoId}_${i}`}>{e.text}</span> : e.text))}
       </SearchMemoResultItemContents>
       {category && (
         <SearchMemoResultItemCategory color={category.categoryColor}>

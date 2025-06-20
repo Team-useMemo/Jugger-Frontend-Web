@@ -2,9 +2,10 @@ import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalOpen } from '@stores/modules/modal';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
+import useMenu from '@hooks/useMenu';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
-import useMemoCollectionMenu from '@components/Menu/MemoCollectionMenu';
+import MemoCollectionMenu from '@components/Menu/MemoCollectionMenu';
 import DetailSVG from '@assets/Header/detail.svg?react';
 import SearchSVG from '@assets/Header/search.svg?react';
 import MenuSVG from '@assets/icons/menu.svg?react';
@@ -24,8 +25,6 @@ const Header = () => {
 
   const [searchParams] = useSearchParams();
 
-  const [MemoCollectionMenu, openMenu] = useMemoCollectionMenu();
-
   const currentCategory = searchParams.get('category');
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
 
@@ -34,12 +33,14 @@ const Header = () => {
   });
   const category = categories.find((e) => e.categoryId == currentCategory);
 
+  const [CollectionMenu, openCollectionMenu] = useMenu(MemoCollectionMenu);
+
   const onSearchClick = () => {
     dispatch(setModalOpen({ name: ModalName.searchMemo }));
   };
 
   const onDetailClick = () => {
-    openMenu();
+    openCollectionMenu();
   };
 
   const handleClickOpenMenu = () => {
@@ -48,7 +49,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <MemoCollectionMenu />
+      <CollectionMenu />
       <HeaderContents>
         <HeaderMenuContainer>
           <MenuSVG onClick={handleClickOpenMenu} />

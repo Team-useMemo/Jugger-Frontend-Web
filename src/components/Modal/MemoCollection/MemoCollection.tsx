@@ -1,11 +1,19 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { setModalOpen, setModalValue } from '@stores/modules/modal';
+import { useMemo } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
 import { ModalName } from '@utils/Modal';
+import useMenu from '@hooks/useMenu';
 import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
+import { useAppDispatch } from '@hooks/useRedux';
+import { useIsMobile } from '@hooks/useWindowSize';
+import MemoCollectionCategoryMenu from '@components/Menu/MemoCollectionCategoryMenu';
 import CloseSVG from '@assets/icons/close.svg?react';
+import DetailSVG from '@assets/icons/detail.svg?react';
+import MenuSVG from '@assets/icons/menu.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
+import SearchSVG from '@assets/icons/search.svg?react';
+import { DefaultModalHeader, DefaultModalHeaderTitle } from '../DefaultModal.Style';
 import ModalLayoutGray from '../Layout/ModalLayoutGray';
 import DetailImageMemo from '../MemoViewer/Image/DetailImageMemo';
 import DetailScheduleMemo from '../MemoViewer/Schedule/DetailScheduleMemo';
@@ -20,19 +28,29 @@ import {
   MemoCollectionHeader,
   MemoCollectionHeaderContents,
   MemoCollectionHeaderItem,
+  MemoCollectionLayout,
   MemoCollectionSideBar,
   MemoCollectionSideBarItemContainer,
 } from './MemoCollection.Style';
 import MemoCollectionSchedule from './Schedule/MemoCollectionSchedule';
 
-const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
-  const [collectionType, setCollectionType] = useState(props.type);
+type CollectionType = 'image' | 'schedule' | 'link';
+const typeList: { key: CollectionType; title: string }[] = [
+  { key: 'image', title: '사진' },
+  { key: 'schedule', title: '캘린더' },
+  { key: 'link', title: '링크' },
+];
 
-  const [searchParams] = useSearchParams();
-  const [currentCategory] = useState(searchParams.get('category') ?? '');
+const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) => {
+  const isMobile = useIsMobile();
+
+  const { type: collectionType, categoryId: selectedCategoryId } = props ?? {};
+
+  // const [collectionType, setCollectionType] = useState<CollectionType>(props?.type);
+  // const [currentCategory] = useState(props?.categoryId);
   const { data: _categories = [] } = useGetCategoriesQuery();
-  const categories: CategoryProp[] = useMemo(() => {
-    return [
+  const categories: CategoryProp[] = useMemo(
+    () => [
       {
         categoryId: '',
         categoryColor: '#171719',
@@ -42,14 +60,35 @@ const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
         updateAt: new Date(),
       },
       ..._categories,
-    ];
-  }, [_categories]);
-  const [selectedCategory, setSelectedCategory] = useState(currentCategory);
+    ],
+    [_categories],
+  );
+  const selectedCategory = categories.find((category) => category.categoryId == selectedCategoryId);
 
-  const typeList = [{ image: '사진' }, { schedule: '캘린더' }, { link: '링크' }];
+  const dispatch = useAppDispatch();
 
-  const handleClickCollectionType = (type: string) => {
-    setCollectionType(type);
+  const handleClickCollectionType = (type: CollectionType) => {
+    dispatch(
+      setModalValue({
+        name: ModalName.memoCollection,
+        value: {
+          type: type,
+          categoryId: selectedCategoryId,
+        },
+      }),
+    );
+  };
+
+  const handleChangeCategory = (category: string) => {
+    dispatch(
+      setModalValue({
+        name: ModalName.memoCollection,
+        value: {
+          type: collectionType,
+          categoryId: category,
+        },
+      }),
+    );
   };
 
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, DetailImageMemo);
@@ -59,53 +98,88 @@ const MemoCollection = ({ closeModal, props }: ModalComponentProps) => {
     DetailScheduleMemo,
   );
 
+  const [CategoryMenu, openCategoryMenu] = useMenu(
+    MemoCollectionCategoryMenu,
+    {
+      currentCategory: selectedCategoryId,
+      categories: categories,
+    },
+    [handleChangeCategory],
+  );
+
+  const onSearchClick = () => {
+    dispatch(setModalOpen({ name: ModalName.searchMemo }));
+  };
+
+  const onDetailClick = () => {};
+
+  const handleClickOpenMenu = () => {
+    dispatch(setModalOpen({ name: ModalName.sideBar }));
+  };
+
   return (
-    <MemoCollectionContainer>
+    <MemoCollectionLayout>
       <DetailImageMemoModal />
       <DetailScheduleMemoModal />
-      <MemoCollectionHeader>
-        <CloseSVG onClick={closeModal} />
-        <MemoCollectionHeaderContents>
-          {typeList.map((e) => {
-            const [[key, value]] = Object.entries(e);
-            return (
+      <MemoCollectionContainer ref={modalRef}>
+        {isMobile && (
+          <DefaultModalHeader>
+            <MenuSVG onClick={handleClickOpenMenu} />
+            <span className="grow" />
+            <SearchSVG onClick={onSearchClick} />
+            <DetailSVG onClick={onDetailClick} />
+            <DefaultModalHeaderTitle color={selectedCategory?.categoryColor} onClick={openCategoryMenu}>
+              <CategoryMenu />
+              <p>{selectedCategory?.categoryName}</p>
+              <RightArrowSVG />
+            </DefaultModalHeaderTitle>
+          </DefaultModalHeader>
+        )}
+        <MemoCollectionHeader>
+          {!isMobile && <CloseSVG onClick={closeModal} />}
+          <MemoCollectionHeaderContents>
+            {typeList.map(({ key, title }) => (
               <MemoCollectionHeaderItem
                 key={`COLLECTION_TYPE_${key}`}
                 isFocused={key == collectionType}
                 onClick={() => handleClickCollectionType(key)}
               >
-                {value}
+                {title}
               </MemoCollectionHeaderItem>
-            );
-          })}
-        </MemoCollectionHeaderContents>
-      </MemoCollectionHeader>
-      <MemoCollectionContents>
-        <MemoCollectionSideBar>
-          {categories.map(({ categoryId, categoryColor, categoryName }) => (
-            <MemoCollectionSideBarItemContainer
-              key={`COLLECTION_CATEGORY_${categoryId}`}
-              isFocused={categoryId == selectedCategory}
-              color={categoryColor}
-              onClick={() => setSelectedCategory(categoryId)}
-            >
-              <p>{categoryName}</p>
-            </MemoCollectionSideBarItemContainer>
-          ))}
-        </MemoCollectionSideBar>
-        <MemoCollectionBodyLayout>
-          <MemoCollectionBodyContainer>
-            <MemoCollectionBodyTitle>
-              <p>{categories.find(({ categoryId }) => categoryId == selectedCategory)?.categoryName}</p>
-              <RightArrowSVG />
-            </MemoCollectionBodyTitle>
-            {collectionType == 'image' && <MemoCollectionImage category={selectedCategory} />}
-            {collectionType == 'schedule' && <MemoCollectionSchedule category={selectedCategory} />}
-            {collectionType == 'link' && <MemoCollectionLink category={selectedCategory} />}
-          </MemoCollectionBodyContainer>
-        </MemoCollectionBodyLayout>
-      </MemoCollectionContents>
-    </MemoCollectionContainer>
+            ))}
+          </MemoCollectionHeaderContents>
+        </MemoCollectionHeader>
+        <MemoCollectionContents>
+          {!isMobile && (
+            <MemoCollectionSideBar>
+              {categories.map(({ categoryId, categoryColor, categoryName }) => (
+                <MemoCollectionSideBarItemContainer
+                  key={`COLLECTION_CATEGORY_${categoryId}`}
+                  isFocused={categoryId == selectedCategory?.categoryId}
+                  color={categoryColor}
+                  onClick={() => handleChangeCategory(categoryId)}
+                >
+                  <p>{categoryName}</p>
+                </MemoCollectionSideBarItemContainer>
+              ))}
+            </MemoCollectionSideBar>
+          )}
+          <MemoCollectionBodyLayout>
+            <MemoCollectionBodyContainer>
+              {!isMobile && (
+                <MemoCollectionBodyTitle>
+                  <p>{selectedCategory?.categoryName}</p>
+                  <RightArrowSVG />
+                </MemoCollectionBodyTitle>
+              )}
+              {collectionType == 'image' && <MemoCollectionImage category={selectedCategory} />}
+              {collectionType == 'schedule' && <MemoCollectionSchedule category={selectedCategory} />}
+              {collectionType == 'link' && <MemoCollectionLink category={selectedCategory} />}
+            </MemoCollectionBodyContainer>
+          </MemoCollectionBodyLayout>
+        </MemoCollectionContents>
+      </MemoCollectionContainer>
+    </MemoCollectionLayout>
   );
 };
 

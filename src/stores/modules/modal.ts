@@ -32,7 +32,16 @@ export const ModalSlice = createSlice({
         },
       };
     },
-    setModalClose: (state, action: PayloadAction<{ name: string; value?: any; to?: string; replace?: boolean }>) => {
+    setModalClose: (
+      state,
+      action: PayloadAction<{
+        name: string;
+        value?: any;
+        to?: string;
+        replace?: boolean;
+        set?: { prev: string; value: any };
+      }>,
+    ) => {
       state.value = {
         ...state.value,
         [action.payload.name]: {
@@ -41,6 +50,12 @@ export const ModalSlice = createSlice({
           to: action.payload.to,
           replace: action.payload.replace,
         },
+        ...(action.payload.set && {
+          [action.payload.set.prev]: {
+            state: 'close_and_set',
+            value: action.payload.set.value,
+          },
+        }),
       };
     },
     setModalReplace: (state, action: PayloadAction<{ prev: string; to: string; value?: any; replace?: boolean }>) => {

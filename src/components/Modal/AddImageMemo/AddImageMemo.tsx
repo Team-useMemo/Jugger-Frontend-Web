@@ -133,7 +133,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const handlePasteClipboard = (e: React.ClipboardEvent<HTMLDivElement>) => {
     const items = e.clipboardData.items;
 
-    [...items].some((e) => {
+    Array.from(items).some((e) => {
       console.log(e);
       if (e.type.indexOf('image') === -1) return false;
 

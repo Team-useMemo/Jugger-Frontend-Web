@@ -29,15 +29,17 @@ import {
 } from './SideBar.style';
 
 const SideBar = ({ modalRef }: ModalComponentProps) => {
+  const isMobile = useIsMobile();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [, setSearchParams] = useSearchParams();
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
+
+  const currentCategory = new URLSearchParams(window.location.search).get('category');
 
   const { data: categories = [] } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
   });
-
-  const dispatch = useAppDispatch();
-  const isMobile = useIsMobile();
 
   const onWholeMemoClick = () => {
     setSearchParams({});
@@ -49,6 +51,7 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
         name: ModalName.memoCollection,
         value: {
           type: type,
+          categoryId: currentCategory ?? '',
         },
       }),
     );
@@ -61,10 +64,6 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
   const handleClickAddCategory = () => {
     dispatch(setModalOpen({ name: ModalName.addCategory }));
   };
-
-  const [searchParams] = useSearchParams();
-  const currentCategory = searchParams.get('category');
-  const navigate = useNavigate();
 
   const handleClickLogo = () => {
     if (isMobile) {

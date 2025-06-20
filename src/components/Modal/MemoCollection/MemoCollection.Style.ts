@@ -1,14 +1,37 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
+
+const MemoCollectionLayout = styled.div({
+  maxHeight: '100dvh',
+  maxWidth: '100dvw',
+  boxSizing: 'border-box',
+  padding: '64px',
+  display: 'flex',
+  overflow: 'hidden',
+  height: '100%',
+  alignItems: 'center',
+
+  [media[480]]: {
+    padding: '0',
+    width: '100%',
+    height: '100%',
+  },
+});
 
 const MemoCollectionContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   background: theme.color.background.normal,
   width: '820px',
-  height: '840px',
+  maxHeight: '840px',
+  height: '100%',
   borderRadius: theme.radius[16],
   overflow: 'hidden',
+
+  [media[480]]: {
+    borderRadius: '0',
+    maxHeight: '100%',
+  },
 });
 
 const MemoCollectionHeader = styled.div({
@@ -21,28 +44,40 @@ const MemoCollectionHeader = styled.div({
   ['>svg']: {
     cursor: 'pointer',
   },
+  [media[480]]: {
+    padding: '8px 20px 0',
+  },
 });
 
 const MemoCollectionHeaderContents = styled.div({
   display: 'flex',
   width: '100%',
   gap: '16px',
+
+  [media[480]]: {
+    gap: '0',
+  },
 });
 
 const MemoCollectionHeaderItem = styled.p(
-  ({ isFocused }: { isFocused?: boolean }) =>
-    isFocused
-      ? {
-          ...theme.font.title3.bold,
-          color: theme.color.label.normal,
-        }
-      : {
-          ...theme.font.title3.regular,
-          color: theme.color.label.assistive,
-        },
+  ({ isFocused }: { isFocused?: boolean }) => ({
+    ...theme.font.title3[isFocused ? 'bold' : 'regular'],
+    color: theme.color.label[isFocused ? 'normal' : 'assistive'],
+
+    [media[480]]: {
+      ...theme.font.body1normal.semibold,
+      borderBottom: isFocused ? '2px solid black' : '',
+    },
+  }),
   {
     margin: '0',
     cursor: 'pointer',
+    boxSizing: 'border-box',
+
+    [media[480]]: {
+      width: '72px',
+      padding: '8px 0',
+    },
   },
 );
 
@@ -58,6 +93,10 @@ const MemoCollectionSideBar = styled.div({
   display: 'flex',
   flexDirection: 'column',
   overflow: 'auto',
+
+  [media[768]]: {
+    display: 'none',
+  },
 });
 
 const MemoCollectionSideBarItemContainer = styled.div(
@@ -128,6 +167,14 @@ const MemoCollectionBodyContainer = styled.div({
       backgroundClip: 'padding-box',
     },
   },
+
+  [media[480]]: {
+    padding: '24px 16px',
+
+    ['::-webkit-scrollbar']: {
+      display: 'none',
+    },
+  },
 });
 
 const MemoCollectionBodyTitle = styled.div({
@@ -157,6 +204,7 @@ const MemoCollectionBodyTitle = styled.div({
 });
 
 export {
+  MemoCollectionLayout,
   MemoCollectionContainer,
   MemoCollectionContents,
   MemoCollectionHeader,

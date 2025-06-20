@@ -75,9 +75,18 @@ const useParamModal = (
       return;
     } else if (state === 'replaced') {
       return;
-    } else if (state === 'set') {
+    } else if (state === 'close_and_set') {
       setModalProps(value);
       setIsLocationSet(window.location.href);
+      return;
+    } else if (state === 'set') {
+      navigate(location, {
+        state: {
+          ...location.state,
+          [modalName]: value,
+        },
+        replace: true,
+      });
       return;
     }
   }, [modalInfo]);
@@ -91,6 +100,7 @@ const useParamModal = (
       return;
     }
     if (isLocationSet != window.location.href) {
+      console.log(modalName, modalProps, location.state?.[modalName]);
       setIsLocationSet(null);
       navigate(location, {
         state: {

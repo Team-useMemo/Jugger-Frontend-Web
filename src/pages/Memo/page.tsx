@@ -5,10 +5,12 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
+import useMenu from '@hooks/useMenu';
 import useParamModal from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import MemoComponent from '@components/Memo/Memo';
+import MemoBottomButtonMenu from '@components/Menu/MemoBottomButtonMenu';
 import AddImageMemo from '@components/Modal/AddImageMemo/AddImageMemo';
 import AddScheduleMemo from '@components/Modal/AddScheduleMemo/AddScheduleMemo';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
@@ -27,7 +29,6 @@ import {
   MemoItemDateContents,
   MemoListContainer,
   MemoPageBottomButtonContainer,
-  MemoPageBottomButtonMenuContainer,
   MemoPageBottomContainer,
   MemoPageBottomContents,
   MemoPageBottomInputContainer,
@@ -103,69 +104,6 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
   );
 });
 
-const useMemoBottomMenu = (): [() => React.ReactNode, () => void] => {
-  const dispatch = useAppDispatch();
-
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  const openMenu = () => setOpen(true);
-  const closeMenu = () => setOpen(false);
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      dispatch(
-        setModalOpen({
-          name: ModalName.addImageMemo,
-          value: { image: reader.result as string },
-        }),
-      );
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleAddSchedule = () => {
-    dispatch(setModalOpen({ name: ModalName.addScheduleMemo }));
-  };
-
-  useEffect(() => {
-    if (!open) return;
-
-    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        closeMenu();
-      }
-    };
-
-    window.addEventListener('mousedown', handleOutsideClick);
-    window.addEventListener('touchstart', handleOutsideClick);
-    return () => {
-      window.removeEventListener('mousedown', handleOutsideClick);
-      window.removeEventListener('touchstart', handleOutsideClick);
-    };
-  }, [open]);
-
-  const Menu = () => {
-    if (!open) return null;
-
-    return (
-      <MemoPageBottomButtonMenuContainer ref={menuRef}>
-        <label>
-          사진 추가
-          <input type="file" accept="image/*" onChange={handleFileSelect} />
-        </label>
-        <p onClick={handleAddSchedule}>일정 추가</p>
-      </MemoPageBottomButtonMenuContainer>
-    );
-  };
-
-  return [Menu, openMenu];
-};
-
 const MemoPageBottom = () => {
   const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
@@ -177,7 +115,6 @@ const MemoPageBottom = () => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [postMemo] = usePostMemoMutation();
-  const [MemoBottomMenu, openMenu] = useMemoBottomMenu();
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -227,7 +164,7 @@ const MemoPageBottom = () => {
   const handlePasteClipboardImage = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
 
-    [...items].some((e) => {
+    Array.from(items).some((e) => {
       if (e.type.indexOf('image') === -1) return false;
 
       const blob = e.getAsFile();
@@ -258,10 +195,12 @@ const MemoPageBottom = () => {
     dispatch(setModalOpen({ name: ModalName.addScheduleMemo }));
   };
 
+  const [BottomButtonMenu, openBottomButtonMenu] = useMenu(MemoBottomButtonMenu);
+
   return (
     <MemoPageBottomContainer>
       <MemoPageBottomContents>
-        <MemoBottomMenu />
+        <BottomButtonMenu />
         <MemoPageBottomButtonContainer>
           {!isMobile ? (
             <>
@@ -269,7 +208,7 @@ const MemoPageBottom = () => {
               <CalendarSVG onClick={openAddScheduleMemoModal} />
             </>
           ) : (
-            <PlusSVG onClick={openMenu} />
+            <PlusSVG onClick={openBottomButtonMenu} />
           )}
         </MemoPageBottomButtonContainer>
         <MemoPageBottomInputContainer>
@@ -303,8 +242,8 @@ const MemoPage = () => {
 
   return (
     <MemoPageContainer>
-      <SearchMemoModal />
       <MemoCollectionModal />
+      <SearchMemoModal />
       <AddScheduleMemoModal />
       <EditScheduleMemoModal />
       <AddImageMemoModal />

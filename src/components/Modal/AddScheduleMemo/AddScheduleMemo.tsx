@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { usePostCalendarMutation } from '@stores/modules/memo';
-import { setModalClose, setModalReplace, setModalValue } from '@stores/modules/modal';
+import { setModalClose, setModalReplace } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
@@ -87,19 +87,34 @@ const AddScheduleMemo = ({ closeModal, props, modalRef }: ModalComponentProps) =
   const handleUpdateSchedule = () => {
     if (!validateFields(validateList, setErrors)) return;
     //나중에 API 추가해야 함
+    // dispatch(
+    //   setModalClose({
+    //     name: ModalName.editScheduleMemo,
+    //   }),
+    // );
+    // dispatch(
+    //   setModalValue({
+    //     name: ModalName.detailScheduleMemo,
+    //     value: {
+    //       content: {
+    //         title: title.trim(),
+    //         startDate: startDate,
+    //         endDate: endDate,
+    //       },
+    //     },
+    //   }),
+    // );
     dispatch(
       setModalClose({
         name: ModalName.editScheduleMemo,
-      }),
-    );
-    dispatch(
-      setModalValue({
-        name: ModalName.detailScheduleMemo,
-        value: {
-          content: {
-            title: title.trim(),
-            startDate: startDate,
-            endDate: endDate,
+        set: {
+          prev: ModalName.detailScheduleMemo,
+          value: {
+            content: {
+              title: title.trim(),
+              startDate: startDate,
+              endDate: endDate,
+            },
           },
         },
       }),

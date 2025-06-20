@@ -115,37 +115,6 @@ export const MemoPageBottomContents = styled.div({
   },
 });
 
-export const MemoPageBottomButtonMenuContainer = styled.div({
-  position: 'absolute',
-  background: theme.color.background.normal,
-  bottom: '100%',
-  left: '0',
-  padding: '12px 8px',
-  borderRadius: theme.radius[12],
-  boxShadow: theme.shadow.strong,
-  width: '160px',
-  boxSizing: 'border-box',
-  display: 'flex',
-  flexDirection: 'column',
-
-  ['>p,>label']: {
-    margin: '0',
-    textAlign: 'left',
-    padding: '6px',
-    boxSizing: 'border-box',
-
-    ...theme.font.body2normal.semibold,
-    color: theme.color.label.normal,
-    borderRadius: theme.radius[4],
-
-    [':active']: {
-      background: theme.color.fill.normal,
-    },
-
-    ['>input']: { display: 'none' },
-  },
-});
-
 export const MemoPageBottomButtonContainer = styled.div({
   display: 'flex',
   gap: '12px',

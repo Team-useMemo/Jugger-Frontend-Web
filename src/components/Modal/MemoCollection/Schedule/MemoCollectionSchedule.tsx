@@ -3,7 +3,7 @@ import { useGetCalendarQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { useMemo, useState } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoResponseProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
 import { ContextMenuCategory, ContextMenuDelete, ContextMenuEdit } from '@utils/ContextMenu';
 import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
@@ -28,7 +28,7 @@ import {
   MemoCollectionScheduleListItemTitle,
 } from './MemoCollectionSchedule.Style';
 
-const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoResponseProp; category?: CategoryProp }) => {
+const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const content = memo.content as scheduleProp;
 
   const dispatch = useAppDispatch();
@@ -69,8 +69,7 @@ const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoResponse
       </MemoCollectionScheduleListItemDate>
       <span className="divider" />
       <MemoCollectionScheduleListItemTitle color={category?.categoryColor}>
-        <span />
-        {content.title}
+        <p>{content.title}</p>
       </MemoCollectionScheduleListItemTitle>
       <span className="grow" />
       <RightArrowSVG />
@@ -78,7 +77,50 @@ const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoResponse
   );
 };
 
-const MemoCollectionSchedule = ({ category }: { category: string }) => {
+const MemoCollectionScheduleCalendarItem = ({
+  date,
+  dotList,
+  selectedDate,
+  handleClickDateItem,
+  selectedMonth,
+}: {
+  date: Date;
+  dotList: string[];
+  selectedDate: Date | null;
+  handleClickDateItem: (date: Date) => void;
+  selectedMonth: Date;
+}) => {
+  const dateStr = date.toDateString();
+  const isToday = dateStr === new Date().toDateString();
+  const isSelected = dateStr === selectedDate?.toDateString();
+  const isCurrentMonth = date.getMonth() == selectedMonth?.getMonth();
+
+  return (
+    <MemoCollectionScheduleCalendarContentsBodyItem
+      color={isSelected ? 'inverse' : isCurrentMonth ? 'normal' : 'assistive'}
+      selected={isSelected}
+      today={isToday}
+      onClick={() => handleClickDateItem(date)}
+    >
+      <p>{date.getDate()}</p>
+      {dotList && (
+        <MemoCollectionScheduleCalendarContentsBodyItemSubContainer>
+          {dotList.map(
+            (color, idx) =>
+              color && (
+                <MemoCollectionScheduleCalendarContentsBodyItemSubItem
+                  key={`SCHEDULE_COLLECTION_CALENDAR_DATE_DOT_${dateStr}_${idx}`}
+                  color={color}
+                />
+              ),
+          )}
+        </MemoCollectionScheduleCalendarContentsBodyItemSubContainer>
+      )}
+    </MemoCollectionScheduleCalendarContentsBodyItem>
+  );
+};
+
+const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(new Date(new Date().setDate(1)));
 
@@ -91,24 +133,26 @@ const MemoCollectionSchedule = ({ category }: { category: string }) => {
   });
 
   const filteredMemos = useMemo(
-    () => scheduleMemos.filter((e) => !category || e.categoryId === category),
+    () => scheduleMemos.filter((memo) => !category?.categoryId || memo.categoryId === category.categoryId),
     [scheduleMemos, category],
   );
 
   const scheduleDotList = useMemo(
     () =>
-      filteredMemos.reduce((acc: Record<string, MemoResponseProp[]>, e) => {
-        const dateStr = (e.content as scheduleProp).startDate.toDateString();
-        (acc[dateStr] ||= []).push(e);
+      filteredMemos.reduce((acc: Record<string, string[]>, memo) => {
+        const dateStr = (memo.content as scheduleProp).startDate.toDateString();
+        (acc[dateStr] ||= []).push(
+          categories.find((category) => category.categoryId == memo.categoryId)?.categoryColor ?? '',
+        );
         return acc;
       }, {}),
-    [filteredMemos],
+    [filteredMemos, categories],
   );
 
   const scheduleList = useMemo(
     () =>
-      filteredMemos.filter((e) => {
-        const { startDate } = e.content as scheduleProp;
+      filteredMemos.filter((memo) => {
+        const { startDate } = memo.content as scheduleProp;
         return selectedDate
           ? startDate.toDateString() === selectedDate.toDateString()
           : startDate.getFullYear() === selectedMonth.getFullYear() &&
@@ -141,45 +185,33 @@ const MemoCollectionSchedule = ({ category }: { category: string }) => {
         </MemoCollectionScheduleCalendarHeader>
         <MemoCollectionScheduleCalendarContents>
           <MemoCollectionScheduleCalendarContentsHeader>
-            {CalendarDays.map((e) => (
-              <MemoCollectionScheduleCalendarContentsHeaderItem key={`SCHEDULE_COLLECTION_CALENDAR_DAY_${e}`}>
-                {e}
+            {CalendarDays.map((day) => (
+              <MemoCollectionScheduleCalendarContentsHeaderItem key={`SCHEDULE_COLLECTION_CALENDAR_DAY_${day}`}>
+                {day}
               </MemoCollectionScheduleCalendarContentsHeaderItem>
             ))}
           </MemoCollectionScheduleCalendarContentsHeader>
           <MemoCollectionScheduleCalendarContentsBody>
-            {dateList.map((e) => (
-              <MemoCollectionScheduleCalendarContentsBodyItem
-                key={`CALENDAR_DAY_${e}`}
-                color={
-                  e.toDateString() == selectedDate?.toDateString()
-                    ? 'inverse'
-                    : e.getMonth() == selectedMonth?.getMonth()
-                      ? 'normal'
-                      : 'assistive'
-                }
-                selected={e.toDateString() == selectedDate?.toDateString()}
-                today={e.toDateString() == new Date().toDateString()}
-                onClick={() => handleClickDateItem(e)}
-              >
-                <p>{e.getDate()}</p>
-                <MemoCollectionScheduleCalendarContentsBodyItemSubContainer>
-                  {scheduleDotList[e.toDateString()] &&
-                    (scheduleDotList[e.toDateString()] as MemoResponseProp[]).map((e) => (
-                      <MemoCollectionScheduleCalendarContentsBodyItemSubItem color={e.categoryColor} />
-                    ))}
-                </MemoCollectionScheduleCalendarContentsBodyItemSubContainer>
-              </MemoCollectionScheduleCalendarContentsBodyItem>
+            {dateList.map((date) => (
+              <MemoCollectionScheduleCalendarItem
+                key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${date.toDateString()}`}
+                date={date}
+                dotList={scheduleDotList[date.toDateString()]}
+                selectedDate={selectedDate}
+                handleClickDateItem={handleClickDateItem}
+                selectedMonth={selectedMonth}
+              />
             ))}
           </MemoCollectionScheduleCalendarContentsBody>
         </MemoCollectionScheduleCalendarContents>
       </MemoCollectionScheduleCalendarContainer>
 
       <MemoCollectionScheduleListContainer>
-        {scheduleList.map((e) => (
+        {scheduleList.map((memo) => (
           <MemoCollectionScheduleListItem
-            memo={e}
-            category={categories.find(({ categoryId }) => categoryId == e.categoryId)}
+            key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.memoId}`}
+            memo={memo}
+            category={categories.find(({ categoryId }) => categoryId == memo.categoryId)}
           />
         ))}
       </MemoCollectionScheduleListContainer>

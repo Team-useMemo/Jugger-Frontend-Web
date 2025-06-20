@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const MemoCollectionScheduleContainer = styled.div({
   display: 'flex',
@@ -33,6 +33,10 @@ const MemoCollectionScheduleCalendarHeader = styled.div({
     height: 'auto',
     cursor: 'pointer',
   },
+
+  [media[480]]: {
+    justifyContent: 'center',
+  },
 });
 
 const MemoCollectionScheduleCalendarContents = styled.div({
@@ -44,8 +48,12 @@ const MemoCollectionScheduleCalendarContents = styled.div({
 const MemoCollectionScheduleCalendarContentsHeader = styled.div({
   display: 'grid',
   gridTemplateColumns: 'repeat(7, 1fr)',
-  columnGap: '12px',
+  columnGap: '4px',
   rowGap: '4px',
+
+  [media[480]]: {
+    columnGap: '0',
+  },
 });
 
 const MemoCollectionScheduleCalendarContentsHeaderItem = styled.p({
@@ -58,8 +66,13 @@ const MemoCollectionScheduleCalendarContentsHeaderItem = styled.p({
 const MemoCollectionScheduleCalendarContentsBody = styled.div({
   display: 'grid',
   gridTemplateColumns: 'repeat(7, 1fr)',
-  columnGap: '12px',
+  columnGap: '4px',
   rowGap: '16px',
+
+  [media[480]]: {
+    columnGap: '0',
+    rowGap: '12px',
+  },
 });
 
 const MemoCollectionScheduleCalendarContentsBodyItem = styled.div(
@@ -106,7 +119,7 @@ const MemoCollectionScheduleCalendarContentsBodyItemSubItem = styled.span(
     borderRadius: theme.radius.full,
     marginLeft: '-1.5px',
 
-    [':first-child']: {
+    [':first-of-type']: {
       marginLeft: '0',
     },
   },
@@ -138,6 +151,7 @@ const MemoCollectionScheduleListItemContainer = styled.div({
     height: 'auto',
     aspectRatio: '1 / 1',
     stroke: theme.color.label.alternative,
+    flexShrink: '0',
   },
 });
 
@@ -155,7 +169,7 @@ const MemoCollectionScheduleListItemDate = styled.div({
 
 const MemoCollectionScheduleListItemTitle = styled.div(
   ({ color }: { color?: string }) => ({
-    ['>span']: {
+    ['::before']: {
       background: color,
     },
   }),
@@ -163,15 +177,23 @@ const MemoCollectionScheduleListItemTitle = styled.div(
     display: 'flex',
     gap: '8px',
     alignItems: 'center',
+    overflow: 'hidden',
 
-    ...theme.font.body1normal.semibold,
-    color: theme.color.label.normal,
+    ['>p']: {
+      ...theme.font.body1normal.semibold,
+      color: theme.color.label.normal,
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+    },
 
-    ['>span']: {
+    ['::before']: {
+      content: '""',
       width: '8px',
       height: 'auto',
       aspectRatio: '1 / 1',
       borderRadius: theme.radius.full,
+      flexShrink: '0',
     },
   },
 );

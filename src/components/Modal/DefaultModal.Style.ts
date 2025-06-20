@@ -59,6 +59,9 @@ const DefaultModalHeader = styled.div({
   display: 'flex',
   flexShrink: '0',
   position: 'relative',
+  gap: '4px',
+  justifyContent: 'center',
+  alignItems: 'center',
 
   ['.grow']: {
     flexGrow: '1',
@@ -79,22 +82,55 @@ const DefaultModalHeader = styled.div({
   },
 });
 
-const DefaultModalHeaderTitle = styled.div({
-  position: 'absolute',
-  left: '50%',
-  transform: 'translateX(-50%);',
-  maxWidth: '100%',
-  padding: '0 72px',
-  boxSizing: 'border-box',
+const DefaultModalHeaderTitle = styled.div(
+  ({ color }: { color?: string }) =>
+    color && {
+      ['::before']: {
+        content: '""',
+        width: '8px',
+        height: 'auto',
+        aspectRatio: '1 / 1',
+        background: color,
+        flexShrink: '0',
+        borderRadius: theme.radius.full,
 
-  ['>p']: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    margin: '0',
-    ...theme.font.body2normal.semibold,
-    color: theme.color.label.normal,
+        [media[480]]: {
+          marginRight: '6px',
+        },
+      },
+    },
+  {
+    position: 'absolute',
+    maxWidth: '100%',
+    padding: '0 72px',
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+
+    ['>p']: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      margin: '0',
+      ...theme.font.body2normal.semibold,
+      color: theme.color.label.normal,
+    },
+
+    ['>svg']: {
+      width: '16px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      flexShrink: '0',
+    },
+
+    [media[480]]: {
+      maxWidth: 'calc(100% - 72px * 2)',
+      padding: '0',
+      ['>svg']: {
+        marginLeft: '2px',
+      },
+    },
   },
-});
+);
 
 export { DefaultModalLayout, DefaultModalContainer, DefaultModalHeader, DefaultModalHeaderTitle };
