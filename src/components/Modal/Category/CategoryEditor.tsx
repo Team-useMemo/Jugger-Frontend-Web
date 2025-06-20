@@ -19,7 +19,7 @@ import {
 
 const CATEGORY_COLORS = ['#FF4242', '#00BF40', '#00AEFF', '#FF5E00', '#00BDDE', '#4F29E5', '#CB59FF', '#F553DA'];
 
-const CategoryEditor = ({ closeModal, props }: ModalComponentProps) => {
+const CategoryEditor = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { id: categoryId } = props ?? {};
   const [title, setTitle] = useState<string>(props?.title ?? '');
@@ -70,7 +70,7 @@ const CategoryEditor = ({ closeModal, props }: ModalComponentProps) => {
 
   return (
     <CategoryEditorLayout>
-      <CategoryEditorContainer maxWidth="440px">
+      <CategoryEditorContainer maxWidth="440px" ref={modalRef}>
         <CloseSVG onClick={closeModal} />
         <CategoryEditorContents>
           {!isMobile && <CategoryEditorTitle>{!isEdit ? '카테고리 추가' : '카테고리 수정'}</CategoryEditorTitle>}

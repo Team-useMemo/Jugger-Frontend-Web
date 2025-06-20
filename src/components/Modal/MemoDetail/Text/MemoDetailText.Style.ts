@@ -18,6 +18,7 @@ const MemoDetailTextContainer = styled.div({
 
 const MemoDetailTextContents = styled.p({
   whiteSpace: 'pre-wrap',
+  wordBreak: 'break-word',
   overflow: 'auto',
 
   ...theme.font.body2normal.medium,

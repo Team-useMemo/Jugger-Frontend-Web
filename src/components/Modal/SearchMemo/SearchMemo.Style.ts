@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const SearchMemoContainer = styled.div({
   display: 'flex',
@@ -7,13 +7,41 @@ const SearchMemoContainer = styled.div({
   padding: '40px 32px',
   borderRadius: theme.radius[16],
   background: theme.color.background.normal,
-  width: '820px',
-  maxWidth: '100vw',
+
+  width: 'calc(100dvw - 64px * 2)',
+  maxWidth: '820px',
   boxSizing: 'border-box',
   gap: '20px',
+
+  [media[480]]: {
+    width: '100%',
+    maxWidth: '100dvw',
+    padding: '0',
+    borderRadius: '0',
+    gap: '0px',
+  },
 });
 
-const SearchMemoInputContainer = styled.label({
+const SearchMemoInputContainer = styled.div({
+  display: 'flex',
+  gap: '10px',
+  alignItems: 'center',
+  boxSizing: 'border-box',
+
+  ['>svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    cursor: 'pointer',
+    flexShrink: '0',
+  },
+
+  [media[480]]: {
+    padding: '12px 20px',
+  },
+});
+
+const SearchMemoInputContents = styled.label({
   background: theme.color.background.alternative,
   borderRadius: theme.radius[8],
   padding: '11px 14px',
@@ -21,13 +49,18 @@ const SearchMemoInputContainer = styled.label({
   gap: '8px',
   alignItems: 'center',
   height: '32px',
+  overflow: 'hidden',
+  width: '100%',
 
-  ['input']: {
+  ['>input']: {
     flexGrow: '1',
     background: 'transparent',
     border: 'none',
     ...theme.font.headline1.medium,
     color: theme.color.label.normal,
+    minWidth: '0',
+    height: '28px',
+    padding: '0',
 
     [':focus']: {
       outline: 'none',
@@ -50,11 +83,22 @@ const SearchMemoInputContainer = styled.label({
     cursor: 'pointer',
   },
 
-  ['svg']: {
+  ['>svg']: {
     width: '20px',
     height: 'auto',
     aspectRatio: '1 / 1',
     cursor: 'pointer',
+    flexShrink: '0',
+  },
+
+  [media[480]]: {
+    padding: '12px 12px 12px 16px',
+    height: 'auto',
+
+    ['>input']: {
+      ...theme.font.body2normal.medium,
+      minWidth: '0',
+    },
   },
 });
 
@@ -77,14 +121,23 @@ const SearchMemoInputCategory = styled.div(
     zIndex: '1',
     borderRadius: theme.radius[48],
     overflow: 'hidden',
+    maxWidth: '160px',
+    flexShrink: '0',
 
-    ...theme.font.body1normal.medium,
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+      margin: '0',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+    },
 
     ['>span']: {
       width: '8px',
       height: 'auto',
       aspectRatio: '1 / 1',
       borderRadius: theme.radius.full,
+      flexShrink: '0',
     },
 
     ['::before']: {
@@ -103,11 +156,32 @@ const SearchMemoInputCategory = styled.div(
       aspectRatio: '1 / 1',
       cursor: 'pointer',
       display: 'none',
+      flexShrink: '0',
     },
 
     [':hover']: {
       ['>svg']: {
         display: 'block',
+      },
+    },
+
+    [media[480]]: {
+      padding: '6px 10px',
+      gap: '4px',
+      maxWidth: '124px',
+
+      ['>p']: {
+        ...theme.font.caption1.medium,
+      },
+
+      ['>svg']: {
+        width: '16px',
+      },
+
+      [':hover']: {
+        ['>svg']: {
+          display: 'none',
+        },
       },
     },
   },
@@ -122,6 +196,10 @@ const SearchMemoCategoryContainer = styled.div({
 
   ...theme.font.headline1.semibold,
   color: theme.color.label.normal,
+
+  [media[480]]: {
+    padding: '12px 20px',
+  },
 });
 
 const SearchMemoCategoryContents = styled.div({
@@ -149,14 +227,22 @@ const SearchMemoCategoryItem = styled.div(
     zIndex: '1',
     borderRadius: theme.radius[48],
     overflow: 'hidden',
+    maxWidth: '160px',
 
-    ...theme.font.body1normal.medium,
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+      margin: '0',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+    },
 
     ['>span']: {
       width: '8px',
       height: 'auto',
       aspectRatio: '1 / 1',
       borderRadius: theme.radius.full,
+      flexShrink: '0',
     },
 
     ['::before']: {
@@ -174,52 +260,98 @@ const SearchMemoCategoryItem = styled.div(
 const SearchMemoResultContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
+
+  [media[480]]: {
+    padding: '12px 0',
+  },
 });
 
 const SearchMemoResultItemContainer = styled.div({
   display: 'flex',
-  gap: '8px',
+  gap: '24px',
   padding: '12px 16px',
 
-  ['>svg']: {
-    width: '24px',
-    aspectRatio: '1 / 1',
+  [media[480]]: {
+    gap: '4px',
+    padding: '12px 20px',
+    flexDirection: 'column',
   },
 });
 
-const SearchMemoResultItemContents = styled.p({
-  margin: '0',
-  ...theme.font.headline1.medium,
-  color: theme.color.label.normal,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
+const SearchMemoResultItemContents = styled.div({
   flexGrow: '1',
-  textAlign: 'left',
-  textOverflow: 'ellipsis',
+  display: 'flex',
+  overflow: 'hidden',
+  gap: '8px',
+  alignItems: 'center',
 
-  ['>span']: {
-    color: theme.color.primary.normal,
+  ['>p']: {
+    margin: '0',
+
+    ...theme.font.headline1.medium,
+    color: theme.color.label.normal,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textAlign: 'left',
+    textOverflow: 'ellipsis',
+
+    ['>span']: {
+      color: theme.color.primary.normal,
+    },
+  },
+
+  ['>svg']: {
+    width: '24px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    flexShrink: '0',
+  },
+
+  [media[480]]: {
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+    },
   },
 });
 
 const SearchMemoResultItemCategory = styled.div(
   ({ color }: { color: string }) => ({
-    ['>span']: {
+    ['::before']: {
       background: color,
     },
   }),
   {
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-    padding: '4px',
-    gap: '8px',
     display: 'flex',
     alignItems: 'center',
+    overflow: 'hidden',
+    maxWidth: '160px',
+    gap: '8px',
+    flexShrink: '0',
 
-    ['>span']: {
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+      color: theme.color.label.normal,
+      margin: '0',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+    },
+
+    ['::before']: {
+      content: '""',
       width: '8px',
       aspectRatio: '1 / 1',
       borderRadius: theme.radius.full,
+      flexShrink: '0',
+    },
+
+    [media[480]]: {
+      padding: '4px',
+
+      ['>p']: {
+        ...theme.font.label1normal.medium,
+        color: theme.color.label.alternative,
+      },
     },
   },
 );
@@ -227,6 +359,7 @@ const SearchMemoResultItemCategory = styled.div(
 export {
   SearchMemoContainer,
   SearchMemoInputContainer,
+  SearchMemoInputContents,
   SearchMemoInputCategory,
   SearchMemoCategoryContainer,
   SearchMemoCategoryContents,
