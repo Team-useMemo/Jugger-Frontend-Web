@@ -15,8 +15,8 @@ import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import SearchSVG from '@assets/icons/search.svg?react';
 import { DefaultModalHeader, DefaultModalHeaderTitle } from '../DefaultModal.Style';
 import ModalLayoutGray from '../Layout/ModalLayoutGray';
-import DetailImageMemo from '../MemoViewer/Image/DetailImageMemo';
-import DetailScheduleMemo from '../MemoViewer/Schedule/DetailScheduleMemo';
+import MemoDetailImage from '../MemoDetail/Image/MemoDetailImage';
+import MemoDetailSchedule from '../MemoDetail/Schedule/MemoDetailSchedule';
 import MemoCollectionImage from './Image/MemoCollectionImage';
 import MemoCollectionLink from './Link/MemoCollectionLink';
 import {
@@ -91,11 +91,11 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
     );
   };
 
-  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, DetailImageMemo);
+  const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, MemoDetailImage);
   const [DetailScheduleMemoModal] = useParamModal(
     ModalName.detailScheduleMemoCollection,
     ModalLayoutGray,
-    DetailScheduleMemo,
+    MemoDetailSchedule,
   );
 
   const [CategoryMenu, openCategoryMenu] = useMenu(

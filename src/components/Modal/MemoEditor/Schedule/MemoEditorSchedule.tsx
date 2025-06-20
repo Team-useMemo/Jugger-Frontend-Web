@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { usePostCalendarMutation } from '@stores/modules/memo';
 import { setModalClose, setModalReplace } from '@stores/modules/modal';
 import { useState } from 'react';
@@ -10,13 +9,20 @@ import { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import { media, theme } from '@styles/theme';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
-import { DefaultModalContainer, DefaultModalHeader, DefaultModalLayout } from '../DefaultModal.Style';
-import CalendarView from '../MemoViewer/Schedule/CalendarView/CalendarView';
+import { DefaultModalContainer, DefaultModalHeader, DefaultModalLayout } from '../../DefaultModal.Style';
+import CalendarView from './CalendarView/CalendarView';
+import {
+  MemoEditorScheduleContainer,
+  MemoEditorScheduleContents,
+  MemoEditorScheduleItemButton,
+  MemoEditorScheduleItemContainer,
+  MemoEditorScheduleItemContents,
+  MemoEditorScheduleItemErrorText,
+} from './MemoEditorSchedule.Style';
 
-const AddScheduleMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
+const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content } = props ?? {};
 
@@ -87,23 +93,6 @@ const AddScheduleMemo = ({ closeModal, props, modalRef }: ModalComponentProps) =
   const handleUpdateSchedule = () => {
     if (!validateFields(validateList, setErrors)) return;
     //나중에 API 추가해야 함
-    // dispatch(
-    //   setModalClose({
-    //     name: ModalName.editScheduleMemo,
-    //   }),
-    // );
-    // dispatch(
-    //   setModalValue({
-    //     name: ModalName.detailScheduleMemo,
-    //     value: {
-    //       content: {
-    //         title: title.trim(),
-    //         startDate: startDate,
-    //         endDate: endDate,
-    //       },
-    //     },
-    //   }),
-    // );
     dispatch(
       setModalClose({
         name: ModalName.editScheduleMemo,
@@ -196,22 +185,22 @@ const AddScheduleMemo = ({ closeModal, props, modalRef }: ModalComponentProps) =
             <p onClick={!isEdit ? handleAddSchedule : handleUpdateSchedule}>{!isEdit ? '추가' : '수정'}</p>
           </DefaultModalHeader>
         )}
-        <AddScheduleMemoContainer>
+        <MemoEditorScheduleContainer>
           {!isMobile && (!isEdit ? '일정 추가' : '일정 수정')}
-          <AddScheduleMemoContents>
-            <AddScheduleMemoItemContainer>
+          <MemoEditorScheduleContents>
+            <MemoEditorScheduleItemContainer>
               일정 제목
-              <AddScheduleMemoItemContents>
+              <MemoEditorScheduleItemContents>
                 <input type="text" placeholder="입력" value={title} onChange={handleTitleChange} />
                 {title && <EndContainerSVG onClick={handleTitleReset} />}
-              </AddScheduleMemoItemContents>
-              {isMobile && <AddScheduleMemoItemErrorText>{errors.title}</AddScheduleMemoItemErrorText>}
-            </AddScheduleMemoItemContainer>
+              </MemoEditorScheduleItemContents>
+              {isMobile && <MemoEditorScheduleItemErrorText>{errors.title}</MemoEditorScheduleItemErrorText>}
+            </MemoEditorScheduleItemContainer>
             {calendars.map((e) => (
-              <AddScheduleMemoItemContainer key={`SCHEDULE_MEMO_CALENDAR_${e.key}`}>
+              <MemoEditorScheduleItemContainer key={`SCHEDULE_MEMO_CALENDAR_${e.key}`}>
                 {e.title}
                 {!(isOpenCalendar == e.key) ? (
-                  <AddScheduleMemoItemButton
+                  <MemoEditorScheduleItemButton
                     type="text"
                     placeholder={toFormattedDate(e.placeholder)}
                     value={toFormattedDate(e.date)}
@@ -223,10 +212,10 @@ const AddScheduleMemo = ({ closeModal, props, modalRef }: ModalComponentProps) =
                 ) : (
                   <CalendarView date={e.date} setDate={e.setDate} closeCalendar={e.onClick} />
                 )}
-                {isMobile && <AddScheduleMemoItemErrorText>{errors[e.key]}</AddScheduleMemoItemErrorText>}
-              </AddScheduleMemoItemContainer>
+                {isMobile && <MemoEditorScheduleItemErrorText>{errors[e.key]}</MemoEditorScheduleItemErrorText>}
+              </MemoEditorScheduleItemContainer>
             ))}
-          </AddScheduleMemoContents>
+          </MemoEditorScheduleContents>
           {!isMobile && (
             <JuggerButton
               color="primary"
@@ -237,124 +226,10 @@ const AddScheduleMemo = ({ closeModal, props, modalRef }: ModalComponentProps) =
               {!isEdit ? '추가' : '수정'}
             </JuggerButton>
           )}
-        </AddScheduleMemoContainer>
+        </MemoEditorScheduleContainer>
       </DefaultModalContainer>
     </DefaultModalLayout>
   );
 };
 
-const AddScheduleMemoContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '36px',
-  textAlign: 'left',
-
-  ...theme.font.title3.bold,
-  color: theme.color.text.onView,
-
-  overflowY: 'hidden',
-});
-
-const AddScheduleMemoContents = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-  overflowY: 'auto',
-  overflowX: 'visible',
-  flexGrow: '1',
-
-  ['::-webkit-scrollbar']: {
-    display: 'none',
-  },
-  [media[480]]: {
-    padding: '20px 20px 32px',
-  },
-});
-
-const AddScheduleMemoItemContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-
-  ...theme.font.body1normal.semibold,
-  color: theme.color.text.onView,
-});
-
-const AddScheduleMemoItemContents = styled.label({
-  display: 'flex',
-  padding: '11px 14px',
-  alignItems: 'center',
-  background: theme.color.background.alternative,
-  borderRadius: theme.radius[6],
-  gap: '4px',
-
-  ['>input']: {
-    background: 'transparent',
-    border: 'none',
-    flexGrow: '1',
-
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-
-    [':focus']: {
-      outline: 'none',
-    },
-
-    ['::placeholder']: {
-      color: theme.color.label.alternative,
-    },
-
-    ['&[readonly]']: {
-      cursor: 'pointer',
-    },
-  },
-
-  ['>svg']: {
-    width: '20px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    flexShrink: '0',
-  },
-
-  [':has(>input:focus)']: {
-    outline: `2px solid ${theme.color.primary.normal}`,
-    outlineOffset: '-2px',
-  },
-
-  [':has(>input[readonly])']: {
-    cursor: 'pointer',
-  },
-});
-
-const AddScheduleMemoItemButton = styled.input({
-  display: 'flex',
-  padding: '11px 14px',
-  alignItems: 'center',
-  background: theme.color.background.alternative,
-  borderRadius: theme.radius[6],
-  border: 'none',
-  flexGrow: '1',
-
-  ...theme.font.body1normal.medium,
-  color: theme.color.label.normal,
-
-  [':focus']: {
-    outline: 'none',
-  },
-
-  ['::placeholder']: {
-    color: theme.color.label.alternative,
-  },
-
-  ['&[readonly]']: {
-    cursor: 'pointer',
-  },
-});
-
-const AddScheduleMemoItemErrorText = styled.p({
-  ...theme.font.caption1.medium,
-  color: theme.color.status.error,
-  margin: '0',
-});
-
-export default AddScheduleMemo;
+export default MemoEditorSchedule;

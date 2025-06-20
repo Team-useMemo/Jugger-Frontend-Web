@@ -1,7 +1,7 @@
 import { useGetPhotosQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoResponseProp } from '@ts/Memo.Prop';
+import { MemoProp } from '@ts/Memo.Prop';
 import {
   ContextMenuCategory,
   ContextMenuCopy,
@@ -21,13 +21,18 @@ import {
   MemoCollectionImageListTitle,
 } from './MemoCollectionImage.Style';
 
-const MemoCollectionImageItem = ({ memo, category }: { memo: MemoResponseProp; category?: CategoryProp }) => {
+const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const dispatch = useAppDispatch();
 
   const content = memo.content as string;
 
-  const handleClickImage = (image: string) => {
-    dispatch(setModalOpen({ name: ModalName.detailImageMemoCollection, value: { image: image } }));
+  const handleClickImage = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.detailImageMemoCollection,
+        value: { content },
+      }),
+    );
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
@@ -57,7 +62,7 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoResponseProp; c
   });
 
   return (
-    <MemoCollectionImageItemContainer onClick={() => handleClickImage(content)} {...BindContextMenuHandlers}>
+    <MemoCollectionImageItemContainer onClick={handleClickImage} {...BindContextMenuHandlers}>
       <ContextMenu />
       <img src={content} />
     </MemoCollectionImageItemContainer>
@@ -67,7 +72,7 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoResponseProp; c
 const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
   const { data: imageMemos = [] } = useGetPhotosQuery({ category_uuid: category?.categoryId ?? '' });
 
-  const dateImages = Object.entries(
+  const dateImages: [string, MemoProp[]][] = Object.entries(
     [...imageMemos].reverse().reduce((acc: any, e) => {
       const dateStr = e.date.toDateString();
       (acc[dateStr] ||= []).push({ ...e, categoryId: category?.categoryId });
@@ -83,7 +88,7 @@ const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
             {formatDate(new Date(date), '{YYYY}년 {MM}월 {DD}일 {W}요일')}
           </MemoCollectionImageListTitle>
           <MemoCollectionImageListContents>
-            {imageArr.map((memo: MemoResponseProp, i: number) => (
+            {imageArr.map((memo: MemoProp, i: number) => (
               <MemoCollectionImageItem key={`IMAGE_COLLECTION_${date}_${i}`} memo={memo} category={category} />
             ))}
           </MemoCollectionImageListContents>

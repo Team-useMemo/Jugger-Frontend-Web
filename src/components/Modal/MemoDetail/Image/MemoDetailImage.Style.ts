@@ -29,8 +29,8 @@ const MemoDetailImageContents = styled.div({
     height: '100%',
     maxWidth: '100%',
     maxHeight: '100%',
-    minWidth: '0',
-    minHeight: '0',
+    minWidth: '240px',
+    minHeight: '240px',
   },
 });
 

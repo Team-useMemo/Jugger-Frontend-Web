@@ -1,35 +1,75 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-const AddImageMemoContainer = styled.div({
-  marginTop: '24px',
+const AddImageMemoTitle = styled.p({
+  margin: '0 0 24px',
+
+  textAlign: 'left',
+  ...theme.font.title3.bold,
+  color: theme.color.text.onView,
+});
+
+const AddImageMemoContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
+  overflow: 'hidden',
+
+  [media[480]]: {
+    padding: '20px',
+    height: '100%',
+  },
 });
 
 const AddImageMemoImageContainer = styled.div({
-  background: theme.color.material.dimmer,
+  background: theme.color.background.alternative,
   borderRadius: theme.radius[8],
   display: 'flex',
+  flexDirection: 'column',
   overflow: 'hidden',
+
+  [media[480]]: {
+    flexGrow: '1',
+    justifyContent: 'center',
+  },
 });
 
-const AddImageMemoEmpty = styled.div({
+const AddImageMemoEmptyImageContents = styled.label({
+  background: theme.color.material.dimmer,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   color: theme.color.label.inverse,
-  height: '280px',
-  width: '100%',
+  aspectRatio: '5 / 4',
   gap: '12px',
+  padding: '48px',
+
+  ...theme.font.label1normal.medium,
+  whiteSpace: 'nowrap',
+
+  ['>input']: {
+    display: 'none',
+  },
 });
 
-const AddImageMemoImage = styled.img({
-  width: '100%',
-  maxHeight: '480px',
-  objectFit: 'contain',
+const AddImageMemoImageContents = styled.div({
+  overflow: 'hidden',
+  display: 'flex',
+
+  boxSizing: 'border-box',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  ['>img']: {
+    objectFit: 'contain',
+    width: 'auto',
+    height: '100%',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    minWidth: '240px',
+    minHeight: '240px',
+  },
 });
 
 const AddImageMemoDescContainer = styled.div({
@@ -70,71 +110,18 @@ const AddImageMemoDescContainer = styled.div({
 const AddImageMemoButtonContainer = styled.div({
   display: 'flex',
   gap: '12px',
-  width: '100%',
 
   ['>button']: {
     width: '100%',
   },
 });
 
-const DetailImageMemoContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '24px',
-  marginTop: '24px',
-  width: '100%',
-
-  [media[480]]: {
-    flexGrow: '1',
-    gap: '12px',
-    marginTop: '12px',
-  },
-});
-
-const DetailImageMemoImageContainer = styled.div({
-  width: '100%',
-  overflow: 'hidden',
-
-  ['>img']: {
-    maxHeight: '480px',
-    width: '100%',
-    objectFit: 'contain',
-  },
-
-  [media[480]]: {
-    flexGrow: '1',
-
-    display: 'flex',
-    position: 'relative',
-    background: theme.color.background.alternative,
-
-    ['>img']: {
-      position: 'absolute',
-      maxHeight: 'none',
-      width: '100%',
-      height: '100%',
-      objectFit: 'contain',
-    },
-  },
-});
-
-const DetailImageMemoButtonContainer = styled.div({
-  display: 'flex',
-  gap: '15px',
-  padding: '0 32px',
-  ['.grow']: {
-    flexGrow: '1',
-  },
-});
-
 export {
-  AddImageMemoContainer,
+  AddImageMemoTitle,
+  AddImageMemoContents,
   AddImageMemoImageContainer,
-  AddImageMemoEmpty,
-  AddImageMemoImage,
+  AddImageMemoEmptyImageContents,
+  AddImageMemoImageContents,
   AddImageMemoDescContainer,
   AddImageMemoButtonContainer,
-  DetailImageMemoContainer,
-  DetailImageMemoImageContainer,
-  DetailImageMemoButtonContainer,
 };

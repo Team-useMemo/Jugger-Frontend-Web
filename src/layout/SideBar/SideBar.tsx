@@ -6,8 +6,8 @@ import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import AddCategory from '@components/Modal/Category/AddCategory';
-import EditCategory from '@components/Modal/Category/EditCategory';
+import AddCategory from '@components/Modal/Category/CategoryEditor';
+import CategoryEditor from '@components/Modal/Category/CategoryEditor';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import SearchSVG from '@assets/Header/search.svg?react';
@@ -88,7 +88,7 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
   };
 
   const [AddCategoryModal] = useParamModal(ModalName.addCategory, ModalLayoutGray, AddCategory);
-  const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, EditCategory);
+  const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, CategoryEditor);
 
   const sidebarMenus = [
     { key: 'memo', title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },

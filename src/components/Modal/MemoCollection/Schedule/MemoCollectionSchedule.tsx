@@ -37,7 +37,7 @@ const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoProp; ca
     dispatch(
       setModalOpen({
         name: ModalName.detailScheduleMemoCollection,
-        value: content,
+        value: { content },
       }),
     );
   };
