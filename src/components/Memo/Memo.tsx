@@ -1,5 +1,5 @@
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoResponseProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
 import { useContextMenu } from '@hooks/useContextMenu';
 import MemoImage from './Image/MemoImage';
 import MemoLink from './Link/MemoLink';
@@ -16,7 +16,7 @@ const MemoCategory = ({ category }: { category: CategoryProp }) => {
   );
 };
 
-const MemoComponent = ({ memo, category }: { memo: MemoResponseProp; category?: CategoryProp }) => {
+const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const handleOpenCategorySetting = () => {
     // TODO: 카테고리 설정 모달 열기
   };
@@ -53,11 +53,11 @@ const MemoComponent = ({ memo, category }: { memo: MemoResponseProp; category?: 
       <ContextMenu />
       <MemoContent {...BindContextMenuHandlers}>
         {memo.type == 'text' ? (
-          <MemoText categoryName={category?.categoryName} memoId={memo.id} content={memo.content as string} />
+          <MemoText content={memo.content as string} />
         ) : memo.type == 'schedule' ? (
-          <MemoSchedule memoId={memo.id} content={memo.content as scheduleProp} />
+          <MemoSchedule content={memo.content as scheduleProp} />
         ) : memo.type == 'image' ? (
-          <MemoImage memoId={memo.id} content={memo.content as string} />
+          <MemoImage content={memo.content as string} />
         ) : memo.type == 'link' ? (
           <MemoLink content={memo.content as string} />
         ) : (

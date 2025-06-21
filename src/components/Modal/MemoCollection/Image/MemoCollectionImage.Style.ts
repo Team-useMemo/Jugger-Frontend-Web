@@ -1,10 +1,14 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const MemoCollectionImageContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '32px',
+
+  [media[480]]: {
+    gap: '28px',
+  },
 });
 
 const MemoCollectionImageListContainer = styled.div({
@@ -36,6 +40,12 @@ const MemoCollectionImageListContents = styled.div({
   borderRadius: theme.radius[12],
   borderTopLeftRadius: '0',
   background: theme.color.background.normal,
+
+  [media[480]]: {
+    padding: '16px',
+    columnGap: '8px',
+    rowGap: '12px',
+  },
 });
 
 const MemoCollectionImageItemContainer = styled.div({

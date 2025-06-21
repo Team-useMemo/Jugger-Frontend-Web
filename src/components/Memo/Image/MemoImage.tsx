@@ -3,7 +3,7 @@ import { ModalName } from '@utils/Modal';
 import { useAppDispatch } from '@hooks/useRedux';
 import MemoImageContainer from './MemoImage.Style';
 
-const MemoImage = ({ content }: { memoId: number; content: string }) => {
+const MemoImage = ({ content }: { content: string }) => {
   const dispatch = useAppDispatch();
 
   const openDetailImageMemoModal = () => {
@@ -12,7 +12,7 @@ const MemoImage = ({ content }: { memoId: number; content: string }) => {
         name: ModalName.detailImageMemo,
         value: {
           title: '',
-          image: content,
+          content: content,
         },
       }),
     );

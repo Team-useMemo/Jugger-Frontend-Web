@@ -1,7 +1,6 @@
-import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetLinksQuery } from '@stores/modules/memo';
-import { useMemo } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
+import { MemoProp } from '@ts/Memo.Prop';
 import {
   ContextMenuCategory,
   ContextMenuCopy,
@@ -21,8 +20,8 @@ import {
   MemoCollectionLinkItemTextContainer,
 } from './MemoCollectionLink.Style';
 
-const MemoCollectionLinkItem = ({ link, category }: { link: any; category?: CategoryProp }) => {
-  const { content } = link;
+const MemoCollectionLinkItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
+  const content = memo.content as string;
   const ogData = useOgData(content);
   const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
 
@@ -80,32 +79,13 @@ const MemoCollectionLinkItem = ({ link, category }: { link: any; category?: Cate
   );
 };
 
-const MemoCollectionLink = ({ category }: { category: string }) => {
-  const { data: linkList = [] } = useGetLinksQuery({ categoryId: category });
-  const { data: _categories = [] } = useGetCategoriesQuery();
-  const categories: CategoryProp[] = useMemo(() => {
-    return [
-      {
-        categoryId: '',
-        categoryColor: '#171719',
-        categoryName: '전체',
-        isPinned: false,
-        recentMessage: '',
-        updateAt: new Date(),
-      },
-      ..._categories,
-    ];
-  }, [_categories]);
-  console.log(linkList);
+const MemoCollectionLink = ({ category }: { category?: CategoryProp }) => {
+  const { data: linkMemos = [] } = useGetLinksQuery({ categoryId: category?.categoryId ?? '' });
 
   return (
     <MemoCollectionLinkContainer>
-      {linkList.map((e) => (
-        <MemoCollectionLinkItem
-          key={`LINK_COLLECTION_${category}_${e.content}`}
-          link={e}
-          category={categories.find((category) => category.categoryId == e.categoryId)}
-        />
+      {linkMemos.map((memo) => (
+        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}`} memo={memo} category={category} />
       ))}
     </MemoCollectionLinkContainer>
   );

@@ -1,17 +1,6 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-export const MemoLinkDefaultText = styled.p({
-  margin: '0',
-  whiteSpace: 'pre-wrap',
-  color: 'white',
-  fontSize: '15px',
-  fontWeight: '500',
-  padding: '8px 16px',
-  background: '#0054D1',
-  textAlign: 'start',
-});
-
 export const MemoLinkContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',

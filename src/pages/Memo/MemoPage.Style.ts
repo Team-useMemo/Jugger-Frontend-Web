@@ -98,13 +98,20 @@ export const MemoPageBottomContainer = styled.div({
   width: '100%',
   minWidth: '0',
   boxSizing: 'border-box',
-  display: 'flex',
-  alignItems: 'center',
   padding: '24px',
-  gap: '12px',
 
   [media[480]]: {
     padding: '16px 20px 24px',
+  },
+});
+
+export const MemoPageBottomContents = styled.div({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  [media[480]]: {
+    position: 'relative',
   },
 });
 

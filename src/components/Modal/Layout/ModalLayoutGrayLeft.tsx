@@ -10,7 +10,7 @@ const ModalLayoutGrayLeftContainer = styled.div({
   background: '#989BA288',
   width: '100%',
   height: '100%',
-  zIndex: 3,
+  zIndex: '20',
 });
 
 const ModalLayoutGrayLeft = ({ children }: { children: React.ReactNode }) => {

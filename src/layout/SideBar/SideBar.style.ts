@@ -39,6 +39,38 @@ export const SideBarHeader = styled.div({
   },
 });
 
+export const SideBarSearchContainer = styled.label({
+  background: theme.color.background.alternative,
+  margin: '12px 16px',
+  boxSizing: 'border-box',
+  padding: '16px 12px',
+  borderRadius: theme.radius[8],
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+
+  ['>svg']: {
+    width: '20px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+  },
+
+  ['>input']: {
+    background: 'transparent',
+    border: 'none',
+
+    ...theme.font.body2normal.medium,
+
+    [':focus']: {
+      outline: 'none',
+    },
+
+    ['::placeholder']: {
+      color: theme.color.label.alternative,
+    },
+  },
+});
+
 export const SideBarContents = styled.div({
   display: 'flex',
   flexDirection: 'column',

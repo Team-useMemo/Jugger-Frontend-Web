@@ -4,15 +4,19 @@ import { setModalClose } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoResponseProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
 import { ModalName } from '@utils/Modal';
+import { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
-import SearchSVG from '@assets/Header/search.svg?react';
+import { useIsMobile } from '@hooks/useWindowSize';
 import LinkSVG from '@assets/Search/Link.svg?react';
 import PhotoSVG from '@assets/Search/Photo.svg?react';
 import ScheduleSVG from '@assets/Search/Schedule.svg?react';
 import TextSVG from '@assets/Search/Text.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
+import LeftArrowSVG from '@assets/icons/left_arrow.svg?react';
+import SearchSVG from '@assets/icons/search.svg?react';
+import { DefaultModalLayout } from '../DefaultModal.Style';
 import {
   SearchMemoCategoryContainer,
   SearchMemoCategoryContents,
@@ -20,13 +24,14 @@ import {
   SearchMemoContainer,
   SearchMemoInputCategory,
   SearchMemoInputContainer,
+  SearchMemoInputContents,
   SearchMemoResultContainer,
   SearchMemoResultItemCategory,
   SearchMemoResultItemContainer,
   SearchMemoResultItemContents,
 } from './SearchMemo.Style';
 
-const getMemoSearchText = (memo: MemoResponseProp): string => {
+const getMemoSearchText = (memo: MemoProp): string => {
   if (memo.type === 'schedule') return (memo.content as scheduleProp)?.title ?? '';
   return String(memo.content ?? '');
 };
@@ -65,7 +70,7 @@ const extractMatchedSegments = (source: string, keyword: string): MatchedSegment
   ).segments;
 };
 
-const SearchMemo = () => {
+const SearchMemo = ({ closeModal, modalRef }: ModalComponentProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryProp | null>(null);
 
@@ -101,45 +106,63 @@ const SearchMemo = () => {
     setSelectedCategory(null);
   };
 
+  const handleSearch = () => {};
+
+  const isMobile = useIsMobile();
+
   return (
-    <SearchMemoContainer>
-      <SearchMemoInputContainer>
-        {!selectedCategory && <SearchSVG />}
-        {selectedCategory && (
-          <SearchMemoInputCategory color={selectedCategory.categoryColor}>
-            <span />
-            {selectedCategory.categoryName}
-            <EndContainerSVG onClick={handleResetSelectedCategory} />
-          </SearchMemoInputCategory>
-        )}
-        <input placeholder="검색어를 입력하세요" value={searchQuery} onChange={handleChangeSearchQuery} />
-        {searchQuery && <EndContainerSVG onClick={handleResetSearchQuery} />}
-      </SearchMemoInputContainer>
-      <SearchMemoCategoryContainer>
-        카테고리 선택
-        <SearchMemoCategoryContents>
-          {categories.map((e) => {
-            return (
-              <SearchMemoCategoryItem color={e.categoryColor} onClick={() => handleChangeSelectedCategory(e)}>
+    <DefaultModalLayout>
+      <SearchMemoContainer ref={modalRef}>
+        <SearchMemoInputContainer>
+          {isMobile && <LeftArrowSVG onClick={closeModal} />}
+          <SearchMemoInputContents>
+            {!selectedCategory && !(isMobile && searchQuery) && <SearchSVG />}
+            {selectedCategory && (
+              <SearchMemoInputCategory
+                color={selectedCategory.categoryColor}
+                onClick={isMobile ? handleResetSelectedCategory : () => {}}
+              >
                 <span />
-                {e.categoryName}
-              </SearchMemoCategoryItem>
-            );
-          })}
-        </SearchMemoCategoryContents>
-      </SearchMemoCategoryContainer>
-      {!!(searchQuery && filteredMemos.length) && (
-        <SearchMemoResultContainer>
-          {filteredMemos.map((memo) => (
-            <SearchMemoResult
-              searchQuery={searchQuery}
-              memo={memo}
-              category={categories.find((category) => category.categoryId == memo.categoryId)}
-            />
-          ))}
-        </SearchMemoResultContainer>
-      )}
-    </SearchMemoContainer>
+                <p>{selectedCategory.categoryName}</p>
+                <EndContainerSVG onClick={handleResetSelectedCategory} />
+              </SearchMemoInputCategory>
+            )}
+            <input placeholder="검색어를 입력하세요" value={searchQuery} onChange={handleChangeSearchQuery} />
+            {searchQuery && <EndContainerSVG onClick={handleResetSearchQuery} />}
+            {isMobile && searchQuery && <SearchSVG onClick={handleSearch} />}
+          </SearchMemoInputContents>
+        </SearchMemoInputContainer>
+        {(!isMobile || !searchQuery) && (
+          <SearchMemoCategoryContainer>
+            {!isMobile && '카테고리 선택'}
+            <SearchMemoCategoryContents>
+              {categories.map((e, i) => (
+                <SearchMemoCategoryItem
+                  key={`SEARCH_CATEGORY_${i}`}
+                  color={e.categoryColor}
+                  onClick={() => handleChangeSelectedCategory(e)}
+                >
+                  <span />
+                  <p>{e.categoryName}</p>
+                </SearchMemoCategoryItem>
+              ))}
+            </SearchMemoCategoryContents>
+          </SearchMemoCategoryContainer>
+        )}
+
+        {!!(searchQuery && filteredMemos.length) && (
+          <SearchMemoResultContainer>
+            {filteredMemos.map((memo) => (
+              <SearchMemoResult
+                searchQuery={searchQuery}
+                memo={memo}
+                category={categories.find((category) => category.categoryId == memo.categoryId)}
+              />
+            ))}
+          </SearchMemoResultContainer>
+        )}
+      </SearchMemoContainer>
+    </DefaultModalLayout>
   );
 };
 
@@ -149,7 +172,7 @@ const SearchMemoResult = ({
   category,
 }: {
   searchQuery: string;
-  memo: MemoResponseProp;
+  memo: MemoProp;
   category?: CategoryProp;
 }) => {
   const searchedResult = getMemoSearchText(memo);
@@ -163,7 +186,7 @@ const SearchMemoResult = ({
     dispatch(setModalClose({ name: ModalName.searchMemo }));
 
     setTimeout(() => {
-      const memoElement = document.getElementById(`memo-${memo.id}`);
+      const memoElement = document.getElementById(`memo-${memo.memoId}`);
       if (memoElement) {
         memoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -172,17 +195,18 @@ const SearchMemoResult = ({
 
   return (
     <SearchMemoResultItemContainer onClick={handleClickResultItem}>
-      {memo.type == 'text' && <TextSVG />}
-      {memo.type == 'link' && <LinkSVG />}
-      {memo.type == 'schedule' && <ScheduleSVG />}
-      {memo.type == 'image' && <PhotoSVG />}
       <SearchMemoResultItemContents>
-        {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.id}_${i}`}>{e.text}</span> : e.text))}
+        {memo.type == 'text' && <TextSVG />}
+        {memo.type == 'link' && <LinkSVG />}
+        {memo.type == 'schedule' && <ScheduleSVG />}
+        {memo.type == 'image' && <PhotoSVG />}
+        <p>
+          {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.memoId}_${i}`}>{e.text}</span> : e.text))}
+        </p>
       </SearchMemoResultItemContents>
       {category && (
         <SearchMemoResultItemCategory color={category.categoryColor}>
-          <span />
-          {category.categoryName}
+          <p>{category.categoryName}</p>
         </SearchMemoResultItemCategory>
       )}
     </SearchMemoResultItemContainer>

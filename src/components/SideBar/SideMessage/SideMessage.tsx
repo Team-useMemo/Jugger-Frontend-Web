@@ -55,11 +55,21 @@ const SideMessage = ({ category }: { category: CategoryProp }) => {
     }
 
     if (categoryId == currentCategory) {
-      dispatch(setModalClose({ name: ModalName.sideBar }));
+      dispatch(
+        setModalClose({
+          name: ModalName.sideBar,
+        }),
+      );
       return;
     }
 
-    dispatch(setModalClose({ name: ModalName.sideBar, to: to, replace: true }));
+    dispatch(
+      setModalClose({
+        name: ModalName.sideBar,
+        to: to,
+        replace: true,
+      }),
+    );
   }, [categoryId, dispatch, navigate, isMobile, currentCategory]);
 
   const handleCategoryPinClick = useCallback(() => {

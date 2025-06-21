@@ -7,16 +7,10 @@ const JuggerButton = styled.button(
       ? {
           background: theme.color.primary.normal,
           color: theme.color.label.inverse,
-          ['svg']: {
-            stroke: theme.palette.common[100],
-          },
         }
       : {
           background: theme.palette.coolneutral[98],
           color: theme.color.label.normal,
-          ['svg']: {
-            stroke: theme.color.label.normal,
-          },
         }),
     ...(size == 'small'
       ? {
@@ -25,10 +19,6 @@ const JuggerButton = styled.button(
           padding: '8px 16px',
           minWidth: '60px',
           gap: '4px',
-          ['svg']: {
-            height: '16px',
-            width: '16px',
-          },
         }
       : size == 'medium'
         ? {
@@ -37,10 +27,6 @@ const JuggerButton = styled.button(
             padding: '10px 16px',
             minWidth: '80px',
             gap: '6px',
-            ['svg']: {
-              height: '20px',
-              width: '20px',
-            },
           }
         : {
             ...theme.font.heading1.medium,
@@ -48,11 +34,12 @@ const JuggerButton = styled.button(
             padding: '12px 24px',
             minWidth: '120px',
             gap: '8px',
-            ['svg']: {
-              height: '20px',
-              width: '20px',
-            },
           }),
+
+    ['>svg']: {
+      stroke: color == 'primary' ? theme.palette.common[100] : theme.color.label.normal,
+      width: size == 'small' ? '16px' : size == 'large' ? '20px' : '20px',
+    },
   }),
   {
     display: 'flex',
@@ -64,10 +51,15 @@ const JuggerButton = styled.button(
       outline: 'none',
     },
 
+    ['>svg']: {
+      aspectRatio: '1 / 1',
+      flexShrink: '0',
+    },
+
     [':disabled']: {
       background: theme.color.label.disable,
       color: theme.color.label.assistive,
-      ['svg']: {
+      ['>svg']: {
         stroke: theme.color.label.assistive,
       },
       [':hover']: {

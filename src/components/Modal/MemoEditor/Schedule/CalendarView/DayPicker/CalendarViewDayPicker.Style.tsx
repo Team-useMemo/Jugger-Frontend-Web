@@ -10,8 +10,8 @@ const CalendarViewDayPickerContainer = styled.div({
 const CalendarViewDayPickerGrid = styled.div({
   display: 'grid',
   gridTemplateColumns: 'repeat(7, 1fr)',
-  columnGap: '12px',
-  rowGap: '4px',
+  columnGap: '8px',
+  rowGap: '8px',
 });
 
 const CalendarViewDayPickerDayItem = styled.p({

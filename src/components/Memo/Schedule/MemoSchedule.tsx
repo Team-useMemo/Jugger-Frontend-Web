@@ -6,14 +6,14 @@ import { useAppDispatch } from '@hooks/useRedux';
 import TimeCircleSVG from '@assets/icons/time_circle.svg?react';
 import { MemoMainText, MemoScheduleContainer, MemoScheduleContents } from './MemoSchedule.Style';
 
-const MemoSchedule = ({ content }: { memoId: number; content: scheduleProp }) => {
+const MemoSchedule = ({ content }: { content: scheduleProp }) => {
   const dispatch = useAppDispatch();
 
   const openDetailScheduleMemoModal = () => {
     dispatch(
       setModalOpen({
         name: ModalName.detailScheduleMemo,
-        value: content,
+        value: { content },
       }),
     );
   };

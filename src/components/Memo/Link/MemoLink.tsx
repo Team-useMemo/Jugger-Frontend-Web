@@ -1,10 +1,16 @@
 import { useOgData } from '@hooks/useOgData';
-import { MemoLinkContainer, MemoLinkDefaultText, MemoLinkImage, MemoLinkTextContainer } from './MemoLink.Style';
+import { MemoTextContainer } from '../Text/MemoText.Style';
+import { MemoLinkContainer, MemoLinkImage, MemoLinkTextContainer } from './MemoLink.Style';
 
 const MemoLink = ({ content }: { content: string }) => {
   const ogData = useOgData(content);
 
-  if (!ogData) return <MemoLinkDefaultText>{content}</MemoLinkDefaultText>;
+  if (!ogData)
+    return (
+      <MemoTextContainer>
+        <p>{content}</p>{' '}
+      </MemoTextContainer>
+    );
 
   return (
     <MemoLinkContainer

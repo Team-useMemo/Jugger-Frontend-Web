@@ -1,18 +1,15 @@
-import styled from '@emotion/styled';
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalClose, setModalOpen, setModalReplace } from '@stores/modules/modal';
-import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ModalName } from '@utils/Modal';
-import useParamModal from '@hooks/useParamModal';
+import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import AddCategory from '@components/Modal/Category/AddCategory';
-import EditCategory from '@components/Modal/Category/EditCategory';
+import AddCategory from '@components/Modal/Category/CategoryEditor';
+import CategoryEditor from '@components/Modal/Category/CategoryEditor';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
-import { theme } from '@styles/theme';
 import SearchSVG from '@assets/Header/search.svg?react';
 import LogoPNG from '@assets/Logo.png';
 import CalendarSVG from '@assets/Sidebar/Calendar.svg?react';
@@ -28,19 +25,21 @@ import {
   SideBarHeader,
   SideBarMenuContainer,
   SideBarMenuItemContainer,
+  SideBarSearchContainer,
 } from './SideBar.style';
 
-const SideBar = () => {
+const SideBar = ({ modalRef }: ModalComponentProps) => {
+  const isMobile = useIsMobile();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [, setSearchParams] = useSearchParams();
-  const modalRef = useRef<HTMLDivElement>(null);
   const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
+
+  const currentCategory = new URLSearchParams(window.location.search).get('category');
 
   const { data: categories = [] } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
   });
-
-  const dispatch = useAppDispatch();
-  const isMobile = useIsMobile();
 
   const onWholeMemoClick = () => {
     setSearchParams({});
@@ -52,6 +51,7 @@ const SideBar = () => {
         name: ModalName.memoCollection,
         value: {
           type: type,
+          categoryId: currentCategory ?? '',
         },
       }),
     );
@@ -64,10 +64,6 @@ const SideBar = () => {
   const handleClickAddCategory = () => {
     dispatch(setModalOpen({ name: ModalName.addCategory }));
   };
-
-  const [searchParams] = useSearchParams();
-  const currentCategory = searchParams.get('category');
-  const navigate = useNavigate();
 
   const handleClickLogo = () => {
     if (isMobile) {
@@ -92,18 +88,18 @@ const SideBar = () => {
   };
 
   const [AddCategoryModal] = useParamModal(ModalName.addCategory, ModalLayoutGray, AddCategory);
-  const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, EditCategory);
+  const [EditCategoryModal] = useParamModal(ModalName.editCategory, ModalLayoutGray, CategoryEditor);
 
   const sidebarMenus = [
-    { title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
+    { key: 'memo', title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
     ...(!isMobile
       ? [
-          { title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
-          { title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
-          { title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
+          { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
+          { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
+          { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
         ]
       : []),
-    { title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
+    { key: 'setting', title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
   ];
 
   return (
@@ -122,7 +118,7 @@ const SideBar = () => {
       <SideBarContents>
         <SideBarMenuContainer>
           {sidebarMenus.map((menu) => (
-            <SideBarMenuItemContainer onClick={menu.onClick}>
+            <SideBarMenuItemContainer key={`SIDEBAR_MENU_${menu.key}`} onClick={menu.onClick}>
               <menu.iconSVG />
               {menu.title}
             </SideBarMenuItemContainer>
@@ -144,37 +140,5 @@ const SideBar = () => {
     </SideBarContainer>
   );
 };
-
-const SideBarSearchContainer = styled.label({
-  background: theme.color.background.alternative,
-  margin: '12px 16px',
-  boxSizing: 'border-box',
-  padding: '16px 12px',
-  borderRadius: theme.radius[8],
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
-
-  ['>svg']: {
-    width: '20px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-  },
-
-  ['>input']: {
-    background: 'transparent',
-    border: 'none',
-
-    ...theme.font.body2normal.medium,
-
-    [':focus']: {
-      outline: 'none',
-    },
-
-    ['::placeholder']: {
-      color: theme.color.label.alternative,
-    },
-  },
-});
 
 export default SideBar;

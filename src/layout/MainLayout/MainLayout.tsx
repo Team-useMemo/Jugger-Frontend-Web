@@ -14,12 +14,12 @@ const Mainlayout = ({ children }: LayoutProps) => {
 
   return (
     <StyledMainlayout>
-      <SideBarModal />
       {!isMobile && <SideBar />}
       <StyledMain>
         <Header />
         <StyledContent>{children}</StyledContent>
       </StyledMain>
+      {isMobile && <SideBarModal />}
     </StyledMainlayout>
   );
 };

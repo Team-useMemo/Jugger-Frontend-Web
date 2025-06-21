@@ -4,26 +4,33 @@ import { media, theme } from '@styles/theme';
 const MemoDetailTextContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  gap: '12px',
   textAlign: 'left',
-  maxHeight: '640px',
-  marginTop: '24px',
+  overflow: 'hidden',
+  gap: '12px',
+
+  ...theme.font.title3.bold,
+  color: theme.color.text.onView,
+
+  [media[480]]: {
+    padding: '0px 20px',
+  },
 });
 
 const MemoDetailTextContents = styled.p({
+  whiteSpace: 'pre-wrap',
+  wordBreak: 'break-word',
+  overflow: 'auto',
+
   ...theme.font.body2normal.medium,
   color: theme.color.label.normal,
   margin: '0',
-  width: '100%',
-  overflow: 'auto',
-  whiteSpace: 'pre-wrap',
 
   ['::-webkit-scrollbar']: {
     display: 'none',
   },
 
   [media[480]]: {
-    width: 'auto',
+    padding: '12px 0px',
   },
 });
 

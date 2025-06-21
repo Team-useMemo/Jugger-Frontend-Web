@@ -15,6 +15,14 @@ export interface MemoResponseProp {
   categoryColor?: string;
 }
 
+export interface MemoProp {
+  memoId: number;
+  type: userMemoType;
+  content: string | scheduleProp;
+  date: Date;
+  categoryId: string | null;
+}
+
 export interface CalendarResponseProp {
   startDateTime: string;
   endDateTime?: string;
