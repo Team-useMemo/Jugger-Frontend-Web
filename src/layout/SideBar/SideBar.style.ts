@@ -106,6 +106,10 @@ export const SideBarContents = styled.div({
 
   [media[480]]: {
     padding: '0 0 16px',
+
+    ['::-webkit-scrollbar']: {
+      border: '1px solid #E8E8E8',
+    },
   },
 });
 

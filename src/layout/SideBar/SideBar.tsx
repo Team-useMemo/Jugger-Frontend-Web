@@ -1,6 +1,7 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalClose, setModalOpen, setModalReplace } from '@stores/modules/modal';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Logout } from '@utils/Auth';
 import { ModalName } from '@utils/Modal';
 import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
@@ -137,6 +138,22 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
           ))}
         </SideBarCategoryContainer>
       </SideBarContents>
+      {isMobile && (
+        //로그아웃은 추후에 설정 페이지로 옮길 예정
+        <div
+          style={{
+            padding: '8px 24px 16px',
+            width: '100%',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <JuggerButton color="secondary" size="small" onClick={Logout}>
+            로그아웃
+          </JuggerButton>
+        </div>
+      )}
     </SideBarContainer>
   );
 };
