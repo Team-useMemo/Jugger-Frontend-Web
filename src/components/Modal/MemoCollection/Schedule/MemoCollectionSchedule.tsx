@@ -156,7 +156,7 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
         return selectedDate
           ? startDate.toDateString() === selectedDate.toDateString()
           : startDate.getFullYear() === selectedMonth.getFullYear() &&
-              startDate.getMonth() === selectedMonth.getMonth();
+          startDate.getMonth() === selectedMonth.getMonth();
       }),
     [filteredMemos, selectedDate, selectedMonth],
   );
@@ -209,7 +209,7 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
       <MemoCollectionScheduleListContainer>
         {scheduleList.map((memo) => (
           <MemoCollectionScheduleListItem
-            key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.memoId}`}
+            key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.chatId}`}
             memo={memo}
             category={categories.find(({ categoryId }) => categoryId == memo.categoryId)}
           />

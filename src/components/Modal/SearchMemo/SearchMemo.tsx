@@ -106,7 +106,7 @@ const SearchMemo = ({ closeModal, modalRef }: ModalComponentProps) => {
     setSelectedCategory(null);
   };
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   const isMobile = useIsMobile();
 
@@ -120,7 +120,7 @@ const SearchMemo = ({ closeModal, modalRef }: ModalComponentProps) => {
             {selectedCategory && (
               <SearchMemoInputCategory
                 color={selectedCategory.categoryColor}
-                onClick={isMobile ? handleResetSelectedCategory : () => {}}
+                onClick={isMobile ? handleResetSelectedCategory : () => { }}
               >
                 <span />
                 <p>{selectedCategory.categoryName}</p>
@@ -186,7 +186,7 @@ const SearchMemoResult = ({
     dispatch(setModalClose({ name: ModalName.searchMemo }));
 
     setTimeout(() => {
-      const memoElement = document.getElementById(`memo-${memo.memoId}`);
+      const memoElement = document.getElementById(`memo-${memo.chatId}`);
       if (memoElement) {
         memoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -201,7 +201,7 @@ const SearchMemoResult = ({
         {memo.type == 'schedule' && <ScheduleSVG />}
         {memo.type == 'image' && <PhotoSVG />}
         <p>
-          {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.memoId}_${i}`}>{e.text}</span> : e.text))}
+          {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.chatId}_${i}`}>{e.text}</span> : e.text))}
         </p>
       </SearchMemoResultItemContents>
       {category && (
