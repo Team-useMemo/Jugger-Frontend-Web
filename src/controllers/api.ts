@@ -191,6 +191,26 @@ const postKakaoAuthCode = async (code: string) => {
   return data;
 };
 
+const postGoogleAuthCode = async (code: string) => {
+  const url = `${baseURL}/auth/google`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text(); // capture response body for diagnostics
+    throw new Error(`${res.status} Error!! - ${errorText}`);
+  }
+
+  const data = await res.json();
+  return data;
+};
+
 type KakaoSignupPayload = {
   name: string;
   email: string;
@@ -218,6 +238,57 @@ const postKakaoSignup = async (payload: KakaoSignupPayload) => {
 
   return await response.json();
 };
+
+const postGoogleSignup = async (payload: KakaoSignupPayload) => {
+  const url = `${baseURL}/auth/google/signup`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(`${response.status} Error`);
+  }
+
+  return await response.json();
+};
+
+
+const getPostSignup = (provider: string) => {
+  switch (provider) {
+    case 'kakao':
+      return postKakaoSignup;
+    case 'google':
+      return postGoogleSignup;
+    case 'naver':
+      return postKakaoSignup;
+    case 'apple':
+      return postKakaoSignup;
+    default:
+      break;
+  }
+
+  return postKakaoSignup;
+};
+
+const getPostAuthCode = (provider: string) => {
+  switch (provider) {
+    case 'kakao':
+      return postKakaoAuthCode;
+    case 'google':
+      return postGoogleAuthCode;
+    case 'naver':
+      return null;
+    case 'apple':
+      return null;
+    default:
+      break;
+  }
+};
+
 export {
   fetchAllMemo,
   fetchCategory,
@@ -227,4 +298,8 @@ export {
   postPhoto,
   postKakaoAuthCode,
   postKakaoSignup,
+  postGoogleAuthCode,
+  postGoogleSignup,
+  getPostSignup,
+  getPostAuthCode
 };
