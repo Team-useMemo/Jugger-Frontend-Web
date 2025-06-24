@@ -11,19 +11,19 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 1000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
-        // console.log(response);
+        console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
-            categoryBlock.chatItems.map((item: any, index: number) => {
+            categoryBlock.chatItems.map((item: any,) => {
               const type = item.linkUrl ? 'link' : item.scheduleName ? 'schedule' : item.imgUrl ? 'photo' : 'text';
 
               const content =
                 type === 'schedule'
                   ? {
-                      title: item.scheduleName,
-                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
-                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
-                    }
+                    title: item.scheduleName,
+                    startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
+                    endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
+                  }
                   : type === 'link'
                     ? item.linkUrl
                     : type === 'photo'
@@ -31,7 +31,7 @@ export const memoApi = createApi({
                       : item.data;
 
               return {
-                memoId: index,
+                chatId: item.chatId,
                 type,
                 content,
                 date: new Date(item.timestamp),
@@ -51,12 +51,12 @@ export const memoApi = createApi({
       providesTags: (result): readonly { type: 'Memo'; id: string | number }[] =>
         result
           ? [
-              ...result.map((memo) => ({
-                type: 'Memo' as const,
-                id: memo.memoId,
-              })),
-              { type: 'Memo', id: 'LIST' },
-            ]
+            ...result.map((memo) => ({
+              type: 'Memo' as const,
+              id: memo.chatId,
+            })),
+            { type: 'Memo', id: 'LIST' },
+          ]
           : [{ type: 'Memo', id: 'LIST' }],
     }),
     postMemo: builder.mutation<void, { categoryUuid: string; text: string }>({
@@ -67,6 +67,17 @@ export const memoApi = createApi({
           categoryUuid,
           text,
         },
+      }),
+      invalidatesTags: [
+        { type: 'Memo', id: 'LIST' },
+        { type: 'Link', id: 'LIST' },
+      ],
+    }),
+
+    deleteMemo: builder.mutation<void, { chatId: string }>({
+      query: ({ chatId }) => ({
+        url: `/api/v1/chat?chatId=${chatId}`,
+        method: 'DELETE',
       }),
       invalidatesTags: [
         { type: 'Memo', id: 'LIST' },
@@ -97,9 +108,9 @@ export const memoApi = createApi({
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
           .map(
-            (e, i: number) =>
+            (e,) =>
               ({
-                memoId: i,
+                chatId: e.chatId,
                 type: 'schedule',
                 content: {
                   title: e.title,
@@ -140,9 +151,9 @@ export const memoApi = createApi({
       transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
         return response
           .map(
-            (e, i) =>
+            (e) =>
               ({
-                memoId: i,
+                chatId: e.chatId,
                 type: 'image',
                 content: e.url,
                 categoryId: e.categoryName,
@@ -182,4 +193,5 @@ export const {
   useUploadFileMutation,
   useGetPhotosQuery,
   useGetLinksQuery,
+  useDeleteMemoMutation,
 } = memoApi;
