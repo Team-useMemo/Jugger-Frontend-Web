@@ -3,8 +3,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import LoginPage from '@pages/Login/page';
 import Root from './Root';
 import MemoPage from '@pages/Memo/page';
-import KakaoCallback from '@pages/Oauth/KakaoCallback';
 import IndexPage from '@pages/Index/page';
+import Callback from '@pages/Oauth/Callback';
 
 export const webPath = {
   root: () => '/',
@@ -23,8 +23,8 @@ const routes = [
     element: <Root />,
     children: [
       { path: '/memo', element: <MemoPage /> },
-      { path: '/login/oauth/callback/kakao', element: <KakaoCallback /> },
-      // { path: 'home', element: <HomePage /> },
+      { path: '/login/oauth/callback/kakao', element: <Callback /> },
+      { path: '/login/oauth/callback/google', element: <Callback /> },
     ],
   },
 ];

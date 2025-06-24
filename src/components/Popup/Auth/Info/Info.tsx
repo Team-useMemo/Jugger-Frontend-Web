@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { postKakaoSignup } from '@controllers/api';
+import { getPostSignup } from '@controllers/api';
 import { useNavigate } from 'react-router-dom';
 import CloseSVG from '@assets/Login/close.svg?react';
 
@@ -16,12 +16,15 @@ import {
   Label,
 } from './Info.Style';
 
+
 const Info = ({
   closeModal,
   checkedTerms,
+  provider,
 }: {
   closeModal: () => void;
   checkedTerms: { all: boolean; age: boolean; privacy: boolean; terms: boolean; marketing: boolean; ads: boolean; email: string; nickname: string; };
+  provider: string;
 }) => {
   const navigate = useNavigate();
   const [name, setName] = useState(checkedTerms.nickname);
@@ -37,9 +40,11 @@ const Info = ({
 
   const handleSubmit = async () => {
     console.log({ name, gender, birth, source });
-    if (isRequiredChecked) {
+    const getSignup = getPostSignup(provider);
+
+    if (isRequiredChecked && provider) {
       try {
-        const response = await postKakaoSignup({
+        const response = await getSignup({
           name,
           email: checkedTerms.email, // 실제 이메일로 교체 필요
           domain: 'kakao',
