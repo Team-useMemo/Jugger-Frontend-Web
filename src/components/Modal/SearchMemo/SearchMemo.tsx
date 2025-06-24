@@ -199,7 +199,7 @@ const SearchMemoResult = ({
         {memo.type == 'text' && <TextSVG />}
         {memo.type == 'link' && <LinkSVG />}
         {memo.type == 'schedule' && <ScheduleSVG />}
-        {memo.type == 'image' && <PhotoSVG />}
+        {memo.type == 'photo' && <PhotoSVG />}
         <p>
           {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.chatId}_${i}`}>{e.text}</span> : e.text))}
         </p>

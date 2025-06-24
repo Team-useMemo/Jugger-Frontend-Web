@@ -59,7 +59,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
           <MemoText content={memo.content as string} />
         ) : memo.type == 'schedule' ? (
           <MemoSchedule content={memo.content as scheduleProp} />
-        ) : memo.type == 'image' ? (
+        ) : memo.type == 'photo' ? (
           <MemoImage content={memo.content as string} />
         ) : memo.type == 'link' ? (
           <MemoLink content={memo.content as string} />

@@ -70,7 +70,7 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?
 };
 
 const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
-  const { data: imageMemos = [] } = useGetPhotosQuery({ category_uuid: category?.categoryId ?? '' });
+  const { data: imageMemos = [] } = useGetPhotosQuery({ categoryId: category?.categoryId ?? '' });
 
   const dateImages: [string, MemoProp[]][] = Object.entries(
     [...imageMemos].reverse().reduce((acc: any, e) => {

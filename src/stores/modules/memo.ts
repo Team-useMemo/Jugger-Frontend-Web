@@ -14,8 +14,14 @@ export const memoApi = createApi({
         console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
-            categoryBlock.chatItems.map((item: any,) => {
-              const type = item.linkUrl ? 'link' : item.scheduleName ? 'schedule' : item.imgUrl ? 'photo' : 'text';
+            categoryBlock.chatItems.map((item: any) => {
+              const type = item.linkUrl
+                ? 'link'
+                : item.scheduleName
+                  ? 'schedule'
+                  : item.imgUrl
+                    ? 'photo'
+                    : 'text';
 
               const content =
                 type === 'schedule'
@@ -36,8 +42,10 @@ export const memoApi = createApi({
                 content,
                 date: new Date(item.timestamp),
                 categoryId: categoryBlock.categoryId ?? undefined,
+                categoryName: categoryBlock.categoryName ?? undefined,
+                categoryColor: categoryBlock.categoryColor ?? undefined,
               };
-            }),
+            })
           )
           .sort((a: MemoResponseProp, b: MemoResponseProp) => b.date.getTime() - a.date.getTime());
       },
@@ -125,14 +133,14 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
-    uploadFile: builder.mutation<void, { file: File; category_uuid: string }>({
-      query: ({ file, category_uuid }) => {
+    uploadFile: builder.mutation<void, { file: File; categoryId: string }>({
+      query: ({ file, categoryId }) => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('category_uuid', category_uuid);
+        formData.append('categoryId', categoryId);
 
         return {
-          url: '/api/v1/upload/files',
+          url: '/api/v1/upload/file',
           method: 'POST',
           body: formData,
           responseHandler: 'text',
@@ -143,9 +151,9 @@ export const memoApi = createApi({
         { type: 'Photo', id: 'LIST' },
       ],
     }),
-    getPhotos: builder.query<MemoProp[], { category_uuid: string }>({
-      query: ({ category_uuid }) => ({
-        url: `/api/v1/photos?category_uuid=${category_uuid}`,
+    getPhotos: builder.query<MemoProp[], { categoryId: string }>({
+      query: ({ categoryId }) => ({
+        url: `/api/v1/photos?categoryId=${categoryId}`,
         method: 'GET',
       }),
       transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
@@ -154,7 +162,7 @@ export const memoApi = createApi({
             (e) =>
               ({
                 chatId: e.chatId,
-                type: 'image',
+                type: 'photo',
                 content: e.url,
                 categoryId: e.categoryName,
                 date: new Date(e.timestamp),
