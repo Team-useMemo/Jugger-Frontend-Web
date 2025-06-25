@@ -42,7 +42,7 @@ const memoMock: MemoResponseProp[] = [
   },
   {
     id: 6,
-    type: 'image',
+    type: 'photo',
     content:
       'https://png.pngtree.com/background/20250103/original/pngtree-pink-pastel-background-with-pink-aesthetic-sky-picture-image_15151458.jpg',
     date: new Date('2025-03-25T04:33:00'),

@@ -18,7 +18,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const dispatch = useAppDispatch();
 
   const { content } = props ?? {};
-  const { title, startDate, endDate } = content ?? {};
+  const { title, startDate, endDate, place, alarm, description } = content ?? {};
 
   const handleClickUpdateSchedule = () => {
     dispatch(
@@ -42,6 +42,25 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
                 <p>{title}</p>
               </MemoDetailScheduleItemContainer>
             )}
+            {place && (
+              <MemoDetailScheduleItemContainer>
+                장소
+                <p>{place}</p>
+              </MemoDetailScheduleItemContainer>
+            )}
+            {alarm && (
+              <MemoDetailScheduleItemContainer>
+                알림 설정
+                <p>{alarm}</p>
+              </MemoDetailScheduleItemContainer>
+            )}
+            {description && (
+              <MemoDetailScheduleItemContainer>
+                설명
+                <p>{description}</p>
+              </MemoDetailScheduleItemContainer>
+            )}
+
             {startDate && (
               <MemoDetailScheduleItemContainer>
                 시작 날짜
@@ -52,6 +71,12 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
               <MemoDetailScheduleItemContainer>
                 종료 날짜
                 <p>{formatDate(endDate, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
+              </MemoDetailScheduleItemContainer>
+            )}
+            {place && (
+              <MemoDetailScheduleItemContainer>
+                장소
+                <p>{place}</p>
               </MemoDetailScheduleItemContainer>
             )}
           </MemoDetailScheduleContents>

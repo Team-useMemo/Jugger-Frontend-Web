@@ -92,12 +92,15 @@ export const memoApi = createApi({
         { type: 'Link', id: 'LIST' },
       ],
     }),
-    postCalendar: builder.mutation<void, { name: string; startTime: string; endTime?: string; categoryId: string }>({
-      query: ({ name, startTime, endTime, categoryId }) => ({
+    postCalendar: builder.mutation<void, { name: string; place: string; alarm: Date | null, description: string, startTime: string; endTime?: string; categoryId: string }>({
+      query: ({ name, place, alarm, description, startTime, endTime, categoryId }) => ({
         url: '/api/v1/calendar',
         method: 'POST',
         body: {
           name,
+          place,
+          alarm,
+          description,
           startTime,
           endTime,
           categoryId,
