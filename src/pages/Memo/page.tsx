@@ -1,5 +1,5 @@
 import { categoryApi, useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetCalendarQuery, useGetMemosQuery, useGetPhotosQuery, usePostMemoMutation } from '@stores/modules/memo';
+import { useGetMemosQuery, usePostMemoMutation } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -38,8 +38,9 @@ import {
 const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(0);
+
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: textMemos = [] } = useGetMemosQuery(
+  const { data: memos = [] } = useGetMemosQuery(
     {
       page: page,
       //  size: 20
@@ -53,30 +54,11 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
     },
   );
 
-  const { data: scheduleMemos = [] } = useGetCalendarQuery(
-    { start: '2025-01-01T11:24:37.506Z', end: '2025-12-31T11:24:37.506Z' },
-    {
-      selectFromResult: ({ data }) => ({
-        data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
-      }),
-    },
-  );
-
-  const { data: imageMemos = [] } = useGetPhotosQuery(
-    { category_uuid: currentCategory },
-    {
-      selectFromResult: ({ data }) => ({
-        data: data?.map((e) => ({ ...e, categoryId: currentCategory })),
-      }),
-    },
-  );
-
-  const memos = [...textMemos, ...scheduleMemos, ...imageMemos].sort((a, b) => b.date.getTime() - a.date.getTime());
 
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
-
+  console.log(memos);
   return (
     <MemoListContainer ref={memoListContainerRef}>
       <div
@@ -89,13 +71,13 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
       </div>
       {memos.map((memo, i, arr) => {
         return (
-          <MemoItemContainer key={`memo-${memo.memoId}-${i}`} id={`memo-${memo.memoId}`}>
+          <MemoItemContainer key={`memo-${memo.chatId}-${i}`} id={`memo-${memo.chatId}`}>
             {(i == arr.length - 1 ||
               (i + 1 < arr.length && arr[i + 1].date.toDateString() != memo.date.toDateString())) && (
-              <MemoItemDateContainer>
-                <MemoItemDateContents>{formatDate(memo.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
-              </MemoItemDateContainer>
-            )}
+                <MemoItemDateContainer>
+                  <MemoItemDateContents>{formatDate(memo.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
+                </MemoItemDateContainer>
+              )}
             <MemoComponent memo={memo} category={categories.find(({ categoryId }) => categoryId == memo.categoryId)} />
           </MemoItemContainer>
         );

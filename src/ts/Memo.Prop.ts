@@ -16,7 +16,7 @@ export interface MemoResponseProp {
 }
 
 export interface MemoProp {
-  memoId: number;
+  chatId: string;
   type: userMemoType;
   content: string | scheduleProp;
   date: Date;
@@ -24,6 +24,7 @@ export interface MemoProp {
 }
 
 export interface CalendarResponseProp {
+  chatId: string;
   startDateTime: string;
   endDateTime?: string;
   categoryId: string;
@@ -32,6 +33,7 @@ export interface CalendarResponseProp {
 }
 
 export interface PhotoResponseProp {
+  chatId: string;
   url: string;
   categoryName: string;
   timestamp: Date;
