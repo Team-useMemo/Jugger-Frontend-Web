@@ -9,6 +9,7 @@ const MemoDetailScheduleContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '36px',
+  overflowY: 'auto',
 
   [media[480]]: {
     width: 'calc(100dvw - 20px * 2)',

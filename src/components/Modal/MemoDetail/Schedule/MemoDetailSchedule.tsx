@@ -48,19 +48,19 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
                 <p>{place}</p>
               </MemoDetailScheduleItemContainer>
             )}
-            {alarm && (
-              <MemoDetailScheduleItemContainer>
-                알림 설정
-                <p>{alarm}</p>
-              </MemoDetailScheduleItemContainer>
-            )}
+
             {description && (
               <MemoDetailScheduleItemContainer>
                 설명
                 <p>{description}</p>
               </MemoDetailScheduleItemContainer>
             )}
-
+            {alarm && (
+              <MemoDetailScheduleItemContainer>
+                알림 시각
+                <p>{formatDate(new Date(alarm), '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
+              </MemoDetailScheduleItemContainer>
+            )}
             {startDate && (
               <MemoDetailScheduleItemContainer>
                 시작 날짜
@@ -71,12 +71,6 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
               <MemoDetailScheduleItemContainer>
                 종료 날짜
                 <p>{formatDate(endDate, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
-              </MemoDetailScheduleItemContainer>
-            )}
-            {place && (
-              <MemoDetailScheduleItemContainer>
-                장소
-                <p>{place}</p>
               </MemoDetailScheduleItemContainer>
             )}
           </MemoDetailScheduleContents>

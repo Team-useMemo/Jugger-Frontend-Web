@@ -8,7 +8,7 @@ import { MemoMainText, MemoScheduleContainer, MemoScheduleContents } from './Mem
 
 const MemoSchedule = ({ content }: { content: scheduleProp }) => {
   const dispatch = useAppDispatch();
-
+  console.log(content);
   const openDetailScheduleMemoModal = () => {
     dispatch(
       setModalOpen({

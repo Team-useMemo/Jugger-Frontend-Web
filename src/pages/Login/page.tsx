@@ -35,7 +35,6 @@ const handleNaverLogin = () => {
 const handleGoogleLogin = () => {
   localStorage.setItem('lastLoginProvider', 'google');
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_REDIRECT_URI}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
-  console.log(googleAuthUrl);
   window.location.href = googleAuthUrl;
 };
 

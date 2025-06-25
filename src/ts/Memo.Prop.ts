@@ -25,6 +25,9 @@ export interface MemoProp {
 
 export interface CalendarResponseProp {
   chatId: string;
+  place: string;
+  alarm?: string;
+  description: string;
   startDateTime: string;
   endDateTime?: string;
   categoryId: string;

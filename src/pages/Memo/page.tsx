@@ -58,7 +58,7 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
-  console.log(memos);
+  // console.log(memos);
   return (
     <MemoListContainer ref={memoListContainerRef}>
       <div

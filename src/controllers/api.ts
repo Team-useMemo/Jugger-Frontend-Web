@@ -62,21 +62,21 @@ const fetchAllMemo = async (username: string) => {
   const convertedResult: MemoResponseProp[] = result
     .flatMap((category) =>
       category.chatItems.map((item) => {
-        let type: MemoResponseProp['type'] = 'text';
+        let type: MemoResponseProp['type'] = 'TEXT';
         let content: MemoResponseProp['content'] = item.data;
 
         if (item.calendar) {
-          type = 'schedule';
+          type = 'CALENDAR';
           content = {
             title: item.data,
             startDate: new Date(item.timestamp),
             endDate: null,
           };
         } else if (item.photo) {
-          type = 'photo';
+          type = 'PHOTO';
           content = item.photo;
         } else if (item.link) {
-          type = 'link';
+          type = 'LINK';
           // content = item.link;
         }
 
