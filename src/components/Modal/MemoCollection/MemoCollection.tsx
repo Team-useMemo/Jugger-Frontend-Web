@@ -92,11 +92,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
   };
 
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, MemoDetailImage);
-  const [DetailScheduleMemoModal] = useParamModal(
-    ModalName.detailScheduleMemoCollection,
-    ModalLayoutGray,
-    MemoDetailSchedule,
-  );
+  const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemoCollection, ModalLayoutGray, MemoDetailSchedule,);
 
   const [CategoryMenu, openCategoryMenu] = useMenu(
     MemoCollectionCategoryMenu,
@@ -111,7 +107,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
     dispatch(setModalOpen({ name: ModalName.searchMemo }));
   };
 
-  const onDetailClick = () => {};
+  const onDetailClick = () => { };
 
   const handleClickOpenMenu = () => {
     dispatch(setModalOpen({ name: ModalName.sideBar }));

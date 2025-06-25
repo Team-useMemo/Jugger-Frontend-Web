@@ -20,6 +20,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const { content } = props ?? {};
   const { title, startDate, endDate, place, alarm, description } = content ?? {};
 
+
   const handleClickUpdateSchedule = () => {
     dispatch(
       setModalReplace({
@@ -51,7 +52,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             {alarm && (
               <MemoDetailScheduleItemContainer>
                 알림 설정
-                <p>{alarm}</p>
+                <p>{formatDate(new Date(alarm), '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
               </MemoDetailScheduleItemContainer>
             )}
             {description && (

@@ -125,6 +125,9 @@ export const memoApi = createApi({
                 type: 'schedule',
                 content: {
                   title: e.title,
+                  place: e.place,
+                  alarm: e.alarm,
+                  description: e.description,
                   startDate: new Date(e.startDateTime),
                   endDate: e.endDateTime ? new Date(e.endDateTime) : null,
                 },
