@@ -206,9 +206,9 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
       </MemoCollectionScheduleCalendarContainer>
 
       <MemoCollectionScheduleListContainer>
-        {scheduleList.map((memo) => (
+        {scheduleList.map((memo, index: number) => (
           <MemoCollectionScheduleListItem
-            key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.chatId}`}
+            key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.chatId}_${index}`}
             memo={memo}
             category={categories.find(({ categoryId }) => categoryId == memo.categoryId)}
           />

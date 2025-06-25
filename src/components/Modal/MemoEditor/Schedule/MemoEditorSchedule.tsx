@@ -1,5 +1,5 @@
 import { usePostCalendarMutation } from '@stores/modules/memo';
-import { setModalClose, setModalReplace } from '@stores/modules/modal';
+import { setModalClose } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { formatDate } from '@utils/Date';
@@ -25,11 +25,10 @@ import {
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content } = props ?? {};
-  console.log(content);
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
-  const [alarm, setAlarm] = useState<Date | null>(content?.alarm ? new Date(content.alarm) : null);
   const [description, setDescription] = useState<string>(content?.description ?? '');
+  const [alarmDate, setAlarmDate] = useState<Date | null>(content?.alarm);
   const [startDate, setStartDate] = useState<Date | null>(content?.startDate);
   const [endDate, setEndDate] = useState<Date | null>(content?.endDate);
   const [errors, setErrors] = useState<any>({
@@ -80,8 +79,8 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
         await postCalendar({
           name: title.trim(),
           place: place.trim(),
-          alarm: alarm,
           description: description.trim(),
+          alarm: alarmDate?.toISOString(),
           startTime: startDate.toISOString(),
           endTime: endDate?.toISOString(),
           categoryId: currentCategory || '',
@@ -108,7 +107,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             content: {
               title: title.trim(),
               place: place.trim(),
-              alarm: alarm,
+              alarm: alarmDate,
               description: description.trim(),
               startDate: startDate,
               endDate: endDate,
@@ -121,7 +120,9 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   };
 
   const startDatePlaceholder = new Date(new Date().setHours(9, 0));
+  const alarmDatePlaceholder = startDatePlaceholder;
   const endDatePlaceholder = ((date: Date) => new Date(date.setHours(date.getHours() + 1)))(
+
     new Date(startDate ?? startDatePlaceholder),
   );
 
@@ -143,16 +144,6 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
     setPlace('');
   };
 
-  const handleAlarmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateStr = e.target.value;
-    setAlarm(dateStr ? new Date(dateStr) : null);
-  };
-
-  const handleAlarmReset = (e: React.MouseEvent<HTMLOrSVGElement>) => {
-    e.preventDefault();
-    setAlarm(null);
-  };
-
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(e.target.value);
   };
@@ -169,15 +160,26 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
     return formatDate(date, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}');
   };
 
-  const [isOpenCalendar, setIsOpenCalendar] = useState<'startDate' | 'endDate' | null>(null);
+  const [isOpenCalendar, setIsOpenCalendar] = useState<'alarmDate' | 'startDate' | 'endDate' | null>(null);
 
-  const handleToggleCalendar = (key: 'startDate' | 'endDate' | null) => {
+  const handleToggleCalendar = (key: 'alarmDate' | 'startDate' | 'endDate' | null) => {
+    if (key == 'alarmDate' && !startDate) setAlarmDate(alarmDatePlaceholder);
     if (key == 'startDate' && !startDate) setStartDate(startDatePlaceholder);
     if (key == 'endDate' && !endDate) setEndDate(endDatePlaceholder);
     setIsOpenCalendar((prev) => (prev == key ? null : key));
   };
 
   const calendars = [
+    {
+      key: 'alarmDate',
+      title: '알림 시각',
+      placeholder: startDatePlaceholder,
+      date: alarmDate,
+      setDate: setAlarmDate,
+      onClick: () => {
+        handleToggleCalendar('alarmDate');
+      },
+    },
     {
       key: 'startDate',
       title: '시작',
@@ -202,17 +204,6 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
 
   const isMobile = useIsMobile();
 
-  const handleCloseUpdate = () => {
-    dispatch(
-      setModalReplace({
-        prev: ModalName.editScheduleMemo,
-        to: ModalName.detailScheduleMemo,
-        value: content,
-        replace: true,
-      }),
-    );
-  };
-
   return (
     <DefaultModalLayout>
       <DefaultModalContainer ref={modalRef} maxWidth="440px">
@@ -220,7 +211,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
           <CloseSVG onClick={closeModal} />
         ) : (
           <DefaultModalHeader>
-            <CloseSVG onClick={!isEdit ? closeModal : handleCloseUpdate} />
+            <CloseSVG onClick={closeModal} />
             <span className="grow" />
             <p onClick={!isEdit ? handleAddSchedule : handleUpdateSchedule}>{!isEdit ? '추가' : '수정'}</p>
           </DefaultModalHeader>
@@ -238,16 +229,6 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
               <MemoEditorScheduleItemContents>
                 <input type="text" placeholder="입력" value={place} onChange={handlePlaceChange} />
                 {place && <EndContainerSVG onClick={handlePlaceReset} />}
-              </MemoEditorScheduleItemContents>
-              알림 설정
-              <MemoEditorScheduleItemContents>
-                <input
-                  type="date"
-                  placeholder="입력"
-                  value={alarm ? alarm.toISOString().split('T')[0] : ''}
-                  onChange={handleAlarmChange}
-                />
-                {alarm && <EndContainerSVG onClick={handleAlarmReset} />}
               </MemoEditorScheduleItemContents>
               설명
               <MemoEditorScheduleItemContents>

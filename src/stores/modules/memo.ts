@@ -11,30 +11,19 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 1000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
-        console.log(response);
+        // console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any) => {
-              const type = item.linkUrl
-                ? 'link'
-                : item.scheduleName
-                  ? 'schedule'
-                  : item.imgUrl
-                    ? 'photo'
-                    : 'text';
+              const type = item.type;
 
               const content =
-                type === 'schedule'
+                type === 'CALENDAR'
                   ? {
-                    title: item.scheduleName,
+                    title: item.content,
                     startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
                     endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
-                  }
-                  : type === 'link'
-                    ? item.linkUrl
-                    : type === 'photo'
-                      ? item.imgUrl
-                      : item.data;
+                  } : item.content;
 
               return {
                 chatId: item.chatId,
@@ -92,7 +81,7 @@ export const memoApi = createApi({
         { type: 'Link', id: 'LIST' },
       ],
     }),
-    postCalendar: builder.mutation<void, { name: string; place: string; alarm: Date | null, description: string, startTime: string; endTime?: string; categoryId: string }>({
+    postCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId: string }>({
       query: ({ name, place, alarm, description, startTime, endTime, categoryId }) => ({
         url: '/api/v1/calendar',
         method: 'POST',
@@ -122,11 +111,11 @@ export const memoApi = createApi({
             (e,) =>
               ({
                 chatId: e.chatId,
-                type: 'schedule',
+                type: 'CALENDAR',
                 content: {
                   title: e.title,
                   place: e.place,
-                  alarm: e.alarm,
+                  alarm: e.alarm ? new Date(e.alarm) : null,
                   description: e.description,
                   startDate: new Date(e.startDateTime),
                   endDate: e.endDateTime ? new Date(e.endDateTime) : null,
@@ -168,7 +157,7 @@ export const memoApi = createApi({
             (e) =>
               ({
                 chatId: e.chatId,
-                type: 'photo',
+                type: 'PHOTO',
                 content: e.url,
                 categoryId: e.categoryName,
                 date: new Date(e.timestamp),

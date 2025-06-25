@@ -55,13 +55,13 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
       {category && <MemoCategory category={category} />}
       <ContextMenu />
       <MemoContent {...BindContextMenuHandlers}>
-        {memo.type == 'text' ? (
+        {memo.type == 'TEXT' ? (
           <MemoText content={memo.content as string} />
-        ) : memo.type == 'schedule' ? (
+        ) : memo.type == 'CALENDAR' ? (
           <MemoSchedule content={memo.content as scheduleProp} />
-        ) : memo.type == 'photo' ? (
+        ) : memo.type == 'PHOTO' ? (
           <MemoImage content={memo.content as string} />
-        ) : memo.type == 'link' ? (
+        ) : memo.type == 'LINK' ? (
           <MemoLink content={memo.content as string} />
         ) : (
           ''

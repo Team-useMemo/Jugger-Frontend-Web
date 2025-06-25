@@ -32,7 +32,7 @@ import {
 } from './SearchMemo.Style';
 
 const getMemoSearchText = (memo: MemoProp): string => {
-  if (memo.type === 'schedule') return (memo.content as scheduleProp)?.title ?? '';
+  if (memo.type === 'CALENDAR') return (memo.content as scheduleProp)?.title ?? '';
   return String(memo.content ?? '');
 };
 
@@ -196,10 +196,10 @@ const SearchMemoResult = ({
   return (
     <SearchMemoResultItemContainer onClick={handleClickResultItem}>
       <SearchMemoResultItemContents>
-        {memo.type == 'text' && <TextSVG />}
-        {memo.type == 'link' && <LinkSVG />}
-        {memo.type == 'schedule' && <ScheduleSVG />}
-        {memo.type == 'photo' && <PhotoSVG />}
+        {memo.type == 'TEXT' && <TextSVG />}
+        {memo.type == 'LINK' && <LinkSVG />}
+        {memo.type == 'CALENDAR' && <ScheduleSVG />}
+        {memo.type == 'PHOTO' && <PhotoSVG />}
         <p>
           {matchedResult.map((e, i) => (e.matched ? <span key={`TMP_${memo.chatId}_${i}`}>{e.text}</span> : e.text))}
         </p>
