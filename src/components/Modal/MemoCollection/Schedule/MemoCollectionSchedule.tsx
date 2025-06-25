@@ -30,13 +30,12 @@ import {
 
 const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const content = memo.content as scheduleProp;
-
   const dispatch = useAppDispatch();
 
   const handleCliekScheduleItem = () => {
     dispatch(
       setModalOpen({
-        name: ModalName.detailScheduleMemoCollection,
+        name: ModalName.detailScheduleMemo,
         value: { content },
       }),
     );

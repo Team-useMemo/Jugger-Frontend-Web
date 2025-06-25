@@ -16,7 +16,7 @@ import SearchSVG from '@assets/icons/search.svg?react';
 import { DefaultModalHeader, DefaultModalHeaderTitle } from '../DefaultModal.Style';
 import ModalLayoutGray from '../Layout/ModalLayoutGray';
 import MemoDetailImage from '../MemoDetail/Image/MemoDetailImage';
-import MemoDetailSchedule from '../MemoDetail/Schedule/MemoDetailSchedule';
+// import MemoDetailSchedule from '../MemoDetail/Schedule/MemoDetailSchedule';
 import MemoCollectionImage from './Image/MemoCollectionImage';
 import MemoCollectionLink from './Link/MemoCollectionLink';
 import {
@@ -92,7 +92,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
   };
 
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemoCollection, ModalLayoutGray, MemoDetailImage);
-  const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemoCollection, ModalLayoutGray, MemoDetailSchedule,);
+  // const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, MemoDetailSchedule);
 
   const [CategoryMenu, openCategoryMenu] = useMenu(
     MemoCollectionCategoryMenu,
@@ -116,7 +116,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
   return (
     <MemoCollectionLayout>
       <DetailImageMemoModal />
-      <DetailScheduleMemoModal />
+      {/* <DetailScheduleMemoModal /> */}
       <MemoCollectionContainer ref={modalRef}>
         {isMobile && (
           <DefaultModalHeader>

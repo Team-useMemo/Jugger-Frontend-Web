@@ -25,10 +25,10 @@ import {
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content } = props ?? {};
-
+  console.log(content);
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
-  const [alarm, setAlarm] = useState<Date | null>(content?.alarm ?? null);
+  const [alarm, setAlarm] = useState<Date | null>(content?.alarm ? new Date(content.alarm) : null);
   const [description, setDescription] = useState<string>(content?.description ?? '');
   const [startDate, setStartDate] = useState<Date | null>(content?.startDate);
   const [endDate, setEndDate] = useState<Date | null>(content?.endDate);
