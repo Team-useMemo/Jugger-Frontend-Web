@@ -73,7 +73,7 @@ const fetchAllMemo = async (username: string) => {
             endDate: null,
           };
         } else if (item.photo) {
-          type = 'image';
+          type = 'photo';
           content = item.photo;
         } else if (item.link) {
           type = 'link';
