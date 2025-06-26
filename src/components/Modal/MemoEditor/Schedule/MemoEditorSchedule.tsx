@@ -28,7 +28,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
   const [description, setDescription] = useState<string>(content?.description ?? '');
-  const [alarmDate, setAlarmDate] = useState<Date | null>(content?.alarm);
+  const [alarm, setAlarm] = useState<Date | null>(content?.alarm);
   const [startDate, setStartDate] = useState<Date | null>(content?.startDate);
   const [endDate, setEndDate] = useState<Date | null>(content?.endDate);
   const [errors, setErrors] = useState<any>({
@@ -64,6 +64,9 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
       isValid:
         !isEdit ||
         title.trim() != (content?.title ?? '').trim() ||
+        place.trim() != (content?.place ?? '').trim() ||
+        description.trim() != (content?.description ?? '').trim() ||
+        alarm?.toDateString() != content?.alarm?.toDateString() ||
         startDate?.toDateString() != content?.startDate?.toDateString() ||
         endDate?.toDateString() != content?.endDate?.toDateString(),
     },
@@ -80,7 +83,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
           name: title.trim(),
           place: place.trim(),
           description: description.trim(),
-          alarm: alarmDate?.toISOString(),
+          alarm: alarm?.toISOString(),
           startTime: startDate.toISOString(),
           endTime: endDate?.toISOString(),
           categoryId: currentCategory || '',
@@ -107,8 +110,8 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             content: {
               title: title.trim(),
               place: place.trim(),
-              alarm: alarmDate,
               description: description.trim(),
+              alarm: alarm,
               startDate: startDate,
               endDate: endDate,
               categoryId: currentCategory || '',
@@ -120,7 +123,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   };
 
   const startDatePlaceholder = new Date(new Date().setHours(9, 0));
-  const alarmDatePlaceholder = startDatePlaceholder;
+  const alarmPlaceholder = startDatePlaceholder;
   const endDatePlaceholder = ((date: Date) => new Date(date.setHours(date.getHours() + 1)))(
 
     new Date(startDate ?? startDatePlaceholder),
@@ -163,7 +166,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const [isOpenCalendar, setIsOpenCalendar] = useState<'alarmDate' | 'startDate' | 'endDate' | null>(null);
 
   const handleToggleCalendar = (key: 'alarmDate' | 'startDate' | 'endDate' | null) => {
-    if (key == 'alarmDate' && !startDate) setAlarmDate(alarmDatePlaceholder);
+    if (key == 'alarmDate' && !startDate) setAlarm(alarmPlaceholder);
     if (key == 'startDate' && !startDate) setStartDate(startDatePlaceholder);
     if (key == 'endDate' && !endDate) setEndDate(endDatePlaceholder);
     setIsOpenCalendar((prev) => (prev == key ? null : key));
@@ -173,9 +176,9 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
     {
       key: 'alarmDate',
       title: '알림 시각',
-      placeholder: startDatePlaceholder,
-      date: alarmDate,
-      setDate: setAlarmDate,
+      placeholder: alarmPlaceholder,
+      date: alarm,
+      setDate: setAlarm,
       onClick: () => {
         handleToggleCalendar('alarmDate');
       },
