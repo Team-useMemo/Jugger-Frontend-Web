@@ -64,6 +64,9 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
       isValid:
         !isEdit ||
         title.trim() != (content?.title ?? '').trim() ||
+        place.trim() != (content?.place ?? '').trim() ||
+        description.trim() != (content?.description ?? '').trim() ||
+        alarmDate?.toDateString() != content?.alarmDate?.toDateString() ||
         startDate?.toDateString() != content?.startDate?.toDateString() ||
         endDate?.toDateString() != content?.endDate?.toDateString(),
     },
@@ -107,8 +110,8 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             content: {
               title: title.trim(),
               place: place.trim(),
-              alarm: alarmDate,
               description: description.trim(),
+              alarm: alarmDate,
               startDate: startDate,
               endDate: endDate,
               categoryId: currentCategory || '',

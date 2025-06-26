@@ -11,23 +11,25 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 1000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
-        // console.log(response);
+        console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any) => {
-              const type = item.type;
-
               const content =
-                type === 'CALENDAR'
+                item.type === 'CALENDAR'
                   ? {
                     title: item.content,
+                    place: item.place,
+                    alarm: item.alarm ? new Date(item.alarm) : undefined,
+                    description: item.description,
                     startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
                     endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
+
                   } : item.content;
 
               return {
                 chatId: item.chatId,
-                type,
+                type: item.type,
                 content,
                 date: new Date(item.timestamp),
                 categoryId: categoryBlock.categoryId ?? undefined,
