@@ -12,4 +12,5 @@ export const ModalName = {
   addCategory: 'addCategory',
   editCategory: 'editCategory',
   searchMemo: 'searchMemo',
+  editMemoCategory: 'editMemoCategory',
 };

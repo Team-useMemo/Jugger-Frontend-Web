@@ -7,6 +7,9 @@ import { MemoCategoryContainer, MemoContainer, MemoContent } from './Memo.Style'
 import MemoSchedule from './Schedule/MemoSchedule';
 import MemoText from './Text/MemoText';
 import { useDeleteMemoMutation } from '@stores/modules/memo';
+import { useDispatch } from 'react-redux';
+import { setModalOpen } from '@stores/modules/modal';
+import { ModalName } from '@utils/Modal';
 
 const MemoCategory = ({ category }: { category: CategoryProp }) => {
   return (
@@ -19,13 +22,25 @@ const MemoCategory = ({ category }: { category: CategoryProp }) => {
 
 const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const [deleteMemo] = useDeleteMemoMutation();
+  const dispatch = useDispatch();
   const handleOpenCategorySetting = () => {
     // TODO: 카테고리 설정 모달 열기
   };
 
   const handleEdit = () => {
-    // TODO: 즐겨찾기 토글 API 연결 예정
+    dispatch(
+      setModalOpen({
+        name: ModalName.editMemoCategory,
+        value: {
+          chatId: memo.chatId,
+          categoryId: memo.categoryId,
+          type: memo.type,
+          content: memo.content
+        },
+      }),
+    );
   };
+
 
   const handleDeleteMemo = () => {
     // TODO: 삭제 확인 모달 또는 삭제 API 호출

@@ -78,6 +78,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
         await uploadFile({
           file: file,
           categoryId: currentCategory ?? '',
+          description: desc
         }).unwrap();
 
         closeModal?.();

@@ -8,7 +8,7 @@ export const memoApi = createApi({
   tagTypes: ['Memo', 'Calendar', 'Photo', 'Link'],
   endpoints: (builder) => ({
     getMemos: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
-      query: ({ before = new Date(Date.now() + 1000).toISOString(), page, size }) =>
+      query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
         console.log(response);
@@ -18,7 +18,7 @@ export const memoApi = createApi({
               const content =
                 item.type === 'CALENDAR'
                   ? {
-                    title: item.content,
+                    title: item.scheduleName,
                     place: item.place,
                     alarm: item.alarm ? new Date(item.alarm) : undefined,
                     description: item.description,
@@ -130,12 +130,12 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
-    uploadFile: builder.mutation<void, { file: File; categoryId: string }>({
-      query: ({ file, categoryId }) => {
+    uploadFile: builder.mutation<void, { file: File; categoryId: string, description: string }>({
+      query: ({ file, categoryId, description }) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('categoryId', categoryId);
-
+        formData.append('description', description);
         return {
           url: '/api/v1/upload/file',
           method: 'POST',

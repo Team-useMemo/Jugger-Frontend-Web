@@ -34,6 +34,7 @@ import {
   MemoPageBottomInputContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
+import EditMemoCategory from '@components/Modal/EditMemoCategory/EditMemoCategory';
 
 const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
@@ -221,6 +222,7 @@ const MemoPage = () => {
   const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, MemoDetailText);
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, MemoDetailImage);
   const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, MemoDetailSchedule);
+  const [EditMemoCategoryModal] = useParamModal(ModalName.editMemoCategory, ModalLayoutGray, EditMemoCategory);
 
   return (
     <MemoPageContainer>
@@ -234,6 +236,7 @@ const MemoPage = () => {
       <DetailScheduleMemoModal />
       <MemoList currentCategory={currentCategory || ''} />
       <MemoPageBottom />
+      <EditMemoCategoryModal />
     </MemoPageContainer>
   );
 };
