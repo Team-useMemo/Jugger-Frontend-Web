@@ -25,11 +25,10 @@ import { formatDate } from '@utils/Date';
 import { useOgData } from '@hooks/useOgData';
 
 const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) => {
-  const { chatid, categoryId, type, content } = props ?? {};
+  const { chatId, categoryId, type, content } = props ?? {};
   const [selectedCategory, setSelectedCategory] = useState<CategoryProp | null>(null);
   const { data: categories = [] } = useGetCategoriesQuery();
   const ogData = useOgData(content);
-  console.log(ogData);
   const { ogDescription } = ogData || {};
   const [currentPage, setCurrentPage] = useState(1);
   const maxPage = 6;
@@ -39,7 +38,7 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
       // 실제 사용 시 props.onNextStep(selectedCategory) 호출 등
     }
   };
-
+  console.log(chatId, categoryId);
 
   return (
     <DefaultModalLayout>
