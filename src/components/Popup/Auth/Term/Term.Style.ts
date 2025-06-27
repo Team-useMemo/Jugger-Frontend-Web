@@ -81,3 +81,49 @@ export const CompleteButton = styled.button({
     backgroundColor: '#0041a8',
   },
 });
+
+export const TermDetailModalOverlay = styled.div({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+});
+
+export const TermDetailModalContent = styled.div({
+  background: '#fff',
+  padding: '20px',
+  maxWidth: '90%',
+  width: '480px',
+  borderRadius: '8px',
+  overflowY: 'auto',
+  maxHeight: '80vh',
+});
+
+export const TermCheckboxWrapper = styled.div({
+  marginBottom: '24px',
+});
+
+export const CloseButton = styled.button({
+  marginTop: '16px',
+  padding: '8px 16px',
+  backgroundColor: '#f5f5f5',
+  border: '1px solid #ccc',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  fontSize: '14px',
+  '&:hover': {
+    backgroundColor: '#e0e0e0',
+  },
+});
+
+export const TermDetailTextBox = styled.div({
+  fontSize: '14px',
+  textAlign: 'left',
+  whiteSpace: 'pre-wrap',
+});

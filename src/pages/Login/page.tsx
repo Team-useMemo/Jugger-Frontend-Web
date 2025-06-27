@@ -116,6 +116,7 @@ const LoginPage = () => {
                 bgColor={method.bgColor}
                 borderColor={method.borderColor}
                 onClick={method.onClick}
+                key={method.key}
               >
                 <method.LogoSVG />
                 {method.loginMsg}
