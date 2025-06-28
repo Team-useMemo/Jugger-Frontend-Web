@@ -16,7 +16,7 @@ const Container = styled.div({
   [media[480]]: {
     width: '100%',
     maxWidth: '100dvw',
-    padding: '0',
+    padding: '20px',
     borderRadius: '0',
     gap: '0px',
   },

@@ -10,6 +10,7 @@ import { useDeleteMemoMutation } from '@stores/modules/memo';
 import { useDispatch } from 'react-redux';
 import { setModalOpen } from '@stores/modules/modal';
 import { ModalName } from '@utils/Modal';
+import { useIsMobile } from '@hooks/useWindowSize';
 
 const MemoCategory = ({ category }: { category: CategoryProp }) => {
   return (
@@ -23,7 +24,7 @@ const MemoCategory = ({ category }: { category: CategoryProp }) => {
 const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const [deleteMemo] = useDeleteMemoMutation();
   const dispatch = useDispatch();
-
+  const isMobile = useIsMobile();
   const handleOpenCategorySetting = () => {
     dispatch(
       setModalOpen({
@@ -38,8 +39,35 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
     );
   };
 
-  const handleEdit = () => {
 
+
+  const shareCalendar = async () => {
+    const schedule = memo.content as scheduleProp;
+    const title = encodeURIComponent(schedule.title);
+    const location = encodeURIComponent(schedule.place);
+    const description = encodeURIComponent(schedule.description);
+    const formatDate = (date: Date) =>
+      date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    const start = formatDate(schedule.startDate);
+    const end = formatDate(schedule.endDate ?? schedule.startDate);
+
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&details=${description}&dates=${start}/${end}`;
+    window.open(googleCalendarUrl, '_blank');
+  };
+
+  const shareTextOrLink = async () => {
+    const content = memo.content as string;
+    if (isMobile && navigator.share) {
+      await navigator.share({
+        title: memo.type,
+        text: content,
+        url: memo.type === 'LINK' ? content : undefined,
+      });
+    } else {
+      await navigator.clipboard.writeText(content);
+      alert('링크가 클립보드에 복사되었습니다.');
+    }
   };
 
 
@@ -48,22 +76,32 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
     deleteMemo({ chatId: memo.chatId });
   };
 
+  const contextMenuItems = [
+    {
+      label: '카테고리 변경',
+      onClick: handleOpenCategorySetting,
+    },
+    {
+      label: '삭제',
+      onClick: handleDeleteMemo,
+    },
+  ];
+
+  if (memo.type === 'LINK' || memo.type === 'TEXT') {
+    contextMenuItems.splice(1, 0, {
+      label: '공유',
+      onClick: shareTextOrLink,
+    });
+  } else if (memo.type === 'CALENDAR') {
+    contextMenuItems.splice(1, 0, {
+      label: '구글 캘린더에 공유',
+      onClick: shareCalendar,
+    });
+  }
+
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
     header: { color: category?.categoryColor || '#FFF', title: category?.categoryName || '' },
-    items: [
-      {
-        label: '카테고리 변경',
-        onClick: handleOpenCategorySetting,
-      },
-      {
-        label: '수정',
-        onClick: handleEdit,
-      },
-      {
-        label: '삭제',
-        onClick: handleDeleteMemo,
-      },
-    ],
+    items: contextMenuItems,
   });
 
   return (
