@@ -44,8 +44,8 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
   const shareCalendar = async () => {
     const schedule = memo.content as scheduleProp;
     const title = encodeURIComponent(schedule.title);
-    const location = encodeURIComponent(schedule.place);
-    const description = encodeURIComponent(schedule.description);
+    const location = encodeURIComponent(schedule.place ?? '');
+    const description = encodeURIComponent(schedule.description ?? '');
     const formatDate = (date: Date) =>
       date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 

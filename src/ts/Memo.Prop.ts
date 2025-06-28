@@ -4,9 +4,9 @@ export interface scheduleProp {
   title: string;
   startDate: Date;
   endDate: Date | null;
-  place: string;
+  place?: string;
   alarm?: Date;
-  description: string;
+  description?: string;
 }
 
 export interface MemoResponseProp {
