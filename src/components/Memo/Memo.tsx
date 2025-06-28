@@ -23,11 +23,8 @@ const MemoCategory = ({ category }: { category: CategoryProp }) => {
 const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const [deleteMemo] = useDeleteMemoMutation();
   const dispatch = useDispatch();
-  const handleOpenCategorySetting = () => {
-    // TODO: 카테고리 설정 모달 열기
-  };
 
-  const handleEdit = () => {
+  const handleOpenCategorySetting = () => {
     dispatch(
       setModalOpen({
         name: ModalName.editMemoCategory,
@@ -39,6 +36,10 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
         },
       }),
     );
+  };
+
+  const handleEdit = () => {
+
   };
 
 
