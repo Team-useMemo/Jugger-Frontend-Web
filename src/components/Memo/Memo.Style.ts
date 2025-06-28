@@ -10,6 +10,7 @@ export const MemoContainer = styled.div({
   width: '100%',
   maxWidth: '1080px',
   boxSizing: 'border-box',
+  userSelect: 'none',
 });
 
 export const MemoCategoryContainer = styled.div(({ color }: { color: string }) => ({
