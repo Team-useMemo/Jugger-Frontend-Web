@@ -1,6 +1,5 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useState } from 'react';
-import { CategoryProp } from '@ts/Category.Prop';
 import JuggerButton from '@components/Common/JuggerButton';
 
 import { ModalComponentProps } from '@hooks/useParamModal';
@@ -20,25 +19,25 @@ import {
   CloseButtonWrapper,
   MemoImage,
 } from './EditMemoCategory.Style';
-import { theme } from '@styles/theme';
 import { formatDate } from '@utils/Date';
 import { useOgData } from '@hooks/useOgData';
 
 const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const { chatId, categoryId, type, content } = props ?? {};
-  const [selectedCategory, setSelectedCategory] = useState<CategoryProp | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryId);
   const { data: categories = [] } = useGetCategoriesQuery();
   const ogData = useOgData(content);
   const { ogDescription } = ogData || {};
-  const [currentPage, setCurrentPage] = useState(1);
-  const maxPage = 6;
-  const handleNext = () => {
-    if (selectedCategory) {
-      setCurrentPage((prev) => Math.min(prev + 1, maxPage));
-      // 실제 사용 시 props.onNextStep(selectedCategory) 호출 등
+
+  const handleEditMemoCategory = () => {
+    console.log(chatId);
+    if (categoryId !== selectedCategoryId) {
+      // 카테고리변경되었을떄 api 호출
     }
+
+    closeModal();
   };
-  console.log(chatId, categoryId);
+
 
   return (
     <DefaultModalLayout>
@@ -76,20 +75,20 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
             </MemoLabelText>
           </MemoLabel>
           <CategoryContents>
-            {categories.map((e, i) => {
-              const isSelected = selectedCategory?.categoryId === e.categoryId;
+            {categories.map((category, i) => {
+              const isSelected = selectedCategoryId === category.categoryId;
               return (
                 <CategoryItem
                   key={`SEARCH_CATEGORY_${i}`}
-                  color={e.categoryColor}
-                  onClick={() => setSelectedCategory(e)}
+                  color={category.categoryColor}
+                  onClick={() => setSelectedCategoryId(category.categoryId)}
                   style={{
-                    backgroundColor: isSelected ? `${e.categoryColor}1A` : undefined,
-                    border: isSelected ? `1.5px solid ${e.categoryColor}` : 'none',
+                    backgroundColor: isSelected ? `${category.categoryColor}1A` : undefined,
+                    border: isSelected ? `1.5px solid ${category.categoryColor}` : 'none',
                   }}
                 >
                   <span />
-                  <p>{e.categoryName}</p>
+                  <p>{category.categoryName}</p>
                 </CategoryItem>
               );
             })}
@@ -98,14 +97,10 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
         <JuggerButton
           color="primary"
           size="medium"
-          onClick={handleNext}
+          onClick={handleEditMemoCategory}
         >
-          다음
+          변경하기
         </JuggerButton>
-        <p style={{ textAlign: 'center', marginTop: '8px', color: theme.color.label.alternative, ...theme.font.caption1.medium }}>
-          {currentPage} of {maxPage}
-        </p>
-
       </Container>
     </DefaultModalLayout>
   );
