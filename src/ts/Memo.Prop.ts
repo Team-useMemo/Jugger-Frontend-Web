@@ -4,6 +4,9 @@ export interface scheduleProp {
   title: string;
   startDate: Date;
   endDate: Date | null;
+  place: string;
+  alarm?: Date;
+  description: string;
 }
 
 export interface MemoResponseProp {
@@ -21,6 +24,7 @@ export interface MemoProp {
   content: string | scheduleProp;
   date: Date;
   categoryId: string | null;
+  description: string;
 }
 
 export interface CalendarResponseProp {
@@ -40,6 +44,7 @@ export interface PhotoResponseProp {
   url: string;
   categoryName: string;
   timestamp: Date;
+  description: string;
 }
 export interface LinkResponseProp {
   caption: string;

@@ -110,7 +110,7 @@ export const memoApi = createApi({
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
           .map(
-            (e,) =>
+            (e) =>
               ({
                 chatId: e.chatId,
                 type: 'CALENDAR',
@@ -163,6 +163,7 @@ export const memoApi = createApi({
                 content: e.url,
                 categoryId: e.categoryName,
                 date: new Date(e.timestamp),
+                description: e.description,
               }) as MemoProp,
           )
           .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
