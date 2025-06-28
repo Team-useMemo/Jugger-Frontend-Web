@@ -35,7 +35,7 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
       // 카테고리변경되었을떄 api 호출
     }
 
-    closeModal();
+    closeModal?.();
   };
 
 
