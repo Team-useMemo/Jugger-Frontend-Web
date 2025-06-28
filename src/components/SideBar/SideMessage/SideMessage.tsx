@@ -149,12 +149,18 @@ const SideMessage = ({ category }: { category: CategoryProp }) => {
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
     header: { color: categoryColor, title: categoryName },
     items: [
-      { label: !isPinned ? '즐겨찾기' : '즐겨찾기 해제', onClick: handleCategoryPinClick },
+      {
+        label: !isPinned ? '즐겨찾기' : '즐겨찾기 해제',
+        onClick: handleCategoryPinClick
+      },
       {
         label: '카테고리 수정',
         onClick: handleCategoryEditClick,
       },
-      { label: '삭제', onClick: handleCategoryDeleteClick },
+      {
+        label: '삭제',
+        onClick: handleCategoryDeleteClick
+      },
     ],
   });
 
@@ -165,7 +171,7 @@ const SideMessage = ({ category }: { category: CategoryProp }) => {
         <PinSVG onClick={handleCategoryPinClick} />
       </SideMessagePinContainer>
       <SideMessageContents
-        isFocused={currentCategory == categoryId}
+        isFocused={currentCategory === categoryId}
         showPinIcon={showPinIcon}
         onClick={handleCategoryClick}
         {...BindContextMenuHandlers}
