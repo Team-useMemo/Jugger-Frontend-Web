@@ -40,6 +40,9 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
 
   const { data: categories = [] } = useGetCategoriesQuery(undefined, {
     skip: !isLoggedIn,
+    selectFromResult: ({ data }) => ({
+      data: data?.filter((memo) => memo.categoryId !== 'temp'),
+    }),
   });
 
   const onWholeMemoClick = () => {
@@ -95,10 +98,10 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
     { key: 'memo', title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
     ...(!isMobile
       ? [
-          { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
-          { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
-          { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
-        ]
+        { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
+        { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
+        { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
+      ]
       : []),
     { key: 'setting', title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
   ];
