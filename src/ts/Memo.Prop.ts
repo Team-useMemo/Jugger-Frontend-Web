@@ -40,11 +40,11 @@ export interface CalendarResponseProp {
 }
 
 export interface PhotoResponseProp {
-  chatId: string;
+  photoId: string;
   url: string;
-  categoryName: string;
-  timestamp: Date;
+  categoryId: string;
   description: string;
+  timestamp: Date;
 }
 export interface LinkResponseProp {
   caption: string;

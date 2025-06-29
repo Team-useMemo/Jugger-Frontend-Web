@@ -70,8 +70,21 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?
 };
 
 const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
-  const { data: imageMemos = [] } = useGetPhotosQuery({ categoryId: category?.categoryId ?? '' });
+  const { data: imageMemos = [] } = useGetPhotosQuery(
+    {
+      page: 0,
+      //  size: 20
+      size: 200,
+    },
+    {
+      skip: false,
+      selectFromResult: ({ data }) => ({
+        data: category?.categoryId ? data?.filter((memo) => memo.categoryId === category?.categoryId) : data,
+      }),
+    },
+  );
 
+  console.log(imageMemos);
   const dateImages: [string, MemoProp[]][] = Object.entries(
     [...imageMemos].reverse().reduce((acc: any, e) => {
       const dateStr = e.date.toDateString();
