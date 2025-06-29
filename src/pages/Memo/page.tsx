@@ -128,7 +128,7 @@ const MemoPageBottom = () => {
     (async () => {
       try {
         await postMemo({
-          categoryUuid: currentCategory || '',
+          categoryUuid: currentCategory || undefined,
           text: newMemo,
         }).unwrap();
         dispatch(categoryApi.util.invalidateTags([{ type: 'Category', id: 'LIST' }]));
