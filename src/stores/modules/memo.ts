@@ -167,28 +167,6 @@ export const memoApi = createApi({
         { type: 'Photo', id: 'LIST' },
       ],
     }),
-    // getPhotos: builder.query<MemoProp[], { categoryId: string }>({
-    //   query: ({ categoryId }) => ({
-    //     url: `/api/v1/photos?categoryId=${categoryId}`,
-    //     method: 'GET',
-    //   }),
-    //   transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
-    //     return response
-    //       .map(
-    //         (e) =>
-    //           ({
-    //             chatId: e.chatId,
-    //             type: 'PHOTO',
-    //             content: e.url,
-    //             categoryId: e.categoryName,
-    //             date: new Date(e.timestamp),
-    //             description: e.description,
-    //           }) as MemoProp,
-    //       )
-    //       .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
-    //   },
-    //   providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
-    // }),
     getPhotos: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/photos/duration?before=${before}&page=${page}&size=${size}`,
@@ -210,11 +188,9 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    getLinks: builder.query<MemoProp[], { categoryId: string }>({
-      query: ({ categoryId }) => ({
-        url: `/api/v1/links?categoryId=${categoryId}`,
-        method: 'GET',
-      }),
+    getLinks: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
+      query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
+        `/api/v1/links?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
         if (!response?.[0]) return [];
         const { linkData } = response[0];
@@ -222,7 +198,7 @@ export const memoApi = createApi({
           memoId: i,
           type: 'link',
           content: e.link,
-          categoryId: response[0].categoryUuid,
+          categoryId: e.categoryId,
           date: new Date(new Date().getTime() + i),
         }));
       },

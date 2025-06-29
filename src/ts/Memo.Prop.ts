@@ -47,6 +47,7 @@ export interface PhotoResponseProp {
   timestamp: Date;
 }
 export interface LinkResponseProp {
-  caption: string;
+  categoryId: string;
+  linkId: string;
   link: string;
 }
