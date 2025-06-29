@@ -30,7 +30,10 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?
     dispatch(
       setModalOpen({
         name: ModalName.detailImageMemoCollection,
-        value: { content },
+        value: {
+          title: memo.description,
+          content: content,
+        },
       }),
     );
   };
@@ -84,7 +87,6 @@ const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
     },
   );
 
-  console.log(imageMemos);
   const dateImages: [string, MemoProp[]][] = Object.entries(
     [...imageMemos].reverse().reduce((acc: any, e) => {
       const dateStr = e.date.toDateString();

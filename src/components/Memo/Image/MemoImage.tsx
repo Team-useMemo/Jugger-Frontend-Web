@@ -3,15 +3,14 @@ import { ModalName } from '@utils/Modal';
 import { useAppDispatch } from '@hooks/useRedux';
 import MemoImageContainer from './MemoImage.Style';
 
-const MemoImage = ({ content }: { content: string }) => {
+const MemoImage = ({ content, description }: { content: string, description: string }) => {
   const dispatch = useAppDispatch();
-
   const openDetailImageMemoModal = () => {
     dispatch(
       setModalOpen({
         name: ModalName.detailImageMemo,
         value: {
-          title: '',
+          title: description,
           content: content,
         },
       }),
@@ -21,6 +20,7 @@ const MemoImage = ({ content }: { content: string }) => {
   return (
     <MemoImageContainer>
       <img src={content} onClick={openDetailImageMemoModal} />
+      <div>{description}</div>
     </MemoImageContainer>
   );
 };

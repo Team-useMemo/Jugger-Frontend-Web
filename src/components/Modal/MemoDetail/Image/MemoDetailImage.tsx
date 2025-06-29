@@ -8,11 +8,12 @@ import {
   MemoDetailImageButtonContainer,
   MemoDetailImageContainer,
   MemoDetailImageContents,
+  MemoTitle,
+  MemoTitleContainer,
 } from './MemoDetailImage.Style';
 
 const MemoDetailImage = ({ closeModal, props, modalRef }: ModalComponentProps) => {
-  const { content } = props ?? {};
-
+  const { title, content } = props ?? {};
   return (
     <MemoDetailLayout>
       <MemoDetailContainer ref={modalRef}>
@@ -21,6 +22,9 @@ const MemoDetailImage = ({ closeModal, props, modalRef }: ModalComponentProps) =
           <MemoDetailImageContents>
             <img src={content} />
           </MemoDetailImageContents>
+          <MemoTitleContainer>
+            <MemoTitle>{title}</MemoTitle>
+          </MemoTitleContainer>
           <MemoDetailImageButtonContainer>
             <CategorySVG />
             <ExpandSVG />
