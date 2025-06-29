@@ -130,6 +130,25 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
+    putCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId: string }>({
+      query: ({ name, place, alarm, description, startTime, endTime, categoryId }) => ({
+        url: '/api/v1/calendar',
+        method: 'PUT',
+        body: {
+          name,
+          place,
+          alarm,
+          description,
+          startTime,
+          endTime,
+          categoryId,
+        },
+      }),
+      invalidatesTags: [
+        { type: 'Memo', id: 'LIST' },
+        { type: 'Calendar', id: 'LIST' },
+      ],
+    }),
     uploadFile: builder.mutation<void, { file: File; categoryId: string, description: string }>({
       query: ({ file, categoryId, description }) => {
         const formData = new FormData();
@@ -148,20 +167,19 @@ export const memoApi = createApi({
         { type: 'Photo', id: 'LIST' },
       ],
     }),
-    getPhotos: builder.query<MemoProp[], { categoryId: string }>({
-      query: ({ categoryId }) => ({
-        url: `/api/v1/photos?categoryId=${categoryId}`,
-        method: 'GET',
-      }),
+    getPhotos: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
+      query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
+        `/api/v1/photos/duration?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
+        console.log(response);
         return response
           .map(
             (e) =>
               ({
-                chatId: e.chatId,
+                chatId: e.photoId,
                 type: 'PHOTO',
                 content: e.url,
-                categoryId: e.categoryName,
+                categoryId: e.categoryId,
                 date: new Date(e.timestamp),
                 description: e.description,
               }) as MemoProp,
@@ -170,11 +188,9 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    getLinks: builder.query<MemoProp[], { categoryId: string }>({
-      query: ({ categoryId }) => ({
-        url: `/api/v1/links?categoryId=${categoryId}`,
-        method: 'GET',
-      }),
+    getLinks: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
+      query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
+        `/api/v1/links?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
         if (!response?.[0]) return [];
         const { linkData } = response[0];
@@ -182,7 +198,7 @@ export const memoApi = createApi({
           memoId: i,
           type: 'link',
           content: e.link,
-          categoryId: response[0].categoryUuid,
+          categoryId: e.categoryId,
           date: new Date(new Date().getTime() + i),
         }));
       },
@@ -200,4 +216,5 @@ export const {
   useGetPhotosQuery,
   useGetLinksQuery,
   useDeleteMemoMutation,
+  usePutCalendarMutation,
 } = memoApi;

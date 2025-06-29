@@ -19,9 +19,13 @@ import {
   MemoCollectionLinkItemImageContainer,
   MemoCollectionLinkItemTextContainer,
 } from './MemoCollectionLink.Style';
+import { useGetCategoriesQuery } from '@stores/modules/category';
 
-const MemoCollectionLinkItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
+const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
+  const { data: categories = [] } = useGetCategoriesQuery();
   const content = memo.content as string;
+  const category = categories.find((category) => category.categoryId === memo.categoryId);
+
   const ogData = useOgData(content);
   const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
 
@@ -79,13 +83,24 @@ const MemoCollectionLinkItem = ({ memo, category }: { memo: MemoProp; category?:
   );
 };
 
-const MemoCollectionLink = ({ category }: { category?: CategoryProp }) => {
-  const { data: linkMemos = [] } = useGetLinksQuery({ categoryId: category?.categoryId ?? '' });
-
+const MemoCollectionLink = ({ category }: { category?: CategoryProp, }) => {
+  const { data: linkMemos = [] } = useGetLinksQuery(
+    {
+      page: 0,
+      //  size: 20
+      size: 200,
+    },
+    {
+      skip: false,
+      selectFromResult: ({ data }) => ({
+        data: category?.categoryId ? data?.filter((memo) => memo.categoryId === category?.categoryId) : data,
+      }),
+    },
+  );
   return (
     <MemoCollectionLinkContainer>
       {linkMemos.map((memo) => (
-        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}`} memo={memo} category={category} />
+        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}`} memo={memo} />
       ))}
     </MemoCollectionLinkContainer>
   );

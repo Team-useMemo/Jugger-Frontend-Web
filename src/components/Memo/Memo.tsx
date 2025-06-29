@@ -39,8 +39,6 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
     );
   };
 
-
-
   const shareCalendar = async () => {
     const schedule = memo.content as scheduleProp;
     const title = encodeURIComponent(schedule.title);
@@ -114,7 +112,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
         ) : memo.type == 'CALENDAR' ? (
           <MemoSchedule content={memo.content as scheduleProp} />
         ) : memo.type == 'PHOTO' ? (
-          <MemoImage content={memo.content as string} />
+          <MemoImage content={memo.content as string} description={memo.description} />
         ) : memo.type == 'LINK' ? (
           <MemoLink content={memo.content as string} />
         ) : (

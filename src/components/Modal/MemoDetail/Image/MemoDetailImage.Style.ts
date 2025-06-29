@@ -57,4 +57,16 @@ const MemoDetailImageButtonContainer = styled.div({
   },
 });
 
-export { MemoDetailImageContainer, MemoDetailImageContents, MemoDetailImageButtonContainer };
+const MemoTitleContainer = styled.div({
+  margin: '0 24px',
+  padding: '8px 24px',
+  borderBottom: `1.5px solid ${theme.color.line.neutral}`
+});
+
+
+const MemoTitle = styled.div({
+  ...theme.font.body1normal,
+  textAlign: 'left',
+});
+
+export { MemoDetailImageContainer, MemoDetailImageContents, MemoDetailImageButtonContainer, MemoTitleContainer, MemoTitle };
