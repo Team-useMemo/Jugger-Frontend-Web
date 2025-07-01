@@ -14,7 +14,13 @@ import {
   TermCheckboxWrapper,
   CloseButton,
   TermDetailTextBox,
+  TermDetailTitle,
+  TermDetailSemiBoldText,
+  ConfirmButton,
+  TermDetailHeader,
 } from './Term.Style';
+
+import CloseSVG from '@assets/icons/close.svg?react';
 
 const TERM_DETAIL_TEXT = {
   age: (
@@ -31,14 +37,14 @@ const TERM_DETAIL_TEXT = {
       </p>
       <br />
       <p>
-        <strong>[ 수집하는 개인정보 ]</strong><br />
+        <TermDetailSemiBoldText>[ 수집하는 개인정보 ]</TermDetailSemiBoldText>
         Jugger는 회원 가입 및 서비스 제공을 위해 필요한 최소한의 개인정보를 수집하고 이용합니다.
         수집 항목은 이름, 성별, 생년월일 등이며, 이는 회원 식별, 고객 응대, 서비스 이용 안내 등을 위해 사용됩니다.
         개인정보는 회원 탈퇴 시까지 보관되며, 관련 법령에 따라 일정 기간 동안 추가 보관될 수 있습니다.
       </p>
       <br />
       <p>
-        <strong>[ 개인정보 수집 및 이용 동의를 거부할 권리 ]</strong><br />
+        <TermDetailSemiBoldText>[ 개인정보 수집 및 이용 동의를 거부할 권리 ]</TermDetailSemiBoldText>
         이용자는 개인정보의 수집 및 이용 동의를 거부할 권리가 있습니다.
         회원가입 시 수집하는 최소한의 개인정보, 즉, 필수 항목에 대한 수집 및 이용 동의를 거부하실 경우, 회원가입이 어려울 수 있습니다.
       </p>
@@ -163,9 +169,11 @@ const Terms = ({ closeModal, openInfoModal, checked, setChecked }: TermsProps) =
 
   return (
     <TermsContainer>
+      <TermDetailHeader>
+        <CloseButton onClick={handleCloseModal}><CloseSVG /></CloseButton>
+      </TermDetailHeader>
       <Header>
         <h2>서비스 이용약관에 동의해주세요</h2>
-        <button onClick={handleCloseModal}>✕</button>
       </Header>
       <Content>
         <TermCheckboxWrapper>
@@ -214,11 +222,14 @@ const Terms = ({ closeModal, openInfoModal, checked, setChecked }: TermsProps) =
       {selectedTermDetail && (
         <TermDetailModalOverlay>
           <TermDetailModalContent>
-            <h3>{TERM_TITLES[selectedTermDetail]}</h3>
+            <TermDetailHeader>
+              <CloseButton onClick={() => setSelectedTermDetail(null)}><CloseSVG /></CloseButton>
+            </TermDetailHeader>
+            <TermDetailTitle>{TERM_TITLES[selectedTermDetail]}</TermDetailTitle>
             <TermDetailTextBox>
               {TERM_DETAIL_TEXT[selectedTermDetail]}
             </TermDetailTextBox>
-            <CloseButton onClick={() => setSelectedTermDetail(null)}>닫기</CloseButton>
+            <ConfirmButton onClick={() => setSelectedTermDetail(null)}>동의하기</ConfirmButton>
           </TermDetailModalContent>
         </TermDetailModalOverlay>
       )}

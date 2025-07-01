@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
-import { media } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 export const TermsContainer = styled.div({
-  padding: 24,
+  padding: '24px',
   background: '#fff',
-  borderRadius: 12,
-  width: 384,
+  borderRadius: '12px',
+  width: '384px',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
 
   [media[480]]: {
     width: '100%',
-    padding: 16,
+    padding: '16px',
+    boxSizing: 'border-box',
   },
 });
 
@@ -19,13 +20,13 @@ export const Header = styled.div({
   justifyContent: 'space-between',
   alignItems: 'center',
   h2: {
-    fontSize: 24,
+    fontSize: '24px',
   },
 });
 
 export const Content = styled.div({
-  marginTop: 10,
-  gap: 10,
+  marginTop: '10px',
+  gap: '10px',
 });
 
 export const Checkbox = styled.label({
@@ -33,11 +34,11 @@ export const Checkbox = styled.label({
   alignItems: 'center',
   margin: '16px 0',
   input: {
-    marginRight: 10,
+    marginRight: '10px',
     accentColor: '#aaa',
     borderRadius: '50%',
-    width: 18,
-    height: 18,
+    width: '18px',
+    height: '18px',
     flexShrink: 0,
   },
   span: {
@@ -96,34 +97,57 @@ export const TermDetailModalOverlay = styled.div({
 });
 
 export const TermDetailModalContent = styled.div({
-  background: '#fff',
-  padding: '20px',
+  background: '#FFFFFF',
+  padding: '32px',
   maxWidth: '90%',
-  width: '480px',
+  width: '448px',
   borderRadius: '8px',
-  overflowY: 'auto',
-  maxHeight: '80vh',
+  textAlign: 'left',
+
+  [media[480]]: {
+    width: '100%',
+    padding: '16px',
+    boxSizing: 'border-box',
+    maxHeight: '80%',
+    overflowY: 'scroll',
+  },
+});
+
+export const TermDetailTitle = styled.div({
+  ...theme.font.title3.bold,
 });
 
 export const TermCheckboxWrapper = styled.div({
   marginBottom: '24px',
 });
 
+export const TermDetailHeader = styled.div({
+  display: 'flex',
+  justifyContent: 'flex-end', // 오른쪽 정렬
+});
+
 export const CloseButton = styled.button({
+  backgroundColor: 'transparent',
+  padding: 0,
+});
+
+export const ConfirmButton = styled.button({
+  color: theme.color.background.normal,
+  backgroundColor: theme.color.primary.normal,
   marginTop: '16px',
-  padding: '8px 16px',
-  backgroundColor: '#f5f5f5',
+  width: '100%',
+  padding: '12px 16px',
   border: '1px solid #ccc',
-  borderRadius: '4px',
+  borderRadius: '6px',
   cursor: 'pointer',
-  fontSize: '14px',
-  '&:hover': {
-    backgroundColor: '#e0e0e0',
-  },
 });
 
 export const TermDetailTextBox = styled.div({
-  fontSize: '14px',
+  ...theme.font.body1normal.medium,
   textAlign: 'left',
   whiteSpace: 'pre-wrap',
+});
+
+export const TermDetailSemiBoldText = styled.p({
+  ...theme.font.body1normal.semibold,
 });
