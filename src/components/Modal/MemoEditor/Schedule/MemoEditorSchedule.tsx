@@ -1,4 +1,4 @@
-import { usePostCalendarMutation } from '@stores/modules/memo';
+import { usePostCalendarMutation, usePutCalendarMutation } from '@stores/modules/memo';
 import { setModalClose } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -24,7 +24,7 @@ import {
 
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
-  const { content } = props ?? {};
+  const { content, chatId } = props ?? {};
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
   const [description, setDescription] = useState<string>(content?.description ?? '');
@@ -41,6 +41,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const currentCategory = searchParams.get('category');
 
   const [postCalendar] = usePostCalendarMutation();
+  const [putCalendar] = usePutCalendarMutation();
 
   const validateList: ValidationItem[] = [
     {
@@ -99,8 +100,28 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const dispatch = useAppDispatch();
 
   const handleUpdateSchedule = () => {
-    if (!validateFields(validateList, setErrors)) return;
+    if (!validateFields(validateList, setErrors) || !startDate) return;
     //나중에 API 추가해야 함
+
+    (async () => {
+      try {
+        await putCalendar({
+          name: title.trim(),
+          place: place.trim(),
+          description: description.trim(),
+          alarm: alarm?.toISOString(),
+          startTime: startDate.toISOString(),
+          endTime: endDate?.toISOString(),
+          categoryId: currentCategory || '',
+          chatId: chatId || '',
+        }).unwrap();
+
+        closeModal?.();
+      } catch (error) {
+        console.error('메모 전송 실패:', error);
+      }
+    })();
+
     dispatch(
       setModalClose({
         name: ModalName.editScheduleMemo,

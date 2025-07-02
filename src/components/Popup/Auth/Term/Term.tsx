@@ -229,7 +229,10 @@ const Terms = ({ closeModal, openInfoModal, checked, setChecked }: TermsProps) =
             <TermDetailTextBox>
               {TERM_DETAIL_TEXT[selectedTermDetail]}
             </TermDetailTextBox>
-            <ConfirmButton onClick={() => setSelectedTermDetail(null)}>동의하기</ConfirmButton>
+            <ConfirmButton onClick={() => {
+              setSelectedTermDetail(null);
+              handleSingleChange(selectedTermDetail);
+            }}>동의하기</ConfirmButton>
           </TermDetailModalContent>
         </TermDetailModalOverlay>
       )}

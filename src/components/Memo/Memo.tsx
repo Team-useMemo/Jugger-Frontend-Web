@@ -25,6 +25,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
   const [deleteMemo] = useDeleteMemoMutation();
   const dispatch = useDispatch();
   const isMobile = useIsMobile();
+
   const handleOpenCategorySetting = () => {
     dispatch(
       setModalOpen({
@@ -110,7 +111,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
         {memo.type == 'TEXT' ? (
           <MemoText content={memo.content as string} />
         ) : memo.type == 'CALENDAR' ? (
-          <MemoSchedule content={memo.content as scheduleProp} />
+          <MemoSchedule content={memo.content as scheduleProp} chatId={memo.chatId} />
         ) : memo.type == 'PHOTO' ? (
           <MemoImage content={memo.content as string} description={memo.description} />
         ) : memo.type == 'LINK' ? (
