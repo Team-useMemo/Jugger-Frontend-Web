@@ -17,7 +17,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
 
-  const { content } = props ?? {};
+  const { content, chatId } = props ?? {};
   const { title, startDate, endDate, place, alarm, description } = content ?? {};
 
   const handleClickUpdateSchedule = () => {
@@ -25,7 +25,10 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
       setModalReplace({
         prev: ModalName.detailScheduleMemo,
         to: ModalName.editScheduleMemo,
-        value: { content },
+        value: {
+          chatId: chatId,
+          content: content,
+        },
       }),
     );
   };

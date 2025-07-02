@@ -59,7 +59,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
         recentMessage: '',
         updateAt: new Date(),
       },
-      ..._categories,
+      ..._categories.filter((category) => category.categoryId !== 'temp'),
     ],
     [_categories],
   );

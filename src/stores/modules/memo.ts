@@ -130,8 +130,8 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
-    putCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId: string, calendarId: string }>({
-      query: ({ name, place, alarm, description, startTime, endTime, categoryId, calendarId }) => ({
+    putCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId: string, chatId: string }>({
+      query: ({ name, place, alarm, description, startTime, endTime, categoryId, chatId }) => ({
         url: '/api/v1/calendar',
         method: 'PUT',
         body: {
@@ -142,7 +142,7 @@ export const memoApi = createApi({
           startTime,
           endTime,
           categoryId,
-          calendarId,
+          chatId,
         },
       }),
       invalidatesTags: [
