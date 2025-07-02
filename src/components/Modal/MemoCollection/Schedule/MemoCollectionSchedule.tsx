@@ -126,7 +126,7 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
   const { data: categories = [] } = useGetCategoriesQuery();
   const dateList = useMemo(() => getCalendarDates(selectedMonth), [selectedMonth]);
 
-  const useImageMemos = (category?: CategoryProp) => {
+  const useCalendarMemos = (category?: CategoryProp) => {
     const useCategoryQuery = !!category?.categoryId;
 
     const query = useGetCalendarByCategoryQuery(
@@ -149,7 +149,7 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
     return useCategoryQuery ? query : fallback;
   };
 
-  const { data: scheduleMemos = [] } = useImageMemos(category);
+  const { data: scheduleMemos = [] } = useCalendarMemos(category);
 
 
   const scheduleDotList = useMemo(
