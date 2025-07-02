@@ -83,6 +83,16 @@ export const memoApi = createApi({
         { type: 'Link', id: 'LIST' },
       ],
     }),
+    patchMemo: builder.mutation<void, { chatId: string, categoryId: string }>({
+      query: ({ chatId, categoryId }) => ({
+        url: `/api/v1/chat/category?chatId=${chatId}&newCategoryId=${categoryId}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: [
+        { type: 'Memo', id: 'LIST' },
+        { type: 'Link', id: 'LIST' },
+      ],
+    }),
     postCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId: string }>({
       query: ({ name, place, alarm, description, startTime, endTime, categoryId }) => ({
         url: '/api/v1/calendar',
@@ -218,4 +228,5 @@ export const {
   useGetLinksQuery,
   useDeleteMemoMutation,
   usePutCalendarMutation,
+  usePatchMemoMutation,
 } = memoApi;

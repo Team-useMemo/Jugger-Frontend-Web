@@ -21,6 +21,7 @@ import {
 } from './EditMemoCategory.Style';
 import { formatDate } from '@utils/Date';
 import { useOgData } from '@hooks/useOgData';
+import { usePatchMemoMutation } from '@stores/modules/memo';
 
 const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const { chatId, categoryId, type, content } = props ?? {};
@@ -28,11 +29,10 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
   const { data: categories = [] } = useGetCategoriesQuery();
   const ogData = useOgData(content);
   const { ogDescription } = ogData || {};
-
+  const [patchMemoCategory] = usePatchMemoMutation();
   const handleEditMemoCategory = () => {
-    console.log(chatId);
     if (categoryId !== selectedCategoryId) {
-      // 카테고리변경되었을떄 api 호출
+      patchMemoCategory(({ chatId: chatId, categoryId: selectedCategoryId }));
     }
 
     closeModal?.();
