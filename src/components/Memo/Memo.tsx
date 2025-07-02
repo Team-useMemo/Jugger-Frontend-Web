@@ -99,7 +99,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
   }
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: category?.categoryColor || '#FFF', title: category?.categoryName || '' },
+    header: category && { color: category?.categoryColor || '#FFF', title: category?.categoryName || '' },
     items: contextMenuItems,
   });
 
