@@ -1,5 +1,5 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetCalendarQuery } from '@stores/modules/memo';
+import { useGetCalendarByCategoryQuery, useGetCalendarQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { useMemo, useState } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
@@ -126,38 +126,54 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
   const { data: categories = [] } = useGetCategoriesQuery();
   const dateList = useMemo(() => getCalendarDates(selectedMonth), [selectedMonth]);
 
-  const { data: scheduleMemos = [] } = useGetCalendarQuery({
-    start: dateList[0].toISOString(),
-    end: dateList[dateList.length - 1].toISOString(),
-  });
+  const useImageMemos = (category?: CategoryProp) => {
+    const useCategoryQuery = !!category?.categoryId;
 
-  const filteredMemos = useMemo(
-    () => scheduleMemos.filter((memo) => !category?.categoryId || memo.categoryId === category.categoryId),
-    [scheduleMemos, category],
-  );
+    const query = useGetCalendarByCategoryQuery(
+      {
+        start: dateList[0].toISOString(),
+        end: dateList[dateList.length - 1].toISOString(),
+        categoryId: category?.categoryId ?? ''
+      },
+      { skip: !useCategoryQuery }
+    );
+
+    const fallback = useGetCalendarQuery(
+      {
+        start: dateList[0].toISOString(),
+        end: dateList[dateList.length - 1].toISOString(),
+      },
+      { skip: useCategoryQuery }
+    );
+
+    return useCategoryQuery ? query : fallback;
+  };
+
+  const { data: scheduleMemos = [] } = useImageMemos(category);
+
 
   const scheduleDotList = useMemo(
     () =>
-      filteredMemos.reduce((acc: Record<string, string[]>, memo) => {
+      scheduleMemos.reduce((acc: Record<string, string[]>, memo) => {
         const dateStr = (memo.content as scheduleProp).startDate.toDateString();
         (acc[dateStr] ||= []).push(
           categories.find((category) => category.categoryId == memo.categoryId)?.categoryColor ?? '',
         );
         return acc;
       }, {}),
-    [filteredMemos, categories],
+    [scheduleMemos, categories],
   );
 
   const scheduleList = useMemo(
     () =>
-      filteredMemos.filter((memo) => {
+      scheduleMemos.filter((memo) => {
         const { startDate } = memo.content as scheduleProp;
         return selectedDate
           ? startDate.toDateString() === selectedDate.toDateString()
           : startDate.getFullYear() === selectedMonth.getFullYear() &&
           startDate.getMonth() === selectedMonth.getMonth();
       }),
-    [filteredMemos, selectedDate, selectedMonth],
+    [scheduleMemos, selectedDate, selectedMonth],
   );
 
   const handleChangeMonth = (offset: number) => {
