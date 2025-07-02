@@ -87,7 +87,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
           alarm: alarm?.toISOString(),
           startTime: startDate.toISOString(),
           endTime: endDate?.toISOString(),
-          categoryId: currentCategory || '',
+          categoryId: currentCategory || undefined,
         }).unwrap();
 
         closeModal?.();

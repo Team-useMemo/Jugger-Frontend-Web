@@ -1,4 +1,4 @@
-import { useGetLinksQuery } from '@stores/modules/memo';
+import { useGetLinksByCategoryQuery, useGetLinksQuery } from '@stores/modules/memo';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp } from '@ts/Memo.Prop';
 import {
@@ -38,7 +38,7 @@ const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
   };
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
-    header: { color: category?.categoryColor ?? '', title: category?.categoryName ?? '' },
+    header: { color: category?.categoryColor ?? '#171719', title: category?.categoryName ?? '카테고리 없음' },
     items: [
       {
         label: '카테고리 설정',
@@ -68,10 +68,12 @@ const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
       <ContextMenu />
       <MemoCollectionLinkItemImageContainer onClick={handleClickLinkItem}>
         <img src={ogImage || LoadingGIF} />
-        <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor}>
+
+        <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor ?? '#171719'}>
           <span />
-          {category?.categoryName}
+          {category?.categoryName ?? "카테고리 없음"}
         </MemoCollectionLinkItemCategoryContainer>
+
         <MoreSVG onClick={handleClickLinkItemMore} />
       </MemoCollectionLinkItemImageContainer>
       <MemoCollectionLinkItemTextContainer>
@@ -84,23 +86,28 @@ const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
 };
 
 const MemoCollectionLink = ({ category }: { category?: CategoryProp, }) => {
-  const { data: linkMemos = [] } = useGetLinksQuery(
-    {
-      page: 0,
-      //  size: 20
-      size: 200,
-    },
-    {
-      skip: false,
-      selectFromResult: ({ data }) => ({
-        data: category?.categoryId ? data?.filter((memo) => memo.categoryId === category?.categoryId) : data,
-      }),
-    },
-  );
+  const useLinkMemos = (category?: CategoryProp) => {
+    const useCategoryQuery = !!category?.categoryId;
+
+    const query = useGetLinksByCategoryQuery(
+      { page: 0, size: 200, categoryId: category?.categoryId ?? '' },
+      { skip: !useCategoryQuery }
+    );
+
+    const fallback = useGetLinksQuery(
+      { page: 0, size: 200 },
+      { skip: useCategoryQuery }
+    );
+
+    return useCategoryQuery ? query : fallback;
+  };
+
+  const { data: linkMemos = [] } = useLinkMemos(category);
+
   return (
     <MemoCollectionLinkContainer>
-      {linkMemos.map((memo) => (
-        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}`} memo={memo} />
+      {linkMemos.map((memo, index: number) => (
+        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}_${index}`} memo={memo} />
       ))}
     </MemoCollectionLinkContainer>
   );
