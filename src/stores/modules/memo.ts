@@ -264,7 +264,6 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size, categoryId }) =>
         `/api/v1/links/category?categoryId=${categoryId}&before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
-        console.log(response);
         return response[0].linkData.map((e: LinkResponseProp, i: number) => ({
           memoId: i,
           type: 'link',

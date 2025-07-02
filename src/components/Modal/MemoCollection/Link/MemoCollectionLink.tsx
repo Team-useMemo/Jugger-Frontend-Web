@@ -21,7 +21,8 @@ import {
 } from './MemoCollectionLink.Style';
 import { useGetCategoriesQuery } from '@stores/modules/category';
 
-const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
+const MemoCollectionLinkItem = ({ memo, isSelectCategory }: { memo: MemoProp; isSelectCategory: boolean }) => {
+  // console.log(isSelectCategory);
   const { data: categories = [] } = useGetCategoriesQuery();
   const content = memo.content as string;
   const category = categories.find((category) => category.categoryId === memo.categoryId);
@@ -69,10 +70,10 @@ const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
       <MemoCollectionLinkItemImageContainer onClick={handleClickLinkItem}>
         <img src={ogImage || LoadingGIF} />
 
-        <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor ?? '#171719'}>
+        {!isSelectCategory && <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor ?? '#171719'}>
           <span />
           {category?.categoryName ?? "카테고리 없음"}
-        </MemoCollectionLinkItemCategoryContainer>
+        </MemoCollectionLinkItemCategoryContainer>}
 
         <MoreSVG onClick={handleClickLinkItemMore} />
       </MemoCollectionLinkItemImageContainer>
@@ -85,7 +86,8 @@ const MemoCollectionLinkItem = ({ memo }: { memo: MemoProp; }) => {
   );
 };
 
-const MemoCollectionLink = ({ category }: { category?: CategoryProp, }) => {
+const MemoCollectionLink = ({ category }: { category?: CategoryProp }) => {
+  const isSelectCategory = category?.categoryId !== '';
   const useLinkMemos = (category?: CategoryProp) => {
     const useCategoryQuery = !!category?.categoryId;
 
@@ -107,7 +109,7 @@ const MemoCollectionLink = ({ category }: { category?: CategoryProp, }) => {
   return (
     <MemoCollectionLinkContainer>
       {linkMemos.map((memo, index: number) => (
-        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}_${index}`} memo={memo} />
+        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}_${index}`} memo={memo} isSelectCategory={isSelectCategory} />
       ))}
     </MemoCollectionLinkContainer>
   );
