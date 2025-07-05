@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
+interface JuggerSwitchProps {
+  toggleSize: string;
+}
+
 const JuggerSwitch = styled.input(
-  ({ toggleSize }: { toggleSize: string }) => ({
+  ({ toggleSize }: JuggerSwitchProps) => ({
     height: toggleSize,
     aspectRatio: '2 / 1',
 

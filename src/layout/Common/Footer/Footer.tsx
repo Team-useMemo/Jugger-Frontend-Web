@@ -1,11 +1,12 @@
 import useWindowSize from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import LogoPNG from '@assets/landing/FooterLogo.png';
-import EnvelopeSVG from '@assets/landing/envelope.svg?react';
-import InstagramSVG from '@assets/landing/instagram.svg?react';
-import LinkedInSVG from '@assets/landing/linkedin.svg?react';
-import PencilSVG from '@assets/landing/pencil.svg?react';
-import ProfileCheerSVG from '@assets/landing/profilecheer.svg?react';
+import LogoPNG from '@assets/Logo.png';
+import LogoWhitePNG from '@assets/LogoWhite.png';
+import EnvelopeSVG from '@assets/icons/envelope.svg?react';
+import InstagramSVG from '@assets/icons/instagram.svg?react';
+import LinkedInSVG from '@assets/icons/linkedin.svg?react';
+import PencilSVG from '@assets/icons/pencil.svg?react';
+import ProfileCheerSVG from '@assets/icons/profilecheer.svg?react';
 import {
   CommonFooterButtonContainer,
   CommonFooterContainer,
@@ -41,18 +42,18 @@ const CommonFooter = () => {
   return (
     <CommonFooterLayout>
       <CommonFooterContainer>
-        <img src={LogoPNG} />
+        <img src={!isMobile ? LogoWhitePNG : LogoPNG} />
         <CommonFooterContents>
           <CommonFooterButtonContainer>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'small'} onClick={handleClickFeedback}>
+            <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickFeedback}>
               <PencilSVG />
               의견 남기기
             </JuggerButton>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'small'} onClick={handleClickEmail}>
+            <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickEmail}>
               <EnvelopeSVG />
               비즈니스 제안
             </JuggerButton>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'small'} onClick={handleClickTeam}>
+            <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickTeam}>
               <ProfileCheerSVG />
               만든이들
             </JuggerButton>

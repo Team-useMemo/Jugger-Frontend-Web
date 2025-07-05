@@ -11,6 +11,7 @@ const CommonFooterLayout = styled.div({
   justifyContent: 'center',
 
   [media[480]]: {
+    background: theme.color.background.alternative,
     padding: '32px 20px',
   },
 });
@@ -34,9 +35,10 @@ const CommonFooterContainer = styled.div({
     gap: '16px',
 
     ...theme.font.caption1.medium,
+    color: theme.color.label.assistive,
 
     ['img']: {
-      height: '24px',
+      height: '22px',
     },
   },
 });
@@ -47,7 +49,7 @@ const CommonFooterContents = styled.div({
   gap: '24px',
 
   [media[480]]: {
-    gap: '12px',
+    gap: '16px',
   },
 });
 
@@ -56,8 +58,12 @@ const CommonFooterButtonContainer = styled.div({
   gap: '12px',
 
   [media[480]]: {
-    gap: '8px',
+    gap: '4px',
     flexWrap: 'wrap',
+
+    ['>button']: {
+      backgroundColor: theme.color.label.inverse,
+    },
   },
 });
 
@@ -76,6 +82,7 @@ const CommonFooterSNSContainer = styled.div({
 
     ['svg']: {
       width: '24px',
+      fill: theme.color.label.assistive,
     },
   },
 });

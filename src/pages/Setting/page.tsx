@@ -1,25 +1,367 @@
+import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Logout } from '@utils/Auth';
+import { webPath } from '@router/index';
 import CommonFooter from '@layout/Common/Footer/Footer';
-import CommonHeader from '@layout/Common/Header/Header';
+import JuggerButton from '@components/Common/JuggerButton';
+import JuggerSwitch from '@components/Common/JuggerSwitch';
+import { theme } from '@styles/theme';
+import KakaoSVG from '@assets/Login/kakao.svg?react';
+import LogoPNG from '@assets/Logo.png';
+import CheckCircleSVG from '@assets/icons/check_circle.svg?react';
+import CrossCircleSVG from '@assets/icons/cross_circle.svg?react';
+import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
+import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
+
+const SettingHeader = styled.div({
+  display: 'flex',
+  padding: '0 24px',
+  gap: '10px',
+  borderBottom: `1px solid ${theme.color.line.normal}`,
+  justifyContent: 'center',
+});
+
+const SettingHeaderInner = styled.div({
+  maxWidth: '1440px',
+  width: '100%',
+  display: 'flex',
+  padding: '24px 0',
+
+  ['>img']: {
+    width: '113px',
+  },
+});
+
+const SettingPageLayout = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: '100dvh',
+});
+
+const SettingContentWrapper = styled.div({
+  position: 'relative',
+  flexGrow: '1',
+  display: 'flex',
+  justifyContent: 'center',
+  padding: '36px 72px',
+});
+
+const SettingContentInner = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '48px',
+  maxWidth: '1440px',
+  width: '100%',
+
+  ['>.divider']: {
+    height: '1px',
+    background: theme.color.line.normal,
+  },
+});
+
+const SettingSectionGroup = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '36px',
+});
+
+const SettingRow = styled.div(
+  ({ flexDirection }: { flexDirection: 'column' | 'column-reverse' | 'row' | 'row-reverse' }) => ({
+    flexDirection: flexDirection,
+  }),
+  {
+    display: 'flex',
+    gap: '10px',
+    justifyContent: 'space-between',
+
+    ...theme.font.headline1.semibold,
+    color: theme.color.label.normal,
+    textAlign: 'left',
+
+    ['>svg']: {
+      stroke: theme.color.label.normal,
+      width: '28px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      cursor: 'pointer',
+    },
+
+    ['>span']: {
+      ...theme.font.body1normal.medium,
+    },
+  },
+);
+
+const AccountInfoBox = styled.div({
+  display: 'flex',
+  background: theme.color.background.alternative,
+  padding: '16px',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+const AccountProfile = styled.div({
+  display: 'flex',
+  gap: '12px',
+  alignItems: 'center',
+
+  ...theme.font.body1normal.semibold,
+  color: theme.color.label.normal,
+
+  ['>svg']: {
+    width: '36px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    borderRadius: theme.radius[6],
+  },
+});
+
+const ThemeDropdownWrapper = styled.div({
+  position: 'relative',
+
+  ['>label']: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '12px 14px',
+    background: theme.color.background.normal,
+    border: `1.5px solid ${theme.color.line.normal}`,
+    borderRadius: theme.radius[4],
+    cursor: 'pointer',
+
+    ...theme.font.body1normal.medium,
+    color: theme.color.label.normal,
+
+    ['>svg']: {
+      width: '16px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
+
+    [':focus']: {
+      borderColor: theme.color.primary.normal,
+      ['>svg']: {
+        transform: 'rotate(180deg);',
+      },
+
+      ['+ul']: {
+        display: 'block',
+        // borderColor: theme.color.primary.normal,
+      },
+    },
+  },
+
+  ['>ul']: {
+    display: 'none',
+    position: 'absolute',
+    top: '100%',
+    left: '0',
+    listStyle: 'none',
+    padding: '0',
+    margin: '8px 0 0',
+    width: '100%',
+    zIndex: '1',
+    background: theme.color.background.normal,
+    border: `1.5px solid ${theme.color.line.normal}`,
+    borderRadius: theme.radius[4],
+
+    ['>li']: {
+      padding: '12px 14px',
+      ...theme.font.body1normal.medium,
+      cursor: 'pointer',
+
+      '&:not(:first-of-type)': {
+        borderTop: `1px solid ${theme.color.line.normal}`,
+      },
+
+      [':hover']: {
+        background: theme.color.background.alternative,
+      },
+    },
+  },
+});
+
+type AppThemeKey = 'light' | 'dark' | 'system';
+
+const AppTheme: Record<AppThemeKey, { name: AppThemeKey; text: string }> = {
+  light: {
+    name: 'light',
+    text: '라이트 모드',
+  },
+  dark: {
+    name: 'dark',
+    text: '다크 모드',
+  },
+  system: {
+    name: 'system',
+    text: '시스템 설정',
+  },
+};
+
+const ToastWrapper = styled.div(
+  ({ toastShow }: { toastShow: boolean }) => ({
+    opacity: toastShow ? 1 : 0,
+  }),
+  {
+    position: 'absolute',
+    bottom: '0',
+    marginBottom: '36px',
+    transition: 'opacity 0.5s ease-in-out',
+  },
+);
+
+const ToastContent = styled.div(
+  ({ isSuccess }: { isSuccess: boolean }) => ({
+    ['>svg']: {
+      fill: theme.color.status[isSuccess ? 'success' : 'error'],
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '8px',
+    padding: '12px 16px',
+    background: theme.color.label.normal,
+    borderRadius: theme.radius[4],
+
+    ...theme.font.body2reading.medium,
+    color: theme.color.label.inverse,
+
+    ['>svg']: {
+      width: '16px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
+  },
+);
 
 const SettingPage = () => {
+  const navigate = useNavigate();
+
+  const [selectedTheme, setSelectedTheme] = useState<AppThemeKey>('system');
+  const [toastContents, setToastContents] = useState<React.JSX.Element | null>(null);
+  const [toastMount, setToastMount] = useState(false);
+  const [toastShow, setToastShow] = useState(false);
+
+  const handleClickSelectTheme = (e: React.MouseEvent<HTMLLabelElement>) => {
+    const el = e.currentTarget;
+    if (document.activeElement === el) {
+      e.preventDefault();
+      el.blur();
+    }
+  };
+
+  const handleClickShareService = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.origin);
+      setToastMount(true);
+      setToastShow(true);
+      setToastContents(
+        <ToastContent isSuccess={true}>
+          <CheckCircleSVG />
+          공유 링크를 복사했어요
+        </ToastContent>,
+      );
+    } catch (err) {
+      setToastMount(true);
+      setToastShow(true);
+      setToastContents(
+        <ToastContent isSuccess={false}>
+          <CrossCircleSVG />
+          공유 링크 복사에 실패했어요
+        </ToastContent>,
+      );
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!toastMount) return;
+
+    const fadeOut = setTimeout(() => setToastShow(false), 2500);
+    const remove = setTimeout(() => setToastMount(false), 3000);
+
+    return () => {
+      clearTimeout(fadeOut);
+      clearTimeout(remove);
+    };
+  }, [toastMount]);
+
+  const handleClickSelectThemeItem = (theme: AppThemeKey) => () => {
+    setSelectedTheme(theme);
+  };
+
+  const handleClickLogo = () => {
+    navigate(webPath.memo());
+  };
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100dvh',
-      }}
-    >
-      <CommonHeader />
-      <div
-        style={{
-          flexGrow: '1',
-        }}
-      >
-        asd
-      </div>
+    <SettingPageLayout>
+      <SettingHeader>
+        <SettingHeaderInner>
+          <img src={LogoPNG} onClick={handleClickLogo} />
+        </SettingHeaderInner>
+      </SettingHeader>
+      <SettingContentWrapper>
+        {toastMount && <ToastWrapper toastShow={toastShow}>{toastContents}</ToastWrapper>}
+        <SettingContentInner>
+          <SettingSectionGroup>
+            <SettingRow flexDirection="column">
+              계정 정보
+              <AccountInfoBox>
+                <AccountProfile>
+                  <KakaoSVG />
+                  dml1336@naver.com
+                </AccountProfile>
+                <JuggerButton color="primary" size="xsmall" onClick={Logout}>
+                  로그아웃
+                </JuggerButton>
+              </AccountInfoBox>
+            </SettingRow>
+            <SettingRow flexDirection="column">
+              테마 설정
+              <ThemeDropdownWrapper>
+                <label tabIndex={-1} onMouseDown={handleClickSelectTheme}>
+                  {AppTheme[selectedTheme].text}
+                  <DownArrowSVG />
+                </label>
+                <ul>
+                  {Object.entries(AppTheme).map(([key, value]) => (
+                    <li key={`theme_${key}`} onMouseDown={handleClickSelectThemeItem(value.name)}>
+                      {value.text}
+                    </li>
+                  ))}
+                </ul>
+              </ThemeDropdownWrapper>
+            </SettingRow>
+            <SettingRow flexDirection="row">
+              알림 설정
+              <JuggerSwitch toggleSize="20px" type="checkbox" />
+            </SettingRow>
+          </SettingSectionGroup>
+          <span className="divider" />
+          <SettingRow flexDirection="row">
+            공지사항
+            <RightArrowSVG />
+          </SettingRow>
+          <span className="divider" />
+          <SettingSectionGroup>
+            <SettingRow flexDirection="row" onClick={handleClickShareService}>
+              서비스 공유하기
+            </SettingRow>
+            <SettingRow flexDirection="row">
+              서비스 버전
+              <span>1.0.1</span>
+            </SettingRow>
+            <SettingRow flexDirection="row">
+              회원 탈퇴
+              <RightArrowSVG />
+            </SettingRow>
+          </SettingSectionGroup>
+        </SettingContentInner>
+      </SettingContentWrapper>
       <CommonFooter />
-    </div>
+    </SettingPageLayout>
   );
 };
 
