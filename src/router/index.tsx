@@ -1,16 +1,18 @@
 import { createBrowserRouter } from 'react-router-dom';
+import IndexPage from '@pages/Index/page';
 // import HomePage from '@pages/Home/page';
 import LoginPage from '@pages/Login/page';
-import Root from './Root';
 import MemoPage from '@pages/Memo/page';
-import IndexPage from '@pages/Index/page';
 import Callback from '@pages/Oauth/Callback';
+import SettingPage from '@pages/Setting/page';
+import Root from './Root';
 
 export const webPath = {
   root: () => '/',
   index: () => '/index',
   login: () => '/login',
   memo: () => '/memo',
+  setting: () => '/setting',
 };
 
 const routes = [
@@ -18,6 +20,7 @@ const routes = [
   { path: webPath.root(), element: <Root /> },
   { path: webPath.index(), element: <IndexPage /> },
   { path: webPath.login(), element: <LoginPage /> },
+  { path: webPath.setting(), element: <SettingPage /> },
   {
     path: '/',
     element: <Root />,
