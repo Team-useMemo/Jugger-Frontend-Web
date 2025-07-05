@@ -9,7 +9,7 @@ const MemoDetailTextContainer = styled.div({
   gap: '12px',
 
   ...theme.font.title3.bold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
 
   [media[480]]: {
     padding: '0px 20px',

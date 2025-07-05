@@ -52,7 +52,7 @@ const CalendarViewFooter = styled.div({
   justifyContent: 'space-between',
 
   ...theme.font.body1normal.semibold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
 });
 
 export { CalendarViewContainer, CalendarViewHeader, CalendarViewTitle, CalendarViewFooter };
