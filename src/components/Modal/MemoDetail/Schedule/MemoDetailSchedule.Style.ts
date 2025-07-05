@@ -35,7 +35,7 @@ const MemoDetailScheduleItemContainer = styled.div({
   textAlign: 'left',
 
   ...theme.font.body1normal.semibold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
 
   ['>p']: {
     padding: '11px 14px',

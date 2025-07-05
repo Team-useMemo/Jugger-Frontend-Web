@@ -69,7 +69,7 @@ const CategoryEditorContents = styled.div({
 
 const CategoryEditorTitle = styled.p({
   ...theme.font.title3.bold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
   textAlign: 'left',
 
   margin: '0',
@@ -82,7 +82,7 @@ const CategoryEditorItemContainer = styled.div({
   gap: '24px',
 
   ...theme.font.body1normal.semibold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
 });
 
 const CategoryEditorItemContents = styled.div({
