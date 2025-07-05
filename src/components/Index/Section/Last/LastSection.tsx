@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import useIsLogin from '@hooks/useIsLogin';
 import useWindowSize from '@hooks/useWindowSize';
 import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
@@ -8,13 +9,12 @@ import { IndexLastSectionContainer, IndexLastSectionLayout } from './LastSection
 const IndexLastSection = () => {
   const width = useWindowSize();
   const isMobile = width < 480;
+  const isLogin = useIsLogin();
 
   const navigate = useNavigate();
 
   const handleClickStart = () => {
-    const isLogin = false;
     if (isLogin) {
-      // 로그인 시 메모페이지로 이동
       navigate(webPath.root());
       return;
     }

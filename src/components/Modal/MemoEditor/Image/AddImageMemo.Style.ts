@@ -6,7 +6,7 @@ const AddImageMemoTitle = styled.p({
 
   textAlign: 'left',
   ...theme.font.title3.bold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
 });
 
 const AddImageMemoContents = styled.div({
@@ -78,7 +78,7 @@ const AddImageMemoDescContainer = styled.div({
   gap: '8px',
   textAlign: 'left',
   ...theme.font.body1normal.semibold,
-  color: theme.color.text.onView,
+  color: theme.color.label.normal,
 
   ['>input']: {
     background: 'transparent',

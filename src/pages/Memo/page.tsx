@@ -11,6 +11,7 @@ import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import MemoComponent from '@components/Memo/Memo';
 import MemoBottomButtonMenu from '@components/Menu/MemoBottomButtonMenu';
+import EditMemoCategory from '@components/Modal/EditMemoCategory/EditMemoCategory';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
 import MemoDetailImage from '@components/Modal/MemoDetail/Image/MemoDetailImage';
@@ -34,7 +35,6 @@ import {
   MemoPageBottomInputContainer,
   MemoPageContainer,
 } from './MemoPage.Style';
-import EditMemoCategory from '@components/Modal/EditMemoCategory/EditMemoCategory';
 
 const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
@@ -55,7 +55,6 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
     },
   );
 
-
   useEffect(() => {
     memoListContainerRef.current?.scrollTo({ top: 0 });
   }, [memos]);
@@ -75,10 +74,10 @@ const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) =
           <MemoItemContainer key={`memo-${memo.chatId}-${i}`} id={`memo-${memo.chatId}`}>
             {(i == arr.length - 1 ||
               (i + 1 < arr.length && arr[i + 1].date.toDateString() != memo.date.toDateString())) && (
-                <MemoItemDateContainer>
-                  <MemoItemDateContents>{formatDate(memo.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
-                </MemoItemDateContainer>
-              )}
+              <MemoItemDateContainer>
+                <MemoItemDateContents>{formatDate(memo.date, '{YYYY}년 {MM}월 {DD}일 {W}요일')}</MemoItemDateContents>
+              </MemoItemDateContainer>
+            )}
             <MemoComponent memo={memo} category={categories.find(({ categoryId }) => categoryId == memo.categoryId)} />
           </MemoItemContainer>
         );
