@@ -44,15 +44,15 @@ const IndexFooter = () => {
         <img src={LogoPNG} />
         <IndexFooterContents>
           <IndexFooterButtonContainer>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'small'} onClick={handleClickFeedback}>
+            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'xsmall'} onClick={handleClickFeedback}>
               <PencilSVG />
               의견 남기기
             </JuggerButton>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'small'} onClick={handleClickEmail}>
+            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'xsmall'} onClick={handleClickEmail}>
               <EnvelopeSVG />
               비즈니스 제안
             </JuggerButton>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'small'} onClick={handleClickTeam}>
+            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'xsmall'} onClick={handleClickTeam}>
               <ProfileCheerSVG />
               만든이들
             </JuggerButton>
