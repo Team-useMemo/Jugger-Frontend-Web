@@ -38,7 +38,8 @@
       "@components/*": ["src/components/*"],
       "@styles/*": ["src/styles/*"],
       "@assets/*": ["src/assets/*"],
-      "@stores/*": ["src/stores/*"]
+      "@stores/*": ["src/stores/*"],
+      "@providers/*": ["src/providers/*"]
     }
   },
   "include": ["src", "vite.config.ts"]

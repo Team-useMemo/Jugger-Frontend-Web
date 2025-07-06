@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { useThemeContext } from '@providers/ThemeContext';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SetLocalStorageItem } from '@ts/LocalStorage';
 import { Logout } from '@utils/Auth';
 import { webPath } from '@router/index';
 import CommonFooter from '@layout/Common/Footer/Footer';
@@ -235,10 +237,15 @@ const ToastContent = styled.div(
   },
 );
 
+// const Tmp = styled.div(({ theme }) => ({
+//   background:
+//     theme.mode === 'dark' ? theme.color.status.success : theme.mode === 'light' ? theme.color.status.error : 'white',
+// }));
+
 const SettingPage = () => {
   const navigate = useNavigate();
 
-  const [selectedTheme, setSelectedTheme] = useState<AppThemeKey>('system');
+  const { userTheme, setUserTheme } = useThemeContext();
   const [toastContents, setToastContents] = useState<React.JSX.Element | null>(null);
   const [toastMount, setToastMount] = useState(false);
   const [toastShow, setToastShow] = useState(false);
@@ -288,7 +295,8 @@ const SettingPage = () => {
   }, [toastMount]);
 
   const handleClickSelectThemeItem = (theme: AppThemeKey) => () => {
-    setSelectedTheme(theme);
+    SetLocalStorageItem('theme', theme);
+    setUserTheme(theme);
   };
 
   const handleClickLogo = () => {
@@ -322,7 +330,7 @@ const SettingPage = () => {
               테마 설정
               <ThemeDropdownWrapper>
                 <label tabIndex={-1} onMouseDown={handleClickSelectTheme}>
-                  {AppTheme[selectedTheme].text}
+                  {AppTheme[userTheme].text}
                   <DownArrowSVG />
                 </label>
                 <ul>
