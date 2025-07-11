@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { useThemeContext } from '@providers/ThemeContext';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
 import { Logout } from '@utils/Auth';
+import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerSwitch from '@components/Common/JuggerSwitch';
 import { theme } from '@styles/theme';
@@ -280,6 +282,12 @@ const SettingPage = () => {
     SetLocalStorageItem('notification', e.target.checked);
   };
 
+  const navigate = useNavigate();
+
+  const handleClickNotice = () => {
+    navigate(webPath.notice());
+  };
+
   const Providers = {
     kakao: {
       svg: <KakaoSVG />,
@@ -336,7 +344,7 @@ const SettingPage = () => {
         </SettingRow>
       </SettingSectionGroup>
       <span className="divider" />
-      <SettingRow flexDirection="row">
+      <SettingRow flexDirection="row" onClick={handleClickNotice}>
         공지사항
         <RightArrowSVG />
       </SettingRow>
