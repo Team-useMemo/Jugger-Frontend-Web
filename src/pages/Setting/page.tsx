@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useThemeContext } from '@providers/ThemeContext';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SetLocalStorageItem } from '@ts/LocalStorage';
+import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
 import { Logout } from '@utils/Auth';
 import { webPath } from '@router/index';
 import CommonFooter from '@layout/Common/Footer/Footer';
@@ -303,6 +303,13 @@ const SettingPage = () => {
     navigate(webPath.memo());
   };
 
+  const [notification, setNotification] = useState(GetLocalStorageItem('notification') === 'true');
+
+  const handleChangeNotification = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNotification(e.target.checked);
+    SetLocalStorageItem('notification', e.target.checked);
+  };
+
   return (
     <SettingPageLayout>
       <SettingHeader>
@@ -344,7 +351,12 @@ const SettingPage = () => {
             </SettingRow>
             <SettingRow flexDirection="row">
               알림 설정
-              <JuggerSwitch toggleSize="20px" type="checkbox" />
+              <JuggerSwitch
+                toggleSize="20px"
+                type="checkbox"
+                checked={notification}
+                onChange={handleChangeNotification}
+              />
             </SettingRow>
           </SettingSectionGroup>
           <span className="divider" />
