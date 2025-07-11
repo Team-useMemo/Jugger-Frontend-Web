@@ -160,23 +160,6 @@ const ThemeDropdownWrapper = styled.div({
   },
 });
 
-type AppThemeKey = 'light' | 'dark' | 'system';
-
-const AppTheme: Record<AppThemeKey, { name: AppThemeKey; text: string }> = {
-  light: {
-    name: 'light',
-    text: '라이트 모드',
-  },
-  dark: {
-    name: 'dark',
-    text: '다크 모드',
-  },
-  system: {
-    name: 'system',
-    text: '시스템 설정',
-  },
-};
-
 const ToastWrapper = styled.div(
   ({ toastShow }: { toastShow: boolean }) => ({
     opacity: toastShow ? 1 : 0,
@@ -220,11 +203,46 @@ const ToastContent = styled.div(
 //     theme.mode === 'dark' ? theme.color.status.success : theme.mode === 'light' ? theme.color.status.error : 'white',
 // }));
 
+type AppThemeKey = 'light' | 'dark' | 'system';
+
+const AppTheme: Record<AppThemeKey, { name: AppThemeKey; text: string }> = {
+  light: {
+    name: 'light',
+    text: '라이트 모드',
+  },
+  dark: {
+    name: 'dark',
+    text: '다크 모드',
+  },
+  system: {
+    name: 'system',
+    text: '시스템 설정',
+  },
+};
+
+const Providers: Record<'kakao' | 'google', { svg: React.ReactNode; color: string }> = {
+  kakao: {
+    svg: <KakaoSVG />,
+    color: '#ffe617',
+  },
+  google: {
+    svg: <GoogleSVG />,
+    color: '#ffffff',
+  },
+};
+
 const SettingPage = () => {
+  const navigate = useNavigate();
+
   const { userTheme, setUserTheme } = useThemeContext();
   const [toastContents, setToastContents] = useState<React.JSX.Element | null>(null);
   const [toastMount, setToastMount] = useState(false);
   const [toastShow, setToastShow] = useState(false);
+
+  const [notification, setNotification] = useState(GetLocalStorageItem('notification') === 'true');
+
+  const provider = Providers[GetLocalStorageItem('provider') as 'kakao' | 'google'];
+  const email = GetLocalStorageItem('email');
 
   const handleClickSelectTheme = (e: React.MouseEvent<HTMLLabelElement>) => {
     const el = e.currentTarget;
@@ -232,6 +250,20 @@ const SettingPage = () => {
       e.preventDefault();
       el.blur();
     }
+  };
+
+  const handleClickSelectThemeItem = (theme: AppThemeKey) => () => {
+    SetLocalStorageItem('theme', theme);
+    setUserTheme(theme);
+  };
+
+  const handleChangeNotification = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNotification(e.target.checked);
+    SetLocalStorageItem('notification', e.target.checked);
+  };
+
+  const handleClickNotice = () => {
+    navigate(webPath.notice());
   };
 
   const handleClickShareService = async () => {
@@ -258,6 +290,8 @@ const SettingPage = () => {
     }
   };
 
+  const handleClickWithdraw = () => {};
+
   useEffect(() => {
     if (!toastMount) return;
 
@@ -269,38 +303,6 @@ const SettingPage = () => {
       clearTimeout(remove);
     };
   }, [toastMount]);
-
-  const handleClickSelectThemeItem = (theme: AppThemeKey) => () => {
-    SetLocalStorageItem('theme', theme);
-    setUserTheme(theme);
-  };
-
-  const [notification, setNotification] = useState(GetLocalStorageItem('notification') === 'true');
-
-  const handleChangeNotification = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNotification(e.target.checked);
-    SetLocalStorageItem('notification', e.target.checked);
-  };
-
-  const navigate = useNavigate();
-
-  const handleClickNotice = () => {
-    navigate(webPath.notice());
-  };
-
-  const Providers = {
-    kakao: {
-      svg: <KakaoSVG />,
-      color: '#ffe617',
-    },
-    google: {
-      svg: <GoogleSVG />,
-      color: '#ffffff',
-    },
-  };
-
-  const provider = Providers[GetLocalStorageItem('provider') as 'kakao' | 'google'];
-  const email = GetLocalStorageItem('email');
 
   return (
     <SettingContentInner>
@@ -357,7 +359,7 @@ const SettingPage = () => {
           서비스 버전
           <span>1.0.1</span>
         </SettingRow>
-        <SettingRow flexDirection="row">
+        <SettingRow flexDirection="row" onClick={handleClickWithdraw}>
           회원 탈퇴
           <RightArrowSVG />
         </SettingRow>

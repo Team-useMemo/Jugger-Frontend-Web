@@ -3,6 +3,7 @@ import IndexPage from '@pages/Index/page';
 // import HomePage from '@pages/Home/page';
 import LoginPage from '@pages/Login/page';
 import MemoPage from '@pages/Memo/page';
+import NoticePage from '@pages/Notice/page';
 import Callback from '@pages/Oauth/Callback';
 import SettingPage from '@pages/Setting/page';
 import CommonRoot from './CommonRoot';
@@ -27,7 +28,7 @@ const routes = [
     element: <CommonRoot />,
     children: [
       { path: webPath.setting(), element: <SettingPage /> },
-      { path: webPath.notice(), element: <div /> },
+      { path: webPath.notice(), element: <NoticePage /> },
     ],
   },
   {
