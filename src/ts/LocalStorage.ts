@@ -1,4 +1,11 @@
-type LocalSorageItems = 'accessToken' | 'refreshToken' | 'provider' | 'notification' | 'theme' | 'notification';
+type LocalSorageItems =
+  | 'accessToken'
+  | 'refreshToken'
+  | 'provider'
+  | 'email'
+  | 'notification'
+  | 'theme'
+  | 'notification';
 
 export const SetLocalStorageItem = (key: LocalSorageItems, value: any) => {
   localStorage.setItem(key, value);

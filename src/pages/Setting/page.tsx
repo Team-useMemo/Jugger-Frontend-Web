@@ -9,6 +9,7 @@ import CommonFooter from '@layout/Common/Footer/Footer';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerSwitch from '@components/Common/JuggerSwitch';
 import { theme } from '@styles/theme';
+import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
 import LogoPNG from '@assets/Logo.png';
 import CheckCircleSVG from '@assets/icons/check_circle.svg?react';
@@ -101,23 +102,33 @@ const AccountInfoBox = styled.div({
   padding: '16px',
   justifyContent: 'space-between',
   alignItems: 'center',
+  borderRadius: theme.radius[12],
 });
 
-const AccountProfile = styled.div({
-  display: 'flex',
-  gap: '12px',
-  alignItems: 'center',
+const AccountProfile = styled.div(
+  ({ color }: { color: string }) => ({
+    ['>svg']: {
+      background: color,
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'center',
 
-  ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
+    ...theme.font.body1normal.semibold,
+    color: theme.color.label.normal,
 
-  ['>svg']: {
-    width: '36px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    borderRadius: theme.radius[6],
+    ['>svg']: {
+      width: '36px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      borderRadius: theme.radius[6],
+      padding: '4px',
+      boxSizing: 'border-box',
+    },
   },
-});
+);
 
 const ThemeDropdownWrapper = styled.div({
   position: 'relative',
@@ -310,6 +321,20 @@ const SettingPage = () => {
     SetLocalStorageItem('notification', e.target.checked);
   };
 
+  const Providers = {
+    kakao: {
+      svg: <KakaoSVG />,
+      color: '#ffe617',
+    },
+    google: {
+      svg: <GoogleSVG />,
+      color: '#ffffff',
+    },
+  };
+
+  const provider = Providers[GetLocalStorageItem('provider') as 'kakao' | 'google'];
+  const email = GetLocalStorageItem('email');
+
   return (
     <SettingPageLayout>
       <SettingHeader>
@@ -324,10 +349,14 @@ const SettingPage = () => {
             <SettingRow flexDirection="column">
               계정 정보
               <AccountInfoBox>
-                <AccountProfile>
-                  <KakaoSVG />
-                  dml1336@naver.com
-                </AccountProfile>
+                {provider ? (
+                  <AccountProfile color={provider.color}>
+                    {provider.svg}
+                    {email ?? '계정 정보를 불러오는데 실패했어요'}
+                  </AccountProfile>
+                ) : (
+                  '계정 정보를 불러오는데 실패했어요'
+                )}
                 <JuggerButton color="primary" size="xsmall" onClick={Logout}>
                   로그아웃
                 </JuggerButton>
