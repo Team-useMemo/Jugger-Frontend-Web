@@ -5,6 +5,7 @@ import LoginPage from '@pages/Login/page';
 import MemoPage from '@pages/Memo/page';
 import Callback from '@pages/Oauth/Callback';
 import SettingPage from '@pages/Setting/page';
+import CommonRoot from './CommonRoot';
 import Root from './Root';
 
 export const webPath = {
@@ -13,6 +14,7 @@ export const webPath = {
   login: () => '/login',
   memo: () => '/memo',
   setting: () => '/setting',
+  notice: () => '/notice',
 };
 
 const routes = [
@@ -20,7 +22,14 @@ const routes = [
   { path: webPath.root(), element: <Root /> },
   { path: webPath.index(), element: <IndexPage /> },
   { path: webPath.login(), element: <LoginPage /> },
-  { path: webPath.setting(), element: <SettingPage /> },
+  {
+    path: '/',
+    element: <CommonRoot />,
+    children: [
+      { path: webPath.setting(), element: <SettingPage /> },
+      { path: webPath.notice(), element: <div /> },
+    ],
+  },
   {
     path: '/',
     element: <Root />,

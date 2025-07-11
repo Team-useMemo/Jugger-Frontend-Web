@@ -1,54 +1,17 @@
 import styled from '@emotion/styled';
 import { useThemeContext } from '@providers/ThemeContext';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
 import { Logout } from '@utils/Auth';
-import { webPath } from '@router/index';
-import CommonFooter from '@layout/Common/Footer/Footer';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerSwitch from '@components/Common/JuggerSwitch';
 import { theme } from '@styles/theme';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
-import LogoPNG from '@assets/Logo.png';
 import CheckCircleSVG from '@assets/icons/check_circle.svg?react';
 import CrossCircleSVG from '@assets/icons/cross_circle.svg?react';
 import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
-
-const SettingHeader = styled.div({
-  display: 'flex',
-  padding: '0 24px',
-  gap: '10px',
-  borderBottom: `1px solid ${theme.color.line.normal}`,
-  justifyContent: 'center',
-});
-
-const SettingHeaderInner = styled.div({
-  maxWidth: '1440px',
-  width: '100%',
-  display: 'flex',
-  padding: '24px 0',
-
-  ['>img']: {
-    width: '113px',
-  },
-});
-
-const SettingPageLayout = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  minHeight: '100dvh',
-});
-
-const SettingContentWrapper = styled.div({
-  position: 'relative',
-  flexGrow: '1',
-  display: 'flex',
-  justifyContent: 'center',
-  padding: '36px 72px',
-});
 
 const SettingContentInner = styled.div({
   display: 'flex',
@@ -221,6 +184,8 @@ const ToastWrapper = styled.div(
     bottom: '0',
     marginBottom: '36px',
     transition: 'opacity 0.5s ease-in-out',
+    left: '50%',
+    transform: 'translateX(-50%)',
   },
 );
 
@@ -254,8 +219,6 @@ const ToastContent = styled.div(
 // }));
 
 const SettingPage = () => {
-  const navigate = useNavigate();
-
   const { userTheme, setUserTheme } = useThemeContext();
   const [toastContents, setToastContents] = useState<React.JSX.Element | null>(null);
   const [toastMount, setToastMount] = useState(false);
@@ -310,10 +273,6 @@ const SettingPage = () => {
     setUserTheme(theme);
   };
 
-  const handleClickLogo = () => {
-    navigate(webPath.memo());
-  };
-
   const [notification, setNotification] = useState(GetLocalStorageItem('notification') === 'true');
 
   const handleChangeNotification = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -336,81 +295,66 @@ const SettingPage = () => {
   const email = GetLocalStorageItem('email');
 
   return (
-    <SettingPageLayout>
-      <SettingHeader>
-        <SettingHeaderInner>
-          <img src={LogoPNG} onClick={handleClickLogo} />
-        </SettingHeaderInner>
-      </SettingHeader>
-      <SettingContentWrapper>
-        {toastMount && <ToastWrapper toastShow={toastShow}>{toastContents}</ToastWrapper>}
-        <SettingContentInner>
-          <SettingSectionGroup>
-            <SettingRow flexDirection="column">
-              계정 정보
-              <AccountInfoBox>
-                {provider ? (
-                  <AccountProfile color={provider.color}>
-                    {provider.svg}
-                    {email ?? '계정 정보를 불러오는데 실패했어요'}
-                  </AccountProfile>
-                ) : (
-                  '계정 정보를 불러오는데 실패했어요'
-                )}
-                <JuggerButton color="primary" size="xsmall" onClick={Logout}>
-                  로그아웃
-                </JuggerButton>
-              </AccountInfoBox>
-            </SettingRow>
-            <SettingRow flexDirection="column">
-              테마 설정
-              <ThemeDropdownWrapper>
-                <label tabIndex={-1} onMouseDown={handleClickSelectTheme}>
-                  {AppTheme[userTheme].text}
-                  <DownArrowSVG />
-                </label>
-                <ul>
-                  {Object.entries(AppTheme).map(([key, value]) => (
-                    <li key={`theme_${key}`} onMouseDown={handleClickSelectThemeItem(value.name)}>
-                      {value.text}
-                    </li>
-                  ))}
-                </ul>
-              </ThemeDropdownWrapper>
-            </SettingRow>
-            <SettingRow flexDirection="row">
-              알림 설정
-              <JuggerSwitch
-                toggleSize="20px"
-                type="checkbox"
-                checked={notification}
-                onChange={handleChangeNotification}
-              />
-            </SettingRow>
-          </SettingSectionGroup>
-          <span className="divider" />
-          <SettingRow flexDirection="row">
-            공지사항
-            <RightArrowSVG />
-          </SettingRow>
-          <span className="divider" />
-          <SettingSectionGroup>
-            <SettingRow flexDirection="row" onClick={handleClickShareService}>
-              서비스 공유하기
-            </SettingRow>
-            <SettingRow flexDirection="row">
-              서비스 버전
-              <span>1.0.1</span>
-            </SettingRow>
-            <SettingRow flexDirection="row">
-              회원 탈퇴
-              <RightArrowSVG />
-            </SettingRow>
-          </SettingSectionGroup>
-        </SettingContentInner>
-      </SettingContentWrapper>
-      <CommonFooter />
-    </SettingPageLayout>
+    <SettingContentInner>
+      {toastMount && <ToastWrapper toastShow={toastShow}>{toastContents}</ToastWrapper>}
+      <SettingSectionGroup>
+        <SettingRow flexDirection="column">
+          계정 정보
+          <AccountInfoBox>
+            {provider ? (
+              <AccountProfile color={provider.color}>
+                {provider.svg}
+                {email ?? '계정 정보를 불러오는데 실패했어요'}
+              </AccountProfile>
+            ) : (
+              '계정 정보를 불러오는데 실패했어요'
+            )}
+            <JuggerButton color="primary" size="xsmall" onClick={Logout}>
+              로그아웃
+            </JuggerButton>
+          </AccountInfoBox>
+        </SettingRow>
+        <SettingRow flexDirection="column">
+          테마 설정
+          <ThemeDropdownWrapper>
+            <label tabIndex={-1} onMouseDown={handleClickSelectTheme}>
+              {AppTheme[userTheme].text}
+              <DownArrowSVG />
+            </label>
+            <ul>
+              {Object.entries(AppTheme).map(([key, value]) => (
+                <li key={`theme_${key}`} onMouseDown={handleClickSelectThemeItem(value.name)}>
+                  {value.text}
+                </li>
+              ))}
+            </ul>
+          </ThemeDropdownWrapper>
+        </SettingRow>
+        <SettingRow flexDirection="row">
+          알림 설정
+          <JuggerSwitch toggleSize="20px" type="checkbox" checked={notification} onChange={handleChangeNotification} />
+        </SettingRow>
+      </SettingSectionGroup>
+      <span className="divider" />
+      <SettingRow flexDirection="row">
+        공지사항
+        <RightArrowSVG />
+      </SettingRow>
+      <span className="divider" />
+      <SettingSectionGroup>
+        <SettingRow flexDirection="row" onClick={handleClickShareService}>
+          서비스 공유하기
+        </SettingRow>
+        <SettingRow flexDirection="row">
+          서비스 버전
+          <span>1.0.1</span>
+        </SettingRow>
+        <SettingRow flexDirection="row">
+          회원 탈퇴
+          <RightArrowSVG />
+        </SettingRow>
+      </SettingSectionGroup>
+    </SettingContentInner>
   );
 };
 
