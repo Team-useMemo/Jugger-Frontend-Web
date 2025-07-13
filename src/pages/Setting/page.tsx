@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 import { useThemeContext } from '@providers/ThemeContext';
+import { setModalOpen } from '@stores/modules/modal';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
 import { Logout } from '@utils/Auth';
+import { ModalName } from '@utils/Modal';
+import { useAppDispatch } from '@hooks/useRedux';
 import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerSwitch from '@components/Common/JuggerSwitch';
@@ -290,7 +293,11 @@ const SettingPage = () => {
     }
   };
 
-  const handleClickWithdraw = () => {};
+  const dispatch = useAppDispatch();
+
+  const handleClickWithdraw = () => {
+    dispatch(setModalOpen({ name: ModalName.withdrawUser }));
+  };
 
   useEffect(() => {
     if (!toastMount) return;

@@ -13,4 +13,5 @@ export const ModalName = {
   editCategory: 'editCategory',
   searchMemo: 'searchMemo',
   editMemoCategory: 'editMemoCategory',
+  withdrawUser: 'withdrawUser',
 };

@@ -49,6 +49,10 @@ const buttonColorStyles = {
     color: theme.color.label.normal,
     backgroundColor: theme.palette.coolneutral[98],
   },
+  error: {
+    color: theme.palette.common[100],
+    backgroundColor: theme.color.status.error,
+  },
 };
 
 type ButtonSizes = keyof typeof buttonSizeStyles;
