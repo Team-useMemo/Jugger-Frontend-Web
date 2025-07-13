@@ -20,7 +20,7 @@ const CommonFooter = () => {
   const isMobile = width < 480;
 
   const handleClickFeedback = () => {
-    alert('피드백');
+    window.open('https://forms.gle/d3iJtZLEf3CBEyeN8');
   };
 
   const handleClickEmail = () => {
