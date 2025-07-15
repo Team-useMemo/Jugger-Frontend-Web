@@ -10,6 +10,8 @@ export const MemoTextContainer = styled.div({
   flexDirection: 'column',
   gap: '8px',
   maxWidth: '680px',
+  boxSizing: 'border-box',
+
   [media[480]]: {
     maxWidth: '280px',
   },

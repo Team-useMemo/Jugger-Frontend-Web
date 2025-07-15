@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const MemoImageDescriptionContainer = styled.div({
   borderRadius: theme.radius[12],
@@ -14,6 +14,17 @@ const MemoImageDescriptionContainer = styled.div({
     ...theme.font.caption1.medium,
     color: theme.color.label.neutral,
     margin: '0',
+
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
+    WebkitLineClamp: '2',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  },
+
+  [media[480]]: {
+    maxWidth: '280px',
   },
 });
 

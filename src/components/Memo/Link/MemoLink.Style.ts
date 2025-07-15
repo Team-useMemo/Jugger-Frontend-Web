@@ -11,7 +11,7 @@ export const MemoLinkContainer = styled.div({
   width: '320px',
 
   [media[480]]: {
-    width: '100%',
+    width: '280px',
   },
 });
 

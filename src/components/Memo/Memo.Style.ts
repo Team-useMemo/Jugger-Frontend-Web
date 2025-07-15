@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { media, theme } from '@styles/theme';
 
 export const MemoContainer = styled.div({
   display: 'flex',
@@ -8,35 +7,6 @@ export const MemoContainer = styled.div({
   width: '100%',
   gap: '8px',
 });
-
-export const MemoCategoryContainer = styled.div(({ color }: { color: string }) => ({
-  ...theme.font.caption2.medium,
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-  color: theme.color.label.alternative,
-
-  ['p']: {
-    margin: '0',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-
-  ['span']: {
-    padding: '4px',
-    background: color,
-    margin: '0',
-    borderRadius: theme.radius[32],
-  },
-
-  [media[480]]: {
-    // flexGrow: '1',
-    justifyContent: 'end',
-    minWidth: '72px',
-    maxWidth: '128px',
-  },
-}));
 
 export const MemoContent = styled.div({
   overflow: 'hidden',

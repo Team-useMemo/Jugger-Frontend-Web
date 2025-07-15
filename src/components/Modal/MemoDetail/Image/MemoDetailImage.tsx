@@ -8,23 +8,26 @@ import {
   MemoDetailImageButtonContainer,
   MemoDetailImageContainer,
   MemoDetailImageContents,
-  MemoTitle,
   MemoTitleContainer,
 } from './MemoDetailImage.Style';
 
 const MemoDetailImage = ({ closeModal, props, modalRef }: ModalComponentProps) => {
-  const { title, content } = props ?? {};
+  console.log(props);
+  const { content } = props ?? {};
+  const { imgUrl, description } = content ?? {};
   return (
     <MemoDetailLayout>
       <MemoDetailContainer ref={modalRef}>
         <CloseSVG onClick={closeModal} />
         <MemoDetailImageContainer>
           <MemoDetailImageContents>
-            <img src={content} />
+            <img src={imgUrl} />
           </MemoDetailImageContents>
-          <MemoTitleContainer>
-            <MemoTitle>{title}</MemoTitle>
-          </MemoTitleContainer>
+          {description && (
+            <MemoTitleContainer>
+              <p>{description}</p>
+            </MemoTitleContainer>
+          )}
           <MemoDetailImageButtonContainer>
             <CategorySVG />
             <ExpandSVG />

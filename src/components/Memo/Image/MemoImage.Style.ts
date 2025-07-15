@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const MemoImageContainer = styled.div({
   display: 'flex',
@@ -12,6 +12,12 @@ const MemoImageContainer = styled.div({
     width: '100%',
     maxHeight: '240px',
     height: '100%',
+  },
+
+  [media[480]]: {
+    ['>img']: {
+      maxWidth: '280px',
+    },
   },
 });
 
