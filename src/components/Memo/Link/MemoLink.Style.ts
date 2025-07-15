@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
 export const MemoLinkContainer = styled.div({
+  borderRadius: theme.radius[12],
+  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   background: theme.palette.blue[95],

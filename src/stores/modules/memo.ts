@@ -18,14 +18,19 @@ export const memoApi = createApi({
               const content =
                 item.type === 'CALENDAR'
                   ? {
-                    title: item.scheduleName,
-                    place: item.place,
-                    alarm: item.alarm ? new Date(item.alarm) : undefined,
-                    description: item.description,
-                    startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
-                    endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
-
-                  } : item.content;
+                      title: item.scheduleName,
+                      place: item.place,
+                      alarm: item.alarm ? new Date(item.alarm) : undefined,
+                      description: item.description,
+                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
+                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
+                    }
+                  : item.type === 'PHOTO'
+                    ? {
+                        imgUrl: item.imgUrl,
+                        description: item.description,
+                      }
+                    : item.content;
 
               return {
                 chatId: item.chatId,
@@ -36,7 +41,7 @@ export const memoApi = createApi({
                 categoryName: categoryBlock.categoryName ?? undefined,
                 categoryColor: categoryBlock.categoryColor ?? undefined,
               };
-            })
+            }),
           )
           .sort((a: MemoResponseProp, b: MemoResponseProp) => b.date.getTime() - a.date.getTime());
       },
@@ -50,16 +55,16 @@ export const memoApi = createApi({
       providesTags: (result): readonly { type: 'Memo'; id: string | number }[] =>
         result
           ? [
-            ...result.map((memo) => ({
-              type: 'Memo' as const,
-              id: memo.chatId,
-            })),
-            { type: 'Memo', id: 'LIST' },
-          ]
+              ...result.map((memo) => ({
+                type: 'Memo' as const,
+                id: memo.chatId,
+              })),
+              { type: 'Memo', id: 'LIST' },
+            ]
           : [{ type: 'Memo', id: 'LIST' }],
     }),
     postMemo: builder.mutation<void, { categoryUuid?: string; text: string }>({
-      query: ({ categoryUuid = "temp", text }) => ({
+      query: ({ categoryUuid = 'temp', text }) => ({
         url: '/api/v1/chat',
         method: 'POST',
         body: {
@@ -83,7 +88,7 @@ export const memoApi = createApi({
         { type: 'Link', id: 'LIST' },
       ],
     }),
-    patchMemo: builder.mutation<void, { chatId: string, categoryId: string }>({
+    patchMemo: builder.mutation<void, { chatId: string; categoryId: string }>({
       query: ({ chatId, categoryId }) => ({
         url: `/api/v1/chat/category?chatId=${chatId}&newCategoryId=${categoryId}`,
         method: 'PATCH',
@@ -93,7 +98,18 @@ export const memoApi = createApi({
         { type: 'Link', id: 'LIST' },
       ],
     }),
-    postCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId?: string }>({
+    postCalendar: builder.mutation<
+      void,
+      {
+        name: string;
+        place: string;
+        alarm?: string;
+        description: string;
+        startTime: string;
+        endTime?: string;
+        categoryId?: string;
+      }
+    >({
       query: ({ name, place, alarm, description, startTime, endTime, categoryId = 'temp' }) => ({
         url: '/api/v1/calendar',
         method: 'POST',
@@ -140,7 +156,7 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
     }),
-    getCalendarByCategory: builder.query<MemoProp[], { start: string; end: string, categoryId: string }>({
+    getCalendarByCategory: builder.query<MemoProp[], { start: string; end: string; categoryId: string }>({
       query: ({ start, end, categoryId }) =>
         `/api/v1/calendar/category?categoryId=${categoryId}&start=${start}&end=${end}`,
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
@@ -166,7 +182,19 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    putCalendar: builder.mutation<void, { name: string; place: string; alarm?: string, description: string, startTime: string; endTime?: string; categoryId: string, chatId: string }>({
+    putCalendar: builder.mutation<
+      void,
+      {
+        name: string;
+        place: string;
+        alarm?: string;
+        description: string;
+        startTime: string;
+        endTime?: string;
+        categoryId: string;
+        chatId: string;
+      }
+    >({
       query: ({ name, place, alarm, description, startTime, endTime, categoryId, chatId }) => ({
         url: '/api/v1/calendar',
         method: 'PUT',
@@ -186,7 +214,7 @@ export const memoApi = createApi({
         { type: 'Calendar', id: 'LIST' },
       ],
     }),
-    uploadFile: builder.mutation<void, { file: File; categoryId?: string, description: string }>({
+    uploadFile: builder.mutation<void, { file: File; categoryId?: string; description: string }>({
       query: ({ file, categoryId = 'temp', description }) => {
         const formData = new FormData();
         formData.append('file', file);
@@ -225,27 +253,29 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-    getPhotosByCategory: builder.query<MemoProp[], { before?: string; page: number; size: number, categoryId: string }>({
-      query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size, categoryId }) =>
-        `/api/v1/photos/category?categoryId=${categoryId}&before=${before}&page=${page}&size=${size}`,
-      transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
-        console.log(response);
-        return response
-          .map(
-            (e) =>
-              ({
-                chatId: e.photoId,
-                type: 'PHOTO',
-                content: e.url,
-                categoryId: e.categoryId,
-                date: new Date(e.timestamp),
-                description: e.description,
-              }) as MemoProp,
-          )
-          .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
+    getPhotosByCategory: builder.query<MemoProp[], { before?: string; page: number; size: number; categoryId: string }>(
+      {
+        query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size, categoryId }) =>
+          `/api/v1/photos/category?categoryId=${categoryId}&before=${before}&page=${page}&size=${size}`,
+        transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
+          console.log(response);
+          return response
+            .map(
+              (e) =>
+                ({
+                  chatId: e.photoId,
+                  type: 'PHOTO',
+                  content: e.url,
+                  categoryId: e.categoryId,
+                  date: new Date(e.timestamp),
+                  description: e.description,
+                }) as MemoProp,
+            )
+            .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
+        },
+        providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
       },
-      providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
-    }),
+    ),
     getLinks: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/links?before=${before}&page=${page}&size=${size}`,
@@ -260,7 +290,7 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Link', id: 'LIST' }] : []),
     }),
-    getLinksByCategory: builder.query<MemoProp[], { before?: string; page: number; size: number, categoryId: string }>({
+    getLinksByCategory: builder.query<MemoProp[], { before?: string; page: number; size: number; categoryId: string }>({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size, categoryId }) =>
         `/api/v1/links/category?categoryId=${categoryId}&before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
@@ -274,7 +304,6 @@ export const memoApi = createApi({
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
     }),
-
   }),
 });
 

@@ -3,14 +3,10 @@ import { media, theme } from '@styles/theme';
 
 export const MemoContainer = styled.div({
   display: 'flex',
-  justifyContent: 'end',
-  padding: '0 24px',
-  gap: '6px',
+  flexDirection: 'column',
   alignItems: 'end',
   width: '100%',
-  maxWidth: '1080px',
-  boxSizing: 'border-box',
-  userSelect: 'none',
+  gap: '8px',
 });
 
 export const MemoCategoryContainer = styled.div(({ color }: { color: string }) => ({
@@ -21,6 +17,7 @@ export const MemoCategoryContainer = styled.div(({ color }: { color: string }) =
   color: theme.color.label.alternative,
 
   ['p']: {
+    margin: '0',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
@@ -42,11 +39,18 @@ export const MemoCategoryContainer = styled.div(({ color }: { color: string }) =
 }));
 
 export const MemoContent = styled.div({
-  borderRadius: theme.radius[12],
   overflow: 'hidden',
-  maxWidth: '680px',
-
-  [media[480]]: {
-    maxWidth: '280px',
-  },
+  display: 'flex',
+  justifyContent: 'end',
+  padding: '0 24px',
+  gap: '6px',
+  alignItems: 'end',
+  width: '100%',
+  maxWidth: '1080px',
+  boxSizing: 'border-box',
+  userSelect: 'none',
+  // maxWidth: '680px',
+  // [media[480]]: {
+  //   maxWidth: '280px',
+  // },
 });

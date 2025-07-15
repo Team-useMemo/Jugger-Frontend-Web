@@ -2,12 +2,17 @@ import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
 export const MemoTextContainer = styled.div({
+  borderRadius: theme.radius[12],
   background: theme.color.primary.normal,
   padding: '8px 16px',
   textAlign: 'start',
   display: 'flex',
   flexDirection: 'column',
   gap: '8px',
+  maxWidth: '680px',
+  [media[480]]: {
+    maxWidth: '280px',
+  },
 
   ['>p']: {
     ...theme.font.body2normal.medium,

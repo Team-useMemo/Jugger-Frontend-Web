@@ -9,10 +9,15 @@ export interface scheduleProp {
   description?: string;
 }
 
+export interface imageProp {
+  imgUrl: string;
+  description?: string;
+}
+
 export interface MemoResponseProp {
   id: number;
   type: userMemoType;
-  content: string | scheduleProp;
+  content: string | scheduleProp | imageProp;
   date: Date;
   categoryId: string | null;
   categoryColor?: string;
@@ -21,7 +26,7 @@ export interface MemoResponseProp {
 export interface MemoProp {
   chatId: string;
   type: userMemoType;
-  content: string | scheduleProp;
+  content: string | scheduleProp | imageProp;
   date: Date;
   categoryId: string | null;
   description: string;
