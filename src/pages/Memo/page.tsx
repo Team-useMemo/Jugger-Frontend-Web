@@ -14,6 +14,7 @@ import MemoBottomButtonMenu from '@components/Menu/MemoBottomButtonMenu';
 import EditMemoCategory from '@components/Modal/EditMemoCategory/EditMemoCategory';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import MemoCollection from '@components/Modal/MemoCollection/MemoCollection';
+import MemoDetailImageExpand from '@components/Modal/MemoDetail/Image/Expand/MemoDetailImageExpand';
 import MemoDetailImage from '@components/Modal/MemoDetail/Image/MemoDetailImage';
 import MemoDetailSchedule from '@components/Modal/MemoDetail/Schedule/MemoDetailSchedule';
 import MemoDetailText from '@components/Modal/MemoDetail/Text/MemoDetailText';
@@ -220,6 +221,11 @@ const MemoPage = () => {
   const [EditScheduleMemoModal] = useParamModal(ModalName.editScheduleMemo, ModalLayoutGray, AddScheduleMemo);
   const [DetailTextMemoModal] = useParamModal(ModalName.detailTextMemo, ModalLayoutGray, MemoDetailText);
   const [DetailImageMemoModal] = useParamModal(ModalName.detailImageMemo, ModalLayoutGray, MemoDetailImage);
+  const [DetailImageMemoExpandModal] = useParamModal(
+    ModalName.detailImageMemoExpand,
+    ModalLayoutGray,
+    MemoDetailImageExpand,
+  );
   const [DetailScheduleMemoModal] = useParamModal(ModalName.detailScheduleMemo, ModalLayoutGray, MemoDetailSchedule);
   const [EditMemoCategoryModal] = useParamModal(ModalName.editMemoCategory, ModalLayoutGray, EditMemoCategory);
 
@@ -232,6 +238,7 @@ const MemoPage = () => {
       <AddImageMemoModal />
       <DetailTextMemoModal />
       <DetailImageMemoModal />
+      <DetailImageMemoExpandModal />
       <DetailScheduleMemoModal />
       <MemoList currentCategory={currentCategory || ''} />
       <MemoPageBottom />
