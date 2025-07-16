@@ -227,22 +227,20 @@ export const memoApi = createApi({
         description: string;
         startTime: string;
         endTime?: string;
-        categoryId: string;
         chatId: string;
       }
     >({
-      query: ({ name, place, alarm, description, startTime, endTime, categoryId, chatId }) => ({
+      query: ({ chatId, name, place, alarm, description, startTime, endTime }) => ({
         url: '/api/v1/calendar',
         method: 'PUT',
         body: {
-          name,
+          chatId,
+          title: name,
+          start: startTime,
+          end: endTime,
           place,
           alarm,
           description,
-          startTime,
-          endTime,
-          categoryId,
-          chatId,
         },
       }),
       invalidatesTags: [

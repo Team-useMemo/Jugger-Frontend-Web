@@ -62,7 +62,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             {alarm && (
               <MemoDetailScheduleItemContainer>
                 알림 시각
-                <p>{formatDate(new Date(alarm), '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
+                <p>{alarm.text}</p>
               </MemoDetailScheduleItemContainer>
             )}
             {startDate && (

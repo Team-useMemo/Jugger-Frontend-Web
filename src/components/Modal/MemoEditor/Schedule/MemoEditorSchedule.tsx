@@ -3,7 +3,7 @@ import { usePostCalendarMutation, usePutCalendarMutation } from '@stores/modules
 import { setModalClose } from '@stores/modules/modal';
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { scheduleAlarms } from '@ts/Memo.Prop';
+import { ScheduleAlarm, scheduleAlarms } from '@ts/Memo.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { ValidationItem, isValidFields, validateFields } from '@utils/Vaildate';
@@ -29,10 +29,11 @@ import {
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content, chatId } = props ?? {};
+  console.log(content, chatId);
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
   const [description, setDescription] = useState<string>(content?.description ?? '');
-  const [alarm, setAlarm] = useState<Date | null>(content?.alarm);
+  const [alarm, setAlarm] = useState<ScheduleAlarm | null>(content?.alarm);
   const [startDate, setStartDate] = useState<Date | null>(content?.startDate);
   const [endDate, setEndDate] = useState<Date | null>(content?.endDate);
   const [errors, setErrors] = useState<any>({
@@ -71,7 +72,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
         title.trim() != (content?.title ?? '').trim() ||
         place.trim() != (content?.place ?? '').trim() ||
         description.trim() != (content?.description ?? '').trim() ||
-        alarm?.toDateString() != content?.alarm?.toDateString() ||
+        alarm?.minute != content?.alarm?.minute ||
         startDate?.toDateString() != content?.startDate?.toDateString() ||
         endDate?.toDateString() != content?.endDate?.toDateString(),
     },
@@ -115,6 +116,24 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
     if (!validateFields(validateList, setErrors) || !startDate) return;
     //나중에 API 추가해야 함
 
+    console.log({
+      name: title.trim(),
+      place: place.trim(),
+      description: description.trim(),
+      alarm: alarm
+        ? new Date(
+            (() => {
+              const date = new Date(startDate);
+              date.setMinutes(date.getMinutes() - alarm.minute);
+              return date;
+            })(),
+          ).toISOString()
+        : '',
+      startTime: startDate.toISOString(),
+      endTime: endDate?.toISOString(),
+      categoryId: currentCategory || undefined,
+    });
+
     (async () => {
       try {
         await putCalendar({
@@ -132,7 +151,6 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             : '',
           startTime: startDate.toISOString(),
           endTime: endDate?.toISOString(),
-          categoryId: currentCategory || '',
           chatId: chatId || '',
         }).unwrap();
 

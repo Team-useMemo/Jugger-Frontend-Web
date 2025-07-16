@@ -40,7 +40,7 @@ export const getDateAfterOneHour = (date: Date) => {
 };
 
 export const formatDate = (date: Date, format: string) => {
-  if (!date) return '';
+  if (!date || isNaN(date.getTime())) return '';
 
   const _year = date.getFullYear().toString();
   const _month = (date.getMonth() + 1).toString();
