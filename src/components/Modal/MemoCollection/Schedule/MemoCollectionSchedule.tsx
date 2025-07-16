@@ -9,6 +9,7 @@ import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
+import EmptyContent from '@components/Common/EmptyContent';
 import LeftArrowSVG from '@assets/icons/left_arrow.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 import {
@@ -229,6 +230,12 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
       </MemoCollectionScheduleCalendarContainer>
 
       <MemoCollectionScheduleListContainer>
+        {!scheduleList.length && (
+          <EmptyContent>
+            아직 일정이 없어요
+            <span>일정을 여기서 편하게 모아보세요!</span>
+          </EmptyContent>
+        )}
         {scheduleList.map((memo, index: number) => (
           <MemoCollectionScheduleListItem
             key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.chatId}_${index}`}
