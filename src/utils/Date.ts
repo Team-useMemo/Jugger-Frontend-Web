@@ -40,6 +40,8 @@ export const getDateAfterOneHour = (date: Date) => {
 };
 
 export const formatDate = (date: Date, format: string) => {
+  if (!date) return '';
+
   const _year = date.getFullYear().toString();
   const _month = (date.getMonth() + 1).toString();
   const _date = date.getDate().toString();
@@ -50,6 +52,7 @@ export const formatDate = (date: Date, format: string) => {
 
   const dateInfo = {
     Y: _year,
+    YY: _year.substring(2).padStart(2, '0'),
     YYYY: _year.padStart(4, '0'),
     M: _month,
     MM: _month.padStart(2, '0'),
@@ -59,6 +62,7 @@ export const formatDate = (date: Date, format: string) => {
     h: _hour,
     hh: _hour.padStart(2, '0'),
     AP: _meridiem ? '오후' : '오전',
+    APe: _meridiem ? 'PM' : 'AM',
     APh: (~~_hour % 12).toString(),
     m: _minute,
     mm: _minute.padStart(2, '0'),

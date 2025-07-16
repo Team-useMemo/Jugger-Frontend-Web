@@ -7,7 +7,7 @@ const DefaultModalLayout = styled.div({
   boxSizing: 'border-box',
   padding: '64px',
   display: 'flex',
-  overflow: 'hidden',
+  // overflow: 'hidden',
 
   [media[480]]: {
     padding: '0',

@@ -18,6 +18,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const dispatch = useAppDispatch();
 
   const { content, chatId } = props ?? {};
+  console.log(content);
   const { title, startDate, endDate, place, alarm, description } = content ?? {};
 
   const handleClickUpdateSchedule = () => {
