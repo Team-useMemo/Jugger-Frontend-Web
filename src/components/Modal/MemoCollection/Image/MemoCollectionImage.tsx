@@ -13,6 +13,7 @@ import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
+import EmptyContent from '@components/Common/EmptyContent';
 import {
   MemoCollectionImageContainer,
   MemoCollectionImageItemContainer,
@@ -95,6 +96,15 @@ const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
       return acc;
     }, {}),
   );
+
+  if (!imageMemos.length) {
+    return (
+      <EmptyContent>
+        아직 사진이 없어요
+        <span>사진을 여기서 편하게 모아보세요!</span>
+      </EmptyContent>
+    );
+  }
 
   return (
     <MemoCollectionImageContainer>
