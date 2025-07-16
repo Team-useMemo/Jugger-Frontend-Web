@@ -20,7 +20,7 @@ const MemoDetailScheduleContainer = styled.div({
 const MemoDetailScheduleContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  gap: '20px',
+  gap: '28px',
 
   [media[480]]: {
     gap: '24px',
@@ -38,10 +38,10 @@ const MemoDetailScheduleItemContainer = styled.div({
   color: theme.color.label.normal,
 
   ['>p']: {
-    padding: '11px 14px',
-    borderRadius: theme.radius[4],
+    padding: '8px 0',
     margin: '0',
-    background: theme.color.background.alternative,
+
+    borderBottom: `1.5px solid ${theme.color.line.neutral}`,
 
     ...theme.font.body1normal.medium,
     color: theme.color.label.normal,

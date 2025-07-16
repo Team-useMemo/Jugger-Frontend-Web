@@ -1,3 +1,4 @@
+import { useGetCategoriesQuery } from '@stores/modules/category';
 import { useGetLinksByCategoryQuery, useGetLinksQuery } from '@stores/modules/memo';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp } from '@ts/Memo.Prop';
@@ -10,6 +11,7 @@ import {
 } from '@utils/ContextMenu';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useOgData } from '@hooks/useOgData';
+import EmptyContent from '@components/Common/EmptyContent';
 import LoadingGIF from '@assets/Loading.gif';
 import MoreSVG from '@assets/icons/more.svg?react';
 import {
@@ -19,7 +21,6 @@ import {
   MemoCollectionLinkItemImageContainer,
   MemoCollectionLinkItemTextContainer,
 } from './MemoCollectionLink.Style';
-import { useGetCategoriesQuery } from '@stores/modules/category';
 
 const MemoCollectionLinkItem = ({ memo, isSelectCategory }: { memo: MemoProp; isSelectCategory: boolean }) => {
   // console.log(isSelectCategory);
@@ -70,10 +71,12 @@ const MemoCollectionLinkItem = ({ memo, isSelectCategory }: { memo: MemoProp; is
       <MemoCollectionLinkItemImageContainer onClick={handleClickLinkItem}>
         <img src={ogImage || LoadingGIF} />
 
-        {!isSelectCategory && <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor ?? '#171719'}>
-          <span />
-          {category?.categoryName ?? "카테고리 없음"}
-        </MemoCollectionLinkItemCategoryContainer>}
+        {!isSelectCategory && (
+          <MemoCollectionLinkItemCategoryContainer color={category?.categoryColor ?? '#171719'}>
+            <span />
+            {category?.categoryName ?? '카테고리 없음'}
+          </MemoCollectionLinkItemCategoryContainer>
+        )}
 
         <MoreSVG onClick={handleClickLinkItemMore} />
       </MemoCollectionLinkItemImageContainer>
@@ -93,23 +96,33 @@ const MemoCollectionLink = ({ category }: { category?: CategoryProp }) => {
 
     const query = useGetLinksByCategoryQuery(
       { page: 0, size: 200, categoryId: category?.categoryId ?? '' },
-      { skip: !useCategoryQuery }
+      { skip: !useCategoryQuery },
     );
 
-    const fallback = useGetLinksQuery(
-      { page: 0, size: 200 },
-      { skip: useCategoryQuery }
-    );
+    const fallback = useGetLinksQuery({ page: 0, size: 200 }, { skip: useCategoryQuery });
 
     return useCategoryQuery ? query : fallback;
   };
 
   const { data: linkMemos = [] } = useLinkMemos(category);
 
+  if (!linkMemos.length) {
+    return (
+      <EmptyContent>
+        아직 링크가 없어요
+        <span>링크를 여기서 편하게 모아보세요!</span>
+      </EmptyContent>
+    );
+  }
+
   return (
     <MemoCollectionLinkContainer>
       {linkMemos.map((memo, index: number) => (
-        <MemoCollectionLinkItem key={`LINK_COLLECTION_${category}_${memo.content}_${index}`} memo={memo} isSelectCategory={isSelectCategory} />
+        <MemoCollectionLinkItem
+          key={`LINK_COLLECTION_${category}_${memo.content}_${index}`}
+          memo={memo}
+          isSelectCategory={isSelectCategory}
+        />
       ))}
     </MemoCollectionLinkContainer>
   );

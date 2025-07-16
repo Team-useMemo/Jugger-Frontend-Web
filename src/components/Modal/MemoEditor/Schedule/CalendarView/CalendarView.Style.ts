@@ -1,14 +1,27 @@
 import styled from '@emotion/styled';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const CalendarViewContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  outline: `2px solid ${theme.color.primary.normal}`,
-  borderRadius: theme.radius[6],
-  padding: '24px',
+  // outline: `2px solid ${theme.color.primary.normal}`,
+  borderRadius: theme.radius[12],
+  padding: '24px 32px',
   gap: '24px',
   outlineOffset: '-2px',
+  position: 'absolute',
+  top: 'calc(100% + 14px)',
+  left: '0',
+  width: '100%',
+  boxSizing: 'border-box',
+  zIndex: '1',
+  background: theme.color.background.normal,
+  boxShadow: theme.shadow.strong,
+
+  [media[480]]: {
+    padding: '24px 20px',
+    gap: '16px',
+  },
 });
 
 const CalendarViewHeader = styled.div({
@@ -42,6 +55,11 @@ const CalendarViewTitle = styled.div({
     width: '24px',
     height: 'auto',
     aspectRatio: '1 / 1',
+  },
+
+  [media[480]]: {
+    ...theme.font.headline1.semibold,
+    gap: '0px',
   },
 });
 

@@ -1,7 +1,9 @@
+import styled from '@emotion/styled';
 import { usePostCalendarMutation, usePutCalendarMutation } from '@stores/modules/memo';
 import { setModalClose } from '@stores/modules/modal';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { ScheduleAlarm, scheduleAlarms } from '@ts/Memo.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { ValidationItem, isValidFields, validateFields } from '@utils/Vaildate';
@@ -9,26 +11,29 @@ import { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
+import { theme } from '@styles/theme';
+import AlarmSVG from '@assets/icons/alarm.svg?react';
+import ClockSVG from '@assets/icons/clock.svg?react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
+import HistorySVG from '@assets/icons/history.svg?react';
+import LocationSVG from '@assets/icons/location.svg?react';
 import { DefaultModalContainer, DefaultModalHeader, DefaultModalLayout } from '../../DefaultModal.Style';
 import CalendarView from './CalendarView/CalendarView';
 import {
   MemoEditorScheduleContainer,
   MemoEditorScheduleContents,
-  MemoEditorScheduleItemButton,
-  MemoEditorScheduleItemContainer,
-  MemoEditorScheduleItemContents,
   MemoEditorScheduleItemErrorText,
 } from './MemoEditorSchedule.Style';
 
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content, chatId } = props ?? {};
+  console.log(content, chatId);
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
   const [description, setDescription] = useState<string>(content?.description ?? '');
-  const [alarm, setAlarm] = useState<Date | null>(content?.alarm);
+  const [alarm, setAlarm] = useState<ScheduleAlarm | null>(content?.alarm);
   const [startDate, setStartDate] = useState<Date | null>(content?.startDate);
   const [endDate, setEndDate] = useState<Date | null>(content?.endDate);
   const [errors, setErrors] = useState<any>({
@@ -67,7 +72,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
         title.trim() != (content?.title ?? '').trim() ||
         place.trim() != (content?.place ?? '').trim() ||
         description.trim() != (content?.description ?? '').trim() ||
-        alarm?.toDateString() != content?.alarm?.toDateString() ||
+        alarm?.minute != content?.alarm?.minute ||
         startDate?.toDateString() != content?.startDate?.toDateString() ||
         endDate?.toDateString() != content?.endDate?.toDateString(),
     },
@@ -84,7 +89,15 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
           name: title.trim(),
           place: place.trim(),
           description: description.trim(),
-          alarm: alarm?.toISOString(),
+          alarm: alarm
+            ? new Date(
+                (() => {
+                  const date = new Date(startDate);
+                  date.setMinutes(date.getMinutes() - alarm.minute);
+                  return date;
+                })(),
+              ).toISOString()
+            : '',
           startTime: startDate.toISOString(),
           endTime: endDate?.toISOString(),
           categoryId: currentCategory || undefined,
@@ -103,16 +116,41 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
     if (!validateFields(validateList, setErrors) || !startDate) return;
     //나중에 API 추가해야 함
 
+    console.log({
+      name: title.trim(),
+      place: place.trim(),
+      description: description.trim(),
+      alarm: alarm
+        ? new Date(
+            (() => {
+              const date = new Date(startDate);
+              date.setMinutes(date.getMinutes() - alarm.minute);
+              return date;
+            })(),
+          ).toISOString()
+        : '',
+      startTime: startDate.toISOString(),
+      endTime: endDate?.toISOString(),
+      categoryId: currentCategory || undefined,
+    });
+
     (async () => {
       try {
         await putCalendar({
           name: title.trim(),
           place: place.trim(),
           description: description.trim(),
-          alarm: alarm?.toISOString(),
+          alarm: alarm
+            ? new Date(
+                (() => {
+                  const date = new Date(startDate);
+                  date.setMinutes(date.getMinutes() - alarm.minute);
+                  return date;
+                })(),
+              ).toISOString()
+            : '',
           startTime: startDate.toISOString(),
           endTime: endDate?.toISOString(),
-          categoryId: currentCategory || '',
           chatId: chatId || '',
         }).unwrap();
 
@@ -144,89 +182,84 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   };
 
   const startDatePlaceholder = new Date(new Date().setHours(9, 0));
-  const alarmPlaceholder = startDatePlaceholder;
   const endDatePlaceholder = ((date: Date) => new Date(date.setHours(date.getHours() + 1)))(
-
     new Date(startDate ?? startDatePlaceholder),
   );
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
+  const isMobile = useIsMobile();
 
-  const handleTitleReset = (e: React.MouseEvent<HTMLOrSVGElement>) => {
-    e.preventDefault();
-    setTitle('');
-  };
-
-  const handlePlaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlace(e.target.value);
-  };
-
-  const handlePlaceReset = (e: React.MouseEvent<HTMLOrSVGElement>) => {
-    e.preventDefault();
-    setPlace('');
-  };
-
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(e.target.value);
-  };
-
-  const handleDescriptionReset = (e: React.MouseEvent<HTMLOrSVGElement>) => {
-    e.preventDefault();
-    setDescription('');
-  };
-
-
-
-  const toFormattedDate = (date: Date | null) => {
-    if (!date) return '';
-    return formatDate(date, '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}');
-  };
-
-  const [isOpenCalendar, setIsOpenCalendar] = useState<'alarmDate' | 'startDate' | 'endDate' | null>(null);
-
-  const handleToggleCalendar = (key: 'alarmDate' | 'startDate' | 'endDate' | null) => {
-    if (key == 'alarmDate' && !startDate) setAlarm(alarmPlaceholder);
-    if (key == 'startDate' && !startDate) setStartDate(startDatePlaceholder);
-    if (key == 'endDate' && !endDate) setEndDate(endDatePlaceholder);
-    setIsOpenCalendar((prev) => (prev == key ? null : key));
-  };
-
-  const calendars = [
+  const scheduleItemList = [
     {
-      key: 'alarmDate',
-      title: '알림 시각',
-      placeholder: alarmPlaceholder,
-      date: alarm,
-      setDate: setAlarm,
-      onClick: () => {
-        handleToggleCalendar('alarmDate');
-      },
+      title: '일정 제목',
+      essential: true,
+      content: (
+        <MemoEditorScheduleItemInput type="text" placeholder="제목" state={title} setState={setTitle} resetable />
+      ),
+      error: errors.title,
     },
     {
-      key: 'startDate',
-      title: '시작',
-      placeholder: startDatePlaceholder,
-      date: startDate,
-      setDate: setStartDate,
-      onClick: () => {
-        handleToggleCalendar('startDate');
-      },
+      title: '시간',
+      essential: true,
+      icon: <ClockSVG />,
+      content: (
+        <>
+          <MemoEditorScheduleItemInput
+            type="calendar"
+            placeholder="시작 날짜 및 시간 *"
+            state={startDate}
+            setState={setStartDate}
+            initialDate={startDatePlaceholder}
+          />
+          <MemoEditorScheduleItemInput
+            type="calendar"
+            placeholder="종료 날짜 및 시간"
+            state={endDate}
+            setState={setEndDate}
+            initialDate={endDatePlaceholder}
+            resetable
+          />
+        </>
+      ),
+      error: errors.startDate || errors.endDate,
     },
     {
-      key: 'endDate',
-      title: '종료',
-      placeholder: endDatePlaceholder,
-      date: endDate,
-      setDate: setEndDate,
-      onClick: () => {
-        handleToggleCalendar('endDate');
-      },
+      icon: <LocationSVG />,
+      content: (
+        <MemoEditorScheduleItemInput
+          type="text"
+          placeholder="장소를 입력해주세요"
+          state={place}
+          setState={setPlace}
+          resetable
+        />
+      ),
+    },
+    {
+      icon: <AlarmSVG />,
+      content: (
+        <MemoEditorScheduleItemInput
+          type="alarm"
+          placeholder="알림을 설정해주세요"
+          state={alarm}
+          setState={setAlarm}
+          initialDate={scheduleAlarms[0]}
+          resetable
+        />
+      ),
+    },
+    {
+      icon: <HistorySVG />,
+      content: (
+        <MemoEditorScheduleItemInput
+          type="text"
+          placeholder="설명을 적어주세요"
+          state={description}
+          setState={setDescription}
+          resetable
+        />
+      ),
     },
   ];
-
-  const isMobile = useIsMobile();
 
   return (
     <DefaultModalLayout>
@@ -243,43 +276,8 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
         <MemoEditorScheduleContainer>
           {!isMobile && (!isEdit ? '일정 추가' : '일정 수정')}
           <MemoEditorScheduleContents>
-            <MemoEditorScheduleItemContainer>
-              일정 제목
-              <MemoEditorScheduleItemContents>
-                <input type="text" placeholder="입력" value={title} onChange={handleTitleChange} />
-                {title && <EndContainerSVG onClick={handleTitleReset} />}
-              </MemoEditorScheduleItemContents>
-              장소
-              <MemoEditorScheduleItemContents>
-                <input type="text" placeholder="입력" value={place} onChange={handlePlaceChange} />
-                {place && <EndContainerSVG onClick={handlePlaceReset} />}
-              </MemoEditorScheduleItemContents>
-              설명
-              <MemoEditorScheduleItemContents>
-                <input type="text" placeholder="입력" value={description} onChange={handleDescriptionChange} />
-                {description && <EndContainerSVG onClick={handleDescriptionReset} />}
-              </MemoEditorScheduleItemContents>
-              {isMobile && <MemoEditorScheduleItemErrorText>{errors.title}</MemoEditorScheduleItemErrorText>}
-            </MemoEditorScheduleItemContainer>
-            {calendars.map((e) => (
-              <MemoEditorScheduleItemContainer key={`SCHEDULE_MEMO_CALENDAR_${e.key}`}>
-                {e.title}
-                {!(isOpenCalendar == e.key) ? (
-                  <MemoEditorScheduleItemButton
-                    type="text"
-                    placeholder={toFormattedDate(e.placeholder)}
-                    value={toFormattedDate(e.date)}
-                    readOnly
-                    onFocus={() => {
-                      e.onClick();
-                    }}
-                  />
-                ) : (
-                  <CalendarView date={e.date} setDate={e.setDate} closeCalendar={e.onClick} />
-                )}
-
-                {isMobile && <MemoEditorScheduleItemErrorText>{errors[e.key]}</MemoEditorScheduleItemErrorText>}
-              </MemoEditorScheduleItemContainer>
+            {scheduleItemList.map((e, i) => (
+              <MemoEditorScheduleItem key={i} item={e} />
             ))}
           </MemoEditorScheduleContents>
           {!isMobile && (
@@ -295,6 +293,223 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
         </MemoEditorScheduleContainer>
       </DefaultModalContainer>
     </DefaultModalLayout>
+  );
+};
+
+const MemoEditorScheduleItemContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+  position: 'relative',
+});
+
+const MemoEditorScheduleItemTitle = styled.p({
+  ...theme.font.body1normal.semibold,
+  color: theme.color.label.normal,
+  margin: '0',
+
+  ['>span.essential']: {
+    color: theme.color.primary.normal,
+  },
+});
+
+const MemoEditorScheduleItemContents = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+
+  ['>svg']: {
+    width: '28px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    stroke: theme.color.label.normal,
+    flexShrink: '0',
+  },
+});
+
+const MemoEditorScheduleItemInputContainer = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '8px 0px',
+  borderBottom: `1.5px solid ${theme.color.line.neutral}`,
+  boxSizing: 'border-box',
+  gap: '4px',
+  width: '100%',
+  minWidth: '0',
+
+  ['>input']: {
+    background: 'none',
+    border: 'none',
+    outline: 'none',
+    flexGrow: '1',
+    minWidth: '0',
+
+    ...theme.font.body1normal.medium,
+    color: theme.color.label.normal,
+    ['::placeholder']: {
+      color: theme.color.label.alternative,
+    },
+  },
+
+  [':has(>input:focus)']: {
+    borderBottom: `1px solid ${theme.color.primary.normal}`,
+  },
+
+  ['>svg']: {
+    width: '20px',
+    height: 'auto',
+    aspectRatio: '1 / 1',
+    flexShrink: '0',
+  },
+});
+
+const MemoEditorScheduleItemInput = ({
+  type,
+  placeholder,
+  state,
+  setState,
+  initialDate,
+  resetable,
+}: {
+  type: 'text' | 'calendar' | 'alarm';
+  placeholder: string;
+  state: any;
+  setState: React.Dispatch<React.SetStateAction<any>>;
+  initialDate?: any;
+  resetable?: true;
+}) => {
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const handleChangeState = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setState(e.target.value);
+  };
+
+  const handleResetState = () => {
+    setState(type === 'text' ? '' : null);
+  };
+
+  const value =
+    type === 'calendar'
+      ? formatDate(state, '{YY}.{MM}.{DD} {APe} {APh}:{mm}')
+      : type === 'alarm'
+        ? (state?.text ?? '')
+        : state;
+
+  const handleClickInput = () => {
+    if (type === 'text') return;
+    setIsOpenMenu(true);
+    if (state) return;
+    setState(initialDate);
+  };
+
+  const handleCloseItemMenu = () => {
+    setIsOpenMenu(false);
+  };
+
+  return (
+    <MemoEditorScheduleItemInputContainer>
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={handleChangeState}
+        readOnly={type !== 'text'}
+        onClick={handleClickInput}
+      />
+      {resetable && state && <EndContainerSVG onClick={handleResetState} />}
+      {type === 'calendar' && state && isOpenMenu && (
+        <CalendarView date={state} setDate={setState} closeCalendar={handleCloseItemMenu} />
+      )}
+      {type === 'alarm' && isOpenMenu && (
+        <MemoEditorSchduleAlarmMenu setAlarm={setState} closeMenu={handleCloseItemMenu} />
+      )}
+    </MemoEditorScheduleItemInputContainer>
+  );
+};
+
+const MemoEditorSchduleAlarmMenu = ({
+  setAlarm,
+  closeMenu,
+}: {
+  setAlarm: React.Dispatch<React.SetStateAction<any>>;
+  closeMenu: () => void;
+}) => {
+  const containerRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      e.stopPropagation();
+      const container = containerRef.current;
+      if (!container || container.contains(e.target as Node)) return;
+
+      closeMenu();
+    };
+
+    document.addEventListener('mousedown', handleClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, []);
+
+  return (
+    <MemoEditorSchduleAlarmMenuListContainer ref={containerRef}>
+      {scheduleAlarms.map((e) => {
+        return (
+          <li
+            key={`SCHEDULE_ALARMS_${e.minute}`}
+            onClick={() => {
+              setAlarm(e);
+              closeMenu();
+            }}
+          >
+            {e.text}
+          </li>
+        );
+      })}
+    </MemoEditorSchduleAlarmMenuListContainer>
+  );
+};
+
+const MemoEditorSchduleAlarmMenuListContainer = styled.ul({
+  position: 'absolute',
+  top: 'calc(100% + 14px)',
+  background: 'white',
+  padding: '12px 8px',
+  zIndex: '1',
+  boxShadow: theme.shadow.strong,
+  borderRadius: theme.radius[12],
+  width: '160px',
+  margin: '0',
+  listStyle: 'none',
+
+  ['>li']: {
+    padding: '6px 8px',
+    ...theme.font.body2normal.semibold,
+    color: theme.color.label.normal,
+
+    [':hover']: {
+      background: theme.color.fill.normal,
+    },
+  },
+});
+
+const MemoEditorScheduleItem = ({ item }: { item: any }) => {
+  const { title, essential, icon, content, error } = item;
+
+  return (
+    <MemoEditorScheduleItemContainer>
+      {title && (
+        <MemoEditorScheduleItemTitle>
+          {title} {essential && <span className="essential">*</span>}
+        </MemoEditorScheduleItemTitle>
+      )}
+      <MemoEditorScheduleItemContents>
+        {icon}
+        {content}
+      </MemoEditorScheduleItemContents>
+      {error && <MemoEditorScheduleItemErrorText>{error}</MemoEditorScheduleItemErrorText>}
+    </MemoEditorScheduleItemContainer>
   );
 };
 

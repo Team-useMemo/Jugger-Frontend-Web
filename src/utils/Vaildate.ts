@@ -17,6 +17,7 @@ export function validateFields<K extends string>(
   const newErrors = {} as ValidationErrors<K>;
 
   items.forEach(({ key, message, isValid }) => {
+    if (newErrors[key]) return;
     newErrors[key] = isValid ? '' : message;
   });
 

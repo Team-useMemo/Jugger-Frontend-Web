@@ -1,7 +1,7 @@
 import { useGetPhotosByCategoryQuery, useGetPhotosQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoProp } from '@ts/Memo.Prop';
+import { MemoProp, imageProp } from '@ts/Memo.Prop';
 import {
   ContextMenuCategory,
   ContextMenuCopy,
@@ -13,6 +13,7 @@ import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
+import EmptyContent from '@components/Common/EmptyContent';
 import {
   MemoCollectionImageContainer,
   MemoCollectionImageItemContainer,
@@ -24,7 +25,7 @@ import {
 const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const dispatch = useAppDispatch();
 
-  const content = memo.content as string;
+  const content = memo.content as imageProp;
 
   const handleClickImage = () => {
     dispatch(
@@ -67,25 +68,21 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?
   return (
     <MemoCollectionImageItemContainer onClick={handleClickImage} {...BindContextMenuHandlers}>
       <ContextMenu />
-      <img src={content} />
+      <img src={content.imgUrl} />
     </MemoCollectionImageItemContainer>
   );
 };
 
 const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
-
   const useImageMemos = (category?: CategoryProp) => {
     const useCategoryQuery = !!category?.categoryId;
 
     const query = useGetPhotosByCategoryQuery(
       { page: 0, size: 200, categoryId: category?.categoryId ?? '' },
-      { skip: !useCategoryQuery }
+      { skip: !useCategoryQuery },
     );
 
-    const fallback = useGetPhotosQuery(
-      { page: 0, size: 200 },
-      { skip: useCategoryQuery }
-    );
+    const fallback = useGetPhotosQuery({ page: 0, size: 200 }, { skip: useCategoryQuery });
 
     return useCategoryQuery ? query : fallback;
   };
@@ -99,6 +96,15 @@ const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
       return acc;
     }, {}),
   );
+
+  if (!imageMemos.length) {
+    return (
+      <EmptyContent>
+        아직 사진이 없어요
+        <span>사진을 여기서 편하게 모아보세요!</span>
+      </EmptyContent>
+    );
+  }
 
   return (
     <MemoCollectionImageContainer>
