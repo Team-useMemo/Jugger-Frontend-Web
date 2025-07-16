@@ -18,6 +18,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const dispatch = useAppDispatch();
 
   const { content, chatId } = props ?? {};
+  console.log(content);
   const { title, startDate, endDate, place, alarm, description } = content ?? {};
 
   const handleClickUpdateSchedule = () => {
@@ -61,7 +62,7 @@ const MemoDetailSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
             {alarm && (
               <MemoDetailScheduleItemContainer>
                 알림 시각
-                <p>{formatDate(new Date(alarm), '{YYYY}.{MM}.{DD} {AP} {APh}:{mm}')}</p>
+                <p>{alarm.text}</p>
               </MemoDetailScheduleItemContainer>
             )}
             {startDate && (

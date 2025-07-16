@@ -1,6 +1,35 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CalendarResponseProp, LinkResponseProp, MemoProp, MemoResponseProp, PhotoResponseProp } from '@ts/Memo.Prop';
+import {
+  CalendarResponseProp,
+  LinkResponseProp,
+  MemoProp,
+  MemoResponseProp,
+  PhotoResponseProp,
+  scheduleAlarms,
+  scheduleProp,
+} from '@ts/Memo.Prop';
 import { customBaseQuery } from './customBaseQuery';
+
+const getScheduleMemoContent = (response: any) => {
+  const startDateTime = response.scheduleStartDate || response.startDateTime;
+  const endDateTime = response.scheduleEndDate || response.endDateTime;
+  const title = response.scheduleName || response.title;
+
+  const startDate = new Date(startDateTime);
+  const endDate = endDateTime ? new Date(endDateTime) : null;
+  const alarmDate = response.alarm ? new Date(response.alarm) : null;
+
+  return {
+    title: title,
+    place: response.place,
+    alarm: alarmDate
+      ? scheduleAlarms.find((e) => e.minute == (startDate.getTime() - alarmDate.getTime()) / (60 * 1000))
+      : null,
+    description: response.description,
+    startDate,
+    endDate,
+  } as scheduleProp;
+};
 
 export const memoApi = createApi({
   reducerPath: 'memoApi',
@@ -16,14 +45,7 @@ export const memoApi = createApi({
             categoryBlock.chatItems.map((item: any) => {
               const content =
                 item.type === 'CALENDAR'
-                  ? {
-                      title: item.scheduleName,
-                      place: item.place,
-                      alarm: item.alarm ? new Date(item.alarm) : undefined,
-                      description: item.description,
-                      startDate: item.scheduleStartDate ? new Date(item.scheduleStartDate) : undefined,
-                      endDate: item.scheduleEndDate ? new Date(item.scheduleEndDate) : undefined,
-                    }
+                  ? getScheduleMemoContent(item)
                   : item.type === 'PHOTO'
                     ? {
                         imgUrl: item.imgUrl,
@@ -134,23 +156,15 @@ export const memoApi = createApi({
       }),
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
-          .map(
-            (e) =>
-              ({
-                chatId: e.chatId,
-                type: 'CALENDAR',
-                content: {
-                  title: e.title,
-                  place: e.place,
-                  alarm: e.alarm ? new Date(e.alarm) : null,
-                  description: e.description,
-                  startDate: new Date(e.startDateTime),
-                  endDate: e.endDateTime ? new Date(e.endDateTime) : null,
-                },
-                categoryId: e.categoryId,
-                date: new Date(e.startDateTime),
-              }) as MemoProp,
-          )
+          .map((e) => {
+            return {
+              chatId: e.calendarId,
+              type: 'CALENDAR',
+              content: getScheduleMemoContent(e),
+              categoryId: e.categoryId,
+              date: new Date(e.startDateTime),
+            } as MemoProp;
+          })
           .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
       },
       providesTags: (result) => (result ? [{ type: 'Calendar', id: 'LIST' }] : []),
@@ -160,23 +174,15 @@ export const memoApi = createApi({
         `/api/v1/calendar/category?categoryId=${categoryId}&start=${start}&end=${end}`,
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
-          .map(
-            (e) =>
-              ({
-                chatId: e.chatId,
-                type: 'CALENDAR',
-                content: {
-                  title: e.title,
-                  place: e.place,
-                  alarm: e.alarm ? new Date(e.alarm) : null,
-                  description: e.description,
-                  startDate: new Date(e.startDateTime),
-                  endDate: e.endDateTime ? new Date(e.endDateTime) : null,
-                },
-                categoryId: e.categoryId,
-                date: new Date(e.startDateTime),
-              }) as MemoProp,
-          )
+          .map((e) => {
+            return {
+              chatId: e.calendarId,
+              type: 'CALENDAR',
+              content: getScheduleMemoContent(e),
+              categoryId: e.categoryId,
+              date: new Date(e.startDateTime),
+            } as MemoProp;
+          })
           .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
       },
       providesTags: (result) => (result ? [{ type: 'Photo', id: 'LIST' }] : []),
@@ -190,22 +196,20 @@ export const memoApi = createApi({
         description: string;
         startTime: string;
         endTime?: string;
-        categoryId: string;
         chatId: string;
       }
     >({
-      query: ({ name, place, alarm, description, startTime, endTime, categoryId, chatId }) => ({
+      query: ({ chatId, name, place, alarm, description, startTime, endTime }) => ({
         url: '/api/v1/calendar',
         method: 'PUT',
         body: {
-          name,
+          chatId,
+          title: name,
+          start: startTime,
+          end: endTime,
           place,
           alarm,
           description,
-          startTime,
-          endTime,
-          categoryId,
-          chatId,
         },
       }),
       invalidatesTags: [

@@ -10,14 +10,14 @@ const MemoEditorScheduleContainer = styled.div({
   ...theme.font.title3.bold,
   color: theme.color.label.normal,
 
-  overflowY: 'hidden',
+  // overflowY: 'hidden',
 });
 
 const MemoEditorScheduleContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
-  overflowY: 'auto',
+  // overflowY: 'auto',
   overflowX: 'visible',
   flexGrow: '1',
 
@@ -25,7 +25,7 @@ const MemoEditorScheduleContents = styled.div({
     display: 'none',
   },
   [media[480]]: {
-    padding: '20px 20px 32px',
+    padding: '12px 20px',
   },
 });
 
