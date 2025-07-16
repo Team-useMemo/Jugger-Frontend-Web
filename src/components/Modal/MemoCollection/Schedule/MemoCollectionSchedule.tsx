@@ -28,7 +28,15 @@ import {
   MemoCollectionScheduleListItemTitle,
 } from './MemoCollectionSchedule.Style';
 
-const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
+const MemoCollectionScheduleListItem = ({
+  memo,
+  category,
+  chatId,
+}: {
+  memo: MemoProp;
+  category?: CategoryProp;
+  chatId: string;
+}) => {
   const content = memo.content as scheduleProp;
   const dispatch = useAppDispatch();
 
@@ -36,7 +44,7 @@ const MemoCollectionScheduleListItem = ({ memo, category }: { memo: MemoProp; ca
     dispatch(
       setModalOpen({
         name: ModalName.detailScheduleMemo,
-        value: { content },
+        value: { chatId, content },
       }),
     );
   };
@@ -133,9 +141,9 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
       {
         start: dateList[0].toISOString(),
         end: dateList[dateList.length - 1].toISOString(),
-        categoryId: category?.categoryId ?? ''
+        categoryId: category?.categoryId ?? '',
       },
-      { skip: !useCategoryQuery }
+      { skip: !useCategoryQuery },
     );
 
     const fallback = useGetCalendarQuery(
@@ -143,14 +151,13 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
         start: dateList[0].toISOString(),
         end: dateList[dateList.length - 1].toISOString(),
       },
-      { skip: useCategoryQuery }
+      { skip: useCategoryQuery },
     );
 
     return useCategoryQuery ? query : fallback;
   };
 
   const { data: scheduleMemos = [] } = useCalendarMemos(category);
-
 
   const scheduleDotList = useMemo(
     () =>
@@ -171,7 +178,7 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
         return selectedDate
           ? startDate.toDateString() === selectedDate.toDateString()
           : startDate.getFullYear() === selectedMonth.getFullYear() &&
-          startDate.getMonth() === selectedMonth.getMonth();
+              startDate.getMonth() === selectedMonth.getMonth();
       }),
     [scheduleMemos, selectedDate, selectedMonth],
   );
@@ -227,6 +234,7 @@ const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
             key={`SCHEDULE_COLLECTION_CALENDAR_DATE_${memo.chatId}_${index}`}
             memo={memo}
             category={categories.find(({ categoryId }) => categoryId == memo.categoryId)}
+            chatId={memo.chatId}
           />
         ))}
       </MemoCollectionScheduleListContainer>

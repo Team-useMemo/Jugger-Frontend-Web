@@ -457,6 +457,7 @@ const MemoEditorSchduleAlarmMenu = ({
       {scheduleAlarms.map((e) => {
         return (
           <li
+            key={`SCHEDULE_ALARMS_${e.minute}`}
             onClick={() => {
               setAlarm(e);
               closeMenu();

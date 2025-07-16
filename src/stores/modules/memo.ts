@@ -18,13 +18,6 @@ const getScheduleMemoContent = (response: any) => {
   const startDate = new Date(startDateTime);
   const endDate = endDateTime ? new Date(endDateTime) : null;
   const alarmDate = response.alarm ? new Date(response.alarm) : null;
-  console.log(
-    alarmDate,
-    startDate,
-    alarmDate
-      ? scheduleAlarms.find((e) => e.minute == (startDate.getTime() - alarmDate.getTime()) / (60 * 1000))
-      : null,
-  );
 
   return {
     title: title,
@@ -164,22 +157,10 @@ export const memoApi = createApi({
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
           .map((e) => {
-            const startDate = new Date(e.startDateTime);
-            const endDate = e.endDateTime ? new Date(e.endDateTime) : null;
-            const alarmDate = e.alarm ? new Date(e.alarm) : null;
             return {
-              chatId: e.chatId,
+              chatId: e.calendarId,
               type: 'CALENDAR',
-              content: {
-                title: e.title,
-                place: e.place,
-                alarm: alarmDate
-                  ? scheduleAlarms.find((e) => e.minute == startDate.getTime() - alarmDate.getTime())
-                  : null,
-                description: e.description,
-                startDate,
-                endDate,
-              },
+              content: getScheduleMemoContent(e),
               categoryId: e.categoryId,
               date: new Date(e.startDateTime),
             } as MemoProp;
@@ -194,22 +175,10 @@ export const memoApi = createApi({
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
         return response
           .map((e) => {
-            const startDate = new Date(e.startDateTime);
-            const endDate = e.endDateTime ? new Date(e.endDateTime) : null;
-            const alarmDate = e.alarm ? new Date(e.alarm) : null;
             return {
-              chatId: e.chatId,
+              chatId: e.calendarId,
               type: 'CALENDAR',
-              content: {
-                title: e.title,
-                place: e.place,
-                alarm: alarmDate
-                  ? scheduleAlarms.find((e) => e.minute == startDate.getTime() - alarmDate.getTime())
-                  : null,
-                description: e.description,
-                startDate,
-                endDate,
-              },
+              content: getScheduleMemoContent(e),
               categoryId: e.categoryId,
               date: new Date(e.startDateTime),
             } as MemoProp;
