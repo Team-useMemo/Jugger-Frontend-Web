@@ -1,7 +1,7 @@
 import { useGetPhotosByCategoryQuery, useGetPhotosQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoProp } from '@ts/Memo.Prop';
+import { MemoProp, imageProp } from '@ts/Memo.Prop';
 import {
   ContextMenuCategory,
   ContextMenuCopy,
@@ -24,7 +24,7 @@ import {
 const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const dispatch = useAppDispatch();
 
-  const content = memo.content as string;
+  const content = memo.content as imageProp;
 
   const handleClickImage = () => {
     dispatch(
@@ -67,25 +67,21 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?
   return (
     <MemoCollectionImageItemContainer onClick={handleClickImage} {...BindContextMenuHandlers}>
       <ContextMenu />
-      <img src={content} />
+      <img src={content.imgUrl} />
     </MemoCollectionImageItemContainer>
   );
 };
 
 const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
-
   const useImageMemos = (category?: CategoryProp) => {
     const useCategoryQuery = !!category?.categoryId;
 
     const query = useGetPhotosByCategoryQuery(
       { page: 0, size: 200, categoryId: category?.categoryId ?? '' },
-      { skip: !useCategoryQuery }
+      { skip: !useCategoryQuery },
     );
 
-    const fallback = useGetPhotosQuery(
-      { page: 0, size: 200 },
-      { skip: useCategoryQuery }
-    );
+    const fallback = useGetPhotosQuery({ page: 0, size: 200 }, { skip: useCategoryQuery });
 
     return useCategoryQuery ? query : fallback;
   };

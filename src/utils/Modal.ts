@@ -5,6 +5,7 @@ export const ModalName = {
   addImageMemo: 'addImageMemo',
   detailTextMemo: 'detailTextMemo',
   detailImageMemo: 'detailImageMemo',
+  detailImageMemoExpand: 'detailImageMemoExpand',
   detailScheduleMemo: 'detailScheduleMemo',
   memoCollection: 'memoCollection',
   detailImageMemoCollection: 'detailImageMemoCollection',

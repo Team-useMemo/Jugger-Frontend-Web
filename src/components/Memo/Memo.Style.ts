@@ -1,7 +1,15 @@
 import styled from '@emotion/styled';
-import { media, theme } from '@styles/theme';
 
 export const MemoContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'end',
+  width: '100%',
+  gap: '8px',
+});
+
+export const MemoContent = styled.div({
+  overflow: 'hidden',
   display: 'flex',
   justifyContent: 'end',
   padding: '0 24px',
@@ -11,42 +19,8 @@ export const MemoContainer = styled.div({
   maxWidth: '1080px',
   boxSizing: 'border-box',
   userSelect: 'none',
-});
-
-export const MemoCategoryContainer = styled.div(({ color }: { color: string }) => ({
-  ...theme.font.caption2.medium,
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-  color: theme.color.label.alternative,
-
-  ['p']: {
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-
-  ['span']: {
-    padding: '4px',
-    background: color,
-    margin: '0',
-    borderRadius: theme.radius[32],
-  },
-
-  [media[480]]: {
-    // flexGrow: '1',
-    justifyContent: 'end',
-    minWidth: '72px',
-    maxWidth: '128px',
-  },
-}));
-
-export const MemoContent = styled.div({
-  borderRadius: theme.radius[12],
-  overflow: 'hidden',
-  maxWidth: '680px',
-
-  [media[480]]: {
-    maxWidth: '280px',
-  },
+  // maxWidth: '680px',
+  // [media[480]]: {
+  //   maxWidth: '280px',
+  // },
 });

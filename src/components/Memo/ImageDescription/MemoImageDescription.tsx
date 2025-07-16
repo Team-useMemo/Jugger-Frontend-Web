@@ -2,9 +2,9 @@ import { setModalOpen } from '@stores/modules/modal';
 import { imageProp } from '@ts/Memo.Prop';
 import { ModalName } from '@utils/Modal';
 import { useAppDispatch } from '@hooks/useRedux';
-import MemoImageContainer from './MemoImage.Style';
+import { MemoImageDescriptionContainer } from './MemoImageDescription.Style';
 
-const MemoImage = ({ content }: { content: imageProp }) => {
+const MemoImageDescription = ({ content }: { content: imageProp }) => {
   const dispatch = useAppDispatch();
   const openDetailImageMemoModal = () => {
     dispatch(
@@ -18,10 +18,10 @@ const MemoImage = ({ content }: { content: imageProp }) => {
   };
 
   return (
-    <MemoImageContainer>
-      <img src={content.imgUrl} onClick={openDetailImageMemoModal} />
-    </MemoImageContainer>
+    <MemoImageDescriptionContainer onClick={openDetailImageMemoModal}>
+      <p>{content.description}</p>
+    </MemoImageDescriptionContainer>
   );
 };
 
-export default MemoImage;
+export default MemoImageDescription;

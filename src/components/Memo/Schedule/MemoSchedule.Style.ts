@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
 export const MemoScheduleContainer = styled.div({
+  borderRadius: theme.radius[12],
+  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   background: theme.palette.blue[95],

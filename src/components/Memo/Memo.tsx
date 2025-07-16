@@ -1,25 +1,18 @@
+import { useDeleteMemoMutation } from '@stores/modules/memo';
+import { setModalOpen } from '@stores/modules/modal';
+import { useDispatch } from 'react-redux';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoProp, imageProp, scheduleProp } from '@ts/Memo.Prop';
+import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
+import { useIsMobile } from '@hooks/useWindowSize';
+import MemoCategory from './Category/MemoCategory';
 import MemoImage from './Image/MemoImage';
+import MemoImageDescription from './ImageDescription/MemoImageDescription';
 import MemoLink from './Link/MemoLink';
-import { MemoCategoryContainer, MemoContainer, MemoContent } from './Memo.Style';
+import { MemoContainer, MemoContent } from './Memo.Style';
 import MemoSchedule from './Schedule/MemoSchedule';
 import MemoText from './Text/MemoText';
-import { useDeleteMemoMutation } from '@stores/modules/memo';
-import { useDispatch } from 'react-redux';
-import { setModalOpen } from '@stores/modules/modal';
-import { ModalName } from '@utils/Modal';
-import { useIsMobile } from '@hooks/useWindowSize';
-
-const MemoCategory = ({ category }: { category: CategoryProp }) => {
-  return (
-    <MemoCategoryContainer color={category.categoryColor}>
-      <span />
-      <p>{category?.categoryName}</p>
-    </MemoCategoryContainer>
-  );
-};
 
 const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
   const [deleteMemo] = useDeleteMemoMutation();
@@ -34,7 +27,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
           chatId: memo.chatId,
           categoryId: memo.categoryId,
           type: memo.type,
-          content: memo.content
+          content: memo.content,
         },
       }),
     );
@@ -45,8 +38,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
     const title = encodeURIComponent(schedule.title);
     const location = encodeURIComponent(schedule.place ?? '');
     const description = encodeURIComponent(schedule.description ?? '');
-    const formatDate = (date: Date) =>
-      date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const formatDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
     const start = formatDate(schedule.startDate);
     const end = formatDate(schedule.endDate ?? schedule.startDate);
@@ -68,7 +60,6 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
       alert('링크가 클립보드에 복사되었습니다.');
     }
   };
-
 
   const handleDeleteMemo = () => {
     // TODO: 삭제 확인 모달 또는 삭제 API 호출
@@ -105,15 +96,24 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
 
   return (
     <MemoContainer>
-      {category && <MemoCategory category={category} />}
       <ContextMenu />
+      {memo.type === 'PHOTO' && (memo.content as imageProp).description && (
+        <MemoContent {...BindContextMenuHandlers}>
+          <MemoImage content={memo.content as imageProp} />
+        </MemoContent>
+      )}
       <MemoContent {...BindContextMenuHandlers}>
+        {category && <MemoCategory category={category} />}
         {memo.type == 'TEXT' ? (
           <MemoText content={memo.content as string} />
         ) : memo.type == 'CALENDAR' ? (
           <MemoSchedule content={memo.content as scheduleProp} chatId={memo.chatId} />
         ) : memo.type == 'PHOTO' ? (
-          <MemoImage content={memo.content as string} description={memo.description} />
+          (memo.content as imageProp).description ? (
+            <MemoImageDescription content={memo.content as imageProp} />
+          ) : (
+            <MemoImage content={memo.content as imageProp} />
+          )
         ) : memo.type == 'LINK' ? (
           <MemoLink content={memo.content as string} />
         ) : (
