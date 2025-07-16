@@ -11,7 +11,6 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
-        console.log(response);
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any) => {
@@ -236,17 +235,18 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/photos/duration?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
-        console.log(response);
         return response
           .map(
             (e) =>
               ({
                 chatId: e.photoId,
                 type: 'PHOTO',
-                content: e.url,
+                content: {
+                  imgUrl: e.url,
+                  description: e.description,
+                },
                 categoryId: e.categoryId,
                 date: new Date(e.timestamp),
-                description: e.description,
               }) as MemoProp,
           )
           .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());
@@ -258,17 +258,18 @@ export const memoApi = createApi({
         query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size, categoryId }) =>
           `/api/v1/photos/category?categoryId=${categoryId}&before=${before}&page=${page}&size=${size}`,
         transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
-          console.log(response);
           return response
             .map(
               (e) =>
                 ({
                   chatId: e.photoId,
                   type: 'PHOTO',
-                  content: e.url,
+                  content: {
+                    imgUrl: e.url,
+                    description: e.description,
+                  },
                   categoryId: e.categoryId,
                   date: new Date(e.timestamp),
-                  description: e.description,
                 }) as MemoProp,
             )
             .sort((a: MemoProp, b: MemoProp) => a.date.getTime() - b.date.getTime());

@@ -36,6 +36,7 @@ const MemoDetailImage = ({ closeModal, props, modalRef }: ModalComponentProps) =
       }),
     );
   };
+
   const handleClickExpand = () => {
     dispatch(
       setModalReplace({
