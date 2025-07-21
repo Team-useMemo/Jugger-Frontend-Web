@@ -76,6 +76,7 @@ jobs:
       - run: |
           git config --global user.email "jadest13x03@gmail.com"
           git config --global user.name "Jadest13"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/Team-useMemo/Jugger-Frontend-Web.git
           npm run deploy
         env:
-          GH_TOKEN: ${{ secrets.GH_ACTIONS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
