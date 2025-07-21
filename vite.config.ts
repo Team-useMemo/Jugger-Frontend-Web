@@ -5,7 +5,7 @@ import svgr from 'vite-plugin-svgr';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
-  base: '/Jugger-Frontend-Web/', // ← 여기에 GitHub 저장소 이름!
+  base: '/', // ← 여기에 GitHub 저장소 이름!
   build: {
     outDir: 'dist',
   },
