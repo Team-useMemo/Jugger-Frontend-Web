@@ -7,15 +7,19 @@ on:
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # 사용 중인 Node 버전에 맞게 조절
+          node-version: 24.3.0  # 사용 중인 Node 버전에 맞게 조절
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -23,12 +27,22 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Set Git identity
-        run: |
-          git config --global user.email "jadest13x03@gmail.com"
-          git config --global user.name "Jadest13"
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+      # - name: Set Git identity
+      #   run: |
+      #     git config --global user.email "jadest13x03@gmail.com"
+      #     git config --global user.name "Jadest13"
 
       - name: Deploy to GitHub Pages
-        run: npm run deploy
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+      # - name: Deploy to GitHub Pages
+      #   run: npm run deploy
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
