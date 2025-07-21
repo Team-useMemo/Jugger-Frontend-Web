@@ -1,10 +1,11 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
+  base: '/Jugger-Frontend-Web/', // ← 여기에 GitHub 저장소 이름!
   resolve: {
     alias: [
       { find: '@ts', replacement: '/src/ts' },
