@@ -6,6 +6,9 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   plugins: [react(), svgr()],
   base: '/Jugger-Frontend-Web/', // ← 여기에 GitHub 저장소 이름!
+  build: {
+    outDir: 'dist',
+  },
   resolve: {
     alias: [
       { find: '@ts', replacement: '/src/ts' },
