@@ -110,8 +110,13 @@ jobs:
       - name: Clean dist
         run: rm -rf dist
 
-      - name: Build
+      - name: test1
+        run: echo $PWD
+
+      - name: test2
         run: ls -al
+
+      - name: Build
         run: npm run build
 
       - name: Deploy to GitHub Pages
