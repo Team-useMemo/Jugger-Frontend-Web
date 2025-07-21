@@ -111,6 +111,7 @@ jobs:
         run: rm -rf dist
 
       - name: Build
+        run: ls -al
         run: npm run build
 
       - name: Deploy to GitHub Pages
