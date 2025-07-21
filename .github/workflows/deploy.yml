@@ -72,7 +72,7 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm run build
-        run: echo "//github.com/:_authToken=${GH_TOKEN}" > ~/.npmrc
+      - run: echo "//github.com/:_authToken=${GH_TOKEN}" > ~/.npmrc
       - run: |
           git config --global user.email "jadest13x03@gmail.com"
           git config --global user.name "Jadest13"
