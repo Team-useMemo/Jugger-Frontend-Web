@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "jugger.usememo.site",
+  "homepage": "https://team-usememo.github.io/Jugger-Frontend-Web/",
   "repository": {
     "type": "git",
     "url": "https://${GH_TOKEN}@github.com/Team-useMemo/Jugger-Frontend-Web.git"
