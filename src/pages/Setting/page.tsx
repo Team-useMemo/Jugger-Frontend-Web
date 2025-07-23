@@ -7,10 +7,11 @@ import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
 import { Logout } from '@utils/Auth';
 import { ModalName } from '@utils/Modal';
 import { useAppDispatch } from '@hooks/useRedux';
+import { useIsMobile } from '@hooks/useWindowSize';
 import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerSwitch from '@components/Common/JuggerSwitch';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
 import CheckCircleSVG from '@assets/icons/check_circle.svg?react';
@@ -29,12 +30,20 @@ const SettingContentInner = styled.div({
     height: '1px',
     background: theme.color.line.normal,
   },
+
+  [media[480]]: {
+    gap: '36px',
+  },
 });
 
 const SettingSectionGroup = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '36px',
+
+  [media[480]]: {
+    gap: '28px',
+  },
 });
 
 const SettingRow = styled.div(
@@ -61,6 +70,14 @@ const SettingRow = styled.div(
     ['>span']: {
       ...theme.font.body1normal.medium,
     },
+
+    [media[480]]: {
+      ...theme.font.body1normal.semibold,
+
+      ['>svg']: {
+        width: '24px',
+      },
+    },
   },
 );
 
@@ -71,6 +88,11 @@ const AccountInfoBox = styled.div({
   justifyContent: 'space-between',
   alignItems: 'center',
   borderRadius: theme.radius[12],
+
+  [media[480]]: {
+    padding: '12px',
+    borderRadius: theme.radius[4],
+  },
 });
 
 const AccountProfile = styled.div(
@@ -94,6 +116,11 @@ const AccountProfile = styled.div(
       borderRadius: theme.radius[6],
       padding: '4px',
       boxSizing: 'border-box',
+    },
+
+    [media[480]]: {
+      ...theme.font.body2normal.semibold,
+      gap: '12px',
     },
   },
 );
@@ -236,6 +263,7 @@ const Providers: Record<'kakao' | 'google', { svg: React.ReactNode; color: strin
 
 const SettingPage = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const { userTheme, setUserTheme } = useThemeContext();
   const [toastContents, setToastContents] = useState<React.JSX.Element | null>(null);
@@ -326,9 +354,11 @@ const SettingPage = () => {
             ) : (
               '계정 정보를 불러오는데 실패했어요'
             )}
-            <JuggerButton color="primary" size="xsmall" onClick={Logout}>
-              로그아웃
-            </JuggerButton>
+            {!isMobile && (
+              <JuggerButton color="primary" size="xsmall" onClick={Logout}>
+                로그아웃
+              </JuggerButton>
+            )}
           </AccountInfoBox>
         </SettingRow>
         <SettingRow flexDirection="column">
@@ -366,6 +396,12 @@ const SettingPage = () => {
           서비스 버전
           <span>1.0.1</span>
         </SettingRow>
+        {isMobile && (
+          <SettingRow flexDirection="row" onClick={Logout}>
+            로그아웃
+            <RightArrowSVG />
+          </SettingRow>
+        )}
         <SettingRow flexDirection="row" onClick={handleClickWithdraw}>
           회원 탈퇴
           <RightArrowSVG />

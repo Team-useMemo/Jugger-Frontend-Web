@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { formatDate } from '@utils/Date';
-import { theme } from '@styles/theme';
+import { useIsMobile } from '@hooks/useWindowSize';
+import { media, theme } from '@styles/theme';
 
 const NoticePageContainer = styled.div({
   display: 'flex',
@@ -41,12 +42,20 @@ const NoticePageItemTitle = styled.p({
   ...theme.font.body1normal.medium,
   color: theme.color.label.normal,
   margin: '0',
+
+  [media[480]]: {
+    ...theme.font.body2normal.medium,
+  },
 });
 
 const NoticePageItemDate = styled.p({
   ...theme.font.body2normal.medium,
   color: theme.color.label.assistive,
   margin: '0',
+
+  [media[480]]: {
+    ...theme.font.label1normal.medium,
+  },
 });
 
 const NoticePageEmpty = styled.div({
@@ -69,6 +78,7 @@ const NoticePageEmpty = styled.div({
 });
 
 const NoticePage = () => {
+  const isMobile = useIsMobile();
   const [noticeList, setNoticeList] = useState<{ title: string; date: Date }[]>([]);
 
   useEffect(() => {
@@ -84,7 +94,7 @@ const NoticePage = () => {
 
   return (
     <NoticePageContainer>
-      <NoticePageTitle>공지사항</NoticePageTitle>
+      {!isMobile && <NoticePageTitle>공지사항</NoticePageTitle>}
       {noticeList.length ? (
         <NoticePageContents>
           {noticeList.map(({ title, date }) => (
