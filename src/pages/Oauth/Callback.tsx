@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useModal from '@hooks/useModal';
 import FullScreenGray from '@components/Modal/Background/FullScreenGray';
-import Terms from '@components/Popup/Auth/Term/Term';
 import Info from '@components/Popup/Auth/Info/Info';
+import Terms from '@components/Popup/Auth/Term/Term';
 import { getPostAuthCode } from '@controllers/api';
-
-
-
 
 const Callback = () => {
   const navigate = useNavigate();
@@ -28,7 +25,6 @@ const Callback = () => {
     FullScreenGray,
     ({ closeModal }) => <Info closeModal={closeModal} checkedTerms={checkedTerms} provider={provider} />,
     [],
-
   );
 
   const [TermsModal, openTermsModal] = useModal(
@@ -50,6 +46,7 @@ const Callback = () => {
     const code = params.get('code');
     const pathParts = window.location.pathname.split('/');
     const provider = pathParts[pathParts.length - 1]; // 'kakao', 'google', etc.
+    localStorage.setItem('provider', provider);
     console.log(provider);
     console.log('인가 코드:', code);
     setProvider(provider);

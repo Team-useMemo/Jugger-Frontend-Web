@@ -6,6 +6,7 @@ import { ModalName } from '@utils/Modal';
 import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
+import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
 import AddCategory from '@components/Modal/Category/CategoryEditor';
 import CategoryEditor from '@components/Modal/Category/CategoryEditor';
@@ -62,7 +63,7 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
   };
 
   const onSettingClick = () => {
-    window.alert('환경설정');
+    navigate(webPath.setting());
   };
 
   const handleClickAddCategory = () => {
@@ -98,10 +99,10 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
     { key: 'memo', title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
     ...(!isMobile
       ? [
-        { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
-        { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
-        { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
-      ]
+          { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
+          { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
+          { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
+        ]
       : []),
     { key: 'setting', title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
   ];

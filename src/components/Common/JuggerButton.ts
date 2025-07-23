@@ -33,7 +33,7 @@ const buttonSizeStyles = {
     ...theme.font.body2normal.medium,
     borderRadius: theme.radius[4],
     padding: '0px 16px',
-    minWidth: '112px',
+    minWidth: '80px',
     height: '40px',
     gap: '4px',
     svgSize: '21.33px',
@@ -48,6 +48,10 @@ const buttonColorStyles = {
   secondary: {
     color: theme.color.label.normal,
     backgroundColor: theme.palette.coolneutral[98],
+  },
+  error: {
+    color: theme.palette.common[100],
+    backgroundColor: theme.color.status.error,
   },
 };
 

@@ -1,20 +1,21 @@
 import useWindowSize from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import LogoPNG from '@assets/landing/FooterLogo.png';
-import EnvelopeSVG from '@assets/landing/envelope.svg?react';
-import InstagramSVG from '@assets/landing/instagram.svg?react';
-import LinkedInSVG from '@assets/landing/linkedin.svg?react';
-import PencilSVG from '@assets/landing/pencil.svg?react';
-import ProfileCheerSVG from '@assets/landing/profilecheer.svg?react';
+import LogoPNG from '@assets/Logo.png';
+import LogoWhitePNG from '@assets/LogoWhite.png';
+import EnvelopeSVG from '@assets/icons/envelope.svg?react';
+import InstagramSVG from '@assets/icons/instagram.svg?react';
+import LinkedInSVG from '@assets/icons/linkedin.svg?react';
+import PencilSVG from '@assets/icons/pencil.svg?react';
+import ProfileCheerSVG from '@assets/icons/profilecheer.svg?react';
 import {
-  IndexFooterButtonContainer,
-  IndexFooterContainer,
-  IndexFooterContents,
-  IndexFooterLayout,
-  IndexFooterSNSContainer,
+  CommonFooterButtonContainer,
+  CommonFooterContainer,
+  CommonFooterContents,
+  CommonFooterLayout,
+  CommonFooterSNSContainer,
 } from './Footer.Style';
 
-const IndexFooter = () => {
+const CommonFooter = () => {
   const width = useWindowSize();
   const isMobile = width < 480;
 
@@ -39,33 +40,33 @@ const IndexFooter = () => {
   };
 
   return (
-    <IndexFooterLayout>
-      <IndexFooterContainer>
-        <img src={LogoPNG} />
-        <IndexFooterContents>
-          <IndexFooterButtonContainer>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'xsmall'} onClick={handleClickFeedback}>
+    <CommonFooterLayout>
+      <CommonFooterContainer>
+        <img src={!isMobile ? LogoWhitePNG : LogoPNG} />
+        <CommonFooterContents>
+          <CommonFooterButtonContainer>
+            <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickFeedback}>
               <PencilSVG />
               의견 남기기
             </JuggerButton>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'xsmall'} onClick={handleClickEmail}>
+            <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickEmail}>
               <EnvelopeSVG />
               비즈니스 제안
             </JuggerButton>
-            <JuggerButton color="secondary" size={!isMobile ? 'large' : 'xsmall'} onClick={handleClickTeam}>
+            <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickTeam}>
               <ProfileCheerSVG />
               만든이들
             </JuggerButton>
-          </IndexFooterButtonContainer>
-          <IndexFooterSNSContainer>
+          </CommonFooterButtonContainer>
+          <CommonFooterSNSContainer>
             <InstagramSVG onClick={handleClickInstagram} />
             <LinkedInSVG onClick={handleClickLinnkedIn} />
-          </IndexFooterSNSContainer>
-        </IndexFooterContents>
+          </CommonFooterSNSContainer>
+        </CommonFooterContents>
         Jugger All rights reserved.
-      </IndexFooterContainer>
-    </IndexFooterLayout>
+      </CommonFooterContainer>
+    </CommonFooterLayout>
   );
 };
 
-export default IndexFooter;
+export default CommonFooter;

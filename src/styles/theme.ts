@@ -28,7 +28,7 @@ const theme = {
   font,
   radius,
   shadow,
-};
+} as const;
 
 export type themeColor = typeof color;
 export type themeFont = typeof font;
