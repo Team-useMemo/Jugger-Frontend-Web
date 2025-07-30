@@ -15,7 +15,6 @@ const NoticePageContainer = styled.div({
 
 const NoticePageTitle = styled.p({
   ...theme.font.heading1.semibold,
-  color: theme.color.label.normal,
   margin: '0',
 });
 
@@ -25,22 +24,27 @@ const NoticePageContents = styled.div({
   gap: '16px',
 });
 
-const NoticePageItemContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
+const NoticePageItemContainer = styled.div(
+  ({ theme }) => ({
+    [':not(:last-of-type)::after']: {
+      background: theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
 
-  [':not(:last-of-type)::after']: {
-    content: '""',
-    height: '1px',
-    background: theme.color.line.normal,
-    marginTop: '16px',
+    [':not(:last-of-type)::after']: {
+      content: '""',
+      height: '1px',
+      marginTop: '16px',
+    },
   },
-});
+);
 
 const NoticePageItemTitle = styled.p({
   ...theme.font.body1normal.medium,
-  color: theme.color.label.normal,
   margin: '0',
 
   [media[480]]: {

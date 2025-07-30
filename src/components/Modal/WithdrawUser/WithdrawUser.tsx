@@ -2,19 +2,29 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Logout } from '@utils/Auth';
 import { ModalComponentProps } from '@hooks/useParamModal';
+import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerRadioButton from '@components/Common/JuggerRadioButton';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 import CloseSVG from '@assets/icons/close.svg?react';
 
-const WithdrawUserConfirmContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '32px',
-  padding: '36px 32px 24px',
-  background: theme.color.background.normal,
-  borderRadius: theme.radius[16],
-});
+const WithdrawUserConfirmContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '32px',
+    padding: '36px 32px 24px',
+    borderRadius: theme.radius[16],
+
+    [media[480]]: {
+      padding: '32px 20px 20px',
+      gap: '24px',
+    },
+  },
+);
 
 const WithdrawUserConfirmTextContainer = styled.div({
   display: 'flex',
@@ -26,11 +36,22 @@ const WithdrawUserConfirmTextContainer = styled.div({
 
     ['&.title']: {
       ...theme.font.title3.bold,
-      color: theme.color.label.normal,
     },
     ['&.description']: {
       ...theme.font.headline1.medium,
-      color: theme.color.label.normal,
+    },
+  },
+
+  [media[480]]: {
+    gap: '4px',
+
+    ['>p']: {
+      ['&.title']: {
+        ...theme.font.headline1.semibold,
+      },
+      ['&.description']: {
+        ...theme.font.body2normal.medium,
+      },
     },
   },
 });
@@ -43,9 +64,15 @@ const WithdrawUserConfirmButtonContainer = styled.div({
   ['>button']: {
     width: '100%',
   },
+
+  [media[480]]: {
+    gap: '8px',
+  },
 });
 
 const WithdrawUserConfirm = ({ closeModal, goToNextStep }: { closeModal?: () => void; goToNextStep: () => void }) => {
+  const isMobile = useIsMobile();
+
   return (
     <WithdrawUserConfirmContainer>
       <WithdrawUserConfirmTextContainer>
@@ -57,10 +84,10 @@ const WithdrawUserConfirm = ({ closeModal, goToNextStep }: { closeModal?: () => 
         </p>
       </WithdrawUserConfirmTextContainer>
       <WithdrawUserConfirmButtonContainer>
-        <JuggerButton color="secondary" size="medium" onClick={closeModal}>
+        <JuggerButton color="secondary" size={!isMobile ? 'medium' : 'xsmall'} onClick={closeModal}>
           닫기
         </JuggerButton>
-        <JuggerButton color="error" size="medium" onClick={goToNextStep}>
+        <JuggerButton color="error" size={!isMobile ? 'medium' : 'xsmall'} onClick={goToNextStep}>
           탈퇴하기
         </JuggerButton>
       </WithdrawUserConfirmButtonContainer>
@@ -68,17 +95,25 @@ const WithdrawUserConfirm = ({ closeModal, goToNextStep }: { closeModal?: () => 
   );
 };
 
-const WithdrawUserReasonContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '32px 32px 40px',
-  background: theme.color.background.normal,
-  borderRadius: theme.radius[16],
+const WithdrawUserReasonContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '32px 32px 40px',
+    borderRadius: theme.radius[16],
 
-  ['>svg']: {
-    marginLeft: 'auto',
+    ['>svg']: {
+      marginLeft: 'auto',
+    },
+
+    [media[480]]: {
+      padding: '40px 24px 32px',
+    },
   },
-});
+);
 
 const WithdrawUserReasonTextContainer = styled.div({
   display: 'flex',
@@ -88,14 +123,25 @@ const WithdrawUserReasonTextContainer = styled.div({
   ['>p']: {
     margin: '0',
     textAlign: 'left',
+    wordBreak: 'keep-all',
 
     ['&.title']: {
       ...theme.font.title3.bold,
-      color: theme.color.label.normal,
     },
     ['&.description']: {
       ...theme.font.body2normal.medium,
       color: theme.color.label.alternative,
+    },
+  },
+
+  [media[480]]: {
+    ['>p']: {
+      ['&.title']: {
+        ...theme.font.heading1.semibold,
+      },
+      ['&.description']: {
+        ...theme.font.body2normal.medium,
+      },
     },
   },
 });
@@ -105,40 +151,60 @@ const WithdrawUserReasonRadioContainer = styled.div({
   flexDirection: 'column',
   gap: '12px',
   padding: '20px 0 36px',
+
+  [media[480]]: {
+    gap: '4px',
+    padding: '16px 0 28px',
+  },
 });
 
 const WithdrawUserReasonRadioItemContainer = styled.label({
   display: 'flex',
   gap: '12px',
   padding: '8px 0',
+  alignItems: 'center',
 
   ...theme.font.body1normal.medium,
-  color: theme.color.label.normal,
-});
 
-const WithdrawUserReasonRadioETCContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-
-  ['>textarea']: {
-    width: '100%',
-    height: '120px',
-    background: theme.color.background.normal,
-    borderColor: theme.color.line.normal,
-    borderRadius: theme.radius[8],
-    padding: '16px',
-    boxSizing: 'border-box',
-    resize: 'none',
-
-    ...theme.font.body2reading.medium,
-    color: theme.color.label.normal,
-
-    [':disabled, :disabled::placeholder']: {
-      color: theme.color.label.disable,
-    },
+  [media[480]]: {
+    ...theme.font.body2normal.medium,
   },
 });
+
+const WithdrawUserReasonRadioETCContainer = styled.div(
+  ({ theme }) => ({
+    ['>textarea']: {
+      color: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+      borderColor: theme.mode === 'light' ? theme.color.line.normal : theme.color.label.alternative,
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+
+    ['>textarea']: {
+      width: '100%',
+      height: '120px',
+      borderRadius: theme.radius[8],
+      padding: '16px',
+      boxSizing: 'border-box',
+      resize: 'none',
+      background: 'none',
+      outline: 'none',
+
+      ...theme.font.body2reading.medium,
+
+      [':disabled, :disabled::placeholder']: {
+        color: theme.color.label.disable,
+      },
+
+      [':focus']: {
+        borderColor: theme.color.primary.normal,
+      },
+    },
+  },
+);
 
 type ReasonCodeKey = 'NOT_USED' | 'INCONVENIENT' | 'NO_FEATURE' | 'ETC';
 interface Reason {
@@ -165,6 +231,14 @@ const REASON_CODE: Record<ReasonCodeKey, Reason> = {
   },
 };
 
+const WithdrawUserReasonButtonContainer = styled.div({
+  display: 'flex',
+  gap: '8px',
+  ['>button']: {
+    width: '100%',
+  },
+});
+
 const WithdrawUserReason = ({
   closeModal,
   handleSubmitReason,
@@ -172,6 +246,8 @@ const WithdrawUserReason = ({
   closeModal?: () => void;
   handleSubmitReason: (reason: Reason) => void;
 }) => {
+  const isMobile = useIsMobile();
+
   const [selectedReason, setSelectedReason] = useState<Reason>();
   const [customReason, setCustomReason] = useState('');
 
@@ -202,7 +278,7 @@ const WithdrawUserReason = ({
 
   return (
     <WithdrawUserReasonContainer>
-      <CloseSVG stroke={theme.color.label.normal} onClick={closeModal} />
+      {!isMobile && <CloseSVG stroke={theme.color.label.normal} onClick={closeModal} />}
       <WithdrawUserReasonTextContainer>
         <p className="title">탈퇴하시는 이유를 알려주세요</p>
         <p className="description">더 나은 서비스로 돌아올게요!</p>
@@ -236,21 +312,37 @@ const WithdrawUserReason = ({
           />
         </WithdrawUserReasonRadioETCContainer>
       </WithdrawUserReasonRadioContainer>
-      <JuggerButton size="medium" color="primary" onClick={handleSubmit} disabled={!isValid}>
-        탈퇴하기
-      </JuggerButton>
+      <WithdrawUserReasonButtonContainer>
+        {isMobile && (
+          <JuggerButton size={!isMobile ? 'medium' : 'xsmall'} color="secondary" onClick={handleSubmit}>
+            닫기
+          </JuggerButton>
+        )}
+        <JuggerButton size={!isMobile ? 'medium' : 'xsmall'} color="primary" onClick={handleSubmit} disabled={!isValid}>
+          탈퇴하기
+        </JuggerButton>
+      </WithdrawUserReasonButtonContainer>
     </WithdrawUserReasonContainer>
   );
 };
 
-const WithdrawUserCompleteContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '32px',
-  padding: '36px 32px 24px',
-  background: theme.color.background.normal,
-  borderRadius: theme.radius[16],
-});
+const WithdrawUserCompleteContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '32px',
+    padding: '36px 32px 24px',
+    borderRadius: theme.radius[16],
+
+    [media[480]]: {
+      padding: '32px 20px 20px',
+      gap: '24px',
+    },
+  },
+);
 
 const WithdrawUserCompleteTextContainer = styled.div({
   display: 'flex',
@@ -262,23 +354,36 @@ const WithdrawUserCompleteTextContainer = styled.div({
 
     ['&.title']: {
       ...theme.font.title3.bold,
-      color: theme.color.label.normal,
     },
     ['&.description']: {
       ...theme.font.headline1.medium,
-      color: theme.color.label.normal,
+    },
+  },
+
+  [media[480]]: {
+    gap: '4px',
+
+    ['>p']: {
+      ['&.title']: {
+        ...theme.font.headline1.semibold,
+      },
+      ['&.description']: {
+        ...theme.font.body2normal.medium,
+      },
     },
   },
 });
 
 const WithdrawUserComplete = ({ handleWithdraw }: { handleWithdraw: () => void }) => {
+  const isMobile = useIsMobile();
+
   return (
     <WithdrawUserCompleteContainer>
       <WithdrawUserCompleteTextContainer>
         <p className="title">탈퇴가 완료됐어요</p>
         <p className="description">더 나은 서비스로 다시 만나요!</p>
       </WithdrawUserCompleteTextContainer>
-      <JuggerButton size="medium" color="primary" onClick={handleWithdraw}>
+      <JuggerButton size={!isMobile ? 'medium' : 'xsmall'} color="primary" onClick={handleWithdraw}>
         확인
       </JuggerButton>
     </WithdrawUserCompleteContainer>
@@ -345,22 +450,8 @@ const WithdrawUser = ({ closeModal, modalRef }: ModalComponentProps) => {
   };
 
   return (
-    <div
-      style={{
-        maxHeight: '100dvh',
-        maxWidth: '100dvw',
-        boxSizing: 'border-box',
-        padding: '64px',
-      }}
-    >
-      <div
-        ref={modalRef}
-        style={{
-          maxWidth: '448px',
-          width: 'calc(100dvw - 128px)',
-          boxSizing: 'border-box',
-        }}
-      >
+    <WithdrawUserLayout>
+      <WithdrawUserContainer ref={modalRef}>
         {withdrawStep == 0 ? (
           <WithdrawUserConfirm closeModal={closeModal} goToNextStep={goToNextStep} />
         ) : withdrawStep == 1 ? (
@@ -368,9 +459,32 @@ const WithdrawUser = ({ closeModal, modalRef }: ModalComponentProps) => {
         ) : (
           <WithdrawUserComplete handleWithdraw={handleWithdraw} />
         )}
-      </div>
-    </div>
+      </WithdrawUserContainer>
+    </WithdrawUserLayout>
   );
 };
+
+const WithdrawUserLayout = styled.div({
+  maxHeight: '100dvh',
+  maxWidth: '100dvw',
+  boxSizing: 'border-box',
+  padding: '64px',
+
+  [media[480]]: {
+    padding: '20px',
+    width: '100%',
+  },
+});
+
+const WithdrawUserContainer = styled.div({
+  maxWidth: '448px',
+  width: 'calc(100dvw - 128px)',
+  boxSizing: 'border-box',
+
+  [media[480]]: {
+    maxWidth: '100%',
+    width: '100%',
+  },
+});
 
 export default WithdrawUser;
