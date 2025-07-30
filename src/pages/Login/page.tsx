@@ -4,7 +4,7 @@ import AppleSVG from '@assets/Login/apple.svg?react';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
 import NaverSVG from '@assets/Login/naver.svg?react';
-import LogoPNG from '@assets/Logo.png';
+import LogoSVG from '@assets/LogoTextFill.svg?react';
 import {
   LoginPageContainer,
   LoginPageLayout,
@@ -65,8 +65,8 @@ const loginMethod = [
     key: 'google',
     loginMsg: '구글로 계속하기',
     LogoSVG: GoogleSVG,
-    bgColor: '#FFFFFF',
-    textColor: '#000',
+    bgColor: 'transparent',
+    textColor: 'auto',
     borderColor: '#E0E0E2',
     onClick: handleGoogleLogin,
   },
@@ -105,7 +105,7 @@ const LoginPage = () => {
         </button>
         <LoginPageTitleContainer>
           빠르게 '톡' 남기고 편하게 정리하는,
-          <img src={LogoPNG} />
+          <LogoSVG />
         </LoginPageTitleContainer>
         <LoginPageSocialLoginContainer>
           <LoginPageSocialLoginTitle>간편 로그인</LoginPageSocialLoginTitle>
@@ -119,7 +119,7 @@ const LoginPage = () => {
                 key={method.key}
               >
                 <method.LogoSVG />
-                {method.loginMsg}
+                <p>{method.loginMsg}</p>
                 {lastLogin === method.key && (
                   <LoginPageRecentSocialLoginBadge>최근 로그인</LoginPageRecentSocialLoginBadge>
                 )}
