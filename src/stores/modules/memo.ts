@@ -356,6 +356,7 @@ export const memoApi = createApi({
 });
 
 export const {
+  useLazyGetMemos2Query,
   useGetMemosQuery,
   usePostMemoMutation,
   usePostCalendarMutation,
