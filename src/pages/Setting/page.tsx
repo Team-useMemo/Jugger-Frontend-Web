@@ -10,6 +10,7 @@ import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
+import JuggerSelectBox from '@components/Common/JuggerSelectBox';
 import JuggerSwitch from '@components/Common/JuggerSwitch';
 import { media, theme } from '@styles/theme';
 import GoogleSVG from '@assets/Login/google.svg?react';
@@ -124,71 +125,6 @@ const AccountProfile = styled.div(
     },
   },
 );
-
-const ThemeDropdownWrapper = styled.div({
-  position: 'relative',
-
-  ['>label']: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '12px 14px',
-    background: theme.color.background.normal,
-    border: `1.5px solid ${theme.color.line.normal}`,
-    borderRadius: theme.radius[4],
-    cursor: 'pointer',
-
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-
-    ['>svg']: {
-      width: '16px',
-      height: 'auto',
-      aspectRatio: '1 / 1',
-    },
-
-    [':focus']: {
-      borderColor: theme.color.primary.normal,
-      ['>svg']: {
-        transform: 'rotate(180deg);',
-      },
-
-      ['+ul']: {
-        display: 'block',
-        // borderColor: theme.color.primary.normal,
-      },
-    },
-  },
-
-  ['>ul']: {
-    display: 'none',
-    position: 'absolute',
-    top: '100%',
-    left: '0',
-    listStyle: 'none',
-    padding: '0',
-    margin: '8px 0 0',
-    width: '100%',
-    zIndex: '1',
-    background: theme.color.background.normal,
-    border: `1.5px solid ${theme.color.line.normal}`,
-    borderRadius: theme.radius[4],
-
-    ['>li']: {
-      padding: '12px 14px',
-      ...theme.font.body1normal.medium,
-      cursor: 'pointer',
-
-      '&:not(:first-of-type)': {
-        borderTop: `1px solid ${theme.color.line.normal}`,
-      },
-
-      [':hover']: {
-        background: theme.color.background.alternative,
-      },
-    },
-  },
-});
 
 const ToastWrapper = styled.div(
   ({ toastShow }: { toastShow: boolean }) => ({
@@ -363,7 +299,7 @@ const SettingPage = () => {
         </SettingRow>
         <SettingRow flexDirection="column">
           테마 설정
-          <ThemeDropdownWrapper>
+          <JuggerSelectBox>
             <label tabIndex={-1} onMouseDown={handleClickSelectTheme}>
               {AppTheme[userTheme].text}
               <DownArrowSVG />
@@ -375,7 +311,7 @@ const SettingPage = () => {
                 </li>
               ))}
             </ul>
-          </ThemeDropdownWrapper>
+          </JuggerSelectBox>
         </SettingRow>
         <SettingRow flexDirection="row">
           알림 설정

@@ -5,6 +5,7 @@ import LoginPage from '@pages/Login/page';
 import MemoPage from '@pages/Memo/page';
 import NoticePage from '@pages/Notice/page';
 import Callback from '@pages/Oauth/Callback';
+import RegisterPage from '@pages/Register/page';
 import SettingPage from '@pages/Setting/page';
 import CommonRoot from './CommonRoot';
 import Root from './Root';
@@ -13,6 +14,7 @@ export const webPath = {
   root: () => '/',
   index: () => '/index',
   login: () => '/login',
+  register: () => '/register',
   memo: () => '/memo',
   setting: () => '/setting',
   notice: () => '/notice',
@@ -23,6 +25,7 @@ const routes = [
   { path: webPath.root(), element: <Root /> },
   { path: webPath.index(), element: <IndexPage /> },
   { path: webPath.login(), element: <LoginPage /> },
+  { path: webPath.register(), element: <RegisterPage /> },
   {
     path: '/',
     element: <CommonRoot />,
