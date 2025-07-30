@@ -23,6 +23,7 @@ const color = {
     /** #f7f7f8ff */ alternative: palette['coolneutral']['99'],
     /** #f4f4f5ff */ neutral: palette['coolneutral']['98'],
     /** #171719 */ inverse: '#171719',
+    /** #37383C */ alternativeinverse: '#37383C',
   },
   /** interaction */
   interaction: {
@@ -31,7 +32,7 @@ const color = {
   },
   /** line */
   line: {
-    /** #e8e8eaff */ neutral: '#e8e8eaff',
+    /** #e8e8eaff */ neutral: '#46474Cff',
     /** #f4f4f5ff */ alternative: '#f4f4f5ff',
     /** #e0e0e2ff */ normal: '#e0e0e2ff',
   },

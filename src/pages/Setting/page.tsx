@@ -20,22 +20,28 @@ import CrossCircleSVG from '@assets/icons/cross_circle.svg?react';
 import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
 
-const SettingContentInner = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '48px',
-  maxWidth: '1440px',
-  width: '100%',
+const SettingContentInner = styled.div(
+  ({ theme }) => ({
+    ['>.divider']: {
+      background: theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '48px',
+    maxWidth: '1440px',
+    width: '100%',
 
-  ['>.divider']: {
-    height: '1px',
-    background: theme.color.line.normal,
-  },
+    ['>.divider']: {
+      height: '1px',
+    },
 
-  [media[480]]: {
-    gap: '36px',
+    [media[480]]: {
+      gap: '36px',
+    },
   },
-});
+);
 
 const SettingSectionGroup = styled.div({
   display: 'flex',
@@ -48,6 +54,11 @@ const SettingSectionGroup = styled.div({
 });
 
 const SettingRow = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
   ({ flexDirection }: { flexDirection: 'column' | 'column-reverse' | 'row' | 'row-reverse' }) => ({
     flexDirection: flexDirection,
   }),
@@ -57,11 +68,9 @@ const SettingRow = styled.div(
     justifyContent: 'space-between',
 
     ...theme.font.headline1.semibold,
-    color: theme.color.label.normal,
     textAlign: 'left',
 
     ['>svg']: {
-      stroke: theme.color.label.normal,
       width: '28px',
       height: 'auto',
       aspectRatio: '1 / 1',
@@ -82,19 +91,24 @@ const SettingRow = styled.div(
   },
 );
 
-const AccountInfoBox = styled.div({
-  display: 'flex',
-  background: theme.color.background.alternative,
-  padding: '16px',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  borderRadius: theme.radius[12],
+const AccountInfoBox = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+  }),
+  {
+    display: 'flex',
 
-  [media[480]]: {
-    padding: '12px',
-    borderRadius: theme.radius[4],
+    padding: '16px',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: theme.radius[12],
+
+    [media[480]]: {
+      padding: '12px',
+      borderRadius: theme.radius[4],
+    },
   },
-});
+);
 
 const AccountProfile = styled.div(
   ({ color }: { color: string }) => ({
@@ -163,11 +177,6 @@ const ToastContent = styled.div(
     },
   },
 );
-
-// const Tmp = styled.div(({ theme }) => ({
-//   background:
-//     theme.mode === 'dark' ? theme.color.status.success : theme.mode === 'light' ? theme.color.status.error : 'white',
-// }));
 
 type AppThemeKey = 'light' | 'dark' | 'system';
 
