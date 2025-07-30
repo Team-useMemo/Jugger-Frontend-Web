@@ -36,6 +36,49 @@ export const memoApi = createApi({
   baseQuery: customBaseQuery,
   tagTypes: ['Memo', 'Calendar', 'Photo', 'Link'],
   endpoints: (builder) => ({
+    getMemos2: builder.query<
+      MemoProp[],
+      {
+        before?: string;
+        after?: string;
+        page?: number;
+        size?: number;
+        categoryId?: string;
+      }
+    >({
+      query: ({ before, after, page = 0, size = 20, categoryId }) => {
+        const params = new URLSearchParams({ page: `${page}`, size: `${size}` });
+
+        if (before) params.set('before', before);
+        else if (after) params.set('after', after);
+        else params.set('before', new Date(Date.now() + 10000).toISOString()); // 초기 로딩
+
+        if (categoryId) params.set('categoryId', categoryId);
+
+        const base = categoryId ? '/api/v1/categories/chat' : '/api/v1/chat';
+        const dir = after ? 'after' : 'before';
+        return `${base}/${dir}?${params.toString()}`;
+      },
+      serializeQueryArgs: ({ endpointName, queryArgs }) => `${endpointName}_${queryArgs?.categoryId ?? 'all'}`,
+      merge: (currentCache, newItems, { arg }) => {
+        const isInitialLoad = !arg?.before && !arg?.after;
+
+        if (isInitialLoad) {
+          currentCache.length = 0; // 초기화
+          currentCache.push(...newItems);
+          return;
+        }
+
+        if (arg?.before) {
+          currentCache.unshift(...newItems); // 과거 채팅 앞에 추가
+        } else {
+          currentCache.push(...newItems); // 최신 채팅 뒤에 추가
+        }
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.page !== previousArg?.page || currentArg?.categoryId !== previousArg?.categoryId;
+      },
+    }),
     getMemos: builder.query<MemoProp[], { before?: string; page: number; size: number }>({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
