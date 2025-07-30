@@ -1,69 +1,78 @@
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
-const JuggerSelectBox = styled.div({
-  position: 'relative',
-
-  ['>label']: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '12px 14px',
-    background: theme.color.background.normal,
-    border: `1.5px solid ${theme.color.line.normal}`,
-    borderRadius: theme.radius[4],
-    cursor: 'pointer',
-
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-
-    ['>svg']: {
-      width: '16px',
-      height: 'auto',
-      aspectRatio: '1 / 1',
+const JuggerSelectBox = styled.div(
+  ({ theme }) => ({
+    ['>label']: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
     },
+    ['>ul']: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
 
-    [':focus']: {
-      borderColor: theme.color.primary.normal,
-      ['>svg']: {
-        transform: 'rotate(180deg);',
-      },
+      ['>li']: {
+        '&:not(:first-of-type)': {
+          borderTop: `1px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+        },
 
-      ['+ul']: {
-        display: 'block',
-        borderColor: theme.color.primary.normal,
+        [':hover']: {
+          background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+        },
       },
     },
-  },
+  }),
+  {
+    position: 'relative',
 
-  ['>ul']: {
-    display: 'none',
-    position: 'absolute',
-    top: '100%',
-    left: '0',
-    listStyle: 'none',
-    padding: '0',
-    margin: '8px 0 0',
-    width: '100%',
-    zIndex: '1',
-    background: theme.color.background.normal,
-    border: `1.5px solid ${theme.color.line.normal}`,
-    borderRadius: theme.radius[4],
-
-    ['>li']: {
+    ['>label']: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       padding: '12px 14px',
-      ...theme.font.body1normal.medium,
+      borderRadius: theme.radius[4],
       cursor: 'pointer',
+      border: `1.5px solid ${theme.color.line.normal}`,
 
-      '&:not(:first-of-type)': {
-        borderTop: `1px solid ${theme.color.line.normal}`,
+      ...theme.font.body1normal.medium,
+
+      ['>svg']: {
+        width: '16px',
+        height: 'auto',
+        aspectRatio: '1 / 1',
       },
 
-      [':hover']: {
-        background: theme.color.background.alternative,
+      [':focus']: {
+        borderColor: theme.color.primary.normal,
+        ['>svg']: {
+          transform: 'rotate(180deg);',
+        },
+
+        ['+ul']: {
+          display: 'block',
+          borderColor: theme.color.primary.normal,
+        },
+      },
+    },
+
+    ['>ul']: {
+      display: 'none',
+      position: 'absolute',
+      top: '100%',
+      left: '0',
+      listStyle: 'none',
+      padding: '0',
+      margin: '8px 0 0',
+      width: '100%',
+      zIndex: '1',
+      border: `1.5px solid ${theme.color.line.normal}`,
+      borderRadius: theme.radius[4],
+
+      ['>li']: {
+        padding: '12px 14px',
+        ...theme.font.body1normal.medium,
+        cursor: 'pointer',
       },
     },
   },
-});
+);
 
 export default JuggerSelectBox;
