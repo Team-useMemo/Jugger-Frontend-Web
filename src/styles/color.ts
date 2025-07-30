@@ -22,6 +22,7 @@ const color = {
     /** #ffffffff */ normal: palette['common']['100'],
     /** #f7f7f8ff */ alternative: palette['coolneutral']['99'],
     /** #f4f4f5ff */ neutral: palette['coolneutral']['98'],
+    /** #171719 */ inverse: '#171719',
   },
   /** interaction */
   interaction: {

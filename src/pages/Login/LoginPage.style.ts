@@ -7,7 +7,6 @@ const LoginPageLayout = styled.div({
   justifyContent: 'center',
   height: '100dvh',
   padding: '0 32px',
-  background: theme.color.background.normal,
 });
 
 const LoginPageContainer = styled.div({
