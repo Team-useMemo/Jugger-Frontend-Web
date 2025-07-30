@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerCheckBox from '@components/Common/JuggerCheckBox';
 import JuggerSelectBox from '@components/Common/JuggerSelectBox';
-import { theme } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 import CheckBoxSVG from '@assets/checkbox.svg?react';
 import CloseSVG from '@assets/icons/close.svg?react';
 import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
@@ -17,6 +18,12 @@ const RegisterPageLayout = styled.div({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  padding: '64px',
+  boxSizing: 'border-box',
+
+  [media[480]]: {
+    padding: '0px',
+  },
 });
 
 const RegisterPageContainer = styled.div({
@@ -28,12 +35,28 @@ const RegisterPageContainer = styled.div({
   background: theme.color.background.normal,
   borderRadius: theme.radius[16],
 
+  [media[480]]: {
+    width: '100%',
+    height: '100%',
+    borderRadius: '0',
+    padding: '0px',
+  },
+});
+
+const RegisterPageHeader = styled.div({
+  display: 'flex',
+  justifyContent: 'end',
+
   ['>svg']: {
     marginLeft: 'auto',
     width: '24px',
     height: 'auto',
     aspectRatio: '1 / 1',
     stroke: theme.color.label.normal,
+  },
+
+  [media[480]]: {
+    padding: '14px 12px',
   },
 });
 
@@ -43,10 +66,20 @@ const RegisterPageContents = styled.div({
   gap: '20px',
 
   ['>p']: {
+    whiteSpace: 'nowrap',
     textAlign: 'left',
     ...theme.font.title3.bold,
     color: theme.color.label.normal,
     margin: '0',
+  },
+
+  [media[480]]: {
+    padding: '24px 20px 32px',
+    height: '100%',
+
+    ['>button']: {
+      marginTop: 'auto',
+    },
   },
 });
 
@@ -73,6 +106,13 @@ const RegisterPageTermsItem = styled.div({
     ...theme.font.body1normal.medium,
     color: theme.color.label.normal,
   },
+
+  [media[480]]: {
+    ['>p']: {
+      ...theme.font.body2normal.medium,
+      color: theme.color.label.alternative,
+    },
+  },
 });
 
 const RegisterPageTermsLabel = styled.label({
@@ -86,6 +126,10 @@ const RegisterPageTermsLabel = styled.label({
     margin: '0',
     ...theme.font.body1normal.medium,
     color: theme.color.label.normal,
+
+    ['>b']: {
+      ...theme.font.body1normal.semibold,
+    },
   },
 });
 type TermKey = 'isAdult' | 'agreePrivacyPolicy' | 'agreeTermsOfService' | 'agreeAdNotification' | 'agreeMarketingUsage';
@@ -178,6 +222,7 @@ const RegisterPageTerm = ({
   terms: TermState;
   setTerms: React.Dispatch<React.SetStateAction<TermState>>;
 }) => {
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const location = useLocation();
   const [checkedAll, setCheckedAll] = useState(false);
@@ -226,7 +271,7 @@ const RegisterPageTerm = ({
 
   return (
     <RegisterPageContents>
-      <p>서비스 이용약관에 동의해주세요</p>
+      <p>서비스 이용약관에{isMobile && <br />} 동의해주세요</p>
       <RegisterPageTermsContaienr>
         <RegisterPageTermsLabel>
           <JuggerCheckBox checkboxSize="medium">
@@ -235,7 +280,9 @@ const RegisterPageTerm = ({
               <CheckBoxSVG />
             </span>
           </JuggerCheckBox>
-          <p>약관 전체 동의</p>
+          <p>
+            <b>약관 전체 동의</b>
+          </p>
         </RegisterPageTermsLabel>
         <hr />
         {Terms.map((e) => (
@@ -276,6 +323,16 @@ const RegisterPageTermDetailContents = styled.div({
       ...theme.font.body1normal.semibold,
     },
   },
+
+  [media[480]]: {
+    ['>p']: {
+      ...theme.font.body2normal.medium,
+
+      ['>b']: {
+        ...theme.font.body2normal.semibold,
+      },
+    },
+  },
 });
 
 const RegisterPageTermDetail = ({
@@ -298,10 +355,10 @@ const RegisterPageTermDetail = ({
       <p>{selectedTerm?.title}</p>
       <RegisterPageTermDetailContents>
         <p>{selectedTerm?.content}</p>
-        <JuggerButton size="medium" color="primary" onClick={handleClickAgreeButton}>
-          동의하기
-        </JuggerButton>
       </RegisterPageTermDetailContents>
+      <JuggerButton size="medium" color="primary" onClick={handleClickAgreeButton}>
+        동의하기
+      </JuggerButton>
     </RegisterPageContents>
   );
 };
@@ -317,6 +374,15 @@ const RegisterPageValueContainer = styled.div({
     ...theme.font.title3.bold,
     color: theme.color.label.normal,
     margin: '0',
+  },
+
+  [media[480]]: {
+    padding: '24px 20px 32px',
+    height: '100%',
+
+    ['>button']: {
+      marginTop: 'auto',
+    },
   },
 });
 
@@ -383,6 +449,7 @@ const RegisterPageValueButton = styled.button(
   {
     padding: '11px 14px',
     width: '100%',
+    height: '54px',
     borderRadius: theme.radius[4],
     boxSizing: 'border-box',
 
@@ -606,7 +673,7 @@ const RegisterPage = () => {
     navigate(-1);
   };
 
-  const { provider, email } = location.state;
+  const { provider, email } = location.state ?? {};
   console.log(provider, email);
 
   const handleSubmit = () => {
@@ -641,7 +708,9 @@ const RegisterPage = () => {
   return (
     <RegisterPageLayout>
       <RegisterPageContainer>
-        <CloseSVG onClick={handleClickClose} />
+        <RegisterPageHeader>
+          <CloseSVG onClick={handleClickClose} />
+        </RegisterPageHeader>
         {state?.modal === 'detail' ? (
           <RegisterPageTermDetail termKey={state?.key} setTerms={setTerms} />
         ) : state?.modal === 'value' ? (
