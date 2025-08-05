@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useChatContext } from '@providers/ChatContext';
 import { usePostCalendarMutation, usePutCalendarMutation } from '@stores/modules/memo';
 import { setModalClose } from '@stores/modules/modal';
 import { useEffect, useRef, useState } from 'react';
@@ -79,6 +80,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   ];
 
   const isScheduleValidate = isValidFields(validateList);
+  const { fetchAfter } = useChatContext();
 
   const handleAddSchedule = () => {
     if (!validateFields(validateList, setErrors) || !startDate) return;
@@ -102,6 +104,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
           endTime: endDate?.toISOString(),
           categoryId: currentCategory || undefined,
         }).unwrap();
+        fetchAfter();
 
         closeModal?.();
       } catch (error) {
