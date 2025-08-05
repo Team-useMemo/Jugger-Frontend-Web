@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { media } from '@styles/theme';
+import { media, theme } from '@styles/theme';
 
 const IndexHeaderContainer = styled.div({
   display: 'flex',
@@ -8,6 +8,7 @@ const IndexHeaderContainer = styled.div({
   justifyContent: 'space-between',
   boxSizing: 'border-box',
   alignItems: 'center',
+  background: theme.palette.common[100],
 
   [media[480]]: {
     padding: '16px 20px',

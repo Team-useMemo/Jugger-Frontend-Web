@@ -1,7 +1,5 @@
-import useWindowSize from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
-import LogoPNG from '@assets/Logo.png';
-import LogoWhitePNG from '@assets/LogoWhite.png';
+import LogoTextFillSVG from '@assets/LogoTextFill.svg?react';
 import EnvelopeSVG from '@assets/icons/envelope.svg?react';
 import InstagramSVG from '@assets/icons/instagram.svg?react';
 import LinkedInSVG from '@assets/icons/linkedin.svg?react';
@@ -16,9 +14,6 @@ import {
 } from './Footer.Style';
 
 const CommonFooter = () => {
-  const width = useWindowSize();
-  const isMobile = width < 480;
-
   const handleClickFeedback = () => {
     window.open('https://forms.gle/d3iJtZLEf3CBEyeN8');
   };
@@ -42,7 +37,7 @@ const CommonFooter = () => {
   return (
     <CommonFooterLayout>
       <CommonFooterContainer>
-        <img src={!isMobile ? LogoWhitePNG : LogoPNG} />
+        <LogoTextFillSVG />
         <CommonFooterContents>
           <CommonFooterButtonContainer>
             <JuggerButton color="secondary" size={'xsmall'} onClick={handleClickFeedback}>
