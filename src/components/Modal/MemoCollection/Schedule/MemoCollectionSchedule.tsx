@@ -1,5 +1,5 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetCalendarByCategoryQuery, useGetCalendarQuery } from '@stores/modules/memo';
+import { useDeleteMemoMutation, useGetCalendarByCategoryQuery, useGetCalendarQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { useMemo, useState } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
@@ -49,6 +49,7 @@ const MemoCollectionScheduleListItem = ({
       }),
     );
   };
+  const [deleteMemo] = useDeleteMemoMutation();
 
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
     header: { color: category?.categoryColor ?? '', title: category?.categoryName ?? '' },
@@ -63,7 +64,10 @@ const MemoCollectionScheduleListItem = ({
       },
       {
         label: '삭제',
-        onClick: ContextMenuDelete,
+        onClick: () => {
+          console.log(chatId);
+          deleteMemo({ chatId });
+        },
       },
     ],
   });

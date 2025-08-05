@@ -83,6 +83,28 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/chat/before?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
+        console.log(response);
+        return response
+          .map((item: any) => {
+            const content =
+              item.type === 'CALENDAR'
+                ? getScheduleMemoContent(item)
+                : item.type === 'PHOTO'
+                  ? {
+                      imgUrl: item.imgUrl,
+                      description: item.description,
+                    }
+                  : item.content;
+
+            return {
+              chatId: item.chatId,
+              type: item.type,
+              content,
+              date: new Date(item.timestamp),
+              categoryId: item.categoryId,
+            };
+          })
+          .sort((a: MemoResponseProp, b: MemoResponseProp) => b.date.getTime() - a.date.getTime());
         return response
           .flatMap((categoryBlock: any) =>
             categoryBlock.chatItems.map((item: any) => {
@@ -198,10 +220,11 @@ export const memoApi = createApi({
         method: 'GET',
       }),
       transformResponse: (response: CalendarResponseProp[]): MemoProp[] => {
+        console.log(response);
         return response
           .map((e) => {
             return {
-              chatId: e.calendarId,
+              chatId: e.chatId,
               type: 'CALENDAR',
               content: getScheduleMemoContent(e),
               categoryId: e.categoryId,
@@ -219,7 +242,7 @@ export const memoApi = createApi({
         return response
           .map((e) => {
             return {
-              chatId: e.calendarId,
+              chatId: e.chatId,
               type: 'CALENDAR',
               content: getScheduleMemoContent(e),
               categoryId: e.categoryId,
@@ -282,6 +305,7 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/photos/duration?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: PhotoResponseProp[]): MemoProp[] => {
+        console.log(response);
         return response
           .map(
             (e) =>
@@ -328,6 +352,7 @@ export const memoApi = createApi({
       query: ({ before = new Date(Date.now() + 10000).toISOString(), page, size }) =>
         `/api/v1/links?before=${before}&page=${page}&size=${size}`,
       transformResponse: (response: any): MemoProp[] => {
+        console.log(response);
         return response.map((e: LinkResponseProp, i: number) => ({
           memoId: i,
           type: 'link',

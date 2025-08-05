@@ -1,43 +1,41 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
+import { usePatchMemoMutation } from '@stores/modules/memo';
 import { useState } from 'react';
-import JuggerButton from '@components/Common/JuggerButton';
-
+import { formatDate } from '@utils/Date';
+import { useOgData } from '@hooks/useOgData';
 import { ModalComponentProps } from '@hooks/useParamModal';
-
+import JuggerButton from '@components/Common/JuggerButton';
 import CloseSVG from '@assets/icons/close.svg?react';
 import { DefaultModalLayout } from '../DefaultModal.Style';
 import {
   CategoryContainer,
   CategoryContents,
   CategoryItem,
-  Container,
   CategoryLabel,
+  CloseButtonWrapper,
+  Container,
+  MemoContent,
+  MemoImage,
   MemoLabel,
   MemoLabelBar,
   MemoLabelText,
-  MemoContent,
-  CloseButtonWrapper,
-  MemoImage,
 } from './EditMemoCategory.Style';
-import { formatDate } from '@utils/Date';
-import { useOgData } from '@hooks/useOgData';
-import { usePatchMemoMutation } from '@stores/modules/memo';
 
 const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const { chatId, categoryId, type, content } = props ?? {};
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryId);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const ogData = useOgData(content);
+  const ogData = useOgData(type === 'LINK' ? content : '');
   const { ogDescription } = ogData || {};
   const [patchMemoCategory] = usePatchMemoMutation();
   const handleEditMemoCategory = () => {
     if (categoryId !== selectedCategoryId) {
-      patchMemoCategory(({ chatId: chatId, categoryId: selectedCategoryId }));
+      patchMemoCategory({ chatId: chatId, categoryId: selectedCategoryId });
     }
 
     closeModal?.();
   };
-
+  console.log(content);
 
   return (
     <DefaultModalLayout>
@@ -62,15 +60,17 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
                         : ''}
               </div>
               <MemoContent>
-                {type === 'TEXT'
-                  ? content
-                  : type === 'LINK'
-                    ? ogDescription
-                    : type === 'CALENDAR'
-                      ? content.title
-                      : type === 'PHOTO'
-                        ? <MemoImage src={content} />
-                        : content}
+                {type === 'TEXT' ? (
+                  content
+                ) : type === 'LINK' ? (
+                  ogDescription
+                ) : type === 'CALENDAR' ? (
+                  content.title
+                ) : type === 'PHOTO' ? (
+                  <MemoImage src={content.imgUrl} />
+                ) : (
+                  content
+                )}
               </MemoContent>
             </MemoLabelText>
           </MemoLabel>
@@ -94,17 +94,12 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
             })}
           </CategoryContents>
         </CategoryContainer>
-        <JuggerButton
-          color="primary"
-          size="medium"
-          onClick={handleEditMemoCategory}
-        >
+        <JuggerButton color="primary" size="medium" onClick={handleEditMemoCategory}>
           변경하기
         </JuggerButton>
       </Container>
     </DefaultModalLayout>
   );
 };
-
 
 export default EditMemoCategory;
