@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import { getPostSignup } from '@controllers/api';
 import { useNavigate } from 'react-router-dom';
+import { getPostSignup } from '@controllers/api';
 import CloseSVG from '@assets/Login/close.svg?react';
-
 import {
-  InfoContainer,
-  Header,
-  InputWrapper,
-  Input,
-  ClearButton,
-  ButtonGroup,
   Button,
+  ButtonGroup,
+  ClearButton,
+  Header,
+  InfoContainer,
+  Input,
+  InputWrapper,
+  Label,
   Select,
   SubmitButton,
-  Label,
 } from './Info.Style';
-
 
 const Info = ({
   closeModal,
@@ -23,7 +21,16 @@ const Info = ({
   provider,
 }: {
   closeModal: () => void;
-  checkedTerms: { all: boolean; age: boolean; privacy: boolean; terms: boolean; marketing: boolean; ads: boolean; email: string; nickname: string; };
+  checkedTerms: {
+    all: boolean;
+    age: boolean;
+    privacy: boolean;
+    terms: boolean;
+    marketing: boolean;
+    ads: boolean;
+    email: string;
+    nickname: string;
+  };
   provider: string;
 }) => {
   const navigate = useNavigate();
@@ -40,18 +47,20 @@ const Info = ({
 
   const handleSubmit = async () => {
     console.log({ name, gender, birth, source });
-    const getSignup = getPostSignup(provider);
+    // const getSignup = getPostSignup(provider);
 
     if (isRequiredChecked && provider) {
       try {
-        const response = await getSignup({
+        const response = await getPostSignup({
           name,
-          email: checkedTerms.email, // 실제 이메일로 교체 필요
+          email: 'iparkssi@naver.com', // 실제 이메일로 교체 필요
           domain: 'kakao',
           terms: {
-            termsOfService: checkedTerms.terms,
+            ageOver: false,
             privacyPolicy: checkedTerms.privacy,
+            termsOfService: checkedTerms.terms,
             marketing: checkedTerms.marketing,
+            termsOfAd: false,
           },
         });
 

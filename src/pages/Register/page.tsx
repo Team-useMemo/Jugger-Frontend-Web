@@ -5,6 +5,7 @@ import { useIsMobile } from '@hooks/useWindowSize';
 import JuggerButton from '@components/Common/JuggerButton';
 import JuggerCheckBox from '@components/Common/JuggerCheckBox';
 import JuggerSelectBox from '@components/Common/JuggerSelectBox';
+import { getPostSignup } from '@controllers/api';
 import { media, theme } from '@styles/theme';
 import CheckBoxSVG from '@assets/checkbox.svg?react';
 import CloseSVG from '@assets/icons/close.svg?react';
@@ -674,11 +675,38 @@ const RegisterPage = () => {
   };
 
   const { provider, email } = location.state ?? {};
-  console.log(provider, email);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(terms, values);
 
+    try {
+      const payload = {
+        name: values.name,
+        email: email,
+        domain: provider,
+        terms: {
+          ageOver: terms.isAdult,
+          privacyPolicy: terms.agreePrivacyPolicy,
+          termsOfService: terms.agreeTermsOfService,
+          marketing: terms.agreeMarketingUsage,
+          termsOfAd: terms.agreeAdNotification,
+        },
+      };
+
+      console.log(payload);
+
+      const response = await getPostSignup(payload);
+
+      console.log('회원가입 성공:', response.accessToken, response.refreshToken);
+
+      localStorage.setItem('email', email);
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+
+      navigate(`/memo`);
+    } catch (error) {
+      console.error(error);
+    }
     //   try {
     // const getSignup = getPostSignup(provider);
 

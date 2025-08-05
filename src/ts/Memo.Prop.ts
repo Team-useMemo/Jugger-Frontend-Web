@@ -77,7 +77,8 @@ export interface MemoProp {
 }
 
 export interface CalendarResponseProp {
-  calendarId: string; // chatId?
+  chatId: string;
+  calendarId: string;
   place: string;
   alarm?: string;
   description: string;

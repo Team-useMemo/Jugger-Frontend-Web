@@ -24,6 +24,7 @@ export const useOgData = (url: string) => {
   const [data, setData] = useState<OgData | null>(null);
 
   useEffect(() => {
+    if (!url) return;
     fetchUrlPreview(url).then(setData);
   }, [url]);
 
