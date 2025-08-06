@@ -5,7 +5,6 @@ import {
   ContextMenuItem,
   ContextMenuTitle,
   ContextMenuWrapper,
-  Divider,
 } from '@components/ContextMenu/ContextMenu.Style';
 
 type ContextMenuHandlers = {
@@ -113,7 +112,7 @@ export const useContextMenu = ({
             <ContextMenuHeader color={header.color}>
               <ContextMenuTitle>{header.title}</ContextMenuTitle>
             </ContextMenuHeader>
-            <Divider />
+            <span className="divider" />
           </>
         )}
         {items.map((item, idx) => (
