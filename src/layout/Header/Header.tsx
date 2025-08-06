@@ -5,10 +5,10 @@ import { ModalName } from '@utils/Modal';
 import useMenu from '@hooks/useMenu';
 import { useAppDispatch } from '@hooks/useRedux';
 import MemoCollectionMenu from '@components/Menu/MemoCollectionMenu';
-import DetailSVG from '@assets/Header/detail.svg?react';
-import SearchSVG from '@assets/Header/search.svg?react';
+import DetailSVG from '@assets/icons/detail.svg?react';
 import MenuSVG from '@assets/icons/menu.svg?react';
 import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
+import SearchSVG from '@assets/icons/search.svg?react';
 import {
   HeaderButtonContainer,
   HeaderContainer,

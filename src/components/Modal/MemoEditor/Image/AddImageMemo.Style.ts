@@ -6,7 +6,6 @@ const AddImageMemoTitle = styled.p({
 
   textAlign: 'left',
   ...theme.font.title3.bold,
-  color: theme.color.label.normal,
 });
 
 const AddImageMemoContents = styled.div({
@@ -21,18 +20,22 @@ const AddImageMemoContents = styled.div({
   },
 });
 
-const AddImageMemoImageContainer = styled.div({
-  background: theme.color.background.alternative,
-  borderRadius: theme.radius[8],
-  display: 'flex',
-  flexDirection: 'column',
-  overflow: 'hidden',
+const AddImageMemoImageContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+  }),
+  {
+    borderRadius: theme.radius[8],
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
 
-  [media[480]]: {
-    flexGrow: '1',
-    justifyContent: 'center',
+    [media[480]]: {
+      flexGrow: '1',
+      justifyContent: 'center',
+    },
   },
-});
+);
 
 const AddImageMemoEmptyImageContents = styled.label({
   background: theme.color.material.dimmer,
@@ -78,7 +81,6 @@ const AddImageMemoDescContainer = styled.div({
   gap: '8px',
   textAlign: 'left',
   ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
 
   ['>input']: {
     background: 'transparent',
@@ -87,7 +89,6 @@ const AddImageMemoDescContainer = styled.div({
     padding: '8px 0',
 
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
 
     [':focus']: {
       outline: 'none',
@@ -112,7 +113,7 @@ const AddImageMemoButtonContainer = styled.div({
   gap: '12px',
 
   ['>button']: {
-    width: '100%',
+    flexGrow: '1',
   },
 });
 

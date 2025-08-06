@@ -7,7 +7,6 @@ const LoginPageLayout = styled.div({
   justifyContent: 'center',
   height: '100dvh',
   padding: '0 32px',
-  background: theme.color.background.normal,
 });
 
 const LoginPageContainer = styled.div({
@@ -18,18 +17,25 @@ const LoginPageContainer = styled.div({
   width: '100%',
 });
 
-const LoginPageTitleContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
+const LoginPageTitleContainer = styled.div(
+  ({ theme }) => ({
+    color: theme.color.label[theme.mode === 'light' ? 'neutral' : 'assistive'],
+    ['svg']: {
+      fill: theme.color.label[theme.mode === 'light' ? 'strong' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
 
-  ...theme.font.body2normal.medium,
-  color: theme.color.label.neutral,
+    ...theme.font.body2normal.medium,
 
-  ['>img']: {
-    width: '210px',
+    ['>svg']: {
+      width: '210px',
+    },
   },
-});
+);
 
 const LoginPageSocialLoginContainer = styled.div({
   display: 'flex',
@@ -64,9 +70,11 @@ const LoginPageSocialLoginButtonContainer = styled.div({
 
 const LoginPageSocialLoginButton = styled.button(
   ({ textColor, bgColor, borderColor }: { textColor: string; bgColor: string; borderColor: string }) => ({
-    color: textColor,
     background: bgColor,
     borderColor: borderColor,
+    ['>p']: {
+      color: textColor,
+    },
   }),
   {
     display: 'grid',
@@ -75,7 +83,10 @@ const LoginPageSocialLoginButton = styled.button(
     padding: '16px',
     borderRadius: theme.radius[6],
 
-    ...theme.font.body1normal.medium,
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+      margin: '0',
+    },
 
     position: 'relative',
 
@@ -94,31 +105,37 @@ const LoginPageSocialLoginButton = styled.button(
   },
 );
 
-const LoginPageRecentSocialLoginBadge = styled.span({
-  position: 'absolute',
-  top: '-16px',
-  left: '32px',
-  background: theme.color.label.normal,
-
-  ...theme.font.label1reading.medium,
-  color: theme.color.label.inverse,
-  borderRadius: theme.radius[32],
-  padding: '4px 16px',
-  zIndex: '1',
-
-  ['&::after']: {
-    content: '""',
+const LoginPageRecentSocialLoginBadge = styled.span(
+  ({ theme }) => ({
+    background: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    color: theme.color.label[theme.mode === 'light' ? 'inverse' : 'normal'],
+    ['&::after']: {
+      borderTop: `8px solid ${theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse']}`,
+    },
+  }),
+  {
     position: 'absolute',
-    bottom: '-4px',
-    left: '50%',
-    transform: 'translate(-50%, 0)',
-    width: '0',
-    height: '0',
-    borderLeft: '8px solid transparent',
-    borderRight: '8px solid transparent',
-    borderTop: '8px solid black',
+    top: '-16px',
+    left: '32px',
+
+    ...theme.font.label1reading.medium,
+    borderRadius: theme.radius[32],
+    padding: '4px 16px',
+    zIndex: '1',
+
+    ['&::after']: {
+      content: '""',
+      position: 'absolute',
+      bottom: '-4px',
+      left: '50%',
+      transform: 'translate(-50%, 0)',
+      width: '0',
+      height: '0',
+      borderLeft: '8px solid transparent',
+      borderRight: '8px solid transparent',
+    },
   },
-});
+);
 
 export {
   LoginPageLayout,

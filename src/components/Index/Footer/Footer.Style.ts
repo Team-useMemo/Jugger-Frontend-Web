@@ -55,6 +55,15 @@ const IndexFooterButtonContainer = styled.div({
   display: 'flex',
   gap: '12px',
 
+  ['>button']: {
+    background: theme.palette.coolneutral[98],
+    color: theme.color.label.normal,
+
+    ['>svg']: {
+      fill: 'red',
+    },
+  },
+
   [media[480]]: {
     gap: '8px',
     flexWrap: 'wrap',

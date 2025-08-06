@@ -22,8 +22,18 @@ const CalendarViewDayPickerDayItem = styled.p({
 });
 
 const CalendarViewDayPickerDateItem = styled.p(
-  ({ color, selected, today }: { color: keyof typeof theme.color.label; selected: boolean; today: boolean }) => ({
-    color: theme.color.label[color],
+  ({
+    theme,
+    color,
+    selected,
+    today,
+  }: {
+    theme?: any;
+    color: keyof typeof theme.color.label;
+    selected: boolean;
+    today: boolean;
+  }) => ({
+    color: theme.color.label[color == 'normal' ? (theme.mode === 'light' ? 'normal' : 'inverse') : color],
     background: selected ? theme.color.primary.normal : '',
     border: today ? `2px dotted ${theme.color.primary.normal}` : '',
   }),

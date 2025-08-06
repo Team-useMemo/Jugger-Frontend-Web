@@ -13,7 +13,6 @@ import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
 
 const RegisterPageLayout = styled.div({
   position: 'absolute',
-  background: theme.color.interaction.inactive,
   width: '100%',
   height: '100%',
   display: 'flex',
@@ -27,39 +26,54 @@ const RegisterPageLayout = styled.div({
   },
 });
 
-const RegisterPageContainer = styled.div({
-  width: '448px',
-  boxSizing: 'border-box',
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '32px 32px 40px',
-  background: theme.color.background.normal,
-  borderRadius: theme.radius[16],
+const RegisterPageContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
 
-  [media[480]]: {
-    width: '100%',
-    height: '100%',
-    borderRadius: '0',
-    padding: '0px',
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    width: '448px',
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '32px 32px 40px',
+    borderRadius: theme.radius[16],
+
+    [media[480]]: {
+      width: '100%',
+      height: '100%',
+      borderRadius: '0',
+      padding: '0px',
+    },
   },
-});
+);
 
-const RegisterPageHeader = styled.div({
-  display: 'flex',
-  justifyContent: 'end',
+const RegisterPageHeader = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    justifyContent: 'end',
 
-  ['>svg']: {
-    marginLeft: 'auto',
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    stroke: theme.color.label.normal,
+    ['>svg']: {
+      marginLeft: 'auto',
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      cursor: 'pointer',
+    },
+
+    [media[480]]: {
+      padding: '14px 12px',
+    },
   },
-
-  [media[480]]: {
-    padding: '14px 12px',
-  },
-});
+);
 
 const RegisterPageContents = styled.div({
   display: 'flex',
@@ -70,7 +84,6 @@ const RegisterPageContents = styled.div({
     whiteSpace: 'nowrap',
     textAlign: 'left',
     ...theme.font.title3.bold,
-    color: theme.color.label.normal,
     margin: '0',
   },
 
@@ -97,24 +110,31 @@ const RegisterPageTermsContaienr = styled.div({
   },
 });
 
-const RegisterPageTermsItem = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-
-  ['>p']: {
-    margin: '0',
-    flexShrink: '0',
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-  },
-
-  [media[480]]: {
+const RegisterPageTermsItem = styled.div(
+  ({ theme }) => ({
     ['>p']: {
-      ...theme.font.body2normal.medium,
-      color: theme.color.label.alternative,
+      color: theme.color.label[theme.mode === 'light' ? 'normal' : 'alternative'],
+    },
+  }),
+  {
+    display: 'flex',
+    alignItems: 'center',
+
+    ['>p']: {
+      margin: '0',
+      flexShrink: '0',
+      ...theme.font.body1normal.medium,
+      cursor: 'pointer',
+    },
+
+    [media[480]]: {
+      ['>p']: {
+        ...theme.font.body2normal.medium,
+        color: theme.color.label.alternative,
+      },
     },
   },
-});
+);
 
 const RegisterPageTermsLabel = styled.label({
   display: 'flex',
@@ -126,7 +146,6 @@ const RegisterPageTermsLabel = styled.label({
   ['>p']: {
     margin: '0',
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
 
     ['>b']: {
       ...theme.font.body1normal.semibold,
@@ -318,7 +337,6 @@ const RegisterPageTermDetailContents = styled.div({
   ['>p']: {
     textAlign: 'left',
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
 
     ['>b']: {
       ...theme.font.body1normal.semibold,
@@ -373,7 +391,6 @@ const RegisterPageValueContainer = styled.div({
   ['>p']: {
     textAlign: 'left',
     ...theme.font.title3.bold,
-    color: theme.color.label.normal,
     margin: '0',
   },
 
@@ -401,7 +418,6 @@ const RegisterPageValueItemContainer = styled.div({
   ['>p']: {
     textAlign: 'left',
     ...theme.font.body1normal.semibold,
-    color: theme.color.label.normal,
     margin: '0',
   },
 
@@ -412,7 +428,6 @@ const RegisterPageValueItemContainer = styled.div({
     padding: '8px 0px',
     ...theme.font.body1normal.medium,
     borderBottom: `1.5px solid ${theme.color.line.neutral}`,
-    color: theme.color.label.normal,
 
     ['::placeholder']: {
       color: theme.color.label.alternative,
@@ -442,10 +457,24 @@ const RegisterPageValueButtonContainer = styled.div({
 });
 
 const RegisterPageValueButton = styled.button(
-  ({ selected }: { selected: boolean }) => ({
-    background: selected ? theme.palette.blue[95] : theme.color.background.alternative,
-    color: selected ? theme.color.label.normal : theme.color.label.alternative,
-    border: selected ? `1.5px solid ${theme.color.primary.normal}` : 'none',
+  ({ theme, selected }: { theme?: any; selected: boolean }) => ({
+    background:
+      theme.mode === 'light'
+        ? selected
+          ? theme.palette.blue[95]
+          : theme.color.background.alternative
+        : selected
+          ? theme.palette.blue[10]
+          : theme.color.label.normal,
+    color:
+      theme.mode === 'light'
+        ? selected
+          ? theme.color.label.normal
+          : theme.color.label.alternative
+        : theme.color.label.inverse,
+    border: `1.5px solid ${
+      selected ? theme.color.primary.normal : theme.mode === 'light' ? 'none' : theme.color.interaction.inactive
+    }`,
   }),
   {
     padding: '11px 14px',

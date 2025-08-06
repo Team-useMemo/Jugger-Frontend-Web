@@ -1,47 +1,57 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-const CommonFooterLayout = styled.div({
-  background: theme.palette.blue[20],
-  width: '100%',
-  padding: '56px 72px',
-  boxSizing: 'border-box',
+const CommonFooterLayout = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+  }),
+  {
+    width: '100%',
+    padding: '56px 72px',
+    boxSizing: 'border-box',
 
-  display: 'flex',
-  justifyContent: 'center',
+    display: 'flex',
+    justifyContent: 'center',
 
-  [media[480]]: {
-    background: theme.color.background.alternative,
-    padding: '32px 20px',
-  },
-});
-
-const CommonFooterContainer = styled.div({
-  maxWidth: '1440px',
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'start',
-  gap: '36px',
-
-  ...theme.font.body1normal.medium,
-  color: theme.color.label.inverse,
-
-  ['img']: {
-    height: '32px',
-  },
-
-  [media[480]]: {
-    gap: '16px',
-
-    ...theme.font.caption1.medium,
-    color: theme.color.label.assistive,
-
-    ['img']: {
-      height: '22px',
+    [media[480]]: {
+      padding: '32px 20px',
     },
   },
-});
+);
+
+const CommonFooterContainer = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      fill: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    maxWidth: '1440px',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'start',
+    gap: '36px',
+
+    ...theme.font.body1normal.medium,
+    color: theme.color.label.assistive,
+
+    ['>svg']: {
+      height: '32px',
+      width: 'auto',
+    },
+
+    [media[480]]: {
+      gap: '16px',
+
+      ...theme.font.caption1.medium,
+
+      ['>svg']: {
+        height: '24px',
+      },
+    },
+  },
+);
 
 const CommonFooterContents = styled.div({
   display: 'flex',
@@ -53,19 +63,29 @@ const CommonFooterContents = styled.div({
   },
 });
 
-const CommonFooterButtonContainer = styled.div({
-  display: 'flex',
-  gap: '12px',
-
-  [media[480]]: {
-    gap: '4px',
-    flexWrap: 'wrap',
-
+const CommonFooterButtonContainer = styled.div(
+  ({ theme }) => ({
     ['>button']: {
-      backgroundColor: theme.color.label.inverse,
+      backgroundColor: theme.color.label[theme.mode === 'light' ? 'inverse' : 'neutral'],
+    },
+    ['>button>svg']: {
+      fill: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '12px',
+
+    ['>button>svg']: {
+      stroke: 'none',
+    },
+
+    [media[480]]: {
+      gap: '4px',
+      flexWrap: 'wrap',
     },
   },
-});
+);
 
 const CommonFooterSNSContainer = styled.div({
   display: 'flex',
@@ -75,6 +95,7 @@ const CommonFooterSNSContainer = styled.div({
     width: '32px',
     height: 'auto',
     cursor: 'pointer',
+    fill: theme.color.label.assistive,
   },
 
   [media[480]]: {
@@ -82,7 +103,6 @@ const CommonFooterSNSContainer = styled.div({
 
     ['svg']: {
       width: '24px',
-      fill: theme.color.label.assistive,
     },
   },
 });

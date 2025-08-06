@@ -1,26 +1,41 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-const Container = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '40px 32px',
-  borderRadius: theme.radius[16],
-  background: theme.color.background.normal,
-
-  width: 'calc(100dvw - 64px * 2)',
-  maxWidth: '500px',
+const Layout = styled.div({
+  maxHeight: '100dvh',
+  maxWidth: '100dvw',
   boxSizing: 'border-box',
-  gap: '15px',
+  padding: '64px',
+  display: 'flex',
+  overflow: 'hidden',
 
   [media[480]]: {
-    width: '100%',
-    maxWidth: '100dvw',
     padding: '20px',
-    borderRadius: '0',
-    gap: '0px',
+    width: '100%',
   },
 });
+
+const Container = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '40px 32px',
+    borderRadius: theme.radius[16],
+
+    width: 'calc(100dvw - 64px * 2)',
+    maxWidth: '500px',
+    boxSizing: 'border-box',
+
+    [media[480]]: {
+      width: '100%',
+      maxWidth: '100dvw',
+      padding: '32px 24px',
+    },
+  },
+);
 
 const InputContainer = styled.div({
   display: 'flex',
@@ -34,10 +49,6 @@ const InputContainer = styled.div({
     aspectRatio: '1 / 1',
     cursor: 'pointer',
     flexShrink: '0',
-  },
-
-  [media[480]]: {
-    padding: '12px 20px',
   },
 });
 
@@ -188,25 +199,19 @@ const InputCategory = styled.div(
 );
 
 const CategoryContainer = styled.div({
-  padding: '12px 16px',
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
   textAlign: 'left',
 
   ...theme.font.headline1.semibold,
-  color: theme.color.label.normal,
-
-  [media[480]]: {
-    padding: '12px 20px',
-  },
 });
 
 const CategoryContents = styled.div({
   display: 'flex',
   flexWrap: 'wrap',
   gap: '12px',
-  marginTop: '30px',
+  margin: '20px 0px 12px',
 });
 
 const CategoryItem = styled.div(
@@ -366,36 +371,54 @@ const MemoLabel = styled.div({
   display: 'flex',
   gap: '12px',
   alignItems: 'flex-start',
+  overflow: 'hidden',
 });
 
 const MemoLabelBar = styled.div({
   width: '4px',
   height: '100%',
   backgroundColor: theme.color.label.neutral,
+  flexShrink: '0',
 });
 
-const MemoLabelText = styled.div({
+const MemoLabelText = styled.p({
   display: 'flex',
   flexDirection: 'column',
 
   ...theme.font.label1normal.medium,
-  color: theme.color.label.alternative,
+  overflow: 'hidden',
+
+  ['>div']: {
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    color: theme.color.label.alternative,
+  },
+
+  margin: '0',
 });
 
 const MemoContent = styled.p({
   margin: '0px',
   ...theme.font.headline1.semibold,
-  color: theme.color.label.normal,
+
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   maxWidth: '350px',
 });
 
-const CloseButtonWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'flex-end',
-});
+const CloseButtonWrapper = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+);
 
 const MemoImage = styled.img({
   width: '100%',
@@ -405,6 +428,7 @@ const MemoImage = styled.img({
 });
 
 export {
+  Layout,
   Container,
   InputContainer,
   InputContents,

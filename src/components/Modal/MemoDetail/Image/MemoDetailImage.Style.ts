@@ -14,60 +14,79 @@ const MemoDetailImageContainer = styled.div({
   },
 });
 
-const MemoDetailImageContents = styled.div({
-  overflow: 'hidden',
-  display: 'flex',
+const MemoDetailImageContents = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'inverse'],
+  }),
+  {
+    overflow: 'hidden',
+    display: 'flex',
 
-  boxSizing: 'border-box',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: theme.color.background.alternative,
+    boxSizing: 'border-box',
+    alignItems: 'center',
+    justifyContent: 'center',
 
-  ['>img']: {
-    objectFit: 'contain',
-    width: 'auto',
-    height: '100%',
-    maxWidth: '100%',
-    maxHeight: '100%',
-    minWidth: '240px',
-    minHeight: '240px',
+    ['>img']: {
+      objectFit: 'contain',
+      width: 'auto',
+      height: '100%',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      minWidth: '240px',
+      minHeight: '240px',
+    },
   },
-});
+);
 
-const MemoDetailImageButtonContainer = styled.div({
-  padding: '0 32px',
-  display: 'flex',
+const MemoDetailImageButtonContainer = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    padding: '0 32px',
+    display: 'flex',
 
-  gap: '15px',
-  flexShrink: '0',
+    gap: '15px',
+    flexShrink: '0',
 
-  ['>svg']: {
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    cursor: 'pointer',
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      cursor: 'pointer',
+    },
+
+    ['.grow']: {
+      flexGrow: '1',
+    },
+
+    [media[480]]: {
+      padding: '0 24px',
+    },
   },
+);
 
-  ['.grow']: {
-    flexGrow: '1',
+const MemoTitleContainer = styled.div(
+  ({ theme }) => ({
+    borderBottom: `1.5px solid ${theme.color.line.neutral}`,
+  }),
+  {
+    margin: '0 24px',
+    padding: '8px 0px',
+
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+      margin: '0',
+      textAlign: 'left',
+    },
+
+    [media[480]]: {
+      margin: '0 24px',
+      padding: '4px 0px',
+    },
   },
-
-  [media[480]]: {
-    padding: '0 24px',
-  },
-});
-
-const MemoTitleContainer = styled.div({
-  margin: '0 24px',
-  padding: '8px 0px',
-  borderBottom: `1.5px solid ${theme.color.line.neutral}`,
-
-  ['>p']: {
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
-    margin: '0',
-    textAlign: 'left',
-  },
-});
+);
 
 export { MemoDetailImageContainer, MemoDetailImageContents, MemoDetailImageButtonContainer, MemoTitleContainer };

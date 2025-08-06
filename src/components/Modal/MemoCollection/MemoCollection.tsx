@@ -53,7 +53,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
     () => [
       {
         categoryId: '',
-        categoryColor: '#171719',
+        categoryColor: 'all',
         categoryName: '전체',
         isPinned: false,
         recentMessage: '',
@@ -107,7 +107,7 @@ const MemoCollection = ({ closeModal, props, modalRef }: ModalComponentProps) =>
     dispatch(setModalOpen({ name: ModalName.searchMemo }));
   };
 
-  const onDetailClick = () => { };
+  const onDetailClick = () => {};
 
   const handleClickOpenMenu = () => {
     dispatch(setModalOpen({ name: ModalName.sideBar }));

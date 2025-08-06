@@ -103,7 +103,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
         ) : (
           <DefaultModalHeader>
             <CloseSVG onClick={closeModal} />
-            <span className="grow" />
+            <span />
             {/* <p onClick={handleAddImage}>추가</p> */}
           </DefaultModalHeader>
         )}

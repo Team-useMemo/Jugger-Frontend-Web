@@ -59,8 +59,13 @@ type ButtonSizes = keyof typeof buttonSizeStyles;
 type ButtonColors = keyof typeof buttonColorStyles;
 
 const JuggerButton = styled.button(
-  ({ color, size }: { color: ButtonColors; size: ButtonSizes }) => ({
-    ...buttonColorStyles[color],
+  ({ theme, color, size }: { theme?: any; color: ButtonColors; size: ButtonSizes }) => ({
+    // ...buttonColorStyles[color],
+    ...(color == 'secondary' && theme.mode === 'dark'
+      ? {
+          background: theme.palette.coolneutral[40],
+        }
+      : buttonColorStyles[color]),
     ...buttonSizeStyles[size],
 
     ['>svg']: {
@@ -73,6 +78,8 @@ const JuggerButton = styled.button(
     alignItems: 'center',
     justifyContent: 'center',
     whiteSpace: 'nowrap',
+    minWidth: '0',
+    flexShrink: '0',
 
     [':focus']: {
       outline: 'none',

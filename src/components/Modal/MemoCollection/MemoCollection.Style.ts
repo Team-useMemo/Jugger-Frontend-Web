@@ -18,36 +18,52 @@ const MemoCollectionLayout = styled.div({
   },
 });
 
-const MemoCollectionContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  background: theme.color.background.normal,
-  width: '820px',
-  maxHeight: '840px',
-  height: '100%',
-  borderRadius: theme.radius[16],
-  overflow: 'hidden',
+const MemoCollectionContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
 
-  [media[480]]: {
-    borderRadius: '0',
-    maxHeight: '100%',
-  },
-});
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '820px',
+    maxHeight: '840px',
+    height: '100%',
+    borderRadius: theme.radius[16],
+    overflow: 'hidden',
 
-const MemoCollectionHeader = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'end',
-  padding: '32px 32px 20px',
-  borderBottom: `1px solid ${theme.color.line.normal}`,
+    [media[480]]: {
+      borderRadius: '0',
+      maxHeight: '100%',
+    },
+  },
+);
 
-  ['>svg']: {
-    cursor: 'pointer',
+const MemoCollectionHeader = styled.div(
+  ({ theme }) => ({
+    borderBottom: `1px solid ${theme.mode === 'light' ? theme.color.line.normal : theme.color.label.neutral}`,
+
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'end',
+    padding: '32px 32px 20px',
+
+    ['>svg']: {
+      cursor: 'pointer',
+    },
+    [media[480]]: {
+      padding: '8px 20px 0',
+    },
   },
-  [media[480]]: {
-    padding: '8px 20px 0',
-  },
-});
+);
 
 const MemoCollectionHeaderContents = styled.div({
   display: 'flex',
@@ -60,13 +76,13 @@ const MemoCollectionHeaderContents = styled.div({
 });
 
 const MemoCollectionHeaderItem = styled.p(
-  ({ isFocused }: { isFocused?: boolean }) => ({
+  ({ theme, isFocused }: { theme?: any; isFocused?: boolean }) => ({
     ...theme.font.title3[isFocused ? 'bold' : 'regular'],
-    color: theme.color.label[isFocused ? 'normal' : 'assistive'],
+    color: theme.color.label[isFocused ? (theme.mode === 'light' ? 'normal' : 'inverse') : 'assistive'],
 
     [media[480]]: {
       ...theme.font.body1normal.semibold,
-      borderBottom: isFocused ? '2px solid black' : '',
+      borderBottom: isFocused ? `2px solid ${theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse']}` : '',
     },
   }),
   {
@@ -87,21 +103,29 @@ const MemoCollectionContents = styled.div({
   overflow: 'hidden',
 });
 
-const MemoCollectionSideBar = styled.div({
-  width: '180px',
-  background: theme.color.background.alternative,
-  display: 'flex',
-  flexDirection: 'column',
-  overflow: 'auto',
+const MemoCollectionSideBar = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
 
-  [media[768]]: {
-    display: 'none',
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    width: '180px',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'auto',
+
+    [media[768]]: {
+      display: 'none',
+    },
   },
-});
+);
 
 const MemoCollectionSideBarItemContainer = styled.div(
-  ({ isFocused, color }: { isFocused: boolean; color: string }) => ({
-    background: isFocused ? theme.color.fill.strong : '',
+  ({ theme, isFocused, color }: { theme?: any; isFocused: boolean; color: string }) => ({
+    background: isFocused ? (theme.mode === 'light' ? theme.palette.blue[99] : theme.palette.coolneutral[22]) : '',
     ['::before']: {
       background: color,
     },
@@ -114,7 +138,6 @@ const MemoCollectionSideBarItemContainer = styled.div(
     cursor: 'pointer',
     ['>p']: {
       ...theme.font.body2normal.semibold,
-      color: theme.color.label.normal,
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -185,7 +208,6 @@ const MemoCollectionBodyTitle = styled.div({
 
   ['>p']: {
     ...theme.font.headline1.semibold,
-    color: theme.color.label.normal,
 
     textOverflow: 'ellipsis',
     overflow: 'hidden',
