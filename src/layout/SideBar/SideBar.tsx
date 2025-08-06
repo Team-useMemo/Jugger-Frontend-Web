@@ -14,7 +14,7 @@ import SideMessage from '@components/SideBar/SideMessage/SideMessage';
 import LogoSVG from '@assets/LogoTextFill.svg?react';
 import ImageSVG from '@assets/Sidebar/Image.svg?react';
 import SettingSVG from '@assets/Sidebar/Setting.svg?react';
-import CalendarSVG from '@assets/icons/Calendar.svg?react';
+import CalendarSVG from '@assets/icons/calendar.svg?react';
 import CategorySVG from '@assets/icons/category.svg?react';
 import LinkSVG from '@assets/icons/link.svg?react';
 import PlusSVG from '@assets/icons/plus.svg?react';
