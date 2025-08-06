@@ -4,17 +4,17 @@ import { setModalClose } from '@stores/modules/modal';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryProp } from '@ts/Category.Prop';
-import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
+import { MemoProp, imageProp, scheduleProp } from '@ts/Memo.Prop';
 import { ModalName } from '@utils/Modal';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
-import LinkSVG from '@assets/Search/Link.svg?react';
-import PhotoSVG from '@assets/Search/Photo.svg?react';
-import ScheduleSVG from '@assets/Search/Schedule.svg?react';
 import TextSVG from '@assets/Search/Text.svg?react';
+import PhotoSVG from '@assets/Sidebar/Image.svg?react';
+import ScheduleSVG from '@assets/icons/calendar.svg?react';
 import EndContainerSVG from '@assets/icons/end_containersvg.svg?react';
 import LeftArrowSVG from '@assets/icons/left_arrow.svg?react';
+import LinkSVG from '@assets/icons/link.svg?react';
 import SearchSVG from '@assets/icons/search.svg?react';
 import { DefaultModalLayout } from '../DefaultModal.Style';
 import {
@@ -33,6 +33,7 @@ import {
 
 const getMemoSearchText = (memo: MemoProp): string => {
   if (memo.type === 'CALENDAR') return (memo.content as scheduleProp)?.title ?? '';
+  if (memo.type === 'PHOTO') return (memo.content as imageProp)?.description ?? '';
   return String(memo.content ?? '');
 };
 
@@ -77,7 +78,7 @@ const SearchMemo = ({ closeModal, modalRef }: ModalComponentProps) => {
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: memos = [] } = useGetMemosQuery({
     page: 0,
-    size: 20,
+    size: 200,
   });
 
   const filteredMemos = memos.filter((memo) => {
@@ -106,7 +107,7 @@ const SearchMemo = ({ closeModal, modalRef }: ModalComponentProps) => {
     setSelectedCategory(null);
   };
 
-  const handleSearch = () => { };
+  const handleSearch = () => {};
 
   const isMobile = useIsMobile();
 
@@ -120,7 +121,7 @@ const SearchMemo = ({ closeModal, modalRef }: ModalComponentProps) => {
             {selectedCategory && (
               <SearchMemoInputCategory
                 color={selectedCategory.categoryColor}
-                onClick={isMobile ? handleResetSelectedCategory : () => { }}
+                onClick={isMobile ? handleResetSelectedCategory : () => {}}
               >
                 <span />
                 <p>{selectedCategory.categoryName}</p>
