@@ -16,37 +16,55 @@ const MemoCollectionImageListContainer = styled.div({
   flexDirection: 'column',
 });
 
-const MemoCollectionImageListTitle = styled.p({
-  padding: '12px 16px',
-  borderTopLeftRadius: theme.radius[12],
-  borderTopRightRadius: theme.radius[12],
-  boxShadow: theme.shadow.normal,
+const MemoCollectionImageListTitle = styled.p(
+  ({ theme }) => ({
+    color: theme.color.label[theme.mode === 'light' ? 'neutral' : 'inverse'],
 
-  ...theme.font.label1normal.semibold,
-  color: theme.color.label.neutral,
-  margin: '0',
-  marginRight: 'auto',
-});
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
 
-const MemoCollectionImageListContents = styled.div({
-  display: 'grid',
-  gridAutoFlow: 'row',
-  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-  padding: '18px',
-  columnGap: '16px',
-  rowGap: '16px',
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+  }),
+  {
+    padding: '12px 16px',
+    borderTopLeftRadius: theme.radius[12],
+    borderTopRightRadius: theme.radius[12],
+    boxShadow: theme.shadow.normal,
 
-  boxShadow: theme.shadow.emphasize,
-  borderRadius: theme.radius[12],
-  borderTopLeftRadius: '0',
-  background: theme.color.background.normal,
-
-  [media[480]]: {
-    padding: '16px',
-    columnGap: '8px',
-    rowGap: '12px',
+    ...theme.font.label1normal.semibold,
+    margin: '0',
+    marginRight: 'auto',
   },
-});
+);
+
+const MemoCollectionImageListContents = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+  }),
+  {
+    display: 'grid',
+    gridAutoFlow: 'row',
+    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    padding: '18px',
+    columnGap: '16px',
+    rowGap: '16px',
+
+    boxShadow: theme.shadow.emphasize,
+    borderRadius: theme.radius[12],
+    borderTopLeftRadius: '0',
+
+    [media[480]]: {
+      padding: '16px',
+      columnGap: '8px',
+      rowGap: '12px',
+    },
+  },
+);
 
 const MemoCollectionImageItemContainer = styled.div({
   display: 'flex',

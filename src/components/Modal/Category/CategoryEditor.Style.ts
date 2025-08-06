@@ -16,6 +16,13 @@ const CategoryEditorLayout = styled.div({
 });
 
 const CategoryEditorContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
   ({ maxWidth }: { maxWidth?: string }) => ({
     maxWidth: maxWidth ?? '',
     width: maxWidth ? '100vw' : '',
@@ -27,7 +34,6 @@ const CategoryEditorContainer = styled.div(
     display: 'flex',
     flexDirection: 'column',
     padding: '32px',
-    background: theme.color.background.normal,
     borderRadius: theme.radius[16],
     boxSizing: 'border-box',
 
@@ -56,20 +62,13 @@ const CategoryEditorContainer = styled.div(
 const CategoryEditorContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  background: theme.color.background.normal,
   borderRadius: theme.radius[16],
   boxSizing: 'border-box',
   gap: '36px',
-
-  ['>svg']: {
-    cursor: 'pointer',
-    marginLeft: 'auto',
-  },
 });
 
 const CategoryEditorTitle = styled.p({
   ...theme.font.title3.bold,
-  color: theme.color.label.normal,
   textAlign: 'left',
 
   margin: '0',
@@ -82,7 +81,6 @@ const CategoryEditorItemContainer = styled.div({
   gap: '24px',
 
   ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
 });
 
 const CategoryEditorItemContents = styled.div({
@@ -92,19 +90,17 @@ const CategoryEditorItemContents = styled.div({
 });
 
 const CategoryEditorItemInput = styled.label({
-  background: theme.color.background.alternative,
-  borderRadius: theme.radius[4],
-  padding: '11px 14px',
+  padding: '8px 0px',
   display: 'flex',
   alignItems: 'center',
   height: '32px',
+  borderBottom: `1.5px solid ${theme.color.line.neutral}`,
 
   ['input']: {
     flexGrow: '1',
     background: 'transparent',
     border: 'none',
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
 
     [':focus']: {
       outline: 'none',
@@ -120,7 +116,7 @@ const CategoryEditorItemInput = styled.label({
   },
 
   [':has(input:focus)']: {
-    outline: `1.5px solid ${theme.color.primary.normal}`,
+    borderBottom: `1.5px solid ${theme.color.primary.normal}`,
   },
 
   [':has(input[readonly])']: {

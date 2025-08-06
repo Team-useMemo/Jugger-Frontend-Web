@@ -76,11 +76,15 @@ const DefaultModalHeader = styled.div(
     display: 'flex',
     flexShrink: '0',
     position: 'relative',
+    zIndex: '1',
     gap: '4px',
-    justifyContent: 'space-between',
     alignItems: 'center',
 
-    ['>svg, >span']: {
+    ['.grow']: {
+      flexGrow: '1',
+    },
+
+    ['>svg']: {
       width: '24px',
       height: 'auto',
       aspectRatio: '1 / 1',

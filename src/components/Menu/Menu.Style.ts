@@ -44,7 +44,7 @@ const MenuContainer = styled.div(
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    zIndex: '1',
+    zIndex: '999',
 
     ['.divider']: {
       margin: '4px 0',
