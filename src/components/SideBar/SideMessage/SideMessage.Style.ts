@@ -1,16 +1,21 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-const SideMessageContainer = styled.div({
-  background: theme.color.background.alternative,
-  position: 'relative',
-  userSelect: 'none',
-});
+const SideMessageContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.mode === 'light' ? theme.color.background.alternative : theme.color.label.neutral,
+  }),
+  {
+    position: 'relative',
+    userSelect: 'none',
+  },
+);
 
 const SideMessagePinContainer = styled.div(
-  ({ isPinned }: { isPinned: boolean }) => ({
+  ({ theme, isPinned }: { theme?: any; isPinned: boolean }) => ({
     ['>svg']: {
-      fill: isPinned ? theme.color.label.normal : '',
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+      fill: isPinned ? theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'] : '',
     },
   }),
   {
@@ -25,15 +30,29 @@ const SideMessagePinContainer = styled.div(
       width: '24px',
       height: 'auto',
       aspectRatio: '1 / 1',
-      stroke: theme.color.label.normal,
     },
   },
 );
 
 const SideMessageContents = styled.div(
-  ({ showPinIcon, isFocused }: { showPinIcon: boolean; isFocused: boolean }) => ({
+  ({ theme, showPinIcon, isFocused }: { theme?: any; showPinIcon: boolean; isFocused: boolean }) => ({
     transform: showPinIcon ? 'translateX(72px)' : 'translateX(0)',
-    background: isFocused ? '#F7FBFF' : theme.color.background.normal,
+    background: isFocused
+      ? theme.mode === 'light'
+        ? theme.palette.blue[99]
+        : theme.palette.coolneutral[22]
+      : theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    [media[480]]: {
+      background: isFocused
+        ? theme.mode === 'light'
+          ? theme.palette.blue[99]
+          : theme.palette.coolneutral[22]
+        : theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+
+    [':hover']: {
+      background: theme.mode === 'light' ? theme.palette.blue[99] : theme.palette.coolneutral[22],
+    },
   }),
   {
     display: 'flex',
@@ -56,6 +75,12 @@ const SideMessageHeader = styled.div({
 });
 
 const SideMessageHeaderTitle = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+      fill: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
   ({ categoryColor }: { categoryColor: string }) => ({
     ['::before']: {
       background: categoryColor,
@@ -75,16 +100,13 @@ const SideMessageHeaderTitle = styled.div(
       textAlign: 'left',
       margin: '0',
       ...theme.font.body2normal.semibold,
-      color: theme.color.label.normal,
     },
 
     ['>svg']: {
       width: '16px',
       height: 'auto',
       aspectRatio: '1 / 1',
-      stroke: theme.color.label.normal,
       strokeWidth: '2',
-      fill: theme.color.label.normal,
       flexShrink: '0',
     },
 
@@ -116,19 +138,23 @@ const SideMessageHeaderDate = styled.p({
   },
 });
 
-const SideMessageRecentMessage = styled.p({
-  whiteSpace: 'wrap',
-  WebkitLineClamp: '2',
-  display: '-webkit-box',
-  WebkitBoxOrient: 'vertical',
-  overflow: 'hidden',
-  textAlign: 'left',
-  margin: '0',
-  wordBreak: 'break-all',
+const SideMessageRecentMessage = styled.p(
+  ({ theme }) => ({
+    color: theme.color.label[theme.mode === 'light' ? 'neutral' : 'assistive'],
+  }),
+  {
+    whiteSpace: 'wrap',
+    WebkitLineClamp: '2',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textAlign: 'left',
+    margin: '0',
+    wordBreak: 'break-all',
 
-  ...theme.font.label1normal.semibold,
-  color: theme.color.label.neutral,
-});
+    ...theme.font.label1normal.semibold,
+  },
+);
 
 export {
   SideMessageContainer,

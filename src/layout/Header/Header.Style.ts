@@ -1,22 +1,26 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-const HeaderContainer = styled.div({
-  display: 'flex',
-  width: '100%',
-  flexGrow: '1',
-  boxSizing: 'border-box',
-  padding: '0px 24px',
-  minWidth: 0,
-  borderBottom: '1px solid #E0E0E2',
-  height: '78px',
-  position: 'relative',
+const HeaderContainer = styled.div(
+  ({ theme }) => ({
+    borderBottom: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+  }),
+  {
+    display: 'flex',
+    width: '100%',
+    flexGrow: '1',
+    boxSizing: 'border-box',
+    padding: '0px 24px',
+    minWidth: 0,
+    height: '78px',
+    position: 'relative',
 
-  [media[480]]: {
-    padding: '0 12px',
-    height: 'auto',
+    [media[480]]: {
+      padding: '0 12px',
+      height: 'auto',
+    },
   },
-});
+);
 
 const HeaderContents = styled.div({
   display: 'flex',
@@ -32,21 +36,28 @@ const HeaderContents = styled.div({
   },
 });
 
-const HeaderMenuContainer = styled.div({
-  ['>svg']: {
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    cursor: 'pointer',
-  },
+const HeaderMenuContainer = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      cursor: 'pointer',
+    },
 
-  display: 'none',
-  [media[480]]: {
-    display: 'flex',
-    width: '64px',
-    flexShrink: '0',
+    display: 'none',
+    [media[480]]: {
+      display: 'flex',
+      width: '64px',
+      flexShrink: '0',
+    },
   },
-});
+);
 
 const HeaderTitleContainer = styled.div(
   ({ color }: { color: string }) => ({
@@ -66,7 +77,6 @@ const HeaderTitleContainer = styled.div(
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
 
-      color: theme.color.label.normal,
       ...theme.font.heading1.semibold,
       margin: '0',
     },
@@ -81,8 +91,8 @@ const HeaderTitleContainer = styled.div(
     },
 
     ['>svg']: {
-      flexShrink: '0',
       stroke: theme.color.label.alternative,
+      flexShrink: '0',
       height: 'auto',
       aspectRatio: '1 / 1',
     },
@@ -105,7 +115,6 @@ const HeaderTitleContainer = styled.div(
         whiteSpace: 'nowrap',
         margin: '0',
         ...theme.font.body2normal.semibold,
-        color: theme.color.label.normal,
       },
 
       ['>svg']: {
@@ -116,25 +125,32 @@ const HeaderTitleContainer = styled.div(
   },
 );
 
-const HeaderButtonContainer = styled.div({
-  display: 'flex',
-  gap: '8px',
-  alignItems: 'center',
-  flexShrink: '0',
-  marginLeft: 'auto',
+const HeaderButtonContainer = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'center',
+    flexShrink: '0',
+    marginLeft: 'auto',
 
-  ['>svg']: {
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    cursor: 'pointer',
-  },
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      cursor: 'pointer',
+    },
 
-  [media[480]]: {
-    width: '64px',
-    gap: '4px',
-    justifyContent: 'end',
+    [media[480]]: {
+      width: '64px',
+      gap: '4px',
+      justifyContent: 'end',
+    },
   },
-});
+);
 
 export { HeaderContainer, HeaderContents, HeaderMenuContainer, HeaderTitleContainer, HeaderButtonContainer };

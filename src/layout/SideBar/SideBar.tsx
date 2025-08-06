@@ -11,14 +11,14 @@ import AddCategory from '@components/Modal/Category/CategoryEditor';
 import CategoryEditor from '@components/Modal/Category/CategoryEditor';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
-import SearchSVG from '@assets/Header/search.svg?react';
-import LogoPNG from '@assets/Logo.png';
-import CalendarSVG from '@assets/Sidebar/Calendar.svg?react';
+import LogoSVG from '@assets/LogoTextFill.svg?react';
 import ImageSVG from '@assets/Sidebar/Image.svg?react';
-import LinkSVG from '@assets/Sidebar/Link.svg?react';
 import SettingSVG from '@assets/Sidebar/Setting.svg?react';
+import CalendarSVG from '@assets/icons/Calendar.svg?react';
 import CategorySVG from '@assets/icons/category.svg?react';
+import LinkSVG from '@assets/icons/link.svg?react';
 import PlusSVG from '@assets/icons/plus.svg?react';
+import SearchSVG from '@assets/icons/search.svg?react';
 import {
   SideBarCategoryContainer,
   SideBarContainer,
@@ -111,7 +111,7 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
       <AddCategoryModal />
       <EditCategoryModal />
       <SideBarHeader>
-        <img src={LogoPNG} onClick={handleClickLogo} />
+        <LogoSVG onClick={handleClickLogo} />
       </SideBarHeader>
       {isMobile && (
         <SideBarSearchContainer onClick={handleClickSearch}>

@@ -1,143 +1,185 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-export const SideBarContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '360px',
-  height: '100%',
-  background: theme.color.background.normal,
-  [media[480]]: {
-    width: '315px',
-    height: '100dvh',
-  },
-});
+export const SideBarContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
 
-export const SideBarHeader = styled.div({
-  display: 'flex',
-  padding: '28px 24px 20px',
-  borderBottom: '1px solid #E0E0E2',
-  height: '78px',
-  boxSizing: 'border-box',
-
-  ['>img']: {
-    width: '100%',
-    objectFit: 'contain',
-    objectPosition: 'left',
-  },
-
-  [media[480]]: {
-    borderBottom: 'none',
-    borderRight: '1px solid #E0E0E2',
-
-    padding: '20px 24px 16px',
-    height: 'auto',
-
-    ['>img']: {
-      width: '105px',
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '360px',
+    height: '100%',
+    [media[480]]: {
+      width: '315px',
+      height: '100dvh',
     },
   },
-});
+);
 
-export const SideBarSearchContainer = styled.label({
-  background: theme.color.background.alternative,
-  margin: '12px 16px',
-  boxSizing: 'border-box',
-  padding: '16px 12px',
-  borderRadius: theme.radius[8],
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
+export const SideBarHeader = styled.div(
+  ({ theme }) => ({
+    borderBottom: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+    ['>svg']: {
+      fill: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+    [media[480]]: {
+      borderRight: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+    },
+  }),
+  {
+    display: 'flex',
+    padding: '24px 24px 20px',
+    height: '78px',
+    boxSizing: 'border-box',
 
-  ['>svg']: {
-    width: '20px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-  },
-
-  ['>input']: {
-    background: 'transparent',
-    border: 'none',
-
-    ...theme.font.body2normal.medium,
-
-    [':focus']: {
-      outline: 'none',
+    ['>svg']: {
+      cursor: 'pointer',
+      width: '113px',
+      aspectRatio: 'auto',
+      height: 'auto',
+      padding: '0',
+      flexShrink: '0',
     },
 
-    ['::placeholder']: {
-      color: theme.color.label.alternative,
+    [media[480]]: {
+      borderBottom: 'none',
+
+      padding: '20px 24px 16px',
+      height: 'auto',
+
+      ['>img']: {
+        width: '105px',
+      },
     },
   },
-});
+);
 
-export const SideBarContents = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  flex: 1,
-  borderRight: '1px solid #E0E0E2',
-  padding: '16px 0',
-  gap: '16px',
-  boxSizing: 'border-box',
+export const SideBarSearchContainer = styled.label(
+  ({ theme }) => ({
+    background: theme.mode === 'light' ? theme.color.background.alternative : theme.color.label.neutral,
 
-  ['::-webkit-scrollbar']: {
-    opacity: '0',
-    width: '12px',
-    backgroundColor: '#FCFCFC',
-    borderLeft: '1px solid #E8E8E8',
-  },
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'alternative'],
+    },
+  }),
+  {
+    margin: '12px 16px',
+    boxSizing: 'border-box',
+    padding: '16px 12px',
+    borderRadius: theme.radius[8],
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
 
-  ['::-webkit-scrollbar-thumb']: {
-    backgroundColor: '#7A7A7A',
-    borderRadius: '100px',
-    backgroundClip: 'padding-box',
-    border: '3px solid transparent',
+    ['>svg']: {
+      width: '20px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
 
-    [':hover']: {
-      backgroundColor: '#AAAAAA',
+    ['>input']: {
+      background: 'transparent',
+      border: 'none',
+
+      ...theme.font.body2normal.medium,
+
+      [':focus']: {
+        outline: 'none',
+      },
+
+      ['::placeholder']: {
+        color: theme.color.label.alternative,
+      },
     },
   },
+);
 
-  ['>button']: {
-    margin: '0 24px',
-  },
-
-  [media[480]]: {
-    padding: '0 0 16px',
+export const SideBarContents = styled.div(
+  ({ theme }) => ({
+    borderRight: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
 
     ['::-webkit-scrollbar']: {
-      border: '1px solid #E8E8E8',
+      backgroundColor: theme.mode === 'light' ? '#FCFCFC' : '#333333ff',
+      borderLeft: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+    },
+
+    [media[480]]: {
+      ['::-webkit-scrollbar']: {
+        border: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+      },
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    flex: 1,
+    padding: '16px 0',
+    gap: '16px',
+    boxSizing: 'border-box',
+
+    ['::-webkit-scrollbar']: {
+      opacity: '0',
+      width: '12px',
+    },
+
+    ['::-webkit-scrollbar-thumb']: {
+      backgroundColor: '#7A7A7A',
+      borderRadius: '100px',
+      backgroundClip: 'padding-box',
+      border: '3px solid transparent',
+
+      [':hover']: {
+        backgroundColor: '#AAAAAA',
+      },
+    },
+
+    ['>button']: {
+      margin: '0 24px',
+    },
+
+    [media[480]]: {
+      padding: '0 0 16px',
     },
   },
-});
+);
 
 export const SideBarMenuContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
 });
 
-export const SideBarMenuItemContainer = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '16px',
-  padding: '12px 24px',
-  cursor: 'pointer',
+export const SideBarMenuItemContainer = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+    [':hover']: {
+      background: theme.mode === 'light' ? theme.palette.blue[99] : theme.palette.coolneutral[22],
+    },
+  }),
+  {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+    padding: '12px 24px',
+    cursor: 'pointer',
 
-  ...theme.font.body2normal.semibold,
-  color: theme.color.label.normal,
+    ...theme.font.body2normal.semibold,
 
-  ['>svg']: {
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
   },
-
-  [':hover']: {
-    background: theme.palette.blue[99],
-  },
-});
+);
 
 export const SideBarCategoryContainer = styled.div({
   display: 'flex',

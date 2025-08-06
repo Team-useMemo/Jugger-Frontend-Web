@@ -79,6 +79,7 @@ const JuggerButton = styled.button(
     justifyContent: 'center',
     whiteSpace: 'nowrap',
     minWidth: '0',
+    flexShrink: '0',
 
     [':focus']: {
       outline: 'none',

@@ -122,7 +122,6 @@ const AccountProfile = styled.div(
     alignItems: 'center',
 
     ...theme.font.body1normal.semibold,
-    color: theme.color.label.normal,
 
     ['>svg']: {
       width: '36px',
