@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useChatContext } from '@providers/ChatContext';
-import { usePostCalendarMutation, usePutCalendarMutation } from '@stores/modules/memo';
+import { usePostCalendarMutation } from '@stores/modules/memo';
 import { setModalClose } from '@stores/modules/modal';
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { ScheduleAlarm, scheduleAlarms } from '@ts/Memo.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { ValidationItem, isValidFields, validateFields } from '@utils/Vaildate';
+import { useEditCalendarMemo } from '@hooks/memo/useMemoActions';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
@@ -30,7 +31,7 @@ import {
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content, chatId } = props ?? {};
-  console.log(content, chatId);
+
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
   const [description, setDescription] = useState<string>(content?.description ?? '');
@@ -47,7 +48,6 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const currentCategory = searchParams.get('category');
 
   const [postCalendar] = usePostCalendarMutation();
-  const [putCalendar] = usePutCalendarMutation();
 
   const validateList: ValidationItem[] = [
     {
@@ -114,48 +114,21 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   };
 
   const dispatch = useAppDispatch();
+  const { editCalendarMemo } = useEditCalendarMemo();
 
   const handleUpdateSchedule = () => {
     if (!validateFields(validateList, setErrors) || !startDate) return;
-    //나중에 API 추가해야 함
-
-    console.log({
-      name: title.trim(),
-      place: place.trim(),
-      description: description.trim(),
-      alarm: alarm
-        ? new Date(
-            (() => {
-              const date = new Date(startDate);
-              date.setMinutes(date.getMinutes() - alarm.minute);
-              return date;
-            })(),
-          ).toISOString()
-        : '',
-      startTime: startDate.toISOString(),
-      endTime: endDate?.toISOString(),
-      categoryId: currentCategory || undefined,
-    });
 
     (async () => {
       try {
-        await putCalendar({
-          name: title.trim(),
+        editCalendarMemo(chatId, {
+          title: title.trim(),
           place: place.trim(),
           description: description.trim(),
-          alarm: alarm
-            ? new Date(
-                (() => {
-                  const date = new Date(startDate);
-                  date.setMinutes(date.getMinutes() - alarm.minute);
-                  return date;
-                })(),
-              ).toISOString()
-            : '',
-          startTime: startDate.toISOString(),
-          endTime: endDate?.toISOString(),
-          chatId: chatId || '',
-        }).unwrap();
+          alarm: alarm ?? undefined,
+          startDate: startDate,
+          endDate: endDate,
+        });
 
         closeModal?.();
       } catch (error) {
@@ -453,7 +426,7 @@ const MemoEditorSchduleAlarmMenu = ({
     return () => {
       document.removeEventListener('mousedown', handleClick);
     };
-  }, []);
+  }, [closeMenu]);
 
   return (
     <MemoEditorSchduleAlarmMenuListContainer ref={containerRef}>

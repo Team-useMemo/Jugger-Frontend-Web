@@ -15,7 +15,7 @@ export const useChatLoader = (categoryId?: string) => {
     setOldest(null);
     setLatest(null);
     triggerGetMemos({ categoryId, page: 0, size: SIZE });
-  }, [categoryId]);
+  }, [categoryId, triggerGetMemos]);
 
   // ✅ 과거 채팅 요청 (스크롤 최상단 도달 시)
   const fetchBefore = () => {

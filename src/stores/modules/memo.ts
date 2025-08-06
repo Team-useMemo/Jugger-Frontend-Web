@@ -62,7 +62,6 @@ export const memoApi = createApi({
         return `${base}/${dir}?${params.toString()}`;
       },
       transformResponse: (response: any): MemoProp[] => {
-        console.log(response);
         return response
           .map((item: any) => {
             const content =
@@ -81,6 +80,7 @@ export const memoApi = createApi({
               content,
               date: new Date(item.timestamp),
               categoryId: item.categoryId,
+              updatedAt: new Date(),
             };
           })
           .sort((a: MemoResponseProp, b: MemoResponseProp) => b.date.getTime() - a.date.getTime());
@@ -295,23 +295,23 @@ export const memoApi = createApi({
     putCalendar: builder.mutation<
       void,
       {
-        name: string;
-        place: string;
+        title: string;
+        place?: string;
         alarm?: string;
-        description: string;
-        startTime: string;
-        endTime?: string;
+        description?: string;
+        startDate: string;
+        endDate?: string;
         chatId: string;
       }
     >({
-      query: ({ chatId, name, place, alarm, description, startTime, endTime }) => ({
+      query: ({ chatId, title, place, alarm, description, startDate, endDate }) => ({
         url: '/api/v1/calendar',
         method: 'PUT',
         body: {
           chatId,
-          title: name,
-          start: startTime,
-          end: endTime,
+          title: title,
+          start: startDate,
+          end: endDate,
           place,
           alarm,
           description,

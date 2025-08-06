@@ -93,7 +93,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
 
   useEffect(() => {
     modalRef.current?.focus();
-  }, []);
+  }, [modalRef]);
 
   return (
     <DefaultModalLayout>

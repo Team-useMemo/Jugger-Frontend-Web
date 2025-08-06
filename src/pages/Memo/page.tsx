@@ -44,6 +44,7 @@ const MemoList = React.memo(() => {
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: memos = [], fetchBefore } = useChatContext();
   const [recentMemoDate, setRecentMemoDate] = useState<Date>();
+  // console.log(memos);
 
   useEffect(() => {
     loadBeforeMemos();
@@ -66,7 +67,7 @@ const MemoList = React.memo(() => {
     <MemoListContainer ref={memoListContainerRef} onScroll={loadBeforeMemos}>
       {memos.map((memo, i, arr) => {
         return (
-          <MemoItemContainer key={`memo-${memo.chatId}-${i}`} id={`memo-${memo.chatId}`}>
+          <MemoItemContainer key={`memo-${memo.chatId}-${memo.updatedAt.getTime()}`} id={`memo-${memo.chatId}`}>
             {(i == arr.length - 1 ||
               (i + 1 < arr.length && arr[i + 1].date.toDateString() != memo.date.toDateString())) && (
               <MemoItemDateContainer>

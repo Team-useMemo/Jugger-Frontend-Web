@@ -4,7 +4,7 @@ import { setModalOpen } from '@stores/modules/modal';
 import { useMemo, useState } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
-import { ContextMenuCategory, ContextMenuDelete, ContextMenuEdit } from '@utils/ContextMenu';
+import { ContextMenuCategory, ContextMenuEdit } from '@utils/ContextMenu';
 import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { useContextMenu } from '@hooks/useContextMenu';
