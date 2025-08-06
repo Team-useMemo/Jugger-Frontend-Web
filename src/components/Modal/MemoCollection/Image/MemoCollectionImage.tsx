@@ -1,4 +1,4 @@
-import { useGetPhotosByCategoryQuery, useGetPhotosQuery } from '@stores/modules/memo';
+import { useGetPhotosQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp, imageProp } from '@ts/Memo.Prop';
@@ -74,20 +74,7 @@ const MemoCollectionImageItem = ({ memo, category }: { memo: MemoProp; category?
 };
 
 const MemoCollectionImage = ({ category }: { category?: CategoryProp }) => {
-  const useImageMemos = (category?: CategoryProp) => {
-    const useCategoryQuery = !!category?.categoryId;
-
-    const query = useGetPhotosByCategoryQuery(
-      { page: 0, size: 200, categoryId: category?.categoryId ?? '' },
-      { skip: !useCategoryQuery },
-    );
-
-    const fallback = useGetPhotosQuery({ page: 0, size: 200 }, { skip: useCategoryQuery });
-
-    return useCategoryQuery ? query : fallback;
-  };
-
-  const { data: imageMemos = [] } = useImageMemos(category);
+  const { data: imageMemos = [] } = useGetPhotosQuery({ categoryId: category?.categoryId, page: 0, size: 200 });
 
   const dateImages: [string, MemoProp[]][] = Object.entries(
     [...imageMemos].reverse().reduce((acc: any, e) => {

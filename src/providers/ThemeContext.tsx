@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
 import { theme as baseTheme } from '@styles/theme';
 

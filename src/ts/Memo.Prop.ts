@@ -74,6 +74,7 @@ export interface MemoProp {
   date: Date;
   categoryId: string | null;
   description: string;
+  updatedAt: Date;
 }
 
 export interface CalendarResponseProp {

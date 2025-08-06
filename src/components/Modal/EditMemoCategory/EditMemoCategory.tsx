@@ -1,7 +1,7 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { usePatchMemoMutation } from '@stores/modules/memo';
 import { useState } from 'react';
 import { formatDate } from '@utils/Date';
+import { useEditCategoryMemo } from '@hooks/memo/useMemoActions';
 import { useOgData } from '@hooks/useOgData';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
@@ -27,11 +27,11 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
   const { data: categories = [] } = useGetCategoriesQuery();
   const ogData = useOgData(type === 'LINK' ? content : '');
   const { ogDescription } = ogData || {};
-  const [patchMemoCategory] = usePatchMemoMutation();
+
+  const { editCategoryMemo } = useEditCategoryMemo();
+
   const handleEditMemoCategory = () => {
-    if (categoryId !== selectedCategoryId) {
-      patchMemoCategory({ chatId: chatId, categoryId: selectedCategoryId });
-    }
+    editCategoryMemo(chatId, selectedCategoryId);
 
     closeModal?.();
   };
