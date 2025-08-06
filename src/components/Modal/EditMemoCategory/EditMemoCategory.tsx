@@ -6,7 +6,6 @@ import { useOgData } from '@hooks/useOgData';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import JuggerButton from '@components/Common/JuggerButton';
 import CloseSVG from '@assets/icons/close.svg?react';
-import { DefaultModalLayout } from '../DefaultModal.Style';
 import {
   CategoryContainer,
   CategoryContents,
@@ -14,6 +13,7 @@ import {
   CategoryLabel,
   CloseButtonWrapper,
   Container,
+  Layout,
   MemoContent,
   MemoImage,
   MemoLabel,
@@ -35,10 +35,9 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
 
     closeModal?.();
   };
-  console.log(content);
 
   return (
-    <DefaultModalLayout>
+    <Layout>
       <Container ref={modalRef}>
         <CloseButtonWrapper>
           <CloseSVG onClick={closeModal} />
@@ -93,12 +92,12 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
               );
             })}
           </CategoryContents>
+          <JuggerButton color="primary" size="medium" onClick={handleEditMemoCategory}>
+            변경하기
+          </JuggerButton>
         </CategoryContainer>
-        <JuggerButton color="primary" size="medium" onClick={handleEditMemoCategory}>
-          변경하기
-        </JuggerButton>
       </Container>
-    </DefaultModalLayout>
+    </Layout>
   );
 };
 
