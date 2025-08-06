@@ -5,6 +5,10 @@ const JuggerSelectBox = styled.div(
   ({ theme }) => ({
     ['>label']: {
       background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+
+      ['>svg']: {
+        stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+      },
     },
     ['>ul']: {
       background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],

@@ -62,7 +62,7 @@ const WithdrawUserConfirmButtonContainer = styled.div({
   width: '100%',
 
   ['>button']: {
-    width: '100%',
+    flexGrow: '1',
   },
 
   [media[480]]: {
@@ -235,7 +235,7 @@ const WithdrawUserReasonButtonContainer = styled.div({
   display: 'flex',
   gap: '8px',
   ['>button']: {
-    width: '100%',
+    flexGrow: '1',
   },
 });
 
