@@ -3,7 +3,7 @@ import { media, theme } from '@styles/theme';
 
 const HeaderContainer = styled.div(
   ({ theme }) => ({
-    borderBottom: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+    borderBottom: `1.5px solid ${theme.mode === 'light' ? theme.color.line.normal : theme.color.label.neutral}`,
   }),
   {
     display: 'flex',

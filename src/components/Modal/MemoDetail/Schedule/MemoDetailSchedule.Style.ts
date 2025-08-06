@@ -20,32 +20,68 @@ const MemoDetailScheduleContainer = styled.div({
 const MemoDetailScheduleContents = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  gap: '28px',
+  gap: '12px',
 
   [media[480]]: {
     gap: '24px',
   },
 });
 
-const MemoDetailScheduleItemContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-
-  textAlign: 'left',
-
-  ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
+const MemoDetailScheduleTitleContainer = styled.div({
+  paddingBottom: '20px',
+  borderBottom: `1px solid ${theme.color.line.normal}`,
 
   ['>p']: {
-    padding: '8px 0',
+    textAlign: 'left',
     margin: '0',
-
-    borderBottom: `1.5px solid ${theme.color.line.neutral}`,
-
-    ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
+    ...theme.font.headline1.semibold,
   },
 });
 
-export { MemoDetailScheduleContainer, MemoDetailScheduleContents, MemoDetailScheduleItemContainer };
+const MemoDetailScheduleItemContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+});
+
+const MemoDetailScheduleItemContents = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'center',
+
+    ['>svg']: {
+      width: '28px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
+
+    ['>p']: {
+      margin: '0',
+      ...theme.font.body1normal.medium,
+    },
+  },
+);
+
+const MemoDetailScheduleButtonContainer = styled.div({
+  display: 'flex',
+  gap: '8px',
+
+  ['>button']: {
+    flexGrow: '1',
+  },
+});
+
+export {
+  MemoDetailScheduleContainer,
+  MemoDetailScheduleContents,
+  MemoDetailScheduleTitleContainer,
+  MemoDetailScheduleItemContainer,
+  MemoDetailScheduleButtonContainer,
+  MemoDetailScheduleItemContents,
+};

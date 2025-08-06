@@ -32,7 +32,7 @@ const color = {
   },
   /** line */
   line: {
-    /** #e8e8eaff */ neutral: '#46474Cff',
+    /** #e8e8eaff */ neutral: '#E8E8EA',
     /** #f4f4f5ff */ alternative: '#f4f4f5ff',
     /** #e0e0e2ff */ normal: '#e0e0e2ff',
   },

@@ -23,12 +23,12 @@ export const SideBarContainer = styled.div(
 
 export const SideBarHeader = styled.div(
   ({ theme }) => ({
-    borderBottom: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+    borderBottom: `1.5px solid ${theme.mode === 'light' ? theme.color.line.normal : theme.color.label.neutral}`,
     ['>svg']: {
       fill: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
     },
     [media[480]]: {
-      borderRight: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+      borderRight: `1.5px solid ${theme.mode === 'light' ? theme.color.line.normal : 'transparent'}`,
     },
   }),
   {
@@ -101,7 +101,7 @@ export const SideBarSearchContainer = styled.label(
 
 export const SideBarContents = styled.div(
   ({ theme }) => ({
-    borderRight: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
+    borderRight: `1.5px solid ${theme.mode === 'light' ? theme.color.line.normal : theme.color.label.neutral}`,
 
     ['::-webkit-scrollbar']: {
       backgroundColor: theme.mode === 'light' ? '#FCFCFC' : '#333333ff',
@@ -109,6 +109,7 @@ export const SideBarContents = styled.div(
     },
 
     [media[480]]: {
+      borderRight: `1.5px solid ${theme.mode === 'light' ? theme.color.line.normal : 'transparent'}`,
       ['::-webkit-scrollbar']: {
         border: `1.5px solid ${theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral']}`,
       },

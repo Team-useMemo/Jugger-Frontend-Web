@@ -9,7 +9,6 @@ const MemoDetailTextContainer = styled.div({
   gap: '12px',
 
   ...theme.font.title3.bold,
-  color: theme.color.label.normal,
 
   [media[480]]: {
     padding: '0px 20px',
@@ -22,7 +21,6 @@ const MemoDetailTextContents = styled.p({
   overflow: 'auto',
 
   ...theme.font.body2normal.medium,
-  color: theme.color.label.normal,
   margin: '0',
 
   ['::-webkit-scrollbar']: {
