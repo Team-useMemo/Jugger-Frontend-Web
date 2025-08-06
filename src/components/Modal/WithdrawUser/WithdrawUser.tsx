@@ -433,8 +433,9 @@ const WithdrawUser = ({ closeModal, modalRef }: ModalComponentProps) => {
     setWithdrawStep((prev) => prev + 1);
   };
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     const fetchWithdraw = async () => {
+      console.log(123);
       const res = await fetchData('/api/v1/user/signout', 'DELETE', {
         body: {
           reasonCode: withdrawReason?.code,
@@ -445,7 +446,7 @@ const WithdrawUser = ({ closeModal, modalRef }: ModalComponentProps) => {
       console.log(res);
     };
 
-    fetchWithdraw();
+    await fetchWithdraw();
     Logout();
   };
 
