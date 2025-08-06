@@ -281,7 +281,6 @@ const MemoEditorScheduleItemContainer = styled.div({
 
 const MemoEditorScheduleItemTitle = styled.p({
   ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
   margin: '0',
 
   ['>span.essential']: {
@@ -289,19 +288,25 @@ const MemoEditorScheduleItemTitle = styled.p({
   },
 });
 
-const MemoEditorScheduleItemContents = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
+const MemoEditorScheduleItemContents = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
 
-  ['>svg']: {
-    width: '28px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    stroke: theme.color.label.normal,
-    flexShrink: '0',
+    ['>svg']: {
+      width: '28px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      flexShrink: '0',
+    },
   },
-});
+);
 
 const MemoEditorScheduleItemInputContainer = styled.div({
   display: 'flex',
@@ -321,7 +326,6 @@ const MemoEditorScheduleItemInputContainer = styled.div({
     minWidth: '0',
 
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
     ['::placeholder']: {
       color: theme.color.label.alternative,
     },

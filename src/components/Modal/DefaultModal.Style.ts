@@ -80,10 +80,6 @@ const DefaultModalHeader = styled.div(
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    ['.grow']: {
-      flexGrow: '1',
-    },
-
     ['>svg, >span']: {
       width: '24px',
       height: 'auto',

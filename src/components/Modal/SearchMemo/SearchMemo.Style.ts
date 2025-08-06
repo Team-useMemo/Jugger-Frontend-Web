@@ -3,7 +3,11 @@ import { media, theme } from '@styles/theme';
 
 const SearchMemoContainer = styled.div(
   ({ theme }) => ({
-    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
   }),
   {
     display: 'flex',
@@ -54,7 +58,11 @@ const SearchMemoInputContainer = styled.div(
 
 const SearchMemoInputContents = styled.label(
   ({ theme }) => ({
-    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'inverse'],
+
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+    },
 
     ['>svg']: {
       stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
