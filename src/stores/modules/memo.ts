@@ -61,9 +61,9 @@ export const memoApi = createApi({
         return `${base}/${dir}?${params.toString()}`;
       },
       transformResponse: (response: any): MemoProp[] => {
-        const chatList = response?.length && 'categoryColor' in response[0] ? response[0].chatItems : response;
+        console.log(response);
 
-        return chatList
+        return response
           .map((item: any) => {
             const content =
               item.type === 'CALENDAR'

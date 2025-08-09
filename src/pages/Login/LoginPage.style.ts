@@ -69,11 +69,21 @@ const LoginPageSocialLoginButtonContainer = styled.div({
 });
 
 const LoginPageSocialLoginButton = styled.button(
-  ({ textColor, bgColor, borderColor }: { textColor: string; bgColor: string; borderColor: string }) => ({
+  ({
+    theme,
+    textColor,
+    bgColor,
+    borderColor,
+  }: {
+    theme?: any;
+    textColor: string;
+    bgColor: string;
+    borderColor: string;
+  }) => ({
     background: bgColor,
     borderColor: borderColor,
     ['>p']: {
-      color: textColor,
+      color: textColor === 'normal' ? theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'] : textColor,
     },
   }),
   {

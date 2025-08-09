@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AppleSVG from '@assets/Login/apple.svg?react';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
@@ -72,7 +71,7 @@ const loginMethod = [
     loginMsg: '구글로 계속하기',
     LogoSVG: GoogleSVG,
     bgColor: 'transparent',
-    textColor: 'auto',
+    textColor: 'normal',
     borderColor: '#E0E0E2',
     onClick: handleGoogleLogin,
   },
@@ -88,7 +87,6 @@ const loginMethod = [
 ];
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const lastLogin = localStorage.getItem('lastLoginProvider');
 
   useEffect(() => {
@@ -100,15 +98,6 @@ const LoginPage = () => {
   return (
     <LoginPageLayout>
       <LoginPageContainer>
-        <button
-          style={{ color: 'black' }}
-          onClick={() => {
-            localStorage.setItem('accessToken', 'masetermasterjugger123123123!');
-            navigate('/memo');
-          }}
-        >
-          TEST 로그인
-        </button>
         <LoginPageTitleContainer>
           빠르게 '톡' 남기고 편하게 정리하는,
           <LogoSVG />
@@ -116,21 +105,24 @@ const LoginPage = () => {
         <LoginPageSocialLoginContainer>
           <LoginPageSocialLoginTitle>간편 로그인</LoginPageSocialLoginTitle>
           <LoginPageSocialLoginButtonContainer>
-            {loginMethod.map((method) => (
-              <LoginPageSocialLoginButton
-                textColor={method.textColor}
-                bgColor={method.bgColor}
-                borderColor={method.borderColor}
-                onClick={method.onClick}
-                key={method.key}
-              >
-                <method.LogoSVG />
-                <p>{method.loginMsg}</p>
-                {lastLogin === method.key && (
-                  <LoginPageRecentSocialLoginBadge>최근 로그인</LoginPageRecentSocialLoginBadge>
-                )}
-              </LoginPageSocialLoginButton>
-            ))}
+            {loginMethod.map(
+              (method) =>
+                method.key !== 'apple' && (
+                  <LoginPageSocialLoginButton
+                    textColor={method.textColor}
+                    bgColor={method.bgColor}
+                    borderColor={method.borderColor}
+                    onClick={method.onClick}
+                    key={method.key}
+                  >
+                    <method.LogoSVG />
+                    <p>{method.loginMsg}</p>
+                    {lastLogin === method.key && (
+                      <LoginPageRecentSocialLoginBadge>최근 로그인</LoginPageRecentSocialLoginBadge>
+                    )}
+                  </LoginPageSocialLoginButton>
+                ),
+            )}
           </LoginPageSocialLoginButtonContainer>
         </LoginPageSocialLoginContainer>
         <LoginPageSocialLoginButtonContainer></LoginPageSocialLoginButtonContainer>
