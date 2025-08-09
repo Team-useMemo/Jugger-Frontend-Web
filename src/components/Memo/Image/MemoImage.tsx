@@ -19,7 +19,7 @@ const MemoImage = ({ content }: { content: imageProp }) => {
 
   return (
     <MemoImageContainer>
-      <img src={content.imgUrl} onClick={openDetailImageMemoModal} />
+      <img src={content.imgUrl} loading="lazy" decoding="async" onClick={openDetailImageMemoModal} />
     </MemoImageContainer>
   );
 };

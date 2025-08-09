@@ -28,7 +28,7 @@ const MemoCollectionLinkItem = ({ memo, isSelectCategory }: { memo: MemoProp; is
   const content = memo.content as string;
   const category = categories.find((category) => category.categoryId === memo.categoryId);
 
-  const ogData = useOgData(content);
+  const { data: ogData } = useOgData(content);
   const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
 
   const handleClickLinkItemMore = (e: React.MouseEvent<HTMLOrSVGElement>) => {

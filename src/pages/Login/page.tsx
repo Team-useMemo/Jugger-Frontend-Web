@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AppleSVG from '@assets/Login/apple.svg?react';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
@@ -24,17 +23,23 @@ declare global {
 
 const handleKakaoLogin = () => {
   localStorage.setItem('lastLoginProvider', 'kakao');
-  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+  const redirect_uri = `${window.location.origin}/login/oauth/callback/kakao`;
+  console.log(redirect_uri);
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${redirect_uri}`;
   window.location.href = kakaoAuthUrl;
 };
 
 const handleNaverLogin = () => {
   localStorage.setItem('lastLoginProvider', 'naver');
+  const redirect_uri = `${window.location.origin}/login/oauth/callback/naver`;
+  const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${import.meta.env.VITE_NAVER_REST_API_KEY}&redirect_uri=${redirect_uri}`;
+  window.location.href = naverAuthUrl;
 };
 
 const handleGoogleLogin = () => {
   localStorage.setItem('lastLoginProvider', 'google');
-  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_REDIRECT_URI}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
+  const redirect_uri = `${window.location.origin}/login/oauth/callback/google`;
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${redirect_uri}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
   window.location.href = googleAuthUrl;
 };
 
@@ -66,7 +71,7 @@ const loginMethod = [
     loginMsg: '구글로 계속하기',
     LogoSVG: GoogleSVG,
     bgColor: 'transparent',
-    textColor: 'auto',
+    textColor: 'normal',
     borderColor: '#E0E0E2',
     onClick: handleGoogleLogin,
   },
@@ -82,7 +87,6 @@ const loginMethod = [
 ];
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const lastLogin = localStorage.getItem('lastLoginProvider');
 
   useEffect(() => {
@@ -94,15 +98,6 @@ const LoginPage = () => {
   return (
     <LoginPageLayout>
       <LoginPageContainer>
-        <button
-          style={{ color: 'black' }}
-          onClick={() => {
-            localStorage.setItem('accessToken', 'masetermasterjugger123123123!');
-            navigate('/memo');
-          }}
-        >
-          TEST 로그인
-        </button>
         <LoginPageTitleContainer>
           빠르게 '톡' 남기고 편하게 정리하는,
           <LogoSVG />
@@ -110,21 +105,24 @@ const LoginPage = () => {
         <LoginPageSocialLoginContainer>
           <LoginPageSocialLoginTitle>간편 로그인</LoginPageSocialLoginTitle>
           <LoginPageSocialLoginButtonContainer>
-            {loginMethod.map((method) => (
-              <LoginPageSocialLoginButton
-                textColor={method.textColor}
-                bgColor={method.bgColor}
-                borderColor={method.borderColor}
-                onClick={method.onClick}
-                key={method.key}
-              >
-                <method.LogoSVG />
-                <p>{method.loginMsg}</p>
-                {lastLogin === method.key && (
-                  <LoginPageRecentSocialLoginBadge>최근 로그인</LoginPageRecentSocialLoginBadge>
-                )}
-              </LoginPageSocialLoginButton>
-            ))}
+            {loginMethod.map(
+              (method) =>
+                method.key !== 'apple' && (
+                  <LoginPageSocialLoginButton
+                    textColor={method.textColor}
+                    bgColor={method.bgColor}
+                    borderColor={method.borderColor}
+                    onClick={method.onClick}
+                    key={method.key}
+                  >
+                    <method.LogoSVG />
+                    <p>{method.loginMsg}</p>
+                    {lastLogin === method.key && (
+                      <LoginPageRecentSocialLoginBadge>최근 로그인</LoginPageRecentSocialLoginBadge>
+                    )}
+                  </LoginPageSocialLoginButton>
+                ),
+            )}
           </LoginPageSocialLoginButtonContainer>
         </LoginPageSocialLoginContainer>
         <LoginPageSocialLoginButtonContainer></LoginPageSocialLoginButtonContainer>

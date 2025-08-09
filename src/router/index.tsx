@@ -41,6 +41,7 @@ const routes = [
       { path: '/memo', element: <MemoPage /> },
       { path: '/login/oauth/callback/kakao', element: <Callback /> },
       { path: '/login/oauth/callback/google', element: <Callback /> },
+      { path: '/login/oauth/callback/naver', element: <Callback /> },
     ],
   },
 ];

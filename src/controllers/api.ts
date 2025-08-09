@@ -208,9 +208,41 @@ const postKakaoAuthCode = async (code: string) => {
     };
   }
 
-  // console.log(res);
-  const errorText = await res.text(); // capture response body for diagnostics
-  throw new Error(`${res.status} Error!! - ${errorText}`);
+  console.log(res, data);
+
+  // console.log(await res.json());
+  // const errorText = await res?.text(); // capture response body for diagnostics
+  // throw new Error(`${res.status} Error!! - ${errorText}`);
+};
+
+const postNaverAuthCode = async (code: string) => {
+  const url = `${baseURL}/auth/naver`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    return {
+      status: 'LOGIN_SUCCESS',
+      ...data,
+    };
+  }
+
+  if (data.userInfo) {
+    return {
+      status: 'NEED_REGISTER',
+      email: data.userInfo.email,
+    };
+  }
+
+  console.log(res, data);
 };
 
 const postGoogleAuthCode = async (code: string) => {
@@ -224,13 +256,23 @@ const postGoogleAuthCode = async (code: string) => {
     body: JSON.stringify({ code }),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text(); // capture response body for diagnostics
-    throw new Error(`${res.status} Error!! - ${errorText}`);
+  const data = await res.json();
+
+  if (res.ok) {
+    return {
+      status: 'LOGIN_SUCCESS',
+      ...data,
+    };
   }
 
-  const data = await res.json();
-  return data;
+  if (data.userInfo) {
+    return {
+      status: 'NEED_REGISTER',
+      email: data.userInfo.email,
+    };
+  }
+
+  console.log(res, data);
 };
 
 type KakaoSignupPayload = {
@@ -279,21 +321,6 @@ const postGoogleSignup = async (payload: KakaoSignupPayload) => {
 };
 
 const getPostSignup = async (payload: any) => {
-  // switch (provider) {
-  //   case 'kakao':
-  //     return postKakaoSignup;
-  //   case 'google':
-  //     return postGoogleSignup;
-  //   case 'naver':
-  //     return postKakaoSignup;
-  //   case 'apple':
-  //     return postKakaoSignup;
-  //   default:
-  //     break;
-  // }
-
-  // return postKakaoSignup;
-
   const url = `${baseURL}/auth/signup`;
   const response = await fetch(url, {
     method: 'POST',
@@ -317,7 +344,7 @@ const getPostAuthCode = (provider: string) => {
     case 'google':
       return postGoogleAuthCode;
     case 'naver':
-      return null;
+      return postNaverAuthCode;
     case 'apple':
       return null;
     default:

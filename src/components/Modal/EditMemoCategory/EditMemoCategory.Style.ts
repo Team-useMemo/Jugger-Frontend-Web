@@ -381,7 +381,7 @@ const MemoLabelBar = styled.div({
   flexShrink: '0',
 });
 
-const MemoLabelText = styled.p({
+const MemoLabelText = styled.div({
   display: 'flex',
   flexDirection: 'column',
 

@@ -15,6 +15,7 @@ import JuggerSwitch from '@components/Common/JuggerSwitch';
 import { media, theme } from '@styles/theme';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
+import NaverSVG from '@assets/Login/naver.svg?react';
 import CheckCircleSVG from '@assets/icons/check_circle.svg?react';
 import CrossCircleSVG from '@assets/icons/cross_circle.svg?react';
 import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
@@ -194,7 +195,7 @@ const AppTheme: Record<AppThemeKey, { name: AppThemeKey; text: string }> = {
   },
 };
 
-const Providers: Record<'kakao' | 'google', { svg: React.ReactNode; color: string }> = {
+const Providers: Record<'kakao' | 'google' | 'naver', { svg: React.ReactNode; color: string }> = {
   kakao: {
     svg: <KakaoSVG />,
     color: '#ffe617',
@@ -202,6 +203,10 @@ const Providers: Record<'kakao' | 'google', { svg: React.ReactNode; color: strin
   google: {
     svg: <GoogleSVG />,
     color: '#ffffff',
+  },
+  naver: {
+    svg: <NaverSVG />,
+    color: '#00C73C',
   },
 };
 
@@ -216,7 +221,7 @@ const SettingPage = () => {
 
   const [notification, setNotification] = useState(GetLocalStorageItem('notification') === 'true');
 
-  const provider = Providers[GetLocalStorageItem('provider') as 'kakao' | 'google'];
+  const provider = Providers[GetLocalStorageItem('provider') as 'kakao' | 'google' | 'naver'];
   const email = GetLocalStorageItem('email');
 
   const handleClickSelectTheme = (e: React.MouseEvent<HTMLLabelElement>) => {
