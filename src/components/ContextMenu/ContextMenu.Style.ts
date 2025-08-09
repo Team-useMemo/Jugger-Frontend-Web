@@ -53,7 +53,7 @@ export const ContextMenuTitle = styled.span({
   whiteSpace: 'nowrap',
 });
 
-export const ContextMenuItem = styled.div<{ active?: boolean }>(({ active }) => ({
+export const ContextMenuItem = styled.div<{ active?: boolean }>(({ theme, active }) => ({
   ...theme.font.body2normal.semibold,
 
   padding: '8px 16px',
@@ -61,7 +61,7 @@ export const ContextMenuItem = styled.div<{ active?: boolean }>(({ active }) => 
 
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.mode === 'light' ? theme.color.fill.normal : theme.palette.coolneutral[22],
   },
 }));
 
