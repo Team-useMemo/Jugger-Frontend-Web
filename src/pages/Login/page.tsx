@@ -32,6 +32,9 @@ const handleKakaoLogin = () => {
 
 const handleNaverLogin = () => {
   localStorage.setItem('lastLoginProvider', 'naver');
+  const redirect_uri = `${window.location.origin}/login/oauth/callback/naver`;
+  const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${import.meta.env.VITE_NAVER_REST_API_KEY}&redirect_uri=${redirect_uri}`;
+  window.location.href = naverAuthUrl;
 };
 
 const handleGoogleLogin = () => {
