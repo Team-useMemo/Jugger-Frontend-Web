@@ -550,17 +550,17 @@ const RegisterPageValue = ({
       content: (
         <RegisterPageValueButtonContainer>
           <RegisterPageValueButton
-            selected={values.gender === '남자'}
+            selected={values.gender === 'MAN'}
             onClick={() => {
-              setValues((prev) => ({ ...prev, gender: '남자' }));
+              setValues((prev) => ({ ...prev, gender: 'MAN' }));
             }}
           >
             남자
           </RegisterPageValueButton>
           <RegisterPageValueButton
-            selected={values.gender === '여자'}
+            selected={values.gender === 'WOMAN'}
             onClick={() => {
-              setValues((prev) => ({ ...prev, gender: '여자' }));
+              setValues((prev) => ({ ...prev, gender: 'WOMAN' }));
             }}
           >
             여자
@@ -713,6 +713,8 @@ const RegisterPage = () => {
         name: values.name,
         email: email,
         domain: provider,
+        gender: values.gender,
+        birth: new Date(values.birth),
         terms: {
           ageOver: terms.isAdult,
           privacyPolicy: terms.agreePrivacyPolicy,

@@ -321,21 +321,6 @@ const postGoogleSignup = async (payload: KakaoSignupPayload) => {
 };
 
 const getPostSignup = async (payload: any) => {
-  // switch (provider) {
-  //   case 'kakao':
-  //     return postKakaoSignup;
-  //   case 'google':
-  //     return postGoogleSignup;
-  //   case 'naver':
-  //     return postKakaoSignup;
-  //   case 'apple':
-  //     return postKakaoSignup;
-  //   default:
-  //     break;
-  // }
-
-  // return postKakaoSignup;
-
   const url = `${baseURL}/auth/signup`;
   const response = await fetch(url, {
     method: 'POST',
