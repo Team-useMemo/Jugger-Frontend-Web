@@ -5,8 +5,8 @@ const RETRY_INTERVAL = 100; // ms
 const MAX_RETRIES = 5;
 
 export const useChatLoader = (categoryId?: string) => {
-  const [oldest, setOldest] = useState<string | null>(null);
-  const [latest, setLatest] = useState<string | null>(null);
+  const oldestRef = useRef<Date | null>(null);
+  const latestRef = useRef<Date | null>(new Date());
 
   const SIZE = 16;
 
@@ -15,21 +15,27 @@ export const useChatLoader = (categoryId?: string) => {
   const retryCountRef = useRef(0);
   const isRetryingRef = useRef(false);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // ✅ 초기 로딩 (최신 채팅)
   useEffect(() => {
-    console.log(categoryId);
-    setOldest(null);
-    setLatest(null);
+    if (!isMounted) return;
+
+    oldestRef.current = null;
+    latestRef.current = new Date();
     triggerGetMemos({ categoryId, page: 0, size: SIZE }, true)
       .unwrap()
       .then((initialData) => {
-        console.log(initialData);
         if (!initialData?.length) return;
 
         const latestFetched = initialData[0].date.toISOString();
         triggerGetMemos({ categoryId, after: latestFetched, page: 0, size: SIZE }, false);
       });
-  }, [categoryId, triggerGetMemos]);
+  }, [categoryId, triggerGetMemos, isMounted]);
 
   const isFetchingRef = useRef(false);
 
@@ -39,51 +45,41 @@ export const useChatLoader = (categoryId?: string) => {
 
   // ✅ 과거 채팅 요청 (스크롤 최상단 도달 시)
   const fetchBefore = () => {
-    const shouldRetry = isFetchingRef.current && !isRetryingRef.current && retryCountRef.current < MAX_RETRIES;
+    if (isRetryingRef.current) return;
 
-    const tryFetch = () => {
-      if (!isFetchingRef.current) {
-        resetRetry();
-        triggerGetMemos({ categoryId, before: oldest ?? undefined, page: 0, size: SIZE });
-      } else if (retryCountRef.current++ < MAX_RETRIES) {
-        setTimeout(tryFetch, RETRY_INTERVAL);
-      } else {
-        console.warn('fetchBefore: Max retries reached');
-        resetRetry();
-      }
-    };
+    if (isFetchingRef.current) {
+      const tryFetch = () => {
+        if (!isFetchingRef.current) {
+          retryCountRef.current = 0;
+          triggerGetMemos({ categoryId, before: oldestRef.current?.toISOString(), page: 0, size: SIZE });
+          isRetryingRef.current = false;
+        } else if (retryCountRef.current++ < MAX_RETRIES) {
+          setTimeout(tryFetch, RETRY_INTERVAL);
+        } else {
+          console.warn('fetchBefore: Max retries reached');
+          isRetryingRef.current = false;
+          retryCountRef.current = 0;
+        }
+      };
 
-    const resetRetry = () => {
-      isRetryingRef.current = false;
-      retryCountRef.current = 0;
-    };
-
-    if (shouldRetry) {
       isRetryingRef.current = true;
       tryFetch();
-      return;
-    }
-
-    if (!isFetchingRef.current) {
-      resetRetry();
-      triggerGetMemos({ categoryId, before: oldest ?? undefined, page: 0, size: SIZE });
+    } else {
+      triggerGetMemos({ categoryId, before: oldestRef.current?.toISOString(), page: 0, size: SIZE });
     }
   };
 
   // ✅ 최신 채팅 요청 (채팅 전송 직후)
   const fetchAfter = () => {
-    if (!latest || isFetching) return;
-    triggerGetMemos({ categoryId, after: latest, page: 0, size: SIZE });
+    if (!latestRef.current || isFetching) return;
+    triggerGetMemos({ categoryId, after: latestRef.current?.toISOString(), page: 0, size: SIZE });
   };
 
   // ✅ 커서 업데이트 (데이터 수신 시)
   useEffect(() => {
     if (!data?.length) return;
-    const oldestNew = data[data.length - 1].date.toISOString();
-    const latestNew = data[0].date.toISOString();
-
-    setOldest((prev) => (prev ? (oldestNew < prev ? oldestNew : prev) : oldestNew));
-    setLatest((prev) => (prev ? (latestNew > prev ? latestNew : prev) : latestNew));
+    oldestRef.current = data[data.length - 1].date;
+    latestRef.current = data[0].date;
   }, [data]);
 
   return { data, fetchBefore, fetchAfter };

@@ -47,7 +47,9 @@ const MemoList = React.memo(() => {
   // console.log(memos);
 
   useEffect(() => {
-    loadBeforeMemos();
+    if (memos.length) {
+      loadBeforeMemos();
+    }
     if (recentMemoDate && memos?.[0]?.date.getTime() !== recentMemoDate.getTime()) {
       memoListContainerRef.current?.scrollTo({ top: 0 });
     }
@@ -67,7 +69,7 @@ const MemoList = React.memo(() => {
     <MemoListContainer ref={memoListContainerRef} onScroll={loadBeforeMemos}>
       {memos.map((memo, i, arr) => {
         return (
-          <MemoItemContainer key={`memo-${memo.chatId}-${memo.updatedAt.getTime()}`} id={`memo-${memo.chatId}`}>
+          <MemoItemContainer key={`memo-${memo.chatId}`} id={`memo-${memo.chatId}`}>
             {(i == arr.length - 1 ||
               (i + 1 < arr.length && arr[i + 1].date.toDateString() != memo.date.toDateString())) && (
               <MemoItemDateContainer>
