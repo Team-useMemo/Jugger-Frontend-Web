@@ -577,7 +577,7 @@ const RegisterPageValue = ({
           type="text"
           name="birth"
           value={values.birth}
-          placeholder="생년월일을 입력해주세요"
+          placeholder="ex) 2001-12-14"
           onChange={handleChangeValue}
         />
       ),
