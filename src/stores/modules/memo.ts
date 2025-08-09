@@ -61,7 +61,9 @@ export const memoApi = createApi({
         return `${base}/${dir}?${params.toString()}`;
       },
       transformResponse: (response: any): MemoProp[] => {
-        return response
+        const chatList = response?.length && 'categoryColor' in response[0] ? response[0].chatItems : response;
+
+        return chatList
           .map((item: any) => {
             const content =
               item.type === 'CALENDAR'
@@ -305,10 +307,7 @@ export const memoApi = createApi({
         };
       },
       transformResponse: (response: any): MemoProp[] => {
-        console.log(response);
-        const linkList = response?.length && 'linkData' in response[0] ? response[0].linkData : response;
-
-        return linkList.map((e: LinkResponseProp, i: number) => ({
+        return response.map((e: LinkResponseProp, i: number) => ({
           memoId: i,
           type: 'link',
           content: e.link,

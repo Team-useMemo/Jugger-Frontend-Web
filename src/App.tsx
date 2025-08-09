@@ -6,6 +6,9 @@ import { router } from './router';
 const StyledBody = styled.div(({ theme }) => ({
   backgroundColor: theme.color.background[theme.mode === 'dark' ? 'inverse' : 'normal'],
   color: theme.color.label[theme.mode === 'dark' ? 'inverse' : 'normal'],
+  ['input,textarea']: {
+    color: theme.color.label[theme.mode === 'dark' ? 'inverse' : 'normal'],
+  },
 }));
 
 function App() {

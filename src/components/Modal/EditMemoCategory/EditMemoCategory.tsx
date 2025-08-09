@@ -25,7 +25,7 @@ const EditMemoCategory = ({ closeModal, props, modalRef }: ModalComponentProps) 
   const { chatId, categoryId, type, content } = props ?? {};
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(categoryId);
   const { data: categories = [] } = useGetCategoriesQuery();
-  const ogData = useOgData(type === 'LINK' ? content : '');
+  const { data: ogData } = useOgData(type === 'LINK' ? content : '');
   const { ogDescription } = ogData || {};
 
   const { editCategoryMemo } = useEditCategoryMemo();

@@ -3,8 +3,7 @@ import { MemoTextContainer } from '../Text/MemoText.Style';
 import { MemoLinkContainer, MemoLinkImage, MemoLinkTextContainer } from './MemoLink.Style';
 
 const MemoLink = ({ content }: { content: string }) => {
-
-  const ogData = useOgData(content);
+  const { data: ogData } = useOgData(content);
   if (!ogData)
     return (
       <MemoTextContainer>

@@ -24,7 +24,9 @@ declare global {
 
 const handleKakaoLogin = () => {
   localStorage.setItem('lastLoginProvider', 'kakao');
-  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+  const redirect_uri = `${window.location.origin}/login/oauth/callback/kakao`;
+  console.log(redirect_uri);
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${redirect_uri}`;
   window.location.href = kakaoAuthUrl;
 };
 
@@ -34,7 +36,8 @@ const handleNaverLogin = () => {
 
 const handleGoogleLogin = () => {
   localStorage.setItem('lastLoginProvider', 'google');
-  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_REDIRECT_URI}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
+  const redirect_uri = `${window.location.origin}/login/oauth/callback/google`;
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${redirect_uri}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
   window.location.href = googleAuthUrl;
 };
 
