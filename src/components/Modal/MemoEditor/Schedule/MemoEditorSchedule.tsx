@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { usePostCalendarMutation, usePutCalendarMutation } from '@stores/modules/memo';
+import { useChatContext } from '@providers/ChatContext';
+import { usePostCalendarMutation } from '@stores/modules/memo';
 import { setModalClose } from '@stores/modules/modal';
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { ScheduleAlarm, scheduleAlarms } from '@ts/Memo.Prop';
 import { formatDate } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
 import { ValidationItem, isValidFields, validateFields } from '@utils/Vaildate';
+import { useEditCalendarMemo } from '@hooks/memo/useMemoActions';
 import { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
@@ -29,7 +31,7 @@ import {
 const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const isEdit = !!props;
   const { content, chatId } = props ?? {};
-  console.log(content, chatId);
+
   const [title, setTitle] = useState<string>(content?.title ?? '');
   const [place, setPlace] = useState<string>(content?.place ?? '');
   const [description, setDescription] = useState<string>(content?.description ?? '');
@@ -46,7 +48,6 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   const currentCategory = searchParams.get('category');
 
   const [postCalendar] = usePostCalendarMutation();
-  const [putCalendar] = usePutCalendarMutation();
 
   const validateList: ValidationItem[] = [
     {
@@ -79,6 +80,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   ];
 
   const isScheduleValidate = isValidFields(validateList);
+  const { fetchAfter } = useChatContext();
 
   const handleAddSchedule = () => {
     if (!validateFields(validateList, setErrors) || !startDate) return;
@@ -102,6 +104,7 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
           endTime: endDate?.toISOString(),
           categoryId: currentCategory || undefined,
         }).unwrap();
+        fetchAfter();
 
         closeModal?.();
       } catch (error) {
@@ -111,48 +114,21 @@ const MemoEditorSchedule = ({ closeModal, props, modalRef }: ModalComponentProps
   };
 
   const dispatch = useAppDispatch();
+  const { editCalendarMemo } = useEditCalendarMemo();
 
   const handleUpdateSchedule = () => {
     if (!validateFields(validateList, setErrors) || !startDate) return;
-    //나중에 API 추가해야 함
-
-    console.log({
-      name: title.trim(),
-      place: place.trim(),
-      description: description.trim(),
-      alarm: alarm
-        ? new Date(
-            (() => {
-              const date = new Date(startDate);
-              date.setMinutes(date.getMinutes() - alarm.minute);
-              return date;
-            })(),
-          ).toISOString()
-        : '',
-      startTime: startDate.toISOString(),
-      endTime: endDate?.toISOString(),
-      categoryId: currentCategory || undefined,
-    });
 
     (async () => {
       try {
-        await putCalendar({
-          name: title.trim(),
+        editCalendarMemo(chatId, {
+          title: title.trim(),
           place: place.trim(),
           description: description.trim(),
-          alarm: alarm
-            ? new Date(
-                (() => {
-                  const date = new Date(startDate);
-                  date.setMinutes(date.getMinutes() - alarm.minute);
-                  return date;
-                })(),
-              ).toISOString()
-            : '',
-          startTime: startDate.toISOString(),
-          endTime: endDate?.toISOString(),
-          chatId: chatId || '',
-        }).unwrap();
+          alarm: alarm ?? undefined,
+          startDate: startDate,
+          endDate: endDate,
+        });
 
         closeModal?.();
       } catch (error) {
@@ -305,7 +281,6 @@ const MemoEditorScheduleItemContainer = styled.div({
 
 const MemoEditorScheduleItemTitle = styled.p({
   ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
   margin: '0',
 
   ['>span.essential']: {
@@ -313,19 +288,25 @@ const MemoEditorScheduleItemTitle = styled.p({
   },
 });
 
-const MemoEditorScheduleItemContents = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
+const MemoEditorScheduleItemContents = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
 
-  ['>svg']: {
-    width: '28px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    stroke: theme.color.label.normal,
-    flexShrink: '0',
+    ['>svg']: {
+      width: '28px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      flexShrink: '0',
+    },
   },
-});
+);
 
 const MemoEditorScheduleItemInputContainer = styled.div({
   display: 'flex',
@@ -345,7 +326,6 @@ const MemoEditorScheduleItemInputContainer = styled.div({
     minWidth: '0',
 
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
     ['::placeholder']: {
       color: theme.color.label.alternative,
     },
@@ -450,7 +430,7 @@ const MemoEditorSchduleAlarmMenu = ({
     return () => {
       document.removeEventListener('mousedown', handleClick);
     };
-  }, []);
+  }, [closeMenu]);
 
   return (
     <MemoEditorSchduleAlarmMenuListContainer ref={containerRef}>

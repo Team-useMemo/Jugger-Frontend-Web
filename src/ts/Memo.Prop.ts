@@ -74,10 +74,12 @@ export interface MemoProp {
   date: Date;
   categoryId: string | null;
   description: string;
+  updatedAt: Date;
 }
 
 export interface CalendarResponseProp {
-  calendarId: string; // chatId?
+  chatId: string;
+  calendarId: string;
   place: string;
   alarm?: string;
   description: string;

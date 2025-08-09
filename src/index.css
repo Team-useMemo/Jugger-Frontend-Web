@@ -33,7 +33,7 @@ a:hover {
 html {
   height: 100%;
   zoom: 1; /* 기본 줌 설정 */
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 body {
@@ -42,7 +42,7 @@ body {
   height: 100%;
   min-width: 320px;
   min-height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 input,
@@ -77,8 +77,8 @@ button:focus-visible {
 /* test */
 @media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #ffffff;
+    background-color: #171719;
   }
   a:hover {
     color: #747bff;
@@ -90,7 +90,7 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
+    color: #171719;
     background-color: #ffffff;
   }
   a:hover {

@@ -26,6 +26,7 @@ export default defineConfig({
       { find: '@styles', replacement: '/src/styles' },
       { find: '@assets', replacement: '/src/assets' },
       { find: '@stores', replacement: '/src/stores' },
+      { find: '@providers', replacement: '/src/providers' },
     ],
   },
 });

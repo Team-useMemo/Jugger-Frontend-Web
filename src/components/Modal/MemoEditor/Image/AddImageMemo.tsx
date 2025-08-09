@@ -1,3 +1,4 @@
+import { useChatContext } from '@providers/ChatContext';
 import { useUploadFileMutation } from '@stores/modules/memo';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -29,6 +30,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
   const currentCategory = searchParams.get('category');
 
   const [uploadFile] = useUploadFileMutation();
+  const { fetchAfter } = useChatContext();
 
   const handlePasteClipboard = (e: React.ClipboardEvent<HTMLDivElement>) => {
     const items = e.clipboardData.items;
@@ -78,9 +80,10 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
         await uploadFile({
           file: file,
           categoryId: currentCategory ?? undefined,
-          description: desc
+          description: desc,
         }).unwrap();
 
+        fetchAfter();
         closeModal?.();
       } catch (error) {
         console.error('사진 전송 실패:', error);
@@ -90,7 +93,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
 
   useEffect(() => {
     modalRef.current?.focus();
-  }, []);
+  }, [modalRef]);
 
   return (
     <DefaultModalLayout>
@@ -100,7 +103,7 @@ const AddImageMemo = ({ closeModal, props, modalRef }: ModalComponentProps) => {
         ) : (
           <DefaultModalHeader>
             <CloseSVG onClick={closeModal} />
-            <span className="grow" />
+            <span />
             {/* <p onClick={handleAddImage}>추가</p> */}
           </DefaultModalHeader>
         )}

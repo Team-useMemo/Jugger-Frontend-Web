@@ -7,14 +7,23 @@ const MemoCollectionScheduleContainer = styled.div({
   gap: '24px',
 });
 
-const MemoCollectionScheduleCalendarContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '32px 24px',
-  gap: '32px',
-  boxShadow: theme.shadow.emphasize,
-  borderRadius: theme.radius[16],
-});
+const MemoCollectionScheduleCalendarContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '32px 24px',
+    gap: '32px',
+    boxShadow: theme.shadow.emphasize,
+    borderRadius: theme.radius[16],
+  },
+);
 
 const MemoCollectionScheduleCalendarHeader = styled.div({
   display: 'flex',
@@ -22,7 +31,6 @@ const MemoCollectionScheduleCalendarHeader = styled.div({
 
   ['>p']: {
     ...theme.font.heading1.semibold,
-    color: theme.color.label.normal,
     margin: '0',
     width: '180px',
   },
@@ -76,9 +84,19 @@ const MemoCollectionScheduleCalendarContentsBody = styled.div({
 });
 
 const MemoCollectionScheduleCalendarContentsBodyItem = styled.div(
-  ({ color, selected, today }: { color: keyof typeof theme.color.label; selected: boolean; today: boolean }) => ({
+  ({
+    theme,
+    color,
+    selected,
+    today,
+  }: {
+    theme?: any;
+    color: keyof typeof theme.color.label;
+    selected: boolean;
+    today: boolean;
+  }) => ({
     ['>p']: {
-      color: theme.color.label[color],
+      color: theme.color.label[color == 'normal' ? (theme.mode === 'light' ? 'normal' : 'inverse') : color],
       background: selected ? theme.color.primary.normal : '',
       border: today ? `2px dotted ${theme.color.primary.normal}` : '',
     },
@@ -131,29 +149,37 @@ const MemoCollectionScheduleListContainer = styled.div({
   gap: '8px',
 });
 
-const MemoCollectionScheduleListItemContainer = styled.div({
-  display: 'flex',
-  padding: '12px 16px',
-  background: theme.color.background.alternative,
-  borderRadius: theme.radius[12],
-  gap: '16px',
+const MemoCollectionScheduleListItemContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
 
-  ['.divider']: {
-    borderRight: `1px solid ${theme.color.line.normal}`,
-  },
+    ['.divider']: {
+      borderRight: `1px solid ${theme.mode === 'light' ? theme.color.line.normal : theme.color.label.neutral}`,
+    },
 
-  ['.grow']: {
-    flexGrow: '1',
-  },
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    padding: '12px 16px',
+    borderRadius: theme.radius[12],
+    gap: '16px',
 
-  ['>svg']: {
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    stroke: theme.color.label.alternative,
-    flexShrink: '0',
+    ['.grow']: {
+      flexGrow: '1',
+    },
+
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      stroke: theme.color.label.alternative,
+      flexShrink: '0',
+    },
   },
-});
+);
 
 const MemoCollectionScheduleListItemDate = styled.div({
   display: 'flex',
@@ -181,7 +207,6 @@ const MemoCollectionScheduleListItemTitle = styled.div(
 
     ['>p']: {
       ...theme.font.body1normal.semibold,
-      color: theme.color.label.normal,
       overflow: 'hidden',
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',

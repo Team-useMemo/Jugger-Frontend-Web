@@ -1,5 +1,5 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetLinksByCategoryQuery, useGetLinksQuery } from '@stores/modules/memo';
+import { useGetLinksQuery } from '@stores/modules/memo';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp } from '@ts/Memo.Prop';
 import {
@@ -28,7 +28,7 @@ const MemoCollectionLinkItem = ({ memo, isSelectCategory }: { memo: MemoProp; is
   const content = memo.content as string;
   const category = categories.find((category) => category.categoryId === memo.categoryId);
 
-  const ogData = useOgData(content);
+  const { data: ogData } = useOgData(content);
   const { ogImage, ogTitle, ogDescription, ogUrl } = ogData || {};
 
   const handleClickLinkItemMore = (e: React.MouseEvent<HTMLOrSVGElement>) => {
@@ -91,20 +91,8 @@ const MemoCollectionLinkItem = ({ memo, isSelectCategory }: { memo: MemoProp; is
 
 const MemoCollectionLink = ({ category }: { category?: CategoryProp }) => {
   const isSelectCategory = category?.categoryId !== '';
-  const useLinkMemos = (category?: CategoryProp) => {
-    const useCategoryQuery = !!category?.categoryId;
 
-    const query = useGetLinksByCategoryQuery(
-      { page: 0, size: 200, categoryId: category?.categoryId ?? '' },
-      { skip: !useCategoryQuery },
-    );
-
-    const fallback = useGetLinksQuery({ page: 0, size: 200 }, { skip: useCategoryQuery });
-
-    return useCategoryQuery ? query : fallback;
-  };
-
-  const { data: linkMemos = [] } = useLinkMemos(category);
+  const { data: linkMemos = [] } = useGetLinksQuery({ page: 0, size: 200, categoryId: category?.categoryId });
 
   if (!linkMemos.length) {
     return (

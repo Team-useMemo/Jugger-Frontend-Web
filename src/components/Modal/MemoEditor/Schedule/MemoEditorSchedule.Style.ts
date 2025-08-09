@@ -8,7 +8,6 @@ const MemoEditorScheduleContainer = styled.div({
   textAlign: 'left',
 
   ...theme.font.title3.bold,
-  color: theme.color.label.normal,
 
   // overflowY: 'hidden',
 });
@@ -35,7 +34,6 @@ const MemoEditorScheduleItemContainer = styled.div({
   gap: '8px',
 
   ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
 });
 
 const MemoEditorScheduleItemContents = styled.label({
@@ -52,7 +50,7 @@ const MemoEditorScheduleItemContents = styled.label({
     flexGrow: '1',
 
     ...theme.font.body1normal.medium,
-    color: theme.color.label.normal,
+    color: 'red',
 
     [':focus']: {
       outline: 'none',

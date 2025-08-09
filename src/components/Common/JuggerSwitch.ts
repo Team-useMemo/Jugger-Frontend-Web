@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
+interface JuggerSwitchProps {
+  toggleSize: string;
+}
+
 const JuggerSwitch = styled.input(
-  ({ toggleSize }: { toggleSize: string }) => ({
+  ({ toggleSize }: JuggerSwitchProps) => ({
     height: toggleSize,
     aspectRatio: '2 / 1',
 
@@ -17,7 +21,7 @@ const JuggerSwitch = styled.input(
     margin: '0',
     appearance: 'none',
     borderRadius: '32px',
-    background: theme.color.primary.normal,
+    background: theme.color.label.disable,
     transition: 'all .1s linear',
     outline: 'none',
     cursor: 'pointer',
@@ -29,15 +33,15 @@ const JuggerSwitch = styled.input(
       background: theme.color.background.normal,
       left: '50%',
       borderRadius: '24px',
-      transform: 'translate(-0%, 0%)',
+      transform: 'translate(-100%, 0%)',
       transition: 'all .1s linear',
       boxShadow: theme.shadow.normal,
     },
     [':checked']: {
-      background: theme.color.label.disable,
+      background: theme.color.primary.normal,
 
       ['::before']: {
-        transform: 'translate(-100%, 0%)',
+        transform: 'translate(-0%, 0%)',
       },
     },
   },

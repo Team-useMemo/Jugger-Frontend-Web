@@ -1,24 +1,24 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
 import { setModalClose, setModalOpen, setModalReplace } from '@stores/modules/modal';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Logout } from '@utils/Auth';
 import { ModalName } from '@utils/Modal';
 import useParamModal, { ModalComponentProps } from '@hooks/useParamModal';
 import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
+import { webPath } from '@router/index';
 import JuggerButton from '@components/Common/JuggerButton';
 import AddCategory from '@components/Modal/Category/CategoryEditor';
 import CategoryEditor from '@components/Modal/Category/CategoryEditor';
 import ModalLayoutGray from '@components/Modal/Layout/ModalLayoutGray';
 import SideMessage from '@components/SideBar/SideMessage/SideMessage';
-import SearchSVG from '@assets/Header/search.svg?react';
-import LogoPNG from '@assets/Logo.png';
-import CalendarSVG from '@assets/Sidebar/Calendar.svg?react';
+import LogoSVG from '@assets/LogoTextFill.svg?react';
 import ImageSVG from '@assets/Sidebar/Image.svg?react';
-import LinkSVG from '@assets/Sidebar/Link.svg?react';
 import SettingSVG from '@assets/Sidebar/Setting.svg?react';
+import CalendarSVG from '@assets/icons/calendar.svg?react';
 import CategorySVG from '@assets/icons/category.svg?react';
+import LinkSVG from '@assets/icons/link.svg?react';
 import PlusSVG from '@assets/icons/plus.svg?react';
+import SearchSVG from '@assets/icons/search.svg?react';
 import {
   SideBarCategoryContainer,
   SideBarContainer,
@@ -62,7 +62,7 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
   };
 
   const onSettingClick = () => {
-    window.alert('환경설정');
+    navigate(webPath.setting());
   };
 
   const handleClickAddCategory = () => {
@@ -98,10 +98,10 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
     { key: 'memo', title: '전체 메모', iconSVG: CategorySVG, onClick: onWholeMemoClick },
     ...(!isMobile
       ? [
-        { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
-        { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
-        { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
-      ]
+          { key: 'schedule', title: '캘린더', iconSVG: CalendarSVG, onClick: () => onMemoCollectionClick('schedule') },
+          { key: 'image', title: '사진', iconSVG: ImageSVG, onClick: () => onMemoCollectionClick('image') },
+          { key: 'link', title: '링크', iconSVG: LinkSVG, onClick: () => onMemoCollectionClick('link') },
+        ]
       : []),
     { key: 'setting', title: '설정', iconSVG: SettingSVG, onClick: onSettingClick },
   ];
@@ -111,7 +111,7 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
       <AddCategoryModal />
       <EditCategoryModal />
       <SideBarHeader>
-        <img src={LogoPNG} onClick={handleClickLogo} />
+        <LogoSVG onClick={handleClickLogo} />
       </SideBarHeader>
       {isMobile && (
         <SideBarSearchContainer onClick={handleClickSearch}>
@@ -141,22 +141,6 @@ const SideBar = ({ modalRef }: ModalComponentProps) => {
           ))}
         </SideBarCategoryContainer>
       </SideBarContents>
-      {isMobile && (
-        //로그아웃은 추후에 설정 페이지로 옮길 예정
-        <div
-          style={{
-            padding: '8px 24px 16px',
-            width: '100%',
-            boxSizing: 'border-box',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <JuggerButton color="secondary" size="small" onClick={Logout}>
-            로그아웃
-          </JuggerButton>
-        </div>
-      )}
     </SideBarContainer>
   );
 };

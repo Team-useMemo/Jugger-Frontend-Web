@@ -1,19 +1,23 @@
 import styled from '@emotion/styled';
 import { media, theme } from '@styles/theme';
 
-export const MemoLinkContainer = styled.div({
-  borderRadius: theme.radius[12],
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-  background: theme.palette.blue[95],
-  cursor: 'pointer',
-  width: '320px',
+export const MemoLinkContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.mode === 'light' ? theme.palette.blue[95] : theme.color.background.alternativeinverse,
+  }),
+  {
+    borderRadius: theme.radius[12],
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    cursor: 'pointer',
+    width: '320px',
 
-  [media[480]]: {
-    width: '280px',
+    [media[480]]: {
+      width: '280px',
+    },
   },
-});
+);
 
 export const MemoLinkImage = styled.div({
   aspectRatio: '5 / 3',
@@ -29,36 +33,45 @@ export const MemoLinkImage = styled.div({
   },
 });
 
-export const MemoLinkTextContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '12px 16px 16px',
-  gap: '4px',
-  textAlign: 'left',
-
-  ['p']: {
-    wordWrap: 'break-word',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'normal',
-    display: '-webkit-box',
-    overflow: 'hidden',
-    WebkitBoxOrient: 'vertical',
-    margin: 0,
-
-    ['&.title']: {
-      ...theme.font.body2normal.semibold,
-      color: theme.color.label.normal,
-      WebkitLineClamp: '1',
+export const MemoLinkTextContainer = styled.div(
+  ({ theme }) => ({
+    ['>p']: {
+      ['&.desc']: {
+        color: theme.color.label[theme.mode === 'light' ? 'neutral' : 'assistive'],
+      },
+      ['&.url']: {
+        color: theme.color.label[theme.mode === 'light' ? 'assistive' : 'alternative'],
+      },
     },
-    ['&.desc']: {
-      ...theme.font.caption1.medium,
-      color: theme.color.label.neutral,
-      WebkitLineClamp: '2',
-    },
-    ['&.url']: {
-      ...theme.font.caption2.medium,
-      color: theme.color.label.assistive,
-      WebkitLineClamp: '1',
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '12px 16px 16px',
+    gap: '4px',
+    textAlign: 'left',
+
+    ['>p']: {
+      wordWrap: 'break-word',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'normal',
+      display: '-webkit-box',
+      overflow: 'hidden',
+      WebkitBoxOrient: 'vertical',
+      margin: 0,
+
+      ['&.title']: {
+        ...theme.font.body2normal.semibold,
+        WebkitLineClamp: '1',
+      },
+      ['&.desc']: {
+        ...theme.font.caption1.medium,
+        WebkitLineClamp: '2',
+      },
+      ['&.url']: {
+        ...theme.font.caption2.medium,
+        WebkitLineClamp: '1',
+      },
     },
   },
-});
+);

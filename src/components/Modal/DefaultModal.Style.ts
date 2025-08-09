@@ -17,6 +17,17 @@ const DefaultModalLayout = styled.div({
 });
 
 const DefaultModalContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
   ({ maxWidth }: { maxWidth?: string }) => ({
     maxWidth: maxWidth ?? '',
     width: maxWidth ? '100vw' : '',
@@ -28,7 +39,6 @@ const DefaultModalContainer = styled.div(
     display: 'flex',
     flexDirection: 'column',
     padding: '32px',
-    background: theme.color.background.normal,
     borderRadius: theme.radius[16],
     boxSizing: 'border-box',
 
@@ -54,33 +64,38 @@ const DefaultModalContainer = styled.div(
   },
 );
 
-const DefaultModalHeader = styled.div({
-  padding: '14px 12px',
-  display: 'flex',
-  flexShrink: '0',
-  position: 'relative',
-  gap: '4px',
-  justifyContent: 'center',
-  alignItems: 'center',
+const DefaultModalHeader = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      cursor: 'pointer',
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  {
+    padding: '14px 12px',
+    display: 'flex',
+    flexShrink: '0',
+    position: 'relative',
+    zIndex: '1',
+    gap: '4px',
+    alignItems: 'center',
 
-  ['.grow']: {
-    flexGrow: '1',
-  },
+    ['.grow']: {
+      flexGrow: '1',
+    },
 
-  ['>svg']: {
-    width: '24px',
-    height: 'auto',
-    aspectRatio: '1 / 1',
-    cursor: 'pointer',
-    stroke: theme.color.label.normal,
-  },
+    ['>svg']: {
+      width: '24px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
 
-  ['>p']: {
-    ...theme.font.body1normal.medium,
-    color: theme.color.primary.normal,
-    margin: '0 8px 0 0',
+    ['>p']: {
+      ...theme.font.body1normal.medium,
+      margin: '0 8px 0 0',
+    },
   },
-});
+);
 
 const DefaultModalHeaderTitle = styled.div(
   ({ color }: { color?: string }) =>
@@ -101,11 +116,14 @@ const DefaultModalHeaderTitle = styled.div(
     },
   {
     position: 'absolute',
-    maxWidth: '100%',
+    width: '100%',
     padding: '0 72px',
     boxSizing: 'border-box',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    left: '50%',
+    transform: 'translateX(-50%)',
 
     ['>p']: {
       overflow: 'hidden',
@@ -113,7 +131,6 @@ const DefaultModalHeaderTitle = styled.div(
       whiteSpace: 'nowrap',
       margin: '0',
       ...theme.font.body2normal.semibold,
-      color: theme.color.label.normal,
     },
 
     ['>svg']: {

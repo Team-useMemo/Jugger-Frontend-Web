@@ -1,12 +1,13 @@
 import { useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetCalendarByCategoryQuery, useGetCalendarQuery } from '@stores/modules/memo';
+import { useGetCalendarQuery } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp, scheduleProp } from '@ts/Memo.Prop';
-import { ContextMenuCategory, ContextMenuDelete, ContextMenuEdit } from '@utils/ContextMenu';
+import { ContextMenuEdit } from '@utils/ContextMenu';
 import { CalendarDays, formatDate, getCalendarDates } from '@utils/Date';
 import { ModalName } from '@utils/Modal';
+import { useDeleteMemo } from '@hooks/memo/useMemoActions';
 import { useContextMenu } from '@hooks/useContextMenu';
 import { useAppDispatch } from '@hooks/useRedux';
 import EmptyContent from '@components/Common/EmptyContent';
@@ -50,12 +51,27 @@ const MemoCollectionScheduleListItem = ({
     );
   };
 
+  const handleOpenCategorySetting = () => {
+    dispatch(
+      setModalOpen({
+        name: ModalName.editMemoCategory,
+        value: {
+          chatId: memo.chatId,
+          categoryId: memo.categoryId,
+          type: memo.type,
+          content: memo.content,
+        },
+      }),
+    );
+  };
+  const { deleteMemo } = useDeleteMemo();
+
   const [ContextMenu, BindContextMenuHandlers] = useContextMenu({
     header: { color: category?.categoryColor ?? '', title: category?.categoryName ?? '' },
     items: [
       {
         label: '카테고리 설정',
-        onClick: ContextMenuCategory,
+        onClick: handleOpenCategorySetting,
       },
       {
         label: '공유',
@@ -63,7 +79,7 @@ const MemoCollectionScheduleListItem = ({
       },
       {
         label: '삭제',
-        onClick: ContextMenuDelete,
+        onClick: () => deleteMemo(memo.chatId),
       },
     ],
   });
@@ -130,35 +146,32 @@ const MemoCollectionScheduleCalendarItem = ({
 
 const MemoCollectionSchedule = ({ category }: { category?: CategoryProp }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState(new Date(new Date().setDate(1)));
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`),
+  );
 
   const { data: categories = [] } = useGetCategoriesQuery();
   const dateList = useMemo(() => getCalendarDates(selectedMonth), [selectedMonth]);
 
-  const useCalendarMemos = (category?: CategoryProp) => {
-    const useCategoryQuery = !!category?.categoryId;
+  const calendarQueryArgs = useMemo(
+    () => ({
+      start: dateList[0].toISOString(),
+      end: dateList[dateList.length - 1].toISOString(),
+      categoryId: category?.categoryId ?? '',
+    }),
+    [category?.categoryId, dateList],
+  );
 
-    const query = useGetCalendarByCategoryQuery(
-      {
-        start: dateList[0].toISOString(),
-        end: dateList[dateList.length - 1].toISOString(),
-        categoryId: category?.categoryId ?? '',
-      },
-      { skip: !useCategoryQuery },
-    );
+  const { data: rawData = [], isFetching } = useGetCalendarQuery(calendarQueryArgs);
 
-    const fallback = useGetCalendarQuery(
-      {
-        start: dateList[0].toISOString(),
-        end: dateList[dateList.length - 1].toISOString(),
-      },
-      { skip: useCategoryQuery },
-    );
+  const previousDataRef = useRef<MemoProp[]>([]);
+  useEffect(() => {
+    if (!isFetching && rawData) {
+      previousDataRef.current = rawData;
+    }
+  }, [rawData, isFetching]);
 
-    return useCategoryQuery ? query : fallback;
-  };
-
-  const { data: scheduleMemos = [] } = useCalendarMemos(category);
+  const scheduleMemos = rawData ?? previousDataRef.current;
 
   const scheduleDotList = useMemo(
     () =>

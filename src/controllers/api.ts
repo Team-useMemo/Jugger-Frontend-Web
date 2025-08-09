@@ -12,6 +12,16 @@ const getHeaders = () => {
   };
 };
 
+const fetchTest = async () => {
+  const url = `${baseURL}/health/check`;
+
+  const res = await fetch(url, { method: 'GET', headers: getHeaders() });
+  if (!res.ok) {
+    throw new Error(`${res.status} Error!!`);
+  }
+  return await res.json();
+};
+
 const fetchData = async (path: string) => {
   const url = `${baseURL}${path}`;
 
@@ -182,13 +192,57 @@ const postKakaoAuthCode = async (code: string) => {
     body: JSON.stringify({ code }),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text(); // capture response body for diagnostics
-    throw new Error(`${res.status} Error!! - ${errorText}`);
+  const data = await res.json();
+
+  if (res.ok) {
+    return {
+      status: 'LOGIN_SUCCESS',
+      ...data,
+    };
   }
 
+  if (data.userInfo) {
+    return {
+      status: 'NEED_REGISTER',
+      email: data.userInfo.email,
+    };
+  }
+
+  console.log(res, data);
+
+  // console.log(await res.json());
+  // const errorText = await res?.text(); // capture response body for diagnostics
+  // throw new Error(`${res.status} Error!! - ${errorText}`);
+};
+
+const postNaverAuthCode = async (code: string) => {
+  const url = `${baseURL}/auth/naver`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  });
+
   const data = await res.json();
-  return data;
+
+  if (res.ok) {
+    return {
+      status: 'LOGIN_SUCCESS',
+      ...data,
+    };
+  }
+
+  if (data.userInfo) {
+    return {
+      status: 'NEED_REGISTER',
+      email: data.userInfo.email,
+    };
+  }
+
+  console.log(res, data);
 };
 
 const postGoogleAuthCode = async (code: string) => {
@@ -202,13 +256,23 @@ const postGoogleAuthCode = async (code: string) => {
     body: JSON.stringify({ code }),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text(); // capture response body for diagnostics
-    throw new Error(`${res.status} Error!! - ${errorText}`);
+  const data = await res.json();
+
+  if (res.ok) {
+    return {
+      status: 'LOGIN_SUCCESS',
+      ...data,
+    };
   }
 
-  const data = await res.json();
-  return data;
+  if (data.userInfo) {
+    return {
+      status: 'NEED_REGISTER',
+      email: data.userInfo.email,
+    };
+  }
+
+  console.log(res, data);
 };
 
 type KakaoSignupPayload = {
@@ -256,22 +320,21 @@ const postGoogleSignup = async (payload: KakaoSignupPayload) => {
   return await response.json();
 };
 
+const getPostSignup = async (payload: any) => {
+  const url = `${baseURL}/auth/signup`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 
-const getPostSignup = (provider: string) => {
-  switch (provider) {
-    case 'kakao':
-      return postKakaoSignup;
-    case 'google':
-      return postGoogleSignup;
-    case 'naver':
-      return postKakaoSignup;
-    case 'apple':
-      return postKakaoSignup;
-    default:
-      break;
+  if (!response.ok) {
+    throw new Error(`${response.status} Error`);
   }
 
-  return postKakaoSignup;
+  return await response.json();
 };
 
 const getPostAuthCode = (provider: string) => {
@@ -281,7 +344,7 @@ const getPostAuthCode = (provider: string) => {
     case 'google':
       return postGoogleAuthCode;
     case 'naver':
-      return null;
+      return postNaverAuthCode;
     case 'apple':
       return null;
     default:
@@ -290,6 +353,7 @@ const getPostAuthCode = (provider: string) => {
 };
 
 export {
+  fetchTest,
   fetchAllMemo,
   fetchCategory,
   postCategory,
@@ -301,5 +365,5 @@ export {
   postGoogleAuthCode,
   postGoogleSignup,
   getPostSignup,
-  getPostAuthCode
+  getPostAuthCode,
 };

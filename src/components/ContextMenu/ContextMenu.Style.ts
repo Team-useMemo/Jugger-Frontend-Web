@@ -39,35 +39,24 @@ export const ContextMenuHeader = styled.div(
       height: 'auto',
       aspectRatio: '1 / 1',
       borderRadius: theme.radius.full,
+      flexShrink: '0',
     },
   },
 );
 
 export const ContextMenuTitle = styled.span({
-  fontFamily: 'Pretendard',
-  fontSize: '15px',
-  fontStyle: 'normal',
-  fontWeight: 600,
-  lineHeight: '146.7%',
-  letterSpacing: '0.144px',
-  marginLeft: '0px',
-});
+  ...theme.font.body2normal.semibold,
 
-export const Divider = styled.div({
-  height: '1px',
-  backgroundColor: '#E0E0E2',
-  margin: '4px 0',
+  marginLeft: '0px',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
 });
 
 export const ContextMenuItem = styled.div<{ active?: boolean }>(({ active }) => ({
-  fontFamily: 'Pretendard',
-  fontSize: '15px',
-  fontStyle: 'normal',
-  fontWeight: 600,
-  lineHeight: '150%',
-  letterSpacing: '0.150px',
+  ...theme.font.body2normal.semibold,
+
   padding: '8px 16px',
-  color: '#171719',
   backgroundColor: active ? theme.color.background.normal : 'transparent',
 
   cursor: 'pointer',
@@ -76,15 +65,29 @@ export const ContextMenuItem = styled.div<{ active?: boolean }>(({ active }) => 
   },
 }));
 
-export const ContextMenuWrapper = styled.div({
-  position: 'fixed',
-  backgroundColor: 'white',
-  border: '1px solid #ddd',
-  borderRadius: '8px',
-  padding: '8px 0',
-  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-  zIndex: 1000,
-  minWidth: '160px',
-  textAlign: 'left',
-  fontFamily: 'Pretendard',
-});
+export const ContextMenuWrapper = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    ['.divider']: {
+      borderBottom: `1px solid ${theme.mode === 'light' ? theme.color.line.normal : theme.color.label.neutral}`,
+    },
+  }),
+  {
+    position: 'fixed',
+    // border: '1px solid #ddd',
+    borderRadius: '8px',
+    padding: '8px 0',
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+    zIndex: 1000,
+    minWidth: '140px',
+    textAlign: 'left',
+    fontFamily: 'Pretendard',
+    maxWidth: '180px',
+
+    ['>span.divider']: {
+      display: 'block',
+      height: '1px',
+      width: '100%',
+    },
+  },
+);

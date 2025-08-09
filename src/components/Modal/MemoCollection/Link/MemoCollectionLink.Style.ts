@@ -13,19 +13,28 @@ const MemoCollectionLinkContainer = styled.div({
   },
 });
 
-const MemoCollectionLinkItemContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  borderRadius: theme.radius[12],
-  padding: '12px',
-  boxShadow: theme.shadow.emphasize,
-  gap: '12px',
+const MemoCollectionLinkItemContainer = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
 
-  [media[480]]: {
-    padding: '0px',
-    gap: '0px',
+    [media[480]]: {
+      background: theme.color.background[theme.mode === 'light' ? 'normal' : 'alternativeinverse'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: theme.radius[12],
+    padding: '12px',
+    boxShadow: theme.shadow.emphasize,
+    gap: '12px',
+
+    [media[480]]: {
+      padding: '0px',
+      gap: '0px',
+    },
   },
-});
+);
 
 const MemoCollectionLinkItemImageContainer = styled.div({
   aspectRatio: '4 / 3',
@@ -130,7 +139,6 @@ const MemoCollectionLinkItemTextContainer = styled.div({
 
     ['&.title']: {
       ...theme.font.caption1.semibold,
-      color: theme.color.label.neutral,
     },
     ['&.desc']: {
       ...theme.font.caption2.medium,

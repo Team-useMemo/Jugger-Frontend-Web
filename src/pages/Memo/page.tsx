@@ -1,5 +1,6 @@
+import { ChatLoaderProvider, useChatContext } from '@providers/ChatContext';
 import { categoryApi, useGetCategoriesQuery } from '@stores/modules/category';
-import { useGetMemosQuery, usePostMemoMutation } from '@stores/modules/memo';
+import { usePostMemoMutation } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -37,42 +38,38 @@ import {
   MemoPageContainer,
 } from './MemoPage.Style';
 
-const MemoList = React.memo(({ currentCategory }: { currentCategory: string }) => {
+const MemoList = React.memo(() => {
   const memoListContainerRef = useRef<HTMLDivElement>(null);
-  const [page, setPage] = useState(0);
 
   const { data: categories = [] } = useGetCategoriesQuery();
-  const { data: memos = [] } = useGetMemosQuery(
-    {
-      page: page,
-      //  size: 20
-      size: 200,
-    },
-    {
-      skip: false,
-      selectFromResult: ({ data }) => ({
-        data: currentCategory ? data?.filter((memo) => memo.categoryId === currentCategory) : data,
-      }),
-    },
-  );
+  const { data: memos = [], fetchBefore } = useChatContext();
+  const [recentMemoDate, setRecentMemoDate] = useState<Date>();
+  // console.log(memos);
 
   useEffect(() => {
-    memoListContainerRef.current?.scrollTo({ top: 0 });
+    if (memos.length) {
+      loadBeforeMemos();
+    }
+    if (recentMemoDate && memos?.[0]?.date.getTime() !== recentMemoDate.getTime()) {
+      memoListContainerRef.current?.scrollTo({ top: 0 });
+    }
+    setRecentMemoDate(memos?.[0]?.date);
   }, [memos]);
-  // console.log(memos);
+
+  const loadBeforeMemos = () => {
+    const el = memoListContainerRef.current;
+    if (!el) return;
+
+    if (el.scrollHeight + el.scrollTop === el.offsetHeight) {
+      fetchBefore();
+    }
+  };
+
   return (
-    <MemoListContainer ref={memoListContainerRef}>
-      <div
-        onClick={() => {
-          console.log(page);
-          setPage((prev) => prev + 1);
-        }}
-      >
-        asd
-      </div>
+    <MemoListContainer ref={memoListContainerRef} onScroll={loadBeforeMemos}>
       {memos.map((memo, i, arr) => {
         return (
-          <MemoItemContainer key={`memo-${memo.chatId}-${i}`} id={`memo-${memo.chatId}`}>
+          <MemoItemContainer key={`memo-${memo.chatId}`} id={`memo-${memo.chatId}`}>
             {(i == arr.length - 1 ||
               (i + 1 < arr.length && arr[i + 1].date.toDateString() != memo.date.toDateString())) && (
               <MemoItemDateContainer>
@@ -98,6 +95,7 @@ const MemoPageBottom = () => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [postMemo] = usePostMemoMutation();
+  const { fetchAfter } = useChatContext();
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -132,6 +130,7 @@ const MemoPageBottom = () => {
           text: newMemo,
         }).unwrap();
         dispatch(categoryApi.util.invalidateTags([{ type: 'Category', id: 'LIST' }]));
+        fetchAfter();
       } catch (error) {
         console.error('메모 전송 실패:', error);
       }
@@ -212,7 +211,7 @@ const MemoPageBottom = () => {
 
 const MemoPage = () => {
   const [searchParams] = useSearchParams();
-  const currentCategory = searchParams.get('category');
+  const currentCategory = searchParams.get('category') ?? undefined;
 
   const [SearchMemoModal] = useParamModal(ModalName.searchMemo, ModalLayoutGray, SearchMemo);
   const [MemoCollectionModal] = useParamModal(ModalName.memoCollection, ModalLayoutGray, MemoCollection);
@@ -231,18 +230,20 @@ const MemoPage = () => {
 
   return (
     <MemoPageContainer>
-      <MemoCollectionModal />
-      <SearchMemoModal />
-      <AddScheduleMemoModal />
-      <EditScheduleMemoModal />
-      <AddImageMemoModal />
-      <DetailTextMemoModal />
-      <DetailImageMemoModal />
-      <DetailImageMemoExpandModal />
-      <DetailScheduleMemoModal />
-      <MemoList currentCategory={currentCategory || ''} />
-      <MemoPageBottom />
-      <EditMemoCategoryModal />
+      <ChatLoaderProvider categoryId={currentCategory}>
+        <MemoCollectionModal />
+        <SearchMemoModal />
+        <AddScheduleMemoModal />
+        <EditScheduleMemoModal />
+        <AddImageMemoModal />
+        <DetailTextMemoModal />
+        <DetailImageMemoModal />
+        <DetailImageMemoExpandModal />
+        <DetailScheduleMemoModal />
+        <MemoList />
+        <MemoPageBottom />
+        <EditMemoCategoryModal />
+      </ChatLoaderProvider>
     </MemoPageContainer>
   );
 };

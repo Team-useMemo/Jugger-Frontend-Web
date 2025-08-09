@@ -1,10 +1,10 @@
-import { useDeleteMemoMutation } from '@stores/modules/memo';
 import { setModalOpen } from '@stores/modules/modal';
-import { useDispatch } from 'react-redux';
 import { CategoryProp } from '@ts/Category.Prop';
 import { MemoProp, imageProp, scheduleProp } from '@ts/Memo.Prop';
 import { ModalName } from '@utils/Modal';
+import { useDeleteMemo } from '@hooks/memo/useMemoActions';
 import { useContextMenu } from '@hooks/useContextMenu';
+import { useAppDispatch } from '@hooks/useRedux';
 import { useIsMobile } from '@hooks/useWindowSize';
 import MemoCategory from './Category/MemoCategory';
 import MemoImage from './Image/MemoImage';
@@ -15,9 +15,11 @@ import MemoSchedule from './Schedule/MemoSchedule';
 import MemoText from './Text/MemoText';
 
 const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: CategoryProp }) => {
-  const [deleteMemo] = useDeleteMemoMutation();
-  const dispatch = useDispatch();
   const isMobile = useIsMobile();
+
+  const { deleteMemo } = useDeleteMemo();
+
+  const dispatch = useAppDispatch();
 
   const handleOpenCategorySetting = () => {
     dispatch(
@@ -61,11 +63,6 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
     }
   };
 
-  const handleDeleteMemo = () => {
-    // TODO: 삭제 확인 모달 또는 삭제 API 호출
-    deleteMemo({ chatId: memo.chatId });
-  };
-
   const contextMenuItems = [
     {
       label: '카테고리 변경',
@@ -73,7 +70,7 @@ const MemoComponent = ({ memo, category }: { memo: MemoProp; category?: Category
     },
     {
       label: '삭제',
-      onClick: handleDeleteMemo,
+      onClick: () => deleteMemo(memo.chatId),
     },
   ];
 

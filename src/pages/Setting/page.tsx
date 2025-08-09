@@ -1,0 +1,363 @@
+import styled from '@emotion/styled';
+import { useThemeContext } from '@providers/ThemeContext';
+import { setModalOpen } from '@stores/modules/modal';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GetLocalStorageItem, SetLocalStorageItem } from '@ts/LocalStorage';
+import { Logout } from '@utils/Auth';
+import { ModalName } from '@utils/Modal';
+import { useAppDispatch } from '@hooks/useRedux';
+import { useIsMobile } from '@hooks/useWindowSize';
+import { webPath } from '@router/index';
+import JuggerButton from '@components/Common/JuggerButton';
+import JuggerSelectBox from '@components/Common/JuggerSelectBox';
+import JuggerSwitch from '@components/Common/JuggerSwitch';
+import { media, theme } from '@styles/theme';
+import GoogleSVG from '@assets/Login/google.svg?react';
+import KakaoSVG from '@assets/Login/kakao.svg?react';
+import NaverSVG from '@assets/Login/naver.svg?react';
+import CheckCircleSVG from '@assets/icons/check_circle.svg?react';
+import CrossCircleSVG from '@assets/icons/cross_circle.svg?react';
+import DownArrowSVG from '@assets/icons/down_arrow.svg?react';
+import RightArrowSVG from '@assets/icons/right_arrow.svg?react';
+
+const SettingContentInner = styled.div(
+  ({ theme }) => ({
+    ['>.divider']: {
+      background: theme.color.line[theme.mode === 'light' ? 'normal' : 'neutral'],
+    },
+  }),
+  {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '48px',
+    maxWidth: '1440px',
+    width: '100%',
+
+    ['>.divider']: {
+      height: '1px',
+    },
+
+    [media[480]]: {
+      gap: '36px',
+    },
+  },
+);
+
+const SettingSectionGroup = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '36px',
+
+  [media[480]]: {
+    gap: '28px',
+  },
+});
+
+const SettingRow = styled.div(
+  ({ theme }) => ({
+    ['>svg']: {
+      stroke: theme.color.label[theme.mode === 'light' ? 'normal' : 'inverse'],
+    },
+  }),
+  ({ flexDirection }: { flexDirection: 'column' | 'column-reverse' | 'row' | 'row-reverse' }) => ({
+    flexDirection: flexDirection,
+  }),
+  {
+    display: 'flex',
+    gap: '10px',
+    justifyContent: 'space-between',
+
+    ...theme.font.headline1.semibold,
+    textAlign: 'left',
+
+    ['>svg']: {
+      width: '28px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      cursor: 'pointer',
+    },
+
+    ['>span']: {
+      ...theme.font.body1normal.medium,
+    },
+
+    [media[480]]: {
+      ...theme.font.body1normal.semibold,
+
+      ['>svg']: {
+        width: '24px',
+      },
+    },
+  },
+);
+
+const AccountInfoBox = styled.div(
+  ({ theme }) => ({
+    background: theme.color.background[theme.mode === 'light' ? 'alternative' : 'alternativeinverse'],
+  }),
+  {
+    display: 'flex',
+
+    padding: '16px',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: theme.radius[12],
+
+    [media[480]]: {
+      padding: '12px',
+      borderRadius: theme.radius[4],
+    },
+  },
+);
+
+const AccountProfile = styled.div(
+  ({ color }: { color: string }) => ({
+    ['>svg']: {
+      background: color,
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'center',
+
+    ...theme.font.body1normal.semibold,
+
+    ['>svg']: {
+      width: '36px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+      borderRadius: theme.radius[6],
+      padding: '4px',
+      boxSizing: 'border-box',
+    },
+
+    [media[480]]: {
+      ...theme.font.body2normal.semibold,
+      gap: '12px',
+    },
+  },
+);
+
+const ToastWrapper = styled.div(
+  ({ toastShow }: { toastShow: boolean }) => ({
+    opacity: toastShow ? 1 : 0,
+  }),
+  {
+    position: 'absolute',
+    bottom: '0',
+    marginBottom: '36px',
+    transition: 'opacity 0.5s ease-in-out',
+    left: '50%',
+    transform: 'translateX(-50%)',
+  },
+);
+
+const ToastContent = styled.div(
+  ({ isSuccess }: { isSuccess: boolean }) => ({
+    ['>svg']: {
+      fill: theme.color.status[isSuccess ? 'success' : 'error'],
+    },
+  }),
+  {
+    display: 'flex',
+    gap: '8px',
+    padding: '12px 16px',
+    background: theme.color.label.normal,
+    borderRadius: theme.radius[4],
+
+    ...theme.font.body2reading.medium,
+    color: theme.color.label.inverse,
+
+    ['>svg']: {
+      width: '16px',
+      height: 'auto',
+      aspectRatio: '1 / 1',
+    },
+  },
+);
+
+type AppThemeKey = 'light' | 'dark' | 'system';
+
+const AppTheme: Record<AppThemeKey, { name: AppThemeKey; text: string }> = {
+  light: {
+    name: 'light',
+    text: '라이트 모드',
+  },
+  dark: {
+    name: 'dark',
+    text: '다크 모드',
+  },
+  system: {
+    name: 'system',
+    text: '시스템 설정',
+  },
+};
+
+const Providers: Record<'kakao' | 'google' | 'naver', { svg: React.ReactNode; color: string }> = {
+  kakao: {
+    svg: <KakaoSVG />,
+    color: '#ffe617',
+  },
+  google: {
+    svg: <GoogleSVG />,
+    color: '#ffffff',
+  },
+  naver: {
+    svg: <NaverSVG />,
+    color: '#00C73C',
+  },
+};
+
+const SettingPage = () => {
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+
+  const { userTheme, setUserTheme } = useThemeContext();
+  const [toastContents, setToastContents] = useState<React.JSX.Element | null>(null);
+  const [toastMount, setToastMount] = useState(false);
+  const [toastShow, setToastShow] = useState(false);
+
+  const [notification, setNotification] = useState(GetLocalStorageItem('notification') === 'true');
+
+  const provider = Providers[GetLocalStorageItem('provider') as 'kakao' | 'google' | 'naver'];
+  const email = GetLocalStorageItem('email');
+
+  const handleClickSelectTheme = (e: React.MouseEvent<HTMLLabelElement>) => {
+    const el = e.currentTarget;
+    if (document.activeElement === el) {
+      e.preventDefault();
+      el.blur();
+    }
+  };
+
+  const handleClickSelectThemeItem = (theme: AppThemeKey) => () => {
+    SetLocalStorageItem('theme', theme);
+    setUserTheme(theme);
+  };
+
+  const handleChangeNotification = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNotification(e.target.checked);
+    SetLocalStorageItem('notification', e.target.checked);
+  };
+
+  const handleClickNotice = () => {
+    navigate(webPath.notice());
+  };
+
+  const handleClickShareService = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.origin);
+      setToastMount(true);
+      setToastShow(true);
+      setToastContents(
+        <ToastContent isSuccess={true}>
+          <CheckCircleSVG />
+          공유 링크를 복사했어요
+        </ToastContent>,
+      );
+    } catch (err) {
+      setToastMount(true);
+      setToastShow(true);
+      setToastContents(
+        <ToastContent isSuccess={false}>
+          <CrossCircleSVG />
+          공유 링크 복사에 실패했어요
+        </ToastContent>,
+      );
+      console.error(err);
+    }
+  };
+
+  const dispatch = useAppDispatch();
+
+  const handleClickWithdraw = () => {
+    dispatch(setModalOpen({ name: ModalName.withdrawUser }));
+  };
+
+  useEffect(() => {
+    if (!toastMount) return;
+
+    const fadeOut = setTimeout(() => setToastShow(false), 2500);
+    const remove = setTimeout(() => setToastMount(false), 3000);
+
+    return () => {
+      clearTimeout(fadeOut);
+      clearTimeout(remove);
+    };
+  }, [toastMount]);
+
+  return (
+    <SettingContentInner>
+      {toastMount && <ToastWrapper toastShow={toastShow}>{toastContents}</ToastWrapper>}
+      <SettingSectionGroup>
+        <SettingRow flexDirection="column">
+          계정 정보
+          <AccountInfoBox>
+            {provider ? (
+              <AccountProfile color={provider.color}>
+                {provider.svg}
+                {email ?? '계정 정보를 불러오는데 실패했어요'}
+              </AccountProfile>
+            ) : (
+              '계정 정보를 불러오는데 실패했어요'
+            )}
+            {!isMobile && (
+              <JuggerButton color="primary" size="xsmall" onClick={Logout}>
+                로그아웃
+              </JuggerButton>
+            )}
+          </AccountInfoBox>
+        </SettingRow>
+        <SettingRow flexDirection="column">
+          테마 설정
+          <JuggerSelectBox>
+            <label tabIndex={-1} onMouseDown={handleClickSelectTheme}>
+              {AppTheme[userTheme].text}
+              <DownArrowSVG />
+            </label>
+            <ul>
+              {Object.entries(AppTheme).map(([key, value]) => (
+                <li key={`theme_${key}`} onMouseDown={handleClickSelectThemeItem(value.name)}>
+                  {value.text}
+                </li>
+              ))}
+            </ul>
+          </JuggerSelectBox>
+        </SettingRow>
+        <SettingRow flexDirection="row">
+          알림 설정
+          <JuggerSwitch toggleSize="20px" type="checkbox" checked={notification} onChange={handleChangeNotification} />
+        </SettingRow>
+      </SettingSectionGroup>
+      <span className="divider" />
+      <SettingRow flexDirection="row" onClick={handleClickNotice}>
+        공지사항
+        <RightArrowSVG />
+      </SettingRow>
+      <span className="divider" />
+      <SettingSectionGroup>
+        <SettingRow flexDirection="row" onClick={handleClickShareService}>
+          서비스 공유하기
+        </SettingRow>
+        <SettingRow flexDirection="row">
+          서비스 버전
+          <span>1.0.1</span>
+        </SettingRow>
+        {isMobile && (
+          <SettingRow flexDirection="row" onClick={Logout}>
+            로그아웃
+            <RightArrowSVG />
+          </SettingRow>
+        )}
+        <SettingRow flexDirection="row" onClick={handleClickWithdraw}>
+          회원 탈퇴
+          <RightArrowSVG />
+        </SettingRow>
+      </SettingSectionGroup>
+    </SettingContentInner>
+  );
+};
+
+export default SettingPage;

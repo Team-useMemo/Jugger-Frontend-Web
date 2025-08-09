@@ -26,6 +26,7 @@ const MemoDetailText = ({ closeModal, props, modalRef }: ModalComponentProps) =>
             <DefaultModalHeaderTitle>
               <p>전체보기</p>
             </DefaultModalHeaderTitle>
+            <span />
           </DefaultModalHeader>
         )}
         <MemoDetailTextContainer>
