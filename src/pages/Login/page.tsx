@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { webPath } from '@router/index';
 import AppleSVG from '@assets/Login/apple.svg?react';
 import GoogleSVG from '@assets/Login/google.svg?react';
 import KakaoSVG from '@assets/Login/kakao.svg?react';
@@ -87,6 +89,7 @@ const loginMethod = [
 ];
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const lastLogin = localStorage.getItem('lastLoginProvider');
 
   useEffect(() => {
@@ -103,7 +106,14 @@ const LoginPage = () => {
           <LogoSVG />
         </LoginPageTitleContainer>
         <LoginPageSocialLoginContainer>
-          <LoginPageSocialLoginTitle>간편 로그인</LoginPageSocialLoginTitle>
+          <LoginPageSocialLoginTitle
+            onClick={() => {
+              localStorage.setItem('accessToken', 'masetermasterjugger123123123!');
+              navigate(webPath.memo());
+            }}
+          >
+            간편 로그인
+          </LoginPageSocialLoginTitle>
           <LoginPageSocialLoginButtonContainer>
             {loginMethod.map(
               (method) =>
