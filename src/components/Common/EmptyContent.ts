@@ -7,7 +7,6 @@ const EmptyContent = styled.div({
   marginTop: '72px',
 
   ...theme.font.body1normal.semibold,
-  color: theme.color.label.normal,
 
   ['>span']: {
     ...theme.font.label1normal.medium,

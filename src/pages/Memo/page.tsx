@@ -96,6 +96,15 @@ const MemoPageBottom = () => {
 
   const [postMemo] = usePostMemoMutation();
   const { fetchAfter } = useChatContext();
+  // 컴포지션 상태 추적
+  const composingRef = useRef(false);
+
+  const handleCompositionStart = () => {
+    composingRef.current = true;
+  };
+  const handleCompositionEnd = () => {
+    composingRef.current = false;
+  };
 
   const changeTextAreaSize = () => {
     if (textareaRef && textareaRef.current) {
@@ -112,7 +121,17 @@ const MemoPageBottom = () => {
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      if (e.shiftKey || isMobile) {
+      // 줄바꿈 허용 조건
+      if (e.shiftKey || isMobile) return;
+
+      // IME 조합 중/확정 Enter 무시
+      const ne = e.nativeEvent as KeyboardEvent;
+      if (
+        composingRef.current ||
+        ne.isComposing || // 표준
+        (e as any).key === 'Process' || // 일부 브라우저
+        (ne as any).keyCode === 229 // 구형/특정 환경
+      ) {
         return;
       }
       e.preventDefault();
@@ -200,6 +219,8 @@ const MemoPageBottom = () => {
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onPaste={handlePasteClipboardImage}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             value={newMemo}
           />
           <SendSVG onClick={handleClickSend} />

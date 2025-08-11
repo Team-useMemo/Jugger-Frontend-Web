@@ -14,6 +14,7 @@ export const useChatLoader = (categoryId?: string) => {
   const [triggerGetMemos, { data, isFetching }] = useLazyGetMemosQuery();
   const retryCountRef = useRef(0);
   const isRetryingRef = useRef(false);
+  const isEndBeforeLoadRef = useRef(false);
 
   const [isMounted, setIsMounted] = useState(false);
 
@@ -45,13 +46,20 @@ export const useChatLoader = (categoryId?: string) => {
 
   // ✅ 과거 채팅 요청 (스크롤 최상단 도달 시)
   const fetchBefore = () => {
+    if (isEndBeforeLoadRef.current) return;
     if (isRetryingRef.current) return;
 
     if (isFetchingRef.current) {
       const tryFetch = () => {
         if (!isFetchingRef.current) {
           retryCountRef.current = 0;
-          triggerGetMemos({ categoryId, before: oldestRef.current?.toISOString(), page: 0, size: SIZE });
+          triggerGetMemos({ categoryId, before: oldestRef.current?.toISOString(), page: 0, size: SIZE })
+            .unwrap()
+            .then((initialData) => {
+              if (data?.length !== initialData?.length) return;
+
+              isEndBeforeLoadRef.current = true;
+            });
           isRetryingRef.current = false;
         } else if (retryCountRef.current++ < MAX_RETRIES) {
           setTimeout(tryFetch, RETRY_INTERVAL);
@@ -65,7 +73,13 @@ export const useChatLoader = (categoryId?: string) => {
       isRetryingRef.current = true;
       tryFetch();
     } else {
-      triggerGetMemos({ categoryId, before: oldestRef.current?.toISOString(), page: 0, size: SIZE });
+      triggerGetMemos({ categoryId, before: oldestRef.current?.toISOString(), page: 0, size: SIZE })
+        .unwrap()
+        .then((initialData) => {
+          if (data?.length !== initialData?.length) return;
+
+          isEndBeforeLoadRef.current = true;
+        });
     }
   };
 
