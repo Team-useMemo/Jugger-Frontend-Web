@@ -6,7 +6,6 @@ export const StyledMainlayout = styled.div({
   height: '100dvh',
   width: '100dvw',
   overflow: 'hidden',
-  flexDirection: 'column',
 });
 
 export const StyledMain = styled.div({
